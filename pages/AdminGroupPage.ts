@@ -420,14 +420,6 @@ export class AdminGroupPage extends PlaywrightWrapper {
             }
         }
         
-        await storeUIUserDataToJson(addedUsers);    
-        console.log(`Extracted ${addedUsers.length} users from UI and stored in JSON`);
-        if (addedUsers.length > 0) {
-            console.log(`\n=== EXPORT COMPATIBILITY CHECK ===`);
-            console.log(`✓ UI shows ${addedUsers.length} users in the admin group`);
-            console.log(`=== END COMPATIBILITY CHECK ===\n`);
-        }
-        
         return addedUsers;
     }
 

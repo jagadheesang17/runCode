@@ -63,7 +63,8 @@ export class AdminHomePage extends AdminLogin {
         //for Direct Content Launch
         directContent:`//a[text()='Direct Content Launch']`,
            //meta data library option
-        metaLibOption:(data:string)=>`//a[text()='${data}']`,
+        metaLibOption: (data: string) => `//a[text()='${data}']`,
+        dynamicShareableLinks:`text=Dynamic Shareable Links`
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -423,6 +424,11 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
+
+    public async dynamicShareableLinks() { 
+        await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
+    }
+ 
 
 }
 

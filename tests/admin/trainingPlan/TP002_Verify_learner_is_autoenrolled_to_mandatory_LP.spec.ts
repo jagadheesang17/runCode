@@ -63,9 +63,9 @@ test.describe(`Verify_the_lp_mandatory_flow`, async () => {
        await learningPath.clickProceedBtn();
        await learningPath.clickEnforceCheckbox();
        async function addingCourse(courseName: any) {
-           await learningPath.clickAddCourse();
-           await learningPath.searchAndClickCourseCheckBox(courseName);
-           await learningPath.clickAddSelectCourse();
+       await learningPath.clickAddCourse();
+       await learningPath.searchAndClickCourseCheckBox(courseName);
+       await learningPath.clickAddSelectCourse();
        }
        await addingCourse(courseName);
        await learningPath.clickDetailTab();
@@ -75,7 +75,7 @@ test.describe(`Verify_the_lp_mandatory_flow`, async () => {
        await learningPath.clickEditLearningPath();
        await createCourse.clickCompletionCertificate();
        await createCourse.clickCertificateCheckBox();
-        await createCourse.clickAccessButton();
+       await createCourse.clickAccessButton();
        await createCourse.specificLearnerGroupSelection(URLConstants.LearnerGroup1);
        await createCourse.addSingleLearnerGroup(user);
        await createCourse.saveAccessButton();

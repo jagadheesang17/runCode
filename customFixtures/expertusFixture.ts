@@ -39,6 +39,7 @@ import { SiteAdminPage } from '../pages/SiteAdminPage'
 import { DirectContentLaunch } from '../pages/DirectContentLaunch'
 import {LearningAssignmentPage} from '../pages/LearningAssignmentPage'
 import { CustomFieldPage } from '../pages/CustomFieldPage'
+import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -80,6 +81,7 @@ type expertusFixture = {
     directContent: DirectContentLaunch
     customFieldHome: CustomFieldPage
     exportPage: ExportPage
+    dynamicShareableLinks: DynamicShareableLinksPage
 }
 
 export const test = baseTest.extend<expertusFixture>({
@@ -245,6 +247,11 @@ export const test = baseTest.extend<expertusFixture>({
     customFieldHome: async ({ page, context }, use) => {
         const customFieldHome = new CustomFieldPage(page, context);
         await use(customFieldHome);
+    },
+
+    dynamicShareableLinks: async ({ page, context }, use) => {
+        const dynamicShareableLinks = new DynamicShareableLinksPage(page, context);
+        await use(dynamicShareableLinks);
     }
 
 })
