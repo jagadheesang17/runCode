@@ -36,14 +36,14 @@ switch (environmentSetup) {
         break;
     case "qaProduction":
         URLConstants = {
-            adminEndPointUrl: "https://qaautomation.expertusoneqa.cloud/api/v2/admin/rest",
-            learnerEndPointUrl: "https://qaautomation.expertusoneqa.cloud/api/v2/learner/rest"
+            adminEndPointUrl: "https://newprod.expertusoneqa.in/api/v2/admin/rest",
+            learnerEndPointUrl: "https://newprod.expertusoneqa.in/api/v2/learner/rest"
         }
         credentials = {
             data: {
-                id: "5f469f06-23a4-448c-9066-fee689ed0a93",
-                client_id: "d8f7b0e5d9485b712e7342bcf46e8ea5",
-                client_secret: "c7640afa8a8ea9c988c37afbadbf13fd"
+                id: "b5149db2-7d6c-400c-b3ae-be27f88d77e3",
+                client_id: "e52c88e2a908fb0209af9d6a7eadd799",
+                client_secret: "333c9721b3fe89a61adf4fb543e33775"
             }
 
         }

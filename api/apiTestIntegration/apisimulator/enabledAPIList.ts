@@ -9,7 +9,7 @@ export async function getAdminAPI() {
     const page = await context.newPage();
 
   // await page.goto('https://qa.expertusoneqa.com/api/v2/simulator'); // Navigate to a page
-   await page.goto('https://qaautomation.expertusoneqa.cloud/api/v2/simulator'); // Navigate to a page
+   await page.goto('https://newprod.expertusoneqa.in/api/v2/simulator'); // Navigate to a page
     await page.waitForTimeout(5000);
     await page.locator("//span[text()='Admin']").click();
     await page.waitForTimeout(5000);
@@ -42,7 +42,7 @@ export async function getLearnerAPI() {
     const page = await context.newPage();
 
    // await page.goto('https://qa.expertusoneqa.com/api/v2/simulator'); // Navigate to a page
-    await page.goto('https://qaautomation.expertusoneqa.cloud/api/v2/simulator'); // Navigate to a page
+    await page.goto('https://newprod.expertusoneqa.in/api/v2/simulator'); // Navigate to a page
     await page.waitForTimeout(5000);
     await page.locator("//span[text()='Learner']").click();
     await page.waitForTimeout(5000);
