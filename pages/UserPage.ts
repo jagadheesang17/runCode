@@ -218,6 +218,34 @@ export class UserPage extends AdminHomePage {
     await this.type(selector, name, data);
   }
 
+
+  
+
+   async clickeditUser() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.EditUser(),
+      "Edit User"
+    );
+    const selector = this.selectors.EditUser();
+    await this.click(selector, "Edit User", "Button");
+
+  }
+  async isElementVisible(selector: string): Promise<boolean> {
+    try {
+      return await this.page.locator(selector).isVisible();
+    } catch {
+      return false;
+    }
+  }
+
+  async clickInheritAddress() {
+    const selector = this.selectors.inheritAddress()
+    if (await this.isElementVisible(selector)) {
+      await this.click(selector, "Address", "Button");
+    }
+  }
+
   async typeAddress(label: string, data: string) {
     const selector = this.selectors.addressInput(label);
     await this.type(selector, "Address", data);
@@ -254,8 +282,8 @@ export class UserPage extends AdminHomePage {
     await this.typeAndEnter(
       this.selectors.departmentType,
       "Department Type",
-      data
-    );
+      data);
+
     await this.mouseHover(this.selectors.commonOptionBtn(dpmtType, data), data);
     await this.click(
       this.selectors.commonOptionBtn(dpmtType, data),
@@ -374,11 +402,13 @@ export class UserPage extends AdminHomePage {
   }
 
   async clickSave() {
+    await this.wait("minWait");
     await this.validateElementVisibility(this.selectors.saveButton, "Save");
     await this.click(this.selectors.saveButton, "Save", "Button");
   }
 
   async clickProceed(name: string) {
+    await this.validateElementVisibility(this.selectors.proceedButton(name), name);
     const buttonSelector = this.selectors.proceedButton(name);
     await this.validateElementVisibility(buttonSelector, name);
     await this.click(buttonSelector, name, "Button");

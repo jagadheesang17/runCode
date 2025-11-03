@@ -156,6 +156,31 @@ export class FakerData {
     static getRandomTitle() {
         return (capitalizeFirstLetter(faker.hacker.noun()) + " " + capitalizeFirstLetter(faker.hacker.noun()));
     }
+
+    // Missing methods for metadata library
+    static getDepartmentName(): string {
+        return capitalizeFirstLetter(faker.commerce.department());
+    }
+
+    static getCEUProviderName(): string {
+        return `${capitalizeFirstLetter(faker.company.buzzNoun())} CEU Provider`;
+    }
+
+    static getProviderName(): string {
+        return `${capitalizeFirstLetter(faker.company.buzzAdjective())} ${capitalizeFirstLetter(faker.company.buzzNoun())} Provider`;
+    }
+
+    static getUserTypeName(): string {
+        return `${capitalizeFirstLetter(faker.person.jobDescriptor())} User`;
+    }
+
+    static getJobRoleName(): string {
+        return faker.person.jobTitle();
+    }
+
+    static getEquipmentName(): string {
+        return faker.commerce.productMaterial();
+    }
 }
 
 export function getCreditCardNumber(): string {

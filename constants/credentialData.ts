@@ -260,11 +260,11 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "autouser1@DonotUse",
+        username: "arjun1",
         password: "Welcome6@",
       },
       LearnerGroup2user: {
-        username: "autouser2@DonotUse",
+        username: "arjun2",
         password: "Welcome6@",
       },
     };

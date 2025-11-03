@@ -32,6 +32,8 @@ import { ManagerPage } from '../pages/ManagerPage'
 import { ReadContentPage } from '../pages/ReadContentPage'
 import { AdminRolePage } from '../pages/AdminRole'
 import { ExcelReader } from '../utils/excelUtils'
+import { logADefectInJira } from '../jira/log-a-defect'
+//import { updateJiraIssue } from '../jira/jira-integration'
 import { UniversalSearchPage } from '../pages/UniversalSearchPage'
 import path from 'path'
 import { glob } from 'glob'
@@ -39,6 +41,7 @@ import { SiteAdminPage } from '../pages/SiteAdminPage'
 import { DirectContentLaunch } from '../pages/DirectContentLaunch'
 import {LearningAssignmentPage} from '../pages/LearningAssignmentPage'
 import { CustomFieldPage } from '../pages/CustomFieldPage'
+import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -80,6 +83,7 @@ type expertusFixture = {
     directContent: DirectContentLaunch
     customFieldHome: CustomFieldPage
     exportPage: ExportPage
+    dynamicShareableLinks: DynamicShareableLinksPage
 }
 
 export const test = baseTest.extend<expertusFixture>({
@@ -245,6 +249,11 @@ export const test = baseTest.extend<expertusFixture>({
     customFieldHome: async ({ page, context }, use) => {
         const customFieldHome = new CustomFieldPage(page, context);
         await use(customFieldHome);
+    },
+
+    dynamicShareableLinks: async ({ page, context }, use) => {
+        const dynamicShareableLinks = new DynamicShareableLinksPage(page, context);
+        await use(dynamicShareableLinks);
     }
 
 })

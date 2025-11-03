@@ -28,10 +28,8 @@ export class AdminHomePage extends AdminLogin {
         locationLink: "//a[text()='Location']",
         commerceMenu: `//span[text()='Commerce']`,
         learningPathLink: "//a[text()='Learning Path']",
-        //learningPathLink:"//a[text()='Learning Path']",
         certificationLink: "//a[text()='Certification']",
         completionCertificationLink: "//a[text()='Completion Certificate']",
-        //learningPathLink:"//a[text()='Learning Path']",       
         communicationLink: "//span[text()='Communication']",
         bannerMenu: `//a[text()='Banner']`,
         createBannerbutton: `//button[text()='CREATE BANNER']`,
@@ -39,7 +37,6 @@ export class AdminHomePage extends AdminLogin {
         createAnnouncementbutton: `//button[text()='CREATE ANNOUNCEMENT']`,
         contentMenu: `//a[text()='Content']`,
         surveyQuestionsLink: "//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Questions']",
-        //surveyLink:"//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Survey']",
         assessmentMenu: `//span[text()='Assessment']`,
         assessmentQuestionLink: `//span[text()='Assessment']//parent::div/following-sibling::ul//a[text()='Questions']`,
         assessmentLink: "//a[text()='Assessment']",
@@ -57,14 +54,22 @@ export class AdminHomePage extends AdminLogin {
         learnerConfigLink:`//a[text()='Learner Configuration']`,
         siteSettingsLink:`//a[text()='Site Settings']`,
         adminConfigLink:`//a[text()='Admin Configuration']`,
-       // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
-
-        //for Direct Content Launch
         directContent:`//a[text()='Direct Content Launch']`,
            //meta data library option
-        metaLibOption:(data:string)=>`//a[text()='${data}']`,
+        metaLibOption: (data: string) => `//a[text()='${data}']`,
+        dynamicShareableLinks:`text=Dynamic Shareable Links`
     };
+
+    public async clickLearnerGroupLink() {
+        try {
+            await this.validateElementVisibility(this.selectors.learnerGrouplink, "Learner Group");
+            await this.click(this.selectors.learnerGrouplink, "Learner Group", "Link");
+        } catch (error) {
+            console.error("Error clicking Learner Group link:", error);
+            throw error;
+        }
+    }
 
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
@@ -422,6 +427,10 @@ export class AdminHomePage extends AdminLogin {
         await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
+    }
+
+    public async dynamicShareableLinks() { 
+        await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
     }
 
 }
