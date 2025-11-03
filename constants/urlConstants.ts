@@ -11,7 +11,7 @@ switch (environmentSetup) {
             portal1: "E1Internal",
             portal2: "LearnerPortal",
             portal3: "LearnerPortal2",
-            LearnerGroup1: "AutoLG1(Do not Use)",   
+            LearnerGroup1: "AutoLG1(Do not Use)",
             LearnerGroup2: "AutoLG2(Do not Use)",
             creditCardNumber: "4111111111111111",
             cardExpiryDate: "10/27",

@@ -140,6 +140,21 @@ emailUsed:string="";
         }
     }
 
+    //For Merge User Enable
+    async mergeUserVerification() {
+        await this.wait("mediumWait")
+        const button = this.page.locator(this.selectors.mergeUserToggle);
+        const isDisabled = await button.isDisabled();
+        if (isDisabled) {
+            await this.page.locator(this.selectors.mergeUserToggle).click();
+            await this.wait("minWait")
+            await this.click(this.selectors.okButton, "OK", "Button")
+        }
+        else {
+            console.log("Merge user already enabled");
+        }
+    }
+
 
   //Max Seat Override
     async clickBusinessRulesEditIcon() {

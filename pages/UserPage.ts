@@ -836,7 +836,7 @@ export class UserPage extends AdminHomePage {
     await this.click(this.selectors.clickSearchOption(data), "search option", "option");
   }
 
-  
+
   async selectJobRole() {
     let data = getRandomItemFromFile(filePath.jobRole);
     await this.click(this.selectors.jobRole, "Roles", "Button");
@@ -885,7 +885,7 @@ export class UserPage extends AdminHomePage {
     await this.type(this.selectors.managerFilter, "Manager Filter", manager);
     let managerDropdown = "div[id^='user-manager-filter'] li";
     await this.wait("minWait");
-    await this.click( managerDropdown, "manager", "Dropdown");
+    await this.click(managerDropdown, "manager", "Dropdown");
     console.log(`✅ Manager ${manager} selected in filter`);
   }
 
