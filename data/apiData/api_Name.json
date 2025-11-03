@@ -1,5 +1,7 @@
 {
     "createUser": "userCreation",
+    "userCreationWithGuid": "userCreationWithGuid",
+    "updateCustomGuid": "updateCustomGuid",
     "updateUser": "updateUser",
     "getUserDetail":"getUserDetails",
     "createCEUType":"createCEUType",

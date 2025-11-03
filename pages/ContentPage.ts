@@ -24,6 +24,13 @@ export class ContentHomePage extends AdminHomePage {
     //Delete content from the course page
     deleteIcon: `(//a[@aria-label="Delete"]/i)[1]`,
     confirmDelete: `//button[text()="Yes"]`,
+    // URL and validation selectors based on screenshot
+    urlInput: `//input[@placeholder='https://']`,
+    addUrlButton: `//button[text()='Add URL']`,
+    alertErrorMessage: `//div[contains(@class,'alert')]//ul//span`,
+    fileUploadArea: `//div[contains(text(),'DRAG AND DROP YOUR FILES OR') and contains(text(),'CLICK HERE TO UPLOAD')]`,
+    validationMessage: `//div[contains(text(),'Please upload') or contains(text(),'required') or contains(text(),'invalid')]`,
+    publishButton: `//button[text()='Publish']`,
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -215,6 +222,40 @@ export class ContentHomePage extends AdminHomePage {
       expect(matchedType).toBe(text);
     } else {
       throw new Error(`File type "${text}" not found.`);
+    }
+  }
+
+  // URL input methods
+  public async enterInvalidUrl(url: string) {
+    await this.wait("minWait");
+    await this.type(this.selectors.urlInput, "URL Input", url);
+  }
+
+  public async clickAddUrl() {
+    await this.wait("minWait");
+    await this.click(this.selectors.addUrlButton, "Add URL", "Button");
+  }
+
+  public async verifyAlertErrorMessage(expectedText: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.alertErrorMessage, "Alert Error Message");
+    const actualText = await this.getInnerText(this.selectors.alertErrorMessage);
+    console.log(`Actual error message: ${actualText}`);
+    expect(actualText).toContain(expectedText);
+  }
+
+  public async clickPublish() {
+    await this.click(this.selectors.publishButton, "Publish", "Button");
+  }
+
+  public async uploadUnsupportedFile(fileName: string) {
+    this.path = `../data/${fileName}`;
+    await this.wait("mediumWait");
+    try {
+      await this.uploadFile(this.selectors.addContent, this.path);
+      await this.wait("mediumWait");
+    } catch (error) {
+      console.log(`File upload failed as expected for unsupported file: ${fileName}`);
     }
   }
 }

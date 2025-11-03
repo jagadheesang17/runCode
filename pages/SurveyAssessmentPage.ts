@@ -382,6 +382,7 @@ export class SurveyAssessmentPage extends AdminHomePage {
   }
 
   async clickProceed() {
+    await this.wait('mediumWait');
     await this.click(this.selectors.proceedBtn, "Save", "Button");
     //await this.spinnerDisappear();
   }

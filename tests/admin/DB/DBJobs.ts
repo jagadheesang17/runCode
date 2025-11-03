@@ -262,4 +262,29 @@ async function course_session_details() {
 
 }
 
-export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate}
+//DB Verification for user GUID in customer_custom_id
+async function verifyUserGuidInDatabase(userId: string, expectedGuid: string) {
+    try {
+        console.log(`🔍 Verifying GUID in database for UserID: ${userId}, Expected GUID: ${expectedGuid}`);
+        
+        const query = `SELECT * FROM users_view WHERE userid='${userId}' AND customer_custom_id='${expectedGuid}' AND tenant_id=${tenant_ID} AND portal_id=${portal_ID}`;
+        console.log(`📋 Executing query: ${query}`);
+        
+        const result = await dataBase.executeQuery(query);
+        console.log(`📊 Query result:`, result);
+        
+        if (result && result.length > 0) {
+            console.log(`✅ GUID verification successful: Found user with ID ${userId} and GUID ${expectedGuid}`);
+            console.log(`📋 User details: Username: ${result[0].username}, Customer Custom ID: ${result[0].customer_custom_id}`);
+            return true;
+        } else {
+            console.log(`❌ GUID verification failed: No user found with ID ${userId} and GUID ${expectedGuid}`);
+            return false;
+        }
+    } catch (error) {
+        console.error(`❌ Database verification error:`, error);
+        throw error;
+    }
+}
+
+export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase}

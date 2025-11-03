@@ -25,6 +25,10 @@ export class UserPage extends AdminHomePage {
     saveButton: "//button[text()='Save']",
     proceedButton: (name: string) =>
       `//footer//following::button[contains(text(),'${name}')]`,
+
+    // Custom Field Selectors - Note: These input boxes are disabled, use inputValue() method for reading values
+    uaidSelector: `(//label[text()='UAID']//following::input)[1]`,
+    uacSelector: `(//label[text()='UAC']//following::input)[1]`,
     searchField: "//input[@id='exp-search-field']",
     rolesBtn: "//input[@id='user-roles-filter-field']",
     rolesList: (roles: string) => `//li[text()='${roles}']`,
@@ -93,7 +97,7 @@ export class UserPage extends AdminHomePage {
     impersonateProceedBtn: "//button[text()='Proceed']",
     okBtn: "//button[text()='OK']",
     logOutBtn: "//div[@class='logout']//a",
-    //Internal
+    //Internal 
     validateUser: (data: string) => `//div[text()='${data}']`,
     //UserPage Enrollment icon
     enrollmentIcon: "(//a[@aria-label='Enrollments'])[1]",
@@ -116,8 +120,56 @@ export class UserPage extends AdminHomePage {
     checkContactSupport: `//input[@id='course-contact-support']`,
 
 
-    inheritAddress: () => `//span[text()='Inherit Address From']`,
-    EditUser: () => `(//span[@aria-label='Edit User'])[1]`
+    //address inheritance
+    inheritAddressLabel: "//span[text()='Inherit Address From']",
+    inheritAddressCheckbox: "(//span[text()='Inherit Address From']//preceding-sibling::i)[1]",
+
+    //emergency contact inheritance
+    inheritEmergencyContactLabel: "//span[text()='Inherit']",
+    inheritEmergencyContactCheckbox: "(//span[text()='Inherit']//preceding-sibling::i)[1]",
+
+    //auto generate username
+    autoGenerateUsernameLabel: "//span[text()='Auto-Generate']",
+    autoGenerateUsernameCheckbox: "(//span[text()='Auto-Generate']//preceding-sibling::i)[1]",
+
+    //error message popup
+    errorMessageContainer: "//div[@id='message-container']//li//span",
+    domainErrorContainer: "//div[@id='message-container']//ul",
+
+    //USRT21 selectors
+    employeeIdField: "#user-employee-id",
+    birthDateField: "//input[@id='BirthDate']",
+    otherOrganizationsField: "//input[@id='user-other-orgs-filter-field']",
+    searchOtherOrganizationField: "//input[@id='user-other-orgs']",
+    organizationOption: "div[id^='user-other-orgsresu'] li",
+    associatedGroupsTab: "//span[text()='Associated Groups']",
+    learnerGroupText: "//label[text()='Learner Group :']/following-sibling::div",
+    hierarchyButton: "//a[@aria-label='Hierarchy']",
+    managerInHierarchy: (managerName: string) => `//span[text()='${managerName}']`,
+    hierarchyCloseButton: "//div[@id='hierarchyModal']//button[@aria-label='Close']",
+
+    fieldname: (name: string) => `//input[@id='user-${name}-filter-field']`,
+    clickSearchOption: (list: string) => `(//li[text()='${list}'])[1]`,
+    jobRole:`//input[@id='user-jobrole-filter-field']`,
+    jobRoleList: (roles: string) => `//li[text()='${roles}']`,
+
+    // Filter selectors for USRT21 enhancement
+    filterTrigger: "#admin-filters-trigger",
+    statusCheckbox: (status: string) => `//span[text()='${status}']`,
+    userTypeFilter: "#user-type-filter-field",
+    rolesDropdown: "//button[@data-id='user-roles-filter']",
+    roleOption: (role: string) => `//span[text()='${role}']`,
+    jobRoleFilter: "#user-jobroles-filter-field",
+    departmentFilter: "#user-department-filter-field", 
+    managerFilter: "#user-manager-filter-field",
+    organizationFilter: "#user-organization-filter-field",
+    userHireDateDropdown: "//span[text()='User hire date']//following::button[@data-id='selectid']",
+    hireDateOption: (option: string) => `//span[text()='${option}']`,
+    hireDateFromInput: "#admin-date-filter-from-input",
+    filterLabelDropdown: (label: string) => `(//span[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
+    filterDropdownSearch: "//footer//following::input[@aria-label='Search']",
+    filterDropdownOption: (option: string) => `//span[text()='${option}']`,
+
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -223,6 +275,7 @@ export class UserPage extends AdminHomePage {
       data,
       "List"
     );
+    return data;
   }
 
   async organizationType(data: string) {
@@ -247,6 +300,7 @@ export class UserPage extends AdminHomePage {
       data,
       "List"
     );
+    return data;
   }
   async selectManager(data: string) {
     //  let data = getRandomItemFromFile("../data/peopleDirectManager.json");
@@ -329,6 +383,7 @@ export class UserPage extends AdminHomePage {
       data,
       "List"
     );
+    return data;
   }
 
   async clickSave() {
@@ -629,293 +684,291 @@ export class UserPage extends AdminHomePage {
     await this.click(this.selectors.editIcon, "customeradmin", "edit");
   }
 
-  async selectDepartmentWithTestData(data: string) {
-    await this.typeAndEnter(this.selectors.departmentType, "Department Type", data);
-    await this.mouseHover(this.selectors.commonOptionBtn("department", data), data);
-    await this.click(this.selectors.commonOptionBtn("department", data), data, "List");
-  }
-
-  async selectEmploymentTypeWithTestData(data: string) {
-    console.log(`Selecting Employment Type: ${data}`);
-    await this.typeAndEnter(this.selectors.employmentTypeInput, "Employment Type", data);
-    
-    // Wait a moment for dropdown to populate
-    await this.page.waitForTimeout(500);
-    
-    // Try multiple selector approaches quickly
-    const selectors = [
-      `//li[contains(text(),'${data}')]`,
-      `//ul//li[contains(text(),'${data}')]`,
-      `//div//li[contains(text(),'${data}')]`,
-      `//li[text()='${data}']`,
-      this.selectors.commonOptionBtn("emptype", data),
-      `//div[contains(@id,'emptype')]//li[contains(text(),'${data}')]`
-    ];
-    
-    for (const selector of selectors) {
-      try {
-        console.log(`Trying: ${selector}`);
-        await this.page.waitForSelector(selector, { timeout: 1500 });
-        await this.click(selector, data, "List");
-        console.log(`Success: ${selector}`);
-        return data;
-      } catch (error) {
-        console.log(`Failed: ${selector}`);
-        continue;
-      }
+  //address inheritance
+  public async uncheckInheritAddressIfPresent() {
+    await this.wait("minWait");
+    const inheritAddressLabel = this.page.locator(this.selectors.inheritAddressLabel);
+    if (await inheritAddressLabel.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await this.click(this.selectors.inheritAddressCheckbox, "Inherit Address From Checkbox", "Checkbox");
     }
-    
-    throw new Error(`Employment Type not found: ${data}`);
-  }
-
-  async selectUserTypeWithTestData(data: string) {
-    await this.typeAndEnter(this.selectors.userType, "User Type", data);
-    await this.mouseHover(this.selectors.commonOptionBtn("usertype", data), data);
-    await this.click(this.selectors.commonOptionBtn("usertype", data), data, "List");
-  }
-
-  async selectJobTitleWithTestData(data: string) {
-    await this.typeAndEnter(this.selectors.jobtitle, "Job Title", data);
-    await this.mouseHover(this.selectors.commonOptionBtn("jobtitle", data), data);
-    await this.click(this.selectors.commonOptionBtn("jobtitle", data), data, "List");
-  }
-    /**
-  /**
-   * Scroll to Associated Groups section and verify a specific learner group
-   * @param groupName - The name of the learner group to verify
-   */
-  public async scrollToAssociatedGroupsAndVerify(groupName: string) {
-      try {
-                console.log(`Scrolling to Associated Groups and verifying group: ${groupName}`);
-                
-                // Scroll to and click Associated Groups
-                const associatedGroupsSelector = `//span[text()='Associated Groups']`;
-                await this.page.waitForSelector(associatedGroupsSelector, { timeout: 10000 });
-                
-                // Scroll the element into view
-                await this.page.locator(associatedGroupsSelector).scrollIntoViewIfNeeded();
-                await this.wait('minWait');
-                
-                await this.click(associatedGroupsSelector, "Associated Groups", "Section");
-                await this.wait('mediumWait');
-                
-                // Verify the learner group is present with the parameterized group name
-                const learnerGroupSelector = `//label[text()='Learner Group :']//following::div[contains(text(),'${groupName}')]`;
-                await this.page.waitForSelector(learnerGroupSelector, { timeout: 10000 });
-                
-                // Validate the group is visible
-                await this.validateElementVisibility(learnerGroupSelector, `Learner Group: ${groupName}`);
-                
-                console.log(`✅ Successfully verified learner group: ${groupName} in Associated Groups`);
-                
-            } catch (error) {
-                throw new Error(`Failed to scroll to Associated Groups and verify group '${groupName}': ${error.message}`);
-            }
-        }
-
-  /**
-   * Select language with test data (similar to other WithTestData methods)
-   * @param data - The language to select
-   */
-  async selectLanguageWithTestData(data: string) {
-    console.log(`Selecting Language: ${data}`);
-    try {
-      await this.page.locator(this.selectors.language).scrollIntoViewIfNeeded();
-      await this.click(this.selectors.language, "Language", "Field");
-      await this.type(this.selectors.searchLanguage, "Input Field", data);
-      await this.wait('minWait');
-      
-      // Try multiple selector approaches for language
-      const selectors = [
-        this.selectors.courseLanguageLink(data),
-        `//span[text()='${data}']`,
-        `//li[contains(text(),'${data}')]`,
-        `//div//span[contains(text(),'${data}')]`
-      ];
-      
-      for (const selector of selectors) {
-        try {
-          await this.page.waitForSelector(selector, { timeout: 2000 });
-          await this.mouseHover(selector, data);
-          await this.click(selector, data, "Language Option");
-          console.log(`✅ Successfully selected language: ${data}`);
-          return;
-        } catch (error) {
-          continue;
-        }
-      }
-      
-      throw new Error(`Language option not found: ${data}`);
-    } catch (error) {
-      throw new Error(`Failed to select language '${data}': ${error.message}`);
+    else {
+      console.log("Inherit Address already unchecked")
     }
   }
 
-  /**
-   * Select country with test data (similar to other WithTestData methods)
-   * @param data - The country to select
-   */
-  async selectCountryWithTestData(data: string) {
-    console.log(`Selecting Country: ${data}`);
-    try {
-      // Use the select method with "Country" as the label
-      await this.select("Country", data);
-      console.log(`✅ Successfully selected country: ${data}`);
-    } catch (error) {
-      throw new Error(`Failed to select country '${data}': ${error.message}`);
+  //emergency contact inheritance
+  public async uncheckInheritEmergencyContactIfPresent() {
+    const inheritEmergencyContactLabel = this.page.locator(this.selectors.inheritEmergencyContactLabel);
+    if (await inheritEmergencyContactLabel.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await this.click(this.selectors.inheritEmergencyContactCheckbox, "Inherit Emergency Contact Checkbox", "Checkbox");
+    }
+    else {
+      console.log("Inherit Emergency Contact already unchecked")
     }
   }
 
-  /**
-   * Select state with test data (similar to other WithTestData methods)
-   * @param data - The state to select
-   */
-  async selectStateWithTestData(data: string) {
-    console.log(`Selecting State: ${data}`);
-    try {
-      // Use the select method with "State/Province" as the label
-      await this.select("State/Province", data);
-      console.log(`✅ Successfully selected state: ${data}`);
-    } catch (error) {
-      throw new Error(`Failed to select state '${data}': ${error.message}`);
+  //auto generate username
+  public async uncheckAutoGenerateUsernameIfPresent() {
+    const autoGenerateUsernameLabel = this.page.locator(this.selectors.autoGenerateUsernameLabel);
+    if (await autoGenerateUsernameLabel.isVisible({ timeout: 5000 }).catch(() => false)) {
+      await this.click(this.selectors.autoGenerateUsernameCheckbox, "Auto-Generate Username Checkbox", "Checkbox");
+    }
+    else {
+      console.log("Auto-Generate Username already unchecked")
     }
   }
 
-  /**
-   * Uncheck all domain checkboxes by getting count of selected items and clicking each one
-   */
-  async uncheckAllDomainCheckboxes() {
-    try {
-      console.log("Starting to uncheck all domain checkboxes");
-      
-      // Get the locator for all selected domain checkboxes
-      const selectedDomainsLocator = `//li[@class='selected']`;
-      await this.page.locator("//button[contains(translate(@data-id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'portal')]").click();
+  // UAID and UAC Custom Field Verification Methods
+  async verifyUAIDFieldExists() {
+    await this.validateElementVisibility(this.selectors.uaidSelector, "UAID Field");
+  }
 
-      // Get the count of selected domains
-      const selectedCount = await this.page.locator(selectedDomainsLocator).count();
-      console.log(`Found ${selectedCount} selected domain checkboxes`);
-      
-      if (selectedCount === 0) {
-        console.log("No domain checkboxes are selected");
-        return;
-      }
-      
-      // Click each selected domain checkbox to uncheck it
-      for (let i = 0; i < selectedCount; i++) {
-        try {
-          // Always click the first element since the list updates after each click
-          const domainElement = this.page.locator(selectedDomainsLocator).first();
-          
-          // Check if element still exists before clicking
-          if (await domainElement.count() > 0) {
-            await domainElement.click();
-            console.log(`Unchecked domain checkbox ${i + 1}`);
-            
-            // Wait briefly between clicks to allow UI to update
-            await this.wait('minWait');
-            const popup = this.page.locator("//button[text()='OK']");
-            if (await popup.isVisible()) {
-              await popup.click();
-                    await this.page.locator("//button[contains(translate(@data-id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'portal')]").click();
+  async verifyUACFieldExists() {
+    await this.validateElementVisibility(this.selectors.uacSelector, "UAC Field");
+  }
 
-            }
-          }
-        } catch (error) {
-          console.log(`Error unchecking domain ${i + 1}: ${error.message}`);
-        }
-      }
-      
-      // Verify all checkboxes are unchecked
-      const remainingSelected = await this.page.locator(selectedDomainsLocator).count();
-      if (remainingSelected === 0) {
-        console.log("Successfully unchecked all domain checkboxes");
-      } else {
-        console.log(`Warning: ${remainingSelected} domain checkboxes still selected`);
-      }
-      
-    } catch (error) {
-      throw new Error(`Failed to uncheck all domain checkboxes: ${error.message}`);
+  async getUAIDValue(): Promise<string> {
+    const uaidValue = await this.page.locator(this.selectors.uaidSelector).inputValue();
+    console.log(`UAID value: ${uaidValue}`);
+    return uaidValue;
+  }
+
+  async getUACValue(): Promise<string> {
+    const uacValue = await this.page.locator(this.selectors.uacSelector).inputValue();
+    console.log(`UAC value: ${uacValue}`);
+    return uacValue;
+  }
+
+  async verifyUAIDAutoGenerated(): Promise<string> {
+    await this.verifyUAIDFieldExists();
+    const uaidValue = await this.getUAIDValue();
+
+    if (!uaidValue || uaidValue.trim() === '') {
+      throw new Error("UAID field is empty - auto-generation may not be working");
+    }
+
+    console.log(`✅ UAID auto-generated successfully: ${uaidValue}`);
+    return uaidValue;
+  }
+
+  async verifyUACAutoGenerated(): Promise<string> {
+    await this.verifyUACFieldExists();
+    const uacValue = await this.getUACValue();
+
+    if (!uacValue || uacValue.trim() === '') {
+      throw new Error("UAC field is empty - auto-generation may not be working");
+    }
+
+    console.log(`✅ UAC auto-generated successfully: ${uacValue}`);
+    return uacValue;
+  }
+
+  async verifyUAIDValueUnchanged(expectedValue: string, context: string = "") {
+    const currentValue = await this.getUAIDValue();
+
+    if (currentValue !== expectedValue) {
+      throw new Error(`UAID value changed${context ? ' ' + context : ''}! Expected: ${expectedValue}, Current: ${currentValue}`);
+    }
+
+    console.log(`✅ UAID value unchanged${context ? ' ' + context : ''}: ${currentValue}`);
+  }
+
+  async verifyUACValueUnchanged(expectedValue: string, context: string = "") {
+    const currentValue = await this.getUACValue();
+
+    if (currentValue !== expectedValue) {
+      throw new Error(`UAC value changed${context ? ' ' + context : ''}! Expected: ${expectedValue}, Current: ${currentValue}`);
+    }
+
+    console.log(`✅ UAC value unchanged${context ? ' ' + context : ''}: ${currentValue}`);
+  }
+
+  async verifyBothCustomFieldsAutoGenerated(): Promise<{ uaidValue: string, uacValue: string }> {
+    const uaidValue = await this.verifyUAIDAutoGenerated();
+    const uacValue = await this.verifyUACAutoGenerated();
+
+    console.log("✅ Both UAID and UAC fields are auto-generated successfully");
+    return { uaidValue, uacValue };
+  }
+
+  async verifyBothCustomFieldsUnchanged(expectedUAID: string, expectedUAC: string, context: string = "") {
+    await this.verifyUAIDValueUnchanged(expectedUAID, context);
+    await this.verifyUACValueUnchanged(expectedUAC, context);
+
+    console.log(`✅ Both UAID and UAC values remain unchanged${context ? ' ' + context : ''}`);
+  }
+
+  // Error validation methods for negative testing
+  async verifyErrorMessage(expectedErrorMessage: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.errorMessageContainer, "Error Message");
+    const actualErrorMessage = await this.getInnerText(this.selectors.errorMessageContainer);
+
+    // Normalize both strings by removing backslashes and extra spaces for comparison
+    const normalizedActual = actualErrorMessage.replace(/\\/g, '').replace(/\s+/g, ' ').trim();
+    const normalizedExpected = expectedErrorMessage.replace(/\\/g, '').replace(/\s+/g, ' ').trim();
+
+    if (normalizedActual.includes(normalizedExpected) || normalizedActual.toLowerCase().includes(normalizedExpected.toLowerCase())) {
+      console.log(`✅ Expected error message validated: ${expectedErrorMessage}`);
+    } else {
+      throw new Error(`Error message mismatch! Expected: "${expectedErrorMessage}", Actual: "${actualErrorMessage}"`);
     }
   }
 
-  /**
-   * Select a specific domain by domain name
-   * @param domainName - The name of the domain to select (e.g., 'autoportal1')
-   */
-  async selectSpecificDomain(domainName: string) {
-    try {
-      console.log(`Selecting specific domain: ${domainName}`);
-      
-      if (!domainName || domainName.trim() === '') {
-        throw new Error('Domain name cannot be empty or null');
-      }
-     // await this.page.locator("//button[@data-id='Portal']").click();
-      // Build the selector using the provided pattern with parameter
-      const domainSelector = `(//span[text()='${domainName}'])[2]`;
-      
-      // Wait for the domain element to be visible
-      await this.page.waitForSelector(domainSelector, { timeout: 5000 });
-      
-      // Validate element visibility
-      await this.validateElementVisibility(domainSelector, `Domain: ${domainName}`);
-      
-      // Click on the specific domain
-      await this.click(domainSelector, domainName, "Domain");
-      
-      // Wait for the selection to process
-      await this.wait('minWait');
-        await this.page.locator("//button[contains(translate(@data-id, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'portal')]").click();
+  async clearField(fieldName: string) {
+    const selector = this.selectors.inputField(fieldName);
+    await this.page.locator(selector).clear();
+  }
 
-      console.log(`Successfully selected domain: ${domainName}`);
-      
-    } catch (error) {
-      throw new Error(`Failed to select domain '${domainName}': ${error.message}`);
+  async verifyDomainErrorMessage(expectedErrorMessage: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.domainErrorContainer, "Domain Error Message");
+    const actualErrorMessage = await this.getInnerText(this.selectors.domainErrorContainer);
+
+    if (actualErrorMessage.includes(expectedErrorMessage)) {
+      console.log(`✅ Expected domain error message validated: ${expectedErrorMessage}`);
+    } else {
+      throw new Error(`Domain error message mismatch! Expected: "${expectedErrorMessage}", Actual: "${actualErrorMessage}"`);
     }
   }
 
-  /**
-   * Verify that a user is NOT associated with a suspended learner group
-   * @param groupName - The name of the learner group that should NOT be present
-   */
-  public async verifyGroupNotInAssociatedGroups(groupName: string) {
-      try {
-          console.log(`Verifying user is NOT associated with suspended group: ${groupName}`);
-          
-          // Scroll to and click Associated Groups
-          const associatedGroupsSelector = `//span[text()='Associated Groups']`;
-          await this.page.waitForSelector(associatedGroupsSelector, { timeout: 10000 });
-          
-          // Scroll the element into view
-          await this.page.locator(associatedGroupsSelector).scrollIntoViewIfNeeded();
-          await this.wait('minWait');
-          
-          await this.click(associatedGroupsSelector, "Associated Groups", "Section");
-          await this.wait('mediumWait');
-          
-          // Check that the learner group is NOT present
-          const learnerGroupSelector = `//label[text()='Learner Group :']//following::div[contains(text(),'${groupName}')]`;
-          
-          // Wait a moment for the page to load completely
-          await this.wait('mediumWait');
-          
-          // Verify the group is NOT present
-          const groupElements = await this.page.locator(learnerGroupSelector).count();
-          
-          if (groupElements === 0) {
-              console.log(`✅ Successfully verified user is NOT associated with suspended group: ${groupName}`);
-          } else {
-              throw new Error(`Group '${groupName}' is still associated with user. Expected: 0 associations, Found: ${groupElements}`);
-          }
-          
-      } catch (error) {
-          if (error.message.includes('waiting for selector')) {
-              // If the Associated Groups section itself is not found, that could mean no groups are associated
-              console.log(`✅ Associated Groups section not found - user has no group associations`);
-          } else {
-              throw new Error(`Failed to verify user is not associated with group '${groupName}': ${error.message}`);
-          }
-      }
+  // USRT21 specific methods
+  async enterEmployeeId(employeeId: string) {
+    await this.type(this.selectors.employeeIdField, "Employee ID", employeeId);
   }
-    
+
+  async enterBirthDate(birthDate: string) {
+    await this.type(this.selectors.birthDateField, "Birth Date", birthDate);
+  }
+
+  async selectOtherOrganization(organizationName: string) {
+    await this.click(this.selectors.otherOrganizationsField, "Other Organizations", "Input Field");
+    await this.type(this.selectors.searchOtherOrganizationField, "Other Organizations", organizationName);
+    await this.wait("minWait");
+    await this.click(this.selectors.organizationOption, "Organization", "Dropdown");
+    await this.wait("minWait");
+  }
+
+  async clickAssociatedGroups() {
+    await this.click(this.selectors.associatedGroupsTab, "Associated Groups", "Tab");
+  }
+
+  async captureLearnerGroupText(): Promise<string> {
+    const learnerGroupText = await this.getInnerText(this.selectors.learnerGroupText);
+    console.log(`Learner Group: ${learnerGroupText}`);
+    return learnerGroupText;
+  }
+
+  async clickHierarchyButton() {
+    await this.click(this.selectors.hierarchyButton, "Hierarchy", "Button");
+  }
+
+  async verifyManagerInHierarchy(managerName: string) {
+    await this.validateElementVisibility(this.selectors.managerInHierarchy(managerName), `Manager in Hierarchy: ${managerName}`);
+    console.log(`✅ Manager ${managerName} verified in hierarchy`);
+  }
+
+  async closeHierarchyModal() {
+    await this.click(this.selectors.hierarchyCloseButton, "Close Hierarchy Modal", "Button");
+    await this.wait("minWait");
+  }
+
+  async selectOrganization(name: string, data: string) {
+    await this.typeAndEnter(this.selectors.fieldname(name), "field name", data);
+    await this.click(this.selectors.clickSearchOption(data), "search option", "option");
+  }
+
+  
+  async selectJobRole() {
+    let data = getRandomItemFromFile(filePath.jobRole);
+    await this.click(this.selectors.jobRole, "Roles", "Button");
+    await this.click(this.selectors.jobRoleList(data), data, "Button");
+    await this.click(this.selectors.jobRole, "Roles", "Button");
+    return data;
+  }
+
+  // USRT21 Filter Methods
+  async clickFilter() {
+    await this.wait("minWait");
+    await this.click(this.selectors.filterTrigger, "Filter", "Button");
+    console.log("✅ Filter panel opened");
+  }
+
+  async selectStatusCheckbox(status: string) {
+    await this.click(this.selectors.statusCheckbox(status), `Status ${status}`, "Checkbox");
+    console.log(`✅ Status ${status} checkbox selected`);
+  }
+
+  async selectFilterUserType(userType: string) {
+    await this.type(this.selectors.userTypeFilter, "User Type Filter", userType);
+    await this.click(this.selectors.clickSearchOption(userType), userType, "Option");
+    console.log(`✅ User type ${userType} selected in filter`);
+  }
+
+  async selectFilterRoles(role: string) {
+    await this.click(this.selectors.rolesDropdown, "Roles Dropdown", "Button");
+    await this.click(this.selectors.roleOption(role), `Role ${role}`, "Option");
+    console.log(`✅ Role ${role} selected in filter`);
+  }
+
+  async selectFilterJobRole(jobRole: string) {
+    await this.type(this.selectors.jobRoleFilter, "Job Role Filter", jobRole);
+    await this.click(this.selectors.clickSearchOption(jobRole), jobRole, "Option");
+    console.log(`✅ Job role ${jobRole} selected in filter`);
+  }
+
+  async selectFilterDepartment(department: string) {
+    await this.type(this.selectors.departmentFilter, "Department Filter", department);
+    await this.click(this.selectors.clickSearchOption(department), department, "Option");
+    console.log(`✅ Department ${department} selected in filter`);
+  }
+
+  async selectFilterManager(manager: string) {
+    await this.type(this.selectors.managerFilter, "Manager Filter", manager);
+    let managerDropdown = "div[id^='user-manager-filter'] li";
+    await this.wait("minWait");
+    await this.click( managerDropdown, "manager", "Dropdown");
+    console.log(`✅ Manager ${manager} selected in filter`);
+  }
+
+  async selectFilterOrganization(organization: string) {
+    await this.type(this.selectors.organizationFilter, "Organization Filter", organization);
+    await this.click(this.selectors.clickSearchOption(organization), organization, "Option");
+    console.log(`✅ Organization ${organization} selected in filter`);
+  }
+
+  async selectHireDateFilter(option: string) {
+    await this.click(this.selectors.userHireDateDropdown, "Hire Date Dropdown", "Button");
+    await this.click(this.selectors.hireDateOption(option), `Hire Date ${option}`, "Option");
+    console.log(`✅ Hire date filter ${option} selected`);
+  }
+
+  async enterHireDateFrom(date: string) {
+    await this.type(this.selectors.hireDateFromInput, "Hire Date From", date);
+    console.log(`✅ Hire date from: ${date} entered`);
+  }
+
+  async selectFilterCountry(country: string) {
+    await this.wait("minWait");
+    await this.click(this.selectors.filterLabelDropdown("Country"), "Country Dropdown", "Button");
+    await this.type(this.selectors.filterDropdownSearch, "Country Search", country);
+    await this.click(this.selectors.filterDropdownOption(country), country, "Option");
+    console.log(`✅ Country ${country} selected in filter`);
+  }
+
+  async selectFilterState(state: string) {
+    await this.wait("minWait");
+    await this.click(this.selectors.filterLabelDropdown("State/Province"), "State Dropdown", "Button");
+    await this.type(this.selectors.filterDropdownSearch, "State Search", state);
+    await this.click(this.selectors.filterDropdownOption(state), state, "Option");
+    console.log(`✅ State ${state} selected in filter`);
+  }
+
+  async clickApply() {
+    // Using the same method from CatalogPage
+    const applyButton = "//button[text()='Apply']";
+    await this.click(applyButton, "Apply", "Button");
+    console.log("✅ Filter applied successfully");
+  }
+
 }

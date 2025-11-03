@@ -1,0 +1,20 @@
+[
+    {
+        "roleName": "QA Test Admin Role",
+        "description": "Admin role for QA testing purposes",
+        "privileges": ["Enrollments-create", "Reports-view", "People-view"],
+        "testType": "basic"
+    },
+    {
+        "roleName": "Advanced QA Role",
+        "description": "Advanced admin role with extended privileges",
+        "privileges": ["Enrollments-create", "Reports-view", "People-view", "Learning-view"],
+        "testType": "advanced"
+    },
+    {
+        "roleName": "Temporary Test Role",
+        "description": "Temporary role for deletion testing",
+        "privileges": ["Reports-view"],
+        "testType": "temporary"
+    }
+]

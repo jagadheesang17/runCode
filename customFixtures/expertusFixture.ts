@@ -1,4 +1,4 @@
-import { test as baseTest } from '@playwright/test'
+import {    test as baseTest } from '@playwright/test'
 import { AdminLogin } from '../pages/AdminLogin'
 import { AdminHomePage } from '../pages/AdminHomePage'
 import { LearnerLogin } from '../pages/LearnerLogin'
@@ -9,6 +9,8 @@ import { UserPage } from '../pages/UserPage'
 import { MetaLibraryPage } from '../pages/MetaLibraryPage'
 import { EditCoursePage } from '../pages/EditCoursePage'
 import { AdminGroupPage } from '../pages/AdminGroupPage'
+import { ExportPage } from '../pages/ExportPage';
+
 import { OrganizationPage } from '../pages/OrganizationPage'
 import { LocationPage } from '../pages/LocationPage'
 import { CommerceHomePage } from '../pages/CommerceHomePage'
@@ -38,7 +40,8 @@ import { glob } from 'glob'
 import { SiteAdminPage } from '../pages/SiteAdminPage'
 import { DirectContentLaunch } from '../pages/DirectContentLaunch'
 import {LearningAssignmentPage} from '../pages/LearningAssignmentPage'
-
+import { CustomFieldPage } from '../pages/CustomFieldPage'
+import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -78,6 +81,9 @@ type expertusFixture = {
     learnerGroup:LearnerGroupPage
     siteAdmin:SiteAdminPage
     directContent: DirectContentLaunch
+    customFieldHome: CustomFieldPage
+    exportPage: ExportPage
+    dynamicShareableLinks: DynamicShareableLinksPage
 }
 
 export const test = baseTest.extend<expertusFixture>({
@@ -92,6 +98,12 @@ export const test = baseTest.extend<expertusFixture>({
     adminHome: async ({ page, context }, use,) => {
         const adminHome = new AdminHomePage(page, context);
         await use(adminHome);
+    },
+
+
+    exportPage: async ({ page, context }, use) => {
+        const exportPage = new ExportPage(page, context);
+        await use(exportPage);
     },
 
     learnerLogin: async ({ page, context }, use) => {
@@ -232,6 +244,16 @@ export const test = baseTest.extend<expertusFixture>({
     directContent: async ({ page, context }, use) => {
         const directContent = new DirectContentLaunch(page, context);
         await use(directContent);
+    },
+
+    customFieldHome: async ({ page, context }, use) => {
+        const customFieldHome = new CustomFieldPage(page, context);
+        await use(customFieldHome);
+    },
+
+    dynamicShareableLinks: async ({ page, context }, use) => {
+        const dynamicShareableLinks = new DynamicShareableLinksPage(page, context);
+        await use(dynamicShareableLinks);
     }
 
 })

@@ -1,0 +1,20 @@
+[
+    {
+        "groupTitle": "Dynamic QA Admin Group",
+        "roleName": "QA Testing Role",
+        "description": "Admin group for QA testing purposes",
+        "testType": "basic"
+    },
+    {
+        "groupTitle": "Advanced Admin Group",
+        "roleName": "Advanced QA Role",
+        "description": "Advanced admin group with extended privileges",
+        "testType": "advanced"
+    },
+    {
+        "groupTitle": "Management Admin Group",
+        "roleName": "Management Role",
+        "description": "Management-focused admin group",
+        "testType": "management"
+    }
+]

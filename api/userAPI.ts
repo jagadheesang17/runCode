@@ -1,5 +1,5 @@
 import { URLConstants } from "../data/apiData/apiUtil";
-import { userCreationData, getLearnerUser, updateUserData, listUser, listofUser } from "../data/apiData/formData";
+import { userCreationData, userCreationWithGuidData, updateCustomGuidData, getLearnerUser, updateUserData, listUser, listofUser } from "../data/apiData/formData";
 import { postRequest } from "../utils/requestUtils";
 import { assertStatus, assertResponse } from "../utils/verificationUtils";
 import { generateOauthToken } from "./accessToken"
@@ -22,6 +22,32 @@ export async function userCreation(userData: any, authorization: any) {
         return response.data.user_id
     } catch (error) {
         console.error("Failed to execute", error);
+        throw error;
+    }
+}
+
+export async function userCreationWithGuid(userData: any, authorization: any) {
+    try {
+        let response = await postRequest(userData, endPointURL, authorization);
+        console.log(response);
+        await assertStatus(response.status, 200);
+        await assertResponse(response.data.result, "success");
+        return response.data.user_id
+    } catch (error) {
+        console.error("Failed to execute userCreationWithGuid", error);
+        throw error;
+    }
+}
+
+export async function updateCustomGuid(userData: any, authorization: any) {
+    try {
+        let response = await postRequest(userData, endPointURL, authorization);
+        console.log(response);
+        await assertStatus(response.status, 200);
+        await assertResponse(response.data.status, "success");
+        return userData.user_id; // Return the user_id from input data since API doesn't return it
+    } catch (error) {
+        console.error("Failed to execute updateCustomGuid", error);
         throw error;
     }
 }

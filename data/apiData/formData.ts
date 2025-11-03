@@ -40,6 +40,26 @@ export let userCreationData = (username: string) => ({
     response_fields: ["result", "UserId"]
 });
 
+export let userCreationWithGuidData = (username: string) => ({
+    user_id: userId,
+    first_name: FakerData.getFirstName(),
+    last_name: FakerData.getLastName(),
+    username: username,
+    password: "Welcome1@",
+    guid: FakerData.getFirstName() + Date.now(),
+    api_name: apiName.userCreationWithGuid,
+    response_fields: ["result", "UserId"]
+});
+
+export let updateCustomGuidData = (username: string, createdUserId: string, updatedGuid: string) => ({
+    user_name: username,
+    user_id: createdUserId,
+    password: "Welcome1@",
+    guid: updatedGuid,
+    api_name: apiName.updateCustomGuid,
+    response_fields: ["result", "UserId"]
+});
+
 export const getLearnerUser = (userId?: any) => ({
     user_id: userId,
     api_name: apiName.getUserDetail,

@@ -1,7 +1,5 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
-import { URLConstants } from "../../../constants/urlConstants";
-
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();

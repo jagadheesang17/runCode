@@ -1,0 +1,9 @@
+[
+     {
+        "groupTitle": "Super admin - E1",
+        "roleName": "Super admin",
+        "description": "System default admin group with highest privileges",
+        "testType": "system_default",
+        "isActive": true
+    }
+]

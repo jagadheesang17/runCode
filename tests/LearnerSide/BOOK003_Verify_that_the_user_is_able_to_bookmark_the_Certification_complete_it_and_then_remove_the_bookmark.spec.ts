@@ -68,7 +68,7 @@ test.describe(`Book003_Verify_that_the_user_is_able_to_bookmark_the_Certificatio
         await createCourse.clickCompletionCertificate();
         await createCourse.clickCertificateCheckBox();
         await createCourse.clickAdd();
-           await learningPath.description(description);
+        await learningPath.description(description);
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();

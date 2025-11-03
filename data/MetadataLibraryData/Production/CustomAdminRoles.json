@@ -1,0 +1,141 @@
+[
+    {
+        "roleName": "QA_Basic_Admin_Role",
+        "description": "Basic admin role with essential privileges",
+        "privileges": [
+            "People-view",
+            "Learning-view"
+        ],
+        "modulePrivileges": {
+            "People": [
+                "view"
+            ],
+            "Learning": [
+                "view"
+            ]
+        },
+        "testType": "basic",
+        "isActive": true
+    },
+    {
+        "roleName": "QA_Advanced_Admin_Role",
+        "description": "Advanced admin role with extended privileges",
+        "privileges": [
+            "People-view",
+            "People-create",
+            "Learning-view",
+            "Learning-create",
+            "Enrollments-view",
+            "Enrollments-create"
+        ],
+        "modulePrivileges": {
+            "People": [
+                "view",
+                "create"
+            ],
+            "Learning": [
+                "view",
+                "create"
+            ],
+            "Enrollments": [
+                "view",
+                "create"
+            ]
+        },
+        "testType": "advanced",
+        "isActive": true
+    },
+    {
+        "roleName": "QA_Manager_Role",
+        "description": "Manager role with management privileges",
+        "privileges": [
+            "People-view",
+            "People-create",
+            "People-edit",
+            "Learning-view",
+            "Reports-view"
+        ],
+        "modulePrivileges": {
+            "People": [
+                "view",
+                "create",
+                "edit"
+            ],
+            "Learning": [
+                "view"
+            ],
+            "Reports": [
+                "view"
+            ]
+        },
+        "testType": "manager",
+        "isActive": true
+    },
+    {
+        "roleName": "QA_Search_Test_Role",
+        "description": "Role specifically for search functionality testing",
+        "privileges": [
+            "People-view",
+            "Learning-view",
+            "Reports-view"
+        ],
+        "modulePrivileges": {
+            "People": [
+                "view"
+            ],
+            "Learning": [
+                "view"
+            ],
+            "Reports": [
+                "view"
+            ]
+        },
+        "testType": "search",
+        "isActive": true
+    },
+    {
+        "roleName": "QA_Filter_Test_Role",
+        "description": "Role specifically for filter functionality testing",
+        "privileges": [
+            "Enrollments-view",
+            "Commerce-view"
+        ],
+        "modulePrivileges": {
+            "Enrollments": [
+                "view"
+            ],
+            "Commerce": [
+                "view"
+            ]
+        },
+        "testType": "filter",
+        "isActive": true
+    },
+    {
+        "roleName": "Hulda Admin",
+        "description": "Custom admin role created in AG009 with ALL PRIVILEGES enabled",
+        "privileges": [
+            "ALL"
+        ],
+        "testType": "all_privileges",
+        "isActive": true
+    },
+    {
+        "roleName": "Trycia Admin",
+        "description": "Custom admin role created in AG009 with ALL PRIVILEGES enabled",
+        "privileges": [
+            "ALL"
+        ],
+        "testType": "all_privileges",
+        "isActive": true
+    },
+    {
+        "roleName": "Alexandre Admin",
+        "description": "Custom admin role created in AG009 with ALL PRIVILEGES enabled",
+        "privileges": [
+            "ALL"
+        ],
+        "testType": "all_privileges",
+        "isActive": true
+    }
+]

@@ -38,6 +38,9 @@ test(`Verify that user address validation functionality working as expected for 
         await adminHome.user();
         await createUser.clickCreateUser();
         await createUser.verifyCreateUserLabel()
+             await createUser.uncheckInheritAddressIfPresent();
+            await createUser.uncheckInheritEmergencyContactIfPresent();
+            await createUser.uncheckAutoGenerateUsernameIfPresent();
         await createUser.enter("first_name", FakerData.getFirstName());
         await createUser.enter("last_name", FakerData.getLastName());
         await createUser.enter("username", courseAdmin);

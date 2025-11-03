@@ -1,7 +1,6 @@
 import { test } from '../../customFixtures/expertusFixture'
 import { FakerData } from '../../utils/fakerUtils';
 import { readDataFromCSV } from '../../utils/csvUtil';
-import { updateJiraIssue } from '../../jira/jira-integration';
 import { logADefectInJira } from '../../jira/log-a-defect';
 
 const courseName = FakerData.getCourseName();

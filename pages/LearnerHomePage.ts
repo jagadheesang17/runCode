@@ -58,6 +58,9 @@ export class LearnerHomePage extends LearnerLogin {
         userEmail:'//div[text()="Email :"]/following-sibling::div[1]',
         userphone:'//div[text()="Phone :"]/following-sibling::div[1]',
 
+
+        instrctor: `//a/span[text()='Instructor']`,
+
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -235,6 +238,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.spinnerDisappear();
     }
 
+
     async clickApprove(courseName: string) {
         //  await this.spinnerDisappear();
         await this.wait("mediumWait")
@@ -392,9 +396,12 @@ public async clickmyprofile()
     await this.wait("mediumWait");
  }
 
-
-
-
+ async selectInstructor() {
+        await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
+        await this.validateElementVisibility(this.selectors.instrctor, "Instructor")
+        await this.click(this.selectors.instrctor, "Instructor", "Option");
+        await this.spinnerDisappear();
+    }
 
 
 

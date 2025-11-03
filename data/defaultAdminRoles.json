@@ -1,0 +1,16 @@
+{
+    "defaultRoles": [
+        "System admin",
+        "Super admin", 
+        "Learning admin",
+        "Enrollment admin",
+        "People admin",
+        "Report admin",
+        "Manager",
+        "Instructor",
+        "Commerce admin",
+        "Talent admin",
+        "People admin - 2",
+        "Registrar"
+    ]
+}

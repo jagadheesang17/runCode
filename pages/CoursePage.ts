@@ -108,7 +108,7 @@ export class CoursePage extends AdminHomePage {
       `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
 
     instructorDropdown:
-      "//label[text()='Instructor']/following-sibling::div//input",
+      "(//label[text()='Instructor']/following-sibling::div//input)[1]",
     instructorDropdownIndex: (index: number) =>
       `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
     instructorOption: (instructorName: string) =>

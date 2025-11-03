@@ -23,6 +23,7 @@ export class EditCoursePage extends AdminHomePage {
         tagsSuccesfully: "//div[@id='staticBackdrop' and contains(@class,'show')]//following::span[contains(text(),'successfully.')]",
         accessTab: `//span//span[text()='Access']`,
         learnerGroup: `(//div[@id='wrapper-course-group-access-learner-group-list']//button)[1]`,
+        adminGroup: `(//div[@id='wrapper-course-group-access-admin-group-list']//button)[1]`,
         learnerGroupOption: `//footer/following::a[1]`,
         accessSetting: `//span[@id='crs-accset-attr']//span[text()='Access Setting']`,
         optionalGroup: `#wrapper-admin_leanr_head button:first-child`,
@@ -39,7 +40,7 @@ export class EditCoursePage extends AdminHomePage {
         attendeeUrl: `//label[text()='Attendee URL']/following-sibling::input`,
         presenterUrl: `//label[text()='Presenter URL']/following-sibling::input`,
         addDeleteIcon: `//label[text()='session add/delete']/following::i[contains(@class,'fad fa-plus')]`,
-        saveAccessBtn: `//button[@id='add-language-btn' and text()='Save']`,
+        saveAccessBtn: `//button[text()='Save Access']`,
         businessRule: `//span[text()='Business Rule']`,
         uncheckSingleReg: `(//span[contains(text(),'Allow')]/preceding-sibling::i)[1]`,
         saveButton: `(//button[text()='Save'])[1]`,
@@ -118,6 +119,14 @@ export class EditCoursePage extends AdminHomePage {
         await this.click(this.selectors.learnerGroupOption, "LG", "Option")
         await this.click(this.selectors.closeBtn, "Close", "Button")
     }
+
+    async addAdminGroup(data: string) {
+        await this.click(this.selectors.adminGroup, "AdminGroup", "Dropdown")
+        await this.wait('minWait');
+        await this.type(this.selectors.learnerGropSearch, "LG", data)
+        await this.click(this.selectors.learnerGroupOption, "LG", "Option")
+    }
+
     async clickAccessSetting() {
         await this.click(this.selectors.accessSetting, "Access Setting", "Button")
     }
@@ -129,7 +138,8 @@ export class EditCoursePage extends AdminHomePage {
 
     }
     async saveAccess() {
-        await this.click(this.selectors.saveAccessBtn, "Save", "Button")
+        await this.wait('minWait');
+        await this.click(this.selectors.saveAccessBtn, "Save", "Button");
     }
     async selectTimeZone(country: string) {
         await this.click(this.selectors.timeZone, "TimeZone", "Text Field")
@@ -225,6 +235,12 @@ export class EditCoursePage extends AdminHomePage {
         const booleanChk = await this.page.locator(this.selectors.checkAllowRecReg).isChecked();
         console.log(booleanChk)
         expect(booleanChk).toBeFalsy();
+    }
+
+    async clickUpdate() {
+        await this.wait('mediumWait')
+        await this.click(this.selectors.updateBtn, "Update", "Button")
+        await this.wait('mediumWait')
     }
 
 }

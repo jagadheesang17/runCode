@@ -79,7 +79,6 @@ test.describe(`Certification_with_multi_instance_course_is_attached`, async()=>{
             { type: `TestCase`, description: `Creation of certification with multi instance course is attached` },
             { type: `Test Description`, description: `Creation of certification with multi instance course is attached` }
         );
-
         await adminHome.loadAndLogin("CUSTOMERADMIN")
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
