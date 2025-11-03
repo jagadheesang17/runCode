@@ -10,7 +10,6 @@ import { MetaLibraryPage } from '../pages/MetaLibraryPage'
 import { EditCoursePage } from '../pages/EditCoursePage'
 import { AdminGroupPage } from '../pages/AdminGroupPage'
 import { ExportPage } from '../pages/ExportPage';
-
 import { OrganizationPage } from '../pages/OrganizationPage'
 import { LocationPage } from '../pages/LocationPage'
 import { CommerceHomePage } from '../pages/CommerceHomePage'
@@ -42,6 +41,7 @@ import { DirectContentLaunch } from '../pages/DirectContentLaunch'
 import {LearningAssignmentPage} from '../pages/LearningAssignmentPage'
 import { CustomFieldPage } from '../pages/CustomFieldPage'
 import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
+import { setupCourseCreation } from '../utils/cookieSetup'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -257,6 +257,11 @@ export const test = baseTest.extend<expertusFixture>({
     }
 
 })
+
+test.beforeAll(async ({ browser }) => {
+    await setupCourseCreation(browser)
+})
+
 
 /* test.afterEach(async ({}, testInfo) => {
     jiraIssueKey = await logADefectInJira(testInfo);

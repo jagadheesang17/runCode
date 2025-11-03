@@ -1,0 +1,24 @@
+import { AdminHomePage } from '../pages/AdminHomePage'
+import { CoursePage } from '../pages/CoursePage'
+import { FakerData } from './fakerUtils'
+import fs from 'fs'
+
+export const setupCourseCreation = async (browser: any) => {
+    const context = await browser.newContext()
+    const page = await context.newPage()
+    const adminHome = new AdminHomePage(page, context)
+    const createCourse = new CoursePage(page, context)
+    const courseName = FakerData.getCourseName() 
+    await adminHome.loadAndLogin("CUSTOMERADMIN")
+    await adminHome.menuButton()
+    await adminHome.clickLearningMenu()
+    await adminHome.clickCourseLink()
+    await createCourse.clickCreateCourse()
+    await createCourse.verifyCreateUserLabel("CREATE COURSE")
+    await createCourse.enter("course-title", courseName)
+    const cookies = await context.cookies()
+    const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ')
+    fs.writeFileSync('data/cookies.txt', cookieString)
+    
+    await context.close()
+}
