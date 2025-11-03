@@ -6,7 +6,7 @@ import { AdminLogin } from "./AdminLogin";
 export class AdminHomePage extends AdminLogin {
     static pageUrl = URLConstants.adminURL;
 
-    public selectors = {
+   public selectors = {
         signOutLink: "//div[@class='logout']/a",
         dragableMenu: (menu: string) => `//div[text()='${menu}']/following::div[text()="Create"][1]`,
         menu: "//div[text()='Menu']",
@@ -28,8 +28,10 @@ export class AdminHomePage extends AdminLogin {
         locationLink: "//a[text()='Location']",
         commerceMenu: `//span[text()='Commerce']`,
         learningPathLink: "//a[text()='Learning Path']",
+        //learningPathLink:"//a[text()='Learning Path']",
         certificationLink: "//a[text()='Certification']",
         completionCertificationLink: "//a[text()='Completion Certificate']",
+        //learningPathLink:"//a[text()='Learning Path']",       
         communicationLink: "//span[text()='Communication']",
         bannerMenu: `//a[text()='Banner']`,
         createBannerbutton: `//button[text()='CREATE BANNER']`,
@@ -37,11 +39,13 @@ export class AdminHomePage extends AdminLogin {
         createAnnouncementbutton: `//button[text()='CREATE ANNOUNCEMENT']`,
         contentMenu: `//a[text()='Content']`,
         surveyQuestionsLink: "//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Questions']",
+        //surveyLink:"//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Survey']",
         assessmentMenu: `//span[text()='Assessment']`,
         assessmentQuestionLink: `//span[text()='Assessment']//parent::div/following-sibling::ul//a[text()='Questions']`,
         assessmentLink: "//a[text()='Assessment']",
         enrollMenu: `//span[text()='Enrollments']`,
-        enrollLink: `(//a[text()='Enroll'])[1]`,
+        enrollLink: `//a[text()='Enroll']`,
+
         quickAccessIcon: `#dd-icon-wrapper i`,
         quickAccessDD: `button div:text-is('Select Quick Access Buttons To Add Below')`,
         quickAccessValue: `//div[@class='dropdown-menu show'] //a`,
@@ -54,13 +58,26 @@ export class AdminHomePage extends AdminLogin {
         learnerConfigLink:`//a[text()='Learner Configuration']`,
         siteSettingsLink:`//a[text()='Site Settings']`,
         adminConfigLink:`//a[text()='Admin Configuration']`,
+       // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
-        directContent:`//a[text()='Direct Content Launch']`,
-           //meta data library option
-        metaLibOption: (data: string) => `//a[text()='${data}']`,
-        dynamicShareableLinks:`text=Dynamic Shareable Links`
-    };
 
+        //for Direct Content Launch
+        directContent:`//a[text()='Direct Content Launch']`,
+
+        hoverOrgFromQuickAccess:(module:string)=>`//div[text()='${module}']`,
+       
+
+        adminhome:`//span[text()='Admin Home']` ,
+         clickEditOrganization:(createmodule:string)=> `(//div[text()='${createmodule}']/following::div[text()='Edit'])[1]`,
+                clickEditIconOfCreatedOrganization:(orgName:string)=>`(//div[text()='${orgName}']/following::a[@aria-label='Edit'])[1]`,
+
+        clickCreateOrganization:(createmodule:string)=> `(//div[text()='${createmodule}']/following::div[text()='Create'])[1]`,
+
+        
+           //meta data library option
+        metaLibOption:(data:string)=>`//a[text()='${data}']`
+    
+   }
     public async clickLearnerGroupLink() {
         try {
             await this.validateElementVisibility(this.selectors.learnerGrouplink, "Learner Group");
@@ -70,6 +87,12 @@ export class AdminHomePage extends AdminLogin {
             throw error;
         }
     }
+     async editModuleFromQuickAccess(module:string,createmodule:string){
+              await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+            await this.wait("minWait");
+            await this.click(this.selectors.clickEditOrganization(createmodule), "Create module", "Button");
+ 
+        }
 
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
@@ -81,6 +104,12 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
     }
 
+    public async createModuleFromQuickAccess(module:string,createmodule:string) {
+            await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+            await this.wait("minWait");
+            await this.click(this.selectors.clickCreateOrganization(createmodule), "Create module", "Button");
+
+        }
     public async loadAndLogin(role: string) {
         console.log("Loading admin home page...")
         await this.page.goto(AdminLogin.pageUrl);
@@ -117,6 +146,9 @@ export class AdminHomePage extends AdminLogin {
         }
     }
 
+    async clickAdminHome(){
+            await this.click(this.selectors.adminhome,"Admin Home","Link");
+        }
     public async isSignOut() {
         await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out");
         await this.page.waitForLoadState('load');
@@ -391,6 +423,7 @@ export class AdminHomePage extends AdminLogin {
             await this.spinnerDisappear();
         }
         public async siteAdmin_Adminconfig() {
+            await this.wait("minWait");
             await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
             await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
             await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
@@ -429,9 +462,7 @@ export class AdminHomePage extends AdminLogin {
         await this.spinnerDisappear();
     }
 
-    public async dynamicShareableLinks() { 
-        await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
-    }
+
 
 }
 

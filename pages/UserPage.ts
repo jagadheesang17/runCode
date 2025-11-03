@@ -11,166 +11,110 @@ import { BrowserContext, Page, expect } from "@playwright/test";
 
 export class UserPage extends AdminHomePage {
   public selectors = {
-    ...this.selectors,
-    createUserbtn: `//button[text()='CREATE USER']`,
-    createUserLabel: "//h1[text()='Create User']",
-    editUserLabel: "//h1[text()='Edit User']",
-    inputField: (name: string) => `//input[@id="${name}"]`,
-    addressInput: (label: string) =>
-      `(//label[contains(text(),'${label}')]/following::input[contains(@id,'user-add')])[1]`,
-    dropdownToggle: (label: string) =>
-      `(//label[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
-    dropdownSearchInput: "//footer//following::input[@type='search']",
-    dropdownOption: (data: string) => `//span[text()='${data}']`,
-    saveButton: "//button[text()='Save']",
-    proceedButton: (name: string) =>
-      `//footer//following::button[contains(text(),'${name}')]`,
+        ...this.selectors,
+        createUserbtn: `//button[text()='CREATE USER']`,
+        createUserLabel: "//h1[text()='Create User']",
+        editUserLabel: "//h1[text()='Edit User']",
+        inputField: (name: string) => `//input[@id="${name}"]`,
+        addressInput: (label: string) => `(//label[contains(text(),'${label}')]/following::input[contains(@id,'user-add')])[1]`,
+        addressInputOrg:(label:string,id:string)=>`//label[contains(text(),'${label}')]/following::input[contains(@id,'${id}')]`,
 
-    // Custom Field Selectors - Note: These input boxes are disabled, use inputValue() method for reading values
-    uaidSelector: `(//label[text()='UAID']//following::input)[1]`,
-    uacSelector: `(//label[text()='UAC']//following::input)[1]`,
-    searchField: "//input[@id='exp-search-field']",
-    rolesBtn: "//input[@id='user-roles-filter-field']",
-    rolesList: (roles: string) => `//li[text()='${roles}']`,
-    editIcon:
-      "(//span[contains(@class,'justify-content-start') and  @aria-label='Edit User'])[1]",
-    userProfileUploadInput: "//input[@id='upload-usr-pic-file']",
-    updateButton: "//button[text()='Update']",
-    successMessage:
-      "//div[@id='addedit-user-form-container']//h3[contains(text(),'successfully')]",
-    employmentTypeInput:
-      "//label[text()='employment type']//parent::div//input",
-    commonOptionBtn: (value: string, data: string) =>
-      `(//div[@id='user-${value}-filter-lms-scroll-results']//li)[1]`,
-    departmentType: `//label[text()='department']/following::div[@id='user-department']//input`,
-    timeZone: `(//div[@id='wrapper-user-timezone']//button)[1]`,
-    timeZoneSearch: `//footer/following-sibling::div//input`,
-    selectlocationtz: (index: number, timeZone: string) =>
-      `(//li/a/span[contains(text(),'${timeZone}')])[${index}]`,
-    hireDate: `//input[@id='user-hiredate-input']`,
-    userType: `//input[@id='user-usertype-filter-field']`,
-    jobtitle: `//input[@id='user-jobtitle-filter-field']`,
-    manager: `//input[@id='user-manager-filter-field']`,
-    othermanager: `//input[@id='user-other-managers-filter-field']`,
-    searchOtherManager: `//input[@id='user-other-managers']`,
-    otherMgrOption: (index: number) =>
-      `(//div[@id='user-other-managers']/following::li)[${index}]`,
-    specificManager: (managerName: string) =>
-      `//div[contains(text(),'${managerName}')]`,
-    language: `//label[contains(text(),'Language')]/following::div[@id='wrapper-user-language']`,
-    searchLanguage: `//footer/following::div/input`,
-    courseLanguageLink: (language: string) =>
-      `//label[text()='Language']//following::span[text()='${language}']`,
-    editButton: `//a[text()='Edit User']`,
-    deleteUser: `(//a[@aria-label="Delete"]/i)[1]`,
-    confirmDeleteoption: `//button[text()='Delete']`,
-    verifyDeletemsg: `//div[@id='lms-overall-container']//h3`,
-    organizationTypeDD: `(//label[text()='Organization type']/parent::div//button)[1]`,
-    organizationType: (type: string) => `//span[text()='${type}']`,
-    closeIcon: "//i[contains(@class,'xmark')]",
-    managerclosePopup:
-      "//span[contains(text(),'Are you sure you want to continue?')]",
-    yesBtn: "//button[text()='Yes']",
-    suspendBtn: "//button[text()='Suspend']",
-    suspendDialog:
-      "//span[contains(text(),'Are you sure you want to suspend the user')]",
-    suspendDialogBtn:
-      "//span[contains(text(),'Are you sure you want to suspend the user')]//following::button[text()='Suspend']",
-    deleteIcon: "a[aria-label='Delete'] , a[title='Delete'] i",
-    deleteDialog:
-      "//span[contains(text(),'Are you sure you want to delete the user')]",
-    deleteBtn: "//button[text()='Delete']",
-    noResultText:
-      "//h3[contains(text(),'There are no results that match your current filters')]",
-    activateUserIcon: "a[title='Activate'], a[aria-label='Activate'] i",
-    activateDialog:
-      "//span[contains(text(),'Are you sure you want to activate the user')]",
-    activateBtn: "//button[text()='Activate']",
-    impersonationIcon:
-      " a[aria-label='Impersonation'] , a[title='Impersonation'] i",
-    impersonateLabel: "//label[text()='Select Domain you want to Impersonate']",
-    impersonateOptionDD:
-      "(//label[text()='Select Domain you want to Impersonate']//parent::div//button)[1]",
-    impersonateDomainValue: (option: string) =>
-      `//footer//following::a/span[text()='${option}']`,
-    reasonInput: "//label[text()='Reason']//parent::div//textarea",
-    impersonateProceedBtn: "//button[text()='Proceed']",
-    okBtn: "//button[text()='OK']",
-    logOutBtn: "//div[@class='logout']//a",
-    //Internal 
-    validateUser: (data: string) => `//div[text()='${data}']`,
-    //UserPage Enrollment icon
-    enrollmentIcon: "(//a[@aria-label='Enrollments'])[1]",
-    enrollmentLabel: "//h1[text()='Manage Enrollments']",
-    enrollmentStatus: "//div[contains(@class,'row row-cols-md-')]//span",
-    viewEnrollmentStsIcon: "//i[@aria-label='View all the status']",
+        dropdownToggle: (label: string) => `(//label[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
+        dropdownSearchInput: "//footer//following::input[@type='search']",
+        dropdownOption: (data: string) => `//span[text()='${data}']`,
+        saveButton: "//button[text()='Save']",
+        proceedButton: (name: string) => `//footer//following::button[contains(text(),'${name}')]`,
+        searchField: "//input[@id='exp-search-field']",
+        rolesBtn: "//input[@id='user-roles-filter-field']",
+        rolesList: (roles: string) => `//li[text()='${roles}']`,
+        editIcon: "(//span[contains(@class,'justify-content-start') and  @aria-label='Edit User'])[1]",
+        userProfileUploadInput: "//input[@id='upload-usr-pic-file']",
+        updateButton: "//button[text()='Update']",
+        successMessage: "//div[@id='addedit-user-form-container']//h3[contains(text(),'successfully')]",
+        employmentTypeInput: "//label[text()='employment type']//parent::div//input",
+        commonOptionBtn: (value: string, data: string) => `(//div[@id='user-${value}-filter-lms-scroll-results']//li)[1]`,
+        departmentType: `//label[text()='department']/following::div[@id='user-department']//input`,
+        timeZone: `(//div[@id='wrapper-user-timezone']//button)[1]`,
+        timeZoneSearch: `//footer/following-sibling::div//input`,
+        selectlocationtz: (index: number, timeZone: string) => `(//li/a/span[contains(text(),'${timeZone}')])[${index}]`,
+        hireDate: `//input[@id='user-hiredate-input']`,
+        userType: `//input[@id='user-usertype-filter-field']`,
+        jobtitle: `//input[@id='user-jobtitle-filter-field']`,
+        manager: `//input[@id='user-manager-filter-field']`,
+        othermanager: `//input[@id='user-other-managers-filter-field']`,
+        searchOtherManager: `//input[@id='user-other-managers']`,
+        otherMgrOption: (index: number) => `(//div[@id='user-other-managers']/following::li)[${index}]`,
+        specificManager: (managerName: string) => `//div[contains(text(),'${managerName}')]`,
+        language: `//label[contains(text(),'Language')]/following::div[@id='wrapper-user-language']`,
+        searchLanguage: `//footer/following::div/input`,
+        courseLanguageLink: (language: string) => `//label[text()='Language']//following::span[text()='${language}']`,
+        editButton: `//a[text()='Edit User']`,
+        deleteUser: `(//a[@aria-label="Delete"]/i)[1]`,
+        confirmDeleteoption: `//button[text()='Delete']`,
+        verifyDeletemsg: `//div[@id='lms-overall-container']//h3`,
+        organizationTypeDD: `(//label[text()='Organization type']/parent::div//button)[1]`,
+        organizationType: (type: string) => `//span[text()='${type}']`,
+        closeIcon: "//i[contains(@class,'xmark')]",
+        managerclosePopup: "//span[contains(text(),'Are you sure you want to continue?')]",
+        yesBtn: "//button[text()='Yes']",
+        suspendBtn: "//button[text()='Suspend']",
+        suspendDialog: "//span[contains(text(),'Are you sure you want to suspend the user')]",
+        suspendDialogBtn: "//span[contains(text(),'Are you sure you want to suspend the user')]//following::button[text()='Suspend']",
+        deleteIcon: "a[aria-label='Delete'] , a[title='Delete'] i",
+        deleteDialog: "//span[contains(text(),'Are you sure you want to delete the user')]",
+        deleteBtn: "//button[text()='Delete']",
+        noResultText: "//h3[contains(text(),'There are no results that match your current filters')]",
+        activateUserIcon: "a[title='Activate'], a[aria-label='Activate'] i",
+        activateDialog: "//span[contains(text(),'Are you sure you want to activate the user')]",
+        activateBtn: "//button[text()='Activate']",
+        impersonationIcon: " a[aria-label='Impersonation'] , a[title='Impersonation'] i",
+        impersonateLabel: "//label[text()='Select Domain you want to Impersonate']",
+        impersonateOptionDD: "(//label[text()='Select Domain you want to Impersonate']//parent::div//button)[1]",
+        impersonateDomainValue: (option: string) => `//footer//following::a/span[text()='${option}']`,
+        reasonInput: "//label[text()='Reason']//parent::div//textarea",
+        impersonateProceedBtn: "//button[text()='Proceed']",
+        okBtn: "//button[text()='OK']",
+        logOutBtn: "//div[@class='logout']//a",
+        //Internal
+        validateUser: (data: string) => `//div[text()='${data}']`,
+        //UserPage Enrollment icon
+        enrollmentIcon: "(//a[@aria-label='Enrollments'])[1]",
+        enrollmentLabel: "//h1[text()='Manage Enrollments']",
+        enrollmentStatus: "//div[contains(@class,'row row-cols-md-')]//span",
+        viewEnrollmentStsIcon: "//i[@aria-label='View all the status']",
 
-    //For Suspended User success message
-    sso_negativemsg: "//span[@id='error-txt']",
+        //For Suspended User success message
+        sso_negativemsg: "//span[@id='error-txt']",
 
-    //For user address validation
-    verifyUserAddress: `//button[text()='Click to verify address']`,
-    addressVerificationMessage: `//button[text()='Click to verify address']//following-sibling::span`,
+        //For user address validation
+        verifyUserAddress: `//button[text()='Click to verify address']`,
+        addressVerificationMessage: `//button[text()='Click to verify address']//following-sibling::span`,
 
-    //End impersonation
-    endImpersonation: "//span[text()='End Impersonation']",
+        //End impersonation
+        endImpersonation: "//span[text()='End Impersonation']",
 
-    //for contact support email
-    customerAdminUserFromDropdown: `//li[contains(text(),'Arivazhagan P (arivazhaganp)')]`,
-    checkContactSupport: `//input[@id='course-contact-support']`,
+        //for contact support email
+         customerAdminUserFromDropdown:(data:string)=>`//li[contains(text(),'${data}')]`,
+         checkContactSupport:`//input[@id='course-contact-support']`,
 
+         fieldname:(name:string)=>`//input[@id='user-${name}-filter-field']`,
 
-    //address inheritance
-    inheritAddressLabel: "//span[text()='Inherit Address From']",
+         clickSearchOption:(list:string)=>`(//li[text()='${list}'])[1]`,
+
+         editUser:`//a[text()='Edit User']`,
+
+         valueOfOgTypeInUserPage:`(//label[text()='Organization type']/following::div[@class='filter-option-inner-inner'])[1]`,
+
+         emergenctContactNameInput:(id:string)=>`//input[@id='${id}']`,
+
+         checkrole:(role:string)=>`(//span[text()='${role}']/preceding-sibling::i)[1]`,
+
+         uncheckInheritFromCheckbox:`//span[text()='Inherit Address From']/preceding-sibling::i[@class='fad fa-square-check icon_14_1']`,
+
+           inheritAddressLabel: "//span[text()='Inherit Address From']",
     inheritAddressCheckbox: "(//span[text()='Inherit Address From']//preceding-sibling::i)[1]",
 
-    //emergency contact inheritance
-    inheritEmergencyContactLabel: "//span[text()='Inherit']",
-    inheritEmergencyContactCheckbox: "(//span[text()='Inherit']//preceding-sibling::i)[1]",
-
-    //auto generate username
-    autoGenerateUsernameLabel: "//span[text()='Auto-Generate']",
-    autoGenerateUsernameCheckbox: "(//span[text()='Auto-Generate']//preceding-sibling::i)[1]",
-
-    //error message popup
-    errorMessageContainer: "//div[@id='message-container']//li//span",
-    domainErrorContainer: "//div[@id='message-container']//ul",
-
-    //USRT21 selectors
-    employeeIdField: "#user-employee-id",
-    birthDateField: "//input[@id='BirthDate']",
-    otherOrganizationsField: "//input[@id='user-other-orgs-filter-field']",
-    searchOtherOrganizationField: "//input[@id='user-other-orgs']",
-    organizationOption: "div[id^='user-other-orgsresu'] li",
-    associatedGroupsTab: "//span[text()='Associated Groups']",
-    learnerGroupText: "//label[text()='Learner Group :']/following-sibling::div",
-    hierarchyButton: "//a[@aria-label='Hierarchy']",
-    managerInHierarchy: (managerName: string) => `//span[text()='${managerName}']`,
-    hierarchyCloseButton: "//div[@id='hierarchyModal']//button[@aria-label='Close']",
-
-    fieldname: (name: string) => `//input[@id='user-${name}-filter-field']`,
-    clickSearchOption: (list: string) => `(//li[text()='${list}'])[1]`,
-    jobRole:`//input[@id='user-jobrole-filter-field']`,
-    jobRoleList: (roles: string) => `//li[text()='${roles}']`,
-
-    // Filter selectors for USRT21 enhancement
-    filterTrigger: "#admin-filters-trigger",
-    statusCheckbox: (status: string) => `//span[text()='${status}']`,
-    userTypeFilter: "#user-type-filter-field",
-    rolesDropdown: "//button[@data-id='user-roles-filter']",
-    roleOption: (role: string) => `//span[text()='${role}']`,
-    jobRoleFilter: "#user-jobroles-filter-field",
-    departmentFilter: "#user-department-filter-field", 
-    managerFilter: "#user-manager-filter-field",
-    organizationFilter: "#user-organization-filter-field",
-    userHireDateDropdown: "//span[text()='User hire date']//following::button[@data-id='selectid']",
-    hireDateOption: (option: string) => `//span[text()='${option}']`,
-    hireDateFromInput: "#admin-date-filter-from-input",
-    filterLabelDropdown: (label: string) => `(//span[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
-    filterDropdownSearch: "//footer//following::input[@aria-label='Search']",
-    filterDropdownOption: (option: string) => `//span[text()='${option}']`,
-
-  };
+    }
 
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
@@ -203,7 +147,11 @@ export class UserPage extends AdminHomePage {
     await this.type(selector, name, data);
   }
 
+ async searchAndSelect(name: string,data:string) {
+        await this.typeAndEnter(this.selectors.fieldname(name), "field name", data);
 
+        await this.click(this.selectors.clickSearchOption(data), "search option", "option");
+    }
   
 
    async clickeditUser() {
@@ -235,6 +183,16 @@ export class UserPage extends AdminHomePage {
     const selector = this.selectors.addressInput(label);
     await this.type(selector, "Address", data);
   }
+      async checkInheritFrom(role:string){
+        await this.click(this.selectors.checkrole(role),"clickmanager","radiobutton");
+    }
+
+     
+
+     async typeAddressOrg(label: string, id:string,data: string) {
+        const selector = this.selectors.addressInputOrg(label,id);
+        await this.type(selector, "Address", data);
+    }
 
   async select(label: string, data: string) {
     const toggleSelector = this.selectors.dropdownToggle(label);
@@ -970,5 +928,24 @@ export class UserPage extends AdminHomePage {
     await this.click(applyButton, "Apply", "Button");
     console.log("✅ Filter applied successfully");
   }
+  async verifyInheritedAddress(label:string,id:string,address:string) {
+        // await this.verification(this.selectors.addressInput(label,id), address);
 
+       await this. verificationInputValue(this.selectors.addressInputOrg(label,id), address);
+       
+    }
+
+            async verifyInheritedEmergencyContactName(id:string,emergencyContactName:string){
+            await this.verificationInputValue(this.selectors.emergenctContactNameInput(id),emergencyContactName);
+        }
+        async editUser(){
+          this.wait("minWait");
+    await this.click(this.selectors.editUser,"Edit user","Button");
+}
+
+ async valueOfOrganizationTypeInUserPage(){
+            await this.wait("maxWait");
+            const text=await this.page.locator(this.selectors.valueOfOgTypeInUserPage).innerText();
+            return text;
+                 }
 }

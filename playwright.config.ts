@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-
 let jiraIssueKeys: string[] = [];
 const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
@@ -17,7 +16,7 @@ export default defineConfig({
 
   fullyParallel: false,
   retries: 0,
-  workers: 2,
+  workers: 1,
   repeatEach: 0,
 
   reporter: [['html', { outputFolder: reportDir, open: 'always' }], ['line'], ["allure-playwright"]],
@@ -61,6 +60,8 @@ export default defineConfig({
     // '*/tests/Terms_and_Conditions/**/*.spec.ts',  
     // '*/tests/SSO/**/*.spec.ts',
     '*/api/apiTestIntegration/**/*.spec.ts',
+    '*/tests/organization/**/*.spec.ts',
+    '*/tests/admin/address_inheritance/**/*.spec.ts',
 
   ],
 
