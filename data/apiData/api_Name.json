@@ -32,6 +32,27 @@
     "ListTags":"ListTags",
     "listCategory":"listCategory",
     "createCategory":"createCategory",
-    "updateCategory":"updateCategory"
+    "updateCategory":"updateCategory",
+    "createTag":"createTag",
+    "editTag":"editTag",
+    "updateCEUType":"updateCEUType",
+    "createDepartment":"createDepartment",
+    "updateDepartment":"updateDepartment",
+    "createCEUProvider":"createCEUProvider",
+    "updateCEUProvider":"updateCEUProvider",
+    "createProvider":"createProvider",
+    "updateProvider":"updateProvider",
+    "createUserType":"createUserType",
+    "updateUserType":"updateUserType",
+    "createJobRole":"createJobRole",
+    "updateJobRole":"updateJobRole",
+    "CreateEquipment":"CreateEquipment",
+    "createEmploymentType":"createEmploymentType",
+    "updateEmploymentType":"updateEmploymentType",
+    "listInstanceDetails":"listInstanceDetails",
+    "ListAnnouncement":"ListAnnouncement",
+    "assignAssessmentToCourse":"assignAssessmentToCourse",
+    "assignAssessmentToProgram":"assignAssessmentToProgram",
+    "editOrganizations":"editOrganizations"
 
 }

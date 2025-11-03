@@ -10,13 +10,14 @@ let clientSecret = credentials.data.client_secret
 
 let isInternal: boolean = true;
 let organizationType: string = isInternal ? "Internal" : "External";
-let category = getRandomItemFromFile(filePath.catagory);
-let tag = getRandomItemFromFile(filePath.tags);
+let category = getRandomItemFromFile("../data/learningCategory.json");
+let tag = getRandomItemFromFile("../data/peopleCEUTags.json");
 let department = getRandomItemFromFile(filePath.department);
 let empData = getRandomItemFromFile(filePath.empType);
 let jobRole = getRandomItemFromFile(filePath.jobRole);
 let jobTitle = getRandomItemFromFile(filePath.jobTitle);
 let userType = getRandomItemFromFile(filePath.userType);
+const generatedcode = generateCode();
 
 export let customAdminOuthData = {
     user_id: userId,
@@ -64,15 +65,21 @@ export function generateCode() {
 
 };
 
-const milliseconds = Date.now();
-export const ceuTypeCreationData = (code: any) => ({
+export const ceuTypeCreationData = (roleName?: string, Code?: string) => ({
     user_id: userId,
-    name: FakerData.getTagNames() + milliseconds,
-    code: code,
-    rows: "30",
+    name: roleName || FakerData.getTagNames(),
+    code: Code,
     description: FakerData.getDescription(),
     api_name: apiName.createCEUType,
-    response_fields: ["ceu_Type_id"]
+    response_fields: ["result"]
+})
+
+export const ceuTypeUpdateData = (Code?: string, newName?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    api_name: apiName.updateCEUType,
+    response_fields: ["result"]
 })
 
 export const ceuGetListOfData = {
@@ -105,11 +112,10 @@ export const listUser = (userName: string) => ({
     response_fields: ["result", "UserId", "first_name", "last_name", "username", "email", "country", "country_name"]
 })
 
-export const createOrganizations = (orgName: string,code:string) => ({
+export const createOrganizations = (orgName: string) => ({
 
     user_id: userId,
     Name: orgName,
-    Code:code,
     Description: FakerData.getDescription(),
     Type: organizationType,
     Status: 1,
@@ -127,7 +133,8 @@ export const listofOrganization = (orgName?: string) => ({
 export const listofCourse = {
     user_id: userId,
     api_name: apiName.listCourses,
-    response_fields: ["_id", "code", "description", "duration", "instance_count", "language_name", "status_name", "sub_type", 'thumbnail', 'title', "F", "error"]
+    //response_fields: ["_id", "code", "description", "duration", "instance_count", "language_name", "status_name", "sub_type", 'thumbnail', 'title', "catalog_id", "error"]
+    response_fields: ["_id"],
 }
 
 export const listofProgram = {
@@ -272,11 +279,12 @@ export const listofAttachedCoursesFromProgram = (data: string) => ({
     api_name: apiName.listAttachedCoursesFromTrainingPlan,
     user_id: userId,
     program_code: data,
-    // page: 1,
-    // limit: 100,
-    // ...(data && { textsearch: data }),
-    // response_fields: ["course_details"],
-    response_fields: ["module_name"],
+    response_fields: ["module_name",
+        "module_id",
+        "module_sequence",
+        "module_level_completion_rule",
+        "mandatory_completion_count",
+        "optional_completion_count"],
 })
 
 //Arivu Test
@@ -322,11 +330,11 @@ export let userCreationDataWithOptional = (username: string, role?: "manager" | 
             timezone: "tmz_0303",
             phone_no: FakerData.getMobileNumber(),
             mobile_no: FakerData.getMobileNumber(),
-            // user_type: userType,
-            // employment_type: empData,
-            // department: department,
-            // job_title: jobTitle,
-            // JobRole: jobRole,
+            user_type: userType,
+            employment_type: empData,
+            department: department,
+            job_title: jobTitle,
+            JobRole: jobRole,
             city: cityName,
             zipcode: zipCode,
             organization_type: organizationType,
@@ -363,11 +371,11 @@ export let userUpdationDataWithOptional = (username: string, role?: "manager" | 
             timezone: "tmz_0303",
             phone_no: FakerData.getMobileNumber(),
             mobile_no: FakerData.getMobileNumber(),
-            // user_type: userType,
-            // employment_type: empData,
-            // department: department,
-            // job_title: jobTitle,
-            // JobRole: jobRole,
+            user_type: userType,
+            employment_type: empData,
+            department: department,
+            job_title: jobTitle,
+            JobRole: jobRole,
             city: cityName,
             zipcode: zipCode,
             organization_type: organizationType,
@@ -391,7 +399,7 @@ export let userUpdationDataWithOptional = (username: string, role?: "manager" | 
 export const createCourseEnrollmentForProgram = (code: any, courseCode: string, enrollUser: string) => ({
     user_id: userId,
     Program_code: code,
-    instance_code: courseCode,
+    course_code: courseCode,
     username: enrollUser,
     api_name: apiName.createCourseEnrollmentForProgram,
     response_fields: ["result"]
@@ -425,11 +433,11 @@ export const updateEnrollmentForProgram = (code: any, enrollUser: string, status
 })
 
 
-export const updateOrganizations = (org_Code: string,description:string) => ({
+export const updateOrganizations = (org_Code: string, description: string) => ({
     user_id: userId,
     Code: org_Code,
-    Description:description,
-    api_name: apiName.updateOrganizations,
+    Description: description,
+    api_name: apiName.editOrganizations,
     response_fields: ["result"]
 })
 
@@ -564,4 +572,228 @@ export let addOrganizationInAdminGroup =(orgCode:any,admingrpcode:any,action:"ad
    action:action,
    api_name: apiName.manageOrganizationInAdminGroup,
    response_fields: ["result"]
+})
+
+//30-04-2025 for list of category and tags
+
+export const tagCreation = (tageName?: string) => ({
+    user_id: userId,
+    tag_name: tageName,
+    api_name: apiName.createTag,
+    response_fields: ["result"]
+})
+
+export const tagEdit = (oldTag?: string, tageName?: string) => ({
+    user_id: userId,
+    old_tag_name: oldTag,
+    new_tag_name: tageName,
+    api_name: apiName.editTag,
+    response_fields: ["result"]
+})
+
+export const categoryCreation = {
+    user_id: userId,
+    name: FakerData.getTagNames(),
+    api_name: apiName.createCategory,
+    response_fields: ["result"]
+}
+
+// Department APIs
+export const departmentCreation = (deptName?: string, Code?: string) => ({
+    user_id: userId,
+    name: deptName,
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createDepartment,
+    response_fields: ["result"]
+})
+
+export const departmentUpdate = (newName?: string, Code?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateDepartment,
+    response_fields: ["result"]
+})
+
+// CEU Provider APIs
+export const ceuProviderCreation = (providerName?: string, Code?: string) => ({
+    user_id: userId,
+    name: providerName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createCEUProvider,
+    response_fields: ["result"]
+})
+
+export const ceuProviderUpdate = (newName?: string, Code?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateCEUProvider,
+    response_fields: ["result"]
+})
+
+// Provider APIs
+export const providerCreation = (providerName?: string, Code?: string) => ({
+    user_id: userId,
+    name: providerName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createProvider,
+    response_fields: ["result"]
+})
+
+export const providerUpdate = (Code?: string, newName?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateProvider,
+    response_fields: ["result"]
+})
+
+// User Type APIs
+export const userTypeCreation = (typeName?: string, Code?: string) => ({
+    user_id: userId,
+    name: typeName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createUserType,
+    response_fields: ["result"]
+})
+
+export const userTypeUpdate = (Code?: string, newName?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateUserType,
+    response_fields: ["result"]
+})
+
+// Job Role APIs
+export const jobRoleCreation = (roleName?: string, Code?: string) => ({
+    user_id: userId,
+    name: roleName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createJobRole,
+    response_fields: ["result"]
+})
+
+export const jobRoleUpdate = (Code?: string, newName?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateJobRole,
+    response_fields: ["result"]
+})
+
+// Equipment APIs
+export const equipmentCreation = (equipmentName?: string) => ({
+    user_id: userId,
+    name: equipmentName || FakerData.getTagNames(),
+    description: FakerData.getDescription(),
+    api_name: apiName.CreateEquipment,
+    response_fields: ["result"]
+})
+
+// Employment Type APIs
+export const employmentTypeCreation = (empTypeName?: string, Code?: string) => ({
+    user_id: userId,
+    name: empTypeName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.createEmploymentType,
+    response_fields: ["result"]
+})
+
+export const employmentTypeUpdate = (Code?: string, newName?: string) => ({
+    user_id: userId,
+    name: newName || FakerData.getTagNames(),
+    code: Code,
+    description: FakerData.getDescription(),
+    api_name: apiName.updateEmploymentType,
+    response_fields: ["result"]
+})
+
+//List Instance Details API
+
+export const listofInstanceDetails = (data: string, locationName: string) => ({
+    api_name: apiName.listInstanceDetails,
+    user_id: userId,
+    course_code: data,
+    location_name: locationName,
+    response_fields: [
+        "title",
+        "code",
+        "description",
+        "language_name",
+        "language_code",
+        "sub_type",
+        "status_name",
+        "max_seat",
+        "waitlist_seat",
+        "seat_left",
+        "count_enroll",
+        "registration_end_on",
+        "delivery_type",
+        "training_type",
+        "session.session_master_id",
+        "session.name",
+        "session.start_date",
+        "session.start_time",
+        "session.end_date",
+        "session.end_time",
+        "session.timezone",
+        "session.timezone_name",
+        "session.timezone_code",
+        "session.location",
+        "session.sessioninstructor"
+    ]
+})
+
+// List Announcement API
+export const listAnnouncement = (searchText?: string, priority?: "low" | "high", fromDate?: string, toDate?: string, status: "draft" | "published" | "unpublished" | "deleted" = "published", order?: "a-z" | "z-a" | "new-old" | "old-new", page?: number, rows?: number) => ({
+    user_id: userId,
+    ...(searchText && { search_text: searchText }),
+    ...(priority && { priority: priority }),
+    ...(fromDate && { from_date: fromDate }),
+    ...(toDate && { to_date: toDate }),
+    status: status,
+    ...(order && { order: order }),
+    ...(page && { page: page }),
+    ...(rows && { rows: rows }),
+    api_name: apiName.ListAnnouncement,
+    response_fields: ["announcement_id", "title", "description", "from_date", "to_date", "creator_name", "priority"]
+})
+
+// Assign Assessment to Course API
+export const assignAssessmentToCourse = (trainingCode: string, assessmentCode: string, assessmentType: "pre-assessment" | "post-assessment", noOfAttempts: number, inherit: "yes" | "no", testoutOption: 0 | 1, reviewOption: 0 | 1) => ({
+    user_id: userId,
+    training_code: trainingCode,
+    assessment_code: assessmentCode,
+    assessment_type: assessmentType,
+    no_of_attempts: noOfAttempts,
+    inherit: inherit,
+    testout_option: testoutOption,
+    review_option: reviewOption,
+    api_name: apiName.assignAssessmentToCourse,
+    response_fields: ["result"]
+})
+
+export const assignAssessmentToProgram = (programCode: string, assessmentCode: string, assessmentType: "pre-assessment" | "post-assessment", noOfAttempts: number, inherit: "yes" | "no", reviewOption: 0 | 1) => ({
+    user_id: userId,
+    program_code: programCode,
+    assessment_code: assessmentCode,
+    assessment_type: assessmentType,
+    no_of_attempts: noOfAttempts,
+    inherit: inherit,
+    review_option: reviewOption,
+    api_name: apiName.assignAssessmentToProgram,
+    response_fields: ["result"]
 })

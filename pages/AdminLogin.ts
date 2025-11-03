@@ -19,11 +19,21 @@ export class AdminLogin extends PlaywrightWrapper {
         // Clear existing value and type password
         await this.clearAndType("#password", "Password", password);
         console.log("Clicking Sign In button...");
-        // Use waitForNavigation to handle page transitions
-        await Promise.all([
-            this.page.locator("//button[contains(text(),'SIGN')]").click(),
-            this.wait('minWait')
-        ]);
+        // Wait for sign in button to be stable and clickable
+        const signInButton = this.page.locator("//button[contains(text(),'SIGN')]");
+        await signInButton.waitFor({ state: 'visible' });
+        await signInButton.waitFor({ state: 'attached' });
+        await this.page.waitForLoadState('networkidle');
+        
+        // Click sign in button with retry mechanism
+        try {
+            await signInButton.click({ timeout: 10000 });
+        } catch (error) {
+            console.log("First click failed, trying alternative selector...");
+            await this.page.locator("button[type='submit']").click({ timeout: 10000 });
+        }
+        
+        await this.wait('minWait');
         /*    const logoutButton = this.page.locator("//div[@class='logout']");
    
            //console.log("Storing state...");

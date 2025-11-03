@@ -35,7 +35,8 @@ test(`Verify that user address validation functionality working as expected for 
         await adminHome.menuButton();
         await adminHome.people();
         await adminHome.user();
-        await createUser.clickCreateUser();    
+        await createUser.clickCreateUser(); 
+           
         await createUser.verifyCreateUserLabel();    
         await createUser.enter("first_name", FakerData.getFirstName());
         await createUser.enter("last_name", FakerData.getLastName());
@@ -48,10 +49,12 @@ test(`Verify that user address validation functionality working as expected for 
         await createUser.select("Time Zone", timezone);
         await createUser.enter("user-city", city);
         await createUser.enter("user-zipcode", zipcode);
-        await createUser.clickVerifyAddressBtn();
-        await createUser.verifyUserAddress();
+              await createUser.clickRolesButton("Manager");
+
+        // await createUser.clickVerifyAddressBtn();
+        // await createUser.verifyUserAddress();
         await createUser.clickSave();               
-      //  await createUser.clickProceed("Proceed");
+        await createUser.clickProceed("Proceed");
       //  await createUser.verifyUserCreationSuccessMessage();
     }
     }

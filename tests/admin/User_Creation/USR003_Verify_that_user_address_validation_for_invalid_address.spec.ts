@@ -1,9 +1,11 @@
 import { URLConstants } from '../../../constants/urlConstants';
 import { test } from '../../../customFixtures/expertusFixture';
+import { filePath } from '../../../data/MetadataLibraryData/filePathEnv';
 import { readDataFromCSV } from '../../../utils/csvUtil';
 import { FakerData } from '../../../utils/fakerUtils';
+import { getRandomItemFromFile } from '../../../utils/jsonDataHandler';
 
-
+let data = getRandomItemFromFile(filePath.department);
 test(`Verifying that user address validation functionality working as expected for Invalid address on User creation page`, async ({ siteAdmin,adminHome,learnerHome}) => {
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },

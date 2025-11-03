@@ -1,0 +1,53 @@
+{
+    "timestamp": "2025-10-23T10:11:02.574Z",
+    "testRun": "MetadataCreation_1761214262574",
+    "department": {
+        "name": "Kids",
+        "code": "262575"
+    },
+    "userType": {
+        "name": "Marilou_UserType",
+        "code": "262573"
+    },
+    "jobRole": {
+        "name": "Elvera_JobRole",
+        "code": "262574"
+    },
+    "jobTitle": {
+        "name": "Sylvan_JobTitle",
+        "code": "262574_JT"
+    },
+    "employmentType": {
+        "name": "Sammy_EmploymentType",
+        "code": "262575"
+    },
+    "results": {
+        "department": {
+            "created": true,
+            "error": null
+        },
+        "userType": {
+            "created": true,
+            "error": null
+        },
+        "jobRole": {
+            "created": true,
+            "error": null
+        },
+        "jobTitle": {
+            "created": true,
+            "error": null
+        },
+        "employmentType": {
+            "created": true,
+            "error": null
+        }
+    },
+    "completedAt": "2025-10-23T10:11:07.864Z",
+    "summary": {
+        "totalItems": 5,
+        "successfullyCreated": 5,
+        "failed": 0,
+        "successRate": "100.00%"
+    }
+}
