@@ -31,8 +31,4 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
    await createCourse.catalogSearch(OrgName);
 
    await organization.verifyTheActionIconWhenThereIsNoActiveUserAndChildOrganization(OrgName);
-
-
-        
-   } 
- )
+   });
