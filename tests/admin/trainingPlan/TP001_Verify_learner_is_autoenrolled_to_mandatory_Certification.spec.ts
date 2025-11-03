@@ -10,7 +10,7 @@ const description = FakerData.getDescription();
 const user = credentials.LEARNERUSERNAME.username
 test.describe(`Verify learner is autoenrolled to mandatory Certification`, async () => {
     test.describe.configure({ mode: "serial" });
-    test(`Single Instance Elearning Course`, async ({ adminHome, createCourse, editCourse }) => {
+    test(`Single Instance Elearning Course`, async ({ adminHome, createCourse}) => {
         test.info().annotations.push(
             { type: `Author`, description: `Arivazhagan P` },
             { type: `TestCase`, description: `Single Instance Elearning Course` },
