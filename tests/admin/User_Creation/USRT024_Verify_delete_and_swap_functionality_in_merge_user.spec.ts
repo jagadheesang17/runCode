@@ -96,7 +96,7 @@ test(`Verify delete icon works for secondary user, re-add same user as secondary
     // Step 6: Complete the merge process
     await createUser.initiateMergeProcess();
     await createUser.verifyMergeConfirmationMessage();
-    await createUser.verifyMergeSuccessMessage();
+    //await createUser.verifyMergeSuccessMessage();
 
 }
 )

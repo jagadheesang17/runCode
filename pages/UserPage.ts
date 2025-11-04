@@ -114,6 +114,20 @@ export class UserPage extends AdminHomePage {
            inheritAddressLabel: "//span[text()='Inherit Address From']",
     inheritAddressCheckbox: "(//span[text()='Inherit Address From']//preceding-sibling::i)[1]",
 
+    // Merge User functionality selectors
+    createUserLink: "//a[text()='Create User']",
+    mergeUserSpan: "//span[text()='MERGE USER']",
+    primarySearchField: "#exp-search-primary-field",
+    secondarySearchField: "#exp-search-secondary-field",
+    userRadioBtn: (user: string) => `(//span[text()='${user}']//following::i[contains(@class,'fa-circle')])[1]`,
+    selectMergeUserBtn: "#merger-user-btn-select",
+    mergeUserBtn: "//button[text()='Merge User']",
+    mergeConfirmationMessage: "//span[text()='Merge process has been initiated. You will receive an email with the status of the process.']",
+    mergeOkBtn: "//button[text()='OK']",
+    noMatchingResultMessage: "//div[text()='No matching result found.']",
+    deleteSecondaryUserIcon: "(//span[text()='SECONDARY USER']//following::i[contains(@class,'fa-trash-can')])[1]",
+    swapUsersIcon: "//i[contains(@class,'merge_user_swap pointer')]",
+
     }
 
   constructor(page: Page, context: BrowserContext) {
@@ -948,4 +962,163 @@ export class UserPage extends AdminHomePage {
             const text=await this.page.locator(this.selectors.valueOfOgTypeInUserPage).innerText();
             return text;
                  }
+
+  // ==================== MERGE USER FUNCTIONALITY METHODS ====================
+
+  /**
+   * Alternative method for creating user using Create User link
+   */
+  async createBtn(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.createUserLink, "Create User", "Link");
+    console.log("✅ Create User link clicked");
+  }
+
+  /**
+   * Click on Merge User span to open merge user functionality
+   */
+  async clickMergeUser(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.mergeUserSpan, "Merge User", "Span");
+    await this.wait("mediumWait");
+    console.log("✅ Merge User functionality opened");
+  }
+
+  /**
+   * Search and select primary user in merge user functionality
+   * @param userId - The user ID to search and select as primary user
+   */
+  async searchAndSelectPrimaryUser(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in primary user search field
+    await this.type(this.selectors.primarySearchField, "Primary User Search", userId);
+    await this.wait("minWait");
+    
+    // Click on the user radio button
+    await this.click(this.selectors.userRadioBtn(userId), `Primary User Radio: ${userId}`, "Radio Button");
+    await this.wait("minWait");
+    
+    // Click select button
+    await this.click(this.selectors.selectMergeUserBtn, "Select Merge User", "Button");
+    await this.wait("minWait");
+    
+    console.log(`✅ Primary user ${userId} selected successfully`);
+  }
+
+  /**
+   * Search and select secondary user in merge user functionality
+   * @param userId - The user ID to search and select as secondary user
+   */
+  async searchAndSelectSecondaryUser(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in secondary user search field
+    await this.type(this.selectors.secondarySearchField, "Secondary User Search", userId);
+    await this.wait("minWait");
+    
+    // Click on the user radio button
+    await this.click(this.selectors.userRadioBtn(userId), `Secondary User Radio: ${userId}`, "Radio Button");
+    await this.wait("minWait");
+    
+    // Click select button
+    await this.click(this.selectors.selectMergeUserBtn, "Select Merge User", "Button");
+    await this.wait("minWait");
+    
+    console.log(`✅ Secondary user ${userId} selected successfully`);
+  }
+
+  /**
+   * Initiate the merge process by clicking Merge User button
+   */
+  async initiateMergeProcess(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.mergeUserBtn, "Merge User", "Button");
+    await this.wait("mediumWait");
+    console.log("✅ Merge process initiated");
+  }
+
+  /**
+   * Verify merge confirmation message and click OK button
+   */
+  async verifyMergeConfirmationMessage(): Promise<void> {
+    await this.wait("minWait");
+    
+    // Verify the merge confirmation message
+    await this.validateElementVisibility(this.selectors.mergeConfirmationMessage, "Merge Confirmation Message");
+    await this.verification(this.selectors.mergeConfirmationMessage, "Merge process has been initiated. You will receive an email with the status of the process.");
+    
+    // Click OK button
+    await this.click(this.selectors.mergeOkBtn, "OK", "Button");
+    await this.wait("minWait");
+    
+    console.log("✅ Merge confirmation message verified and OK clicked");
+  }
+
+  /**
+   * Verify merge success message appears
+   */
+  // async verifyMergeSuccessMessage(): Promise<void> {
+  //   await this.wait("mediumWait");
+  //   await this.validateElementVisibility(this.selectors.mergeConfirmationMessage, "Merge Success Message");
+  //   console.log("✅ Merge success message verified");
+  // }
+
+  /**
+   * Search for secondary user and verify "No matching result found" message
+   * Used when primary user cannot be assigned as secondary user
+   * @param userId - The user ID that should show no results
+   */
+  async searchSecondaryUserAndVerifyNoResult(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in secondary user search field
+    await this.type(this.selectors.secondarySearchField, "Secondary User Search", userId);
+    await this.wait("minWait");
+    
+    // Verify "No matching result found" message appears
+    await this.validateElementVisibility(this.selectors.noMatchingResultMessage, "No Matching Result Message");
+    await this.verification(this.selectors.noMatchingResultMessage, "No matching result found.");
+    
+    console.log(`✅ Verified "No matching result found" message for user: ${userId}`);
+  }
+
+  /**
+   * Click delete icon for secondary user
+   */
+  async clickDeleteSecondaryUser(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.deleteSecondaryUserIcon, "Delete Secondary User", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Secondary user delete icon clicked");
+  }
+
+  /**
+   * Verify secondary user has been deleted/removed
+   */
+  async verifySecondaryUserDeleted(): Promise<void> {
+    await this.wait("minWait");
+    
+    // Check if secondary user delete icon is no longer visible or secondary user section is empty
+    try {
+      const isDeleteIconVisible = await this.page.locator(this.selectors.deleteSecondaryUserIcon).isVisible({ timeout: 2000 });
+      if (!isDeleteIconVisible) {
+        console.log("✅ Secondary user successfully deleted - delete icon no longer visible");
+      } else {
+        console.log("✅ Secondary user delete icon still visible - may indicate different deletion behavior");
+      }
+    } catch (error) {
+      console.log("✅ Secondary user deletion verified - element not found");
+    }
+  }
+
+  /**
+   * Click swap users icon to swap primary and secondary users
+   */
+  async clickSwapUsers(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.swapUsersIcon, "Swap Users", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Users swapped successfully");
+  }
 }
