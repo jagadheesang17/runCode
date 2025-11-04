@@ -287,5 +287,18 @@ async function verifyUserGuidInDatabase(userId: string, expectedGuid: string) {
     }
 }
 
+async function adminGroupDateValidity() {
+    const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+    const currentTimeString = currentTimeResult[0]['NOW()'];
+    const currentTime = new Date(currentTimeString);
+    console.log("Current Time : " + currentTime);
+    const newTime = (subDays(currentTime, 1));
+    const previousDate = format(newTime, 'yyyy-MM-dd');
+    console.log("Previous Date :" + previousDate);
+    
+    await dataBase.executeQuery(`UPDATE  user_groups  SET  valid_till  = '${previousDate}' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' ORDER BY id desc limit 1;`);
+    console.log(`✅ Admin group date validity updated to: ${previousDate}`);
+}
 
-export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase}
+
+export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity}

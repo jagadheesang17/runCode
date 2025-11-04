@@ -184,8 +184,10 @@ export class CatalogPage extends LearnerHomePage {
 
             clickCourse:(data: string) =>`(//div[text()='${data}'])[1]`,
 
-            costcenterValue:`//input[@id='cc']`
+            costcenterValue:`//input[@id='cc']`,
 
+            // Verify label selector for any text verification
+            verifyLabel: (text: string) => `//div[text()='${text}']`
 
     };
   constructor(page: Page, context: BrowserContext) {
@@ -538,6 +540,16 @@ export class CatalogPage extends LearnerHomePage {
       "course"
     );
     await this.mouseHover(this.selectors.verifyRecommendCourse(course), "Text");
+  }
+
+  // Verify label method - can be used to verify any text/label on the catalog page
+  async verifyLabel(text: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.verifyLabel(text),
+      `Label: ${text}`
+    );
+    await this.verification(this.selectors.verifyLabel(text), text);
   }
 
   async cronstoragejson(filepath: string, data: string) {

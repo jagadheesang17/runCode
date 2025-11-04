@@ -232,6 +232,10 @@ export class CoursePage extends AdminHomePage {
         crsAccessUserMandatoryOption: `//div[@class='dropdown-menu show']//span[text()='Mandatory']`,
         crsAccessSettingsSave: `//button[@id='add-language-btn']`,
 
+        // Parameterized Access Setting selectors
+        AccessMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
+        AccessUserMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
+
         //Prerequisite course
         courseOption: (data: string) => `//button[text()='${data}']`,
         preCourseIndex: (index: number) => `(//div[@id='lms-scroll-preadded-list']//i[contains(@class,'fa-duotone fa-square icon')])[${index}]`,
@@ -2633,6 +2637,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
   }
 
   async clickAccessButton() {
+    await this.wait("minWait");
     await this.validateElementVisibility(this.selectors.accessBtn, "Access"),
       await this.click(this.selectors.accessBtn, "Access", "Link");
     await this.wait("mediumWait");
@@ -2854,6 +2859,42 @@ async handleSaveUntilProceed(maxRetries = 6) {
       this.selectors.crsAccessSettingsSave,
       "Mandatory Selection",
       "Dropdown"
+    );
+    await this.wait("maxWait");
+  }
+
+  async accessSettings(accessType: string) {
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.crsAccessSettingLink,
+      "Access Setting Link",
+      "Link"
+    );
+    await this.click(
+      this.selectors.crsAccessDropDown,
+      "Access Dropdown",
+      "Dropdown"
+    );
+    await this.click(
+      this.selectors.AccessMandatoryOption(accessType),
+      `${accessType} Selection`,
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.crsAccessUserDropDown,
+      "User Access Dropdown",
+      "Dropdown"
+    );
+    await this.click(
+      this.selectors.AccessUserMandatoryOption(accessType),
+      `${accessType} Selection`,
+      "Dropdown"
+    );
+    await this.click(
+      this.selectors.crsAccessSettingsSave,
+      "Access Setting Save",
+      "Button"
     );
     await this.wait("maxWait");
   }
