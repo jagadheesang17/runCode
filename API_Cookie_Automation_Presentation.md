@@ -28,13 +28,16 @@
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  STEP 1: Cookie Generation (beforeAll Hook)                 │
-│  ─────────────────────────────────────────────────────      │
-│  File: utils/cookieSetup.ts                                 │
+│  STEP 1: Cookie Generation (Global Setup)                   │
+│  ──────────────────────────────────────────────────────     │
+│  File: global-setup.ts → utils/cookieSetup.ts               │
+│  • Runs ONCE before all tests                               │
+│  • Creates separate browser instance                        │
 │  • Runs in headless mode                                    │
 │  • Logs into application                                    │
 │  • Captures session cookies                                 │
 │  • Saves to: data/cookies.txt                               │
+│  • Closes browser (doesn't affect test browsers)            │
 └─────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -109,7 +112,8 @@ export const setupCourseCreation = async () => {
 
 **Key Features:**
 - ✅ Runs in **headless mode** (no UI)
-- ✅ Automatic execution via `beforeAll` hook
+- ✅ Automatic execution via **globalSetup** (runs once before all tests)
+- ✅ **Separate browser instance** (doesn't interfere with test browsers)
 - ✅ Console notification when complete
 - ✅ Fast and efficient
 
@@ -428,21 +432,28 @@ test('Create course via API and verify in UI', async ({ page }) => {
 
 ### 3. **Fast Execution**
 - ⚡ Cookie generation runs in **headless mode**
+- ⚡ Runs **only once** via globalSetup (not per test)
 - ⚡ API calls are **10x faster** than UI automation
 - **Impact:** Reduced test execution time
 
-### 4. **Single Source of Truth**
+### 4. **Browser Isolation**
+- 🔒 Cookie capture uses **separate browser instance**
+- 🔒 Doesn't interfere with test browsers
+- 🔒 Properly closed after cookie capture
+- **Impact:** No cross-test contamination
+
+### 5. **Single Source of Truth**
 - 📁 One file (`data/cookies.txt`) for all API tests
 - 🔄 Automatic synchronization across all API files
 - **Impact:** No cookie duplication or conflicts
 
-### 5. **Easy Debugging**
+### 6. **Easy Debugging**
 - 📊 Console logs for each API step
 - ✅ "Cookie updated" notification
 - 📝 Response logging for troubleshooting
 - **Impact:** Quick issue identification
 
-### 6. **Scalability**
+### 7. **Scalability**
 - 📈 Add new API tests without cookie management
 - 🔌 Plug-and-play architecture
 - **Impact:** Faster test development
@@ -451,12 +462,36 @@ test('Create course via API and verify in UI', async ({ page }) => {
 
 ## 🔧 Technical Implementation Details
 
+### Global Setup Configuration
+
+**File: `global-setup.ts`**
+```typescript
+import { setupCourseCreation } from './utils/cookieSetup'
+
+async function globalSetup() {
+    await setupCourseCreation()
+}
+
+export default globalSetup
+```
+
+**File: `playwright.config.ts`**
+```typescript
+export default defineConfig({
+    testDir: './tests',
+    globalSetup: require.resolve('./global-setup.ts'), // ← Runs once
+    // ... other config
+})
+```
+
 ### File Structure
 
 ```
 project/
+├── global-setup.ts                 # Global setup entry point
+├── playwright.config.ts            # Config with globalSetup reference
 ├── customFixtures/
-│   └── expertusFixture.ts          # Contains beforeAll hook
+│   └── expertusFixture.ts          # Test fixtures
 ├── utils/
 │   └── cookieSetup.ts              # Cookie generation logic
 ├── data/
@@ -472,11 +507,11 @@ project/
 ```
 Test Execution Starts
         ↓
-beforeAll Hook Triggered
+global-setup.ts Runs (ONCE)
         ↓
-setupCourseCreation() Runs
+setupCourseCreation() Executes
         ↓
-Headless Browser Opens
+New Browser Instance Created (Headless)
         ↓
 Login → Navigate → Capture Cookies
         ↓
@@ -484,9 +519,13 @@ Save to data/cookies.txt
         ↓
 Console: "✅ Cookie updated"
         ↓
-Browser Closes
+Wait 2 seconds
         ↓
-API Tests Start
+Cookie Browser Closes (Isolated)
+        ↓
+──────────────────────────────
+        ↓
+All Tests Start (New Browser Instances)
         ↓
 Read cookies from file
         ↓
@@ -511,9 +550,10 @@ Tests Execute Successfully
 
 1. ✅ **Fully Automated** - No manual cookie management needed
 2. ✅ **Reliable** - Fresh authentication tokens every run
-3. ✅ **Fast** - API calls + headless cookie generation
-4. ✅ **Maintainable** - Centralized cookie management
-5. ✅ **Scalable** - Easy to extend for more API tests
+3. ✅ **Fast** - API calls + headless cookie generation (runs once)
+4. ✅ **Isolated** - Separate browser for cookie capture (no interference)
+5. ✅ **Maintainable** - Centralized cookie management via globalSetup
+6. ✅ **Scalable** - Easy to extend for more API tests
 
 ---
 

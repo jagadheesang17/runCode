@@ -10,7 +10,7 @@ const courseName =  FakerData.getCourseName();
   const result = await createCourseAPI(
     content,
     courseName,
-    'published',   // status
+    'published',   // status--Show in catalog
     'single',      // instances
     'e-learning'   // sub_type/delivery type
   );

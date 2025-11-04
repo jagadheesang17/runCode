@@ -258,11 +258,6 @@ export const test = baseTest.extend<expertusFixture>({
 
 })
 
-test.beforeAll(async () => {
-    await setupCourseCreation()
-})
-
-
 /* test.afterEach(async ({}, testInfo) => {
     jiraIssueKey = await logADefectInJira(testInfo);
 });
