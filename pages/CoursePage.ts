@@ -3129,4 +3129,65 @@ async handleSaveUntilProceed(maxRetries = 6) {
       "button"
     );
   }
+
+  /**
+   * Verifies if the Access Setting link is visible but not clickable (disabled state)
+   * @returns Promise<boolean> - Returns true if visible but disabled, false otherwise
+   */
+  async verifyAccessSettingLink(): Promise<boolean> {
+    try {
+      await this.wait("minWait");
+      
+      // Check if Access Setting span with deactivate_color class is visible
+      const disabledAccessSetting = this.page.locator(`//span[@class='icontxt crsMapIcon deactivate_color' and text()='Access Setting']`);
+      const isVisible = await disabledAccessSetting.isVisible({ timeout: 5000 });
+      
+      if (isVisible) {
+        console.log("Access Setting link is visible");
+        
+        // Verify it has the deactivate_color class (disabled state)
+        const hasDeactivateClass = await disabledAccessSetting.evaluate((element) => {
+          return element.classList.contains('deactivate_color');
+        });
+        
+        // Check if element is not clickable/enabled
+        const isClickable = await disabledAccessSetting.isEnabled();
+        
+        // Additional check: Try to get the data-bs-toggle attribute
+        const hasTooltip = await disabledAccessSetting.getAttribute('data-bs-toggle');
+        
+        console.log(`Access Setting has deactivate_color class: ${hasDeactivateClass}`);
+        console.log(`Access Setting is clickable: ${isClickable}`);
+        console.log(`Access Setting has tooltip: ${hasTooltip === 'tooltip'}`);
+        
+        if (hasDeactivateClass && isClickable) {
+          console.log("Access Setting is visible but correctly disabled (not clickable)");
+          return true;
+        } else if (hasDeactivateClass && !isClickable) {
+          console.log("Warning: Access Setting appears disabled but is still clickable");
+          return false;
+        } else {
+          console.log("Access Setting is visible but not in disabled state");
+          return false;
+        }
+      } else {
+        console.log("Access Setting link with deactivate_color class is not visible");
+        
+        // Fallback: Check if regular Access Setting exists
+        const regularAccessSetting = this.page.locator(this.selectors.crsAccessSettingLink);
+        const regularVisible = await regularAccessSetting.isVisible({ timeout: 2000 });
+        
+        if (regularVisible) {
+          console.log("Regular Access Setting found but not in disabled state");
+          return false;
+        } else {
+          console.log("No Access Setting link found on the page");
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log(`Error verifying Access Setting link: ${error.message}`);
+      return false;
+    }
+  }
 }

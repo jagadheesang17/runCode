@@ -58,6 +58,8 @@ test.describe(`Verify_the_certification_compliance_flow`, async () => {
         await learningPath.registractionEnds();
         await learningPath.clickExpiresButton();
         await learningPath.clickAndSelectCompleteByRule();
+        //verifying access setting is disabled
+        await createCourse.verifyAccessSettingLink();
         await learningPath.clickSaveAsDraftBtn();
         await learningPath.clickSave();
         await learningPath.clickProceedBtn();
