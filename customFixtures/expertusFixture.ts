@@ -258,8 +258,8 @@ export const test = baseTest.extend<expertusFixture>({
 
 })
 
-test.beforeAll(async ({ browser }) => {
-    await setupCourseCreation(browser)
+test.beforeAll(async () => {
+    await setupCourseCreation()
 })
 
 
