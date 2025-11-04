@@ -12,9 +12,10 @@ export class AdminGroupPage extends PlaywrightWrapper {
     static pageUrl = URLConstants.adminURL;
     private exportPage: ExportPage;
 
-    public selectors = {
+     public selectors = {
         clickAdminGroup: (user: string) => `//div[text()='${user}']`,
         searchUser: "#includeLearner-filter-field",
+
         userSearchDropdown: `//button[@data-id='includeLearner'][@data-bs-toggle='dropdown']`,
         userSearchDropdownMain: `(//h6[text()='Select User']//following::div[@class='filter-option-inner'])[1]`,
         userSearchDropdownOption: (option: string) => ` //a[contains(@class,'dropdown-item')]//following::span[text()='${option}']`,
@@ -33,16 +34,24 @@ export class AdminGroupPage extends PlaywrightWrapper {
         selectRole: (roleName: string) => `//a[@class='dropdown-item']//span[text()='${roleName}']`,
         saveAdminGroup: `#lrnSaveUpdate`,
         proceedButton: `//button[contains(text(),'Yes, Proceed')]`,
-        yesButton: `//button[text()='Yes']`,
+
         clickActivateBtn:`//span[text()='Activate']`,
+        adminGroupValue: `//label[text()='Learner Group']//preceding::label[@class='form-label d-block my-0 me-1 text-break']`,
+        adminGroupValueInUser: `//label[text()='Admin Group']//following::label[@class='form-label d-block my-0 me-1 text-break']`,
+        selectOrganization:`//i[@class='fa fa-duotone fa-arrow-up-right-from-square icon_14_1']`,
+        searchOrganization:`//input[contains(@id,'org-exp-search')]`,
+        checkOrganization:`//i[@class='fa-duotone fa-square icon_14_1 me-1']`,
+        SaveOk:`//button[text()='OK']`,
+        clickYes:`//button[text()='Yes']`,
+
+        yesButton: `//button[text()='Yes']`,
         activateGroupBtn: `//a[@data-bs-toggle='tooltip'][@aria-label='Activate']`,
         suspendBtn: `[name="suspend-btn"]`,
         suspendIconBtn: `//a[@data-bs-toggle='tooltip'][@aria-label='Suspend']`,
         accessButton: `//span[@class='icontxt pointer' and text()='Access']`,
         deleteButton: `//span[@class='ms-2 field_title_1 deactivate_color' and text()='Delete Group']`,
         validTillInput: `//input[@id="admn_valid_till-input"]`,
-        adminGroupValue: `//label[text()='Learner Group']//preceding::label[@class='form-label d-block my-0 me-1 text-break']`,
-        adminGroupValueInUser: `//label[text()='Admin Group']//following::label[@class='form-label d-block my-0 me-1 text-break']`,
+   
         noMatchingResultMessage: `//div[@id='includeuserslist']/div`,
         groupNameAlreadyExistsError: `//*[contains(text(),'Group Name already exists')]`,
         errorMessageGeneral: `//div[contains(text(),'Group Name already exists')] | //*[contains(@class,'alert-danger')] | //*[contains(@class,'error')] | //*[contains(@class,'text-danger')][contains(text(),'Group Name already exists')]`,
@@ -539,6 +548,12 @@ export class AdminGroupPage extends PlaywrightWrapper {
     async editAdminGroup(groupName: string) {
         await this.wait('minWait');
         await this.click(this.selectors.editGroupButton(groupName), "Edit Group Button", "Button");
+    }
+    public async assignOrganization(data:string) {
+        await this.click(this.selectors.selectOrganization, "Assign Organization", "Button");
+        await this.typeAndEnter(this.selectors.searchOrganization, "Search Organization", data);
+        await this.click(this.selectors.checkOrganization,"Organization","Checkbox");
+        await this.click(this.selectors.SaveOk,"OK Button","Button");
     }
 
 }

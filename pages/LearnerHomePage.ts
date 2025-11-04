@@ -58,6 +58,7 @@ export class LearnerHomePage extends LearnerLogin {
         userEmail:'//div[text()="Email :"]/following-sibling::div[1]',
         userphone:'//div[text()="Phone :"]/following-sibling::div[1]',
 
+        organizationInProfile:(orgname:string)=>`//h4[text()='${orgname} ']`,
 
         instrctor: `//a/span[text()='Instructor']`,
 
@@ -404,6 +405,8 @@ public async clickmyprofile()
     }
 
 
-
+async verifyMappedOrganization(orgname:string,expectedOrgname:string){
+    await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
+}
 
 }
