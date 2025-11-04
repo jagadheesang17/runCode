@@ -258,5 +258,37 @@ async getSearchByOptions(): Promise<string[]> {
         }
     }
 
+    async verifyTrainingTypeFilterDisplayed(): Promise<void> {
+        await this.wait('mediumWait');
+        await this.validateElementVisibility(this.selectors.trainingTypeDropdown, "Training Type");
+        console.log('✅ Training Type filter is displayed');
+    }
+
+    async clickTrainingTypeDropdown(): Promise<void> {
+        await this.wait('mediumWait');
+        await this.click(this.selectors.trainingTypeDropdown, "Training Type", "Dropdown");
+        await this.wait('minWait');
+    }
+
+    async validateTrainingTypeOptions(expectedOptions: string[]): Promise<void> {
+        await this.wait('mediumWait');
+        const trainingTypeOptionsSelector = "//select[@id='dsl_training_type']//option";
+        const optionElements = this.page.locator(trainingTypeOptionsSelector);
+        const options = await optionElements.allTextContents();
+        const cleanOptions = options.map(option => option.trim()).filter(option => option !== '');
+        
+        console.log(`Available Training Type Options: ${cleanOptions.join(', ')}`);
+        
+        for (const expectedOption of expectedOptions) {
+            const found = cleanOptions.some(option => 
+                option.toLowerCase() === expectedOption.toLowerCase()
+            );
+            expect(found, `Expected training type '${expectedOption}' should be present. Available types: ${cleanOptions.join(', ')}`).toBeTruthy();
+            console.log(`✅ ${expectedOption} - Verified`);
+        }
+        
+        console.log('✅ All expected Training Type options validated successfully');
+    }
+
 }
 

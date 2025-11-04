@@ -6,7 +6,7 @@ import { AdminLogin } from "./AdminLogin";
 export class AdminHomePage extends AdminLogin {
     static pageUrl = URLConstants.adminURL;
 
-   public selectors = {
+    public selectors = {
         signOutLink: "//div[@class='logout']/a",
         dragableMenu: (menu: string) => `//div[text()='${menu}']/following::div[text()="Create"][1]`,
         menu: "//div[text()='Menu']",
@@ -54,30 +54,31 @@ export class AdminHomePage extends AdminLogin {
         yesBtn: `//button[text()='Yes']`,
         quickAccessModules: `//div[contains(@class,'mandatory')]/following-sibling::div`,
         adminRolemenu: `//a[text()='Admin Role']`,
-        siteAdminMenu:`//span[text()='Site Admin']`,
-        learnerConfigLink:`//a[text()='Learner Configuration']`,
-        siteSettingsLink:`//a[text()='Site Settings']`,
-        adminConfigLink:`//a[text()='Admin Configuration']`,
-       // To navigate from Enroll option to view/update status course tp:-
+        siteAdminMenu: `//span[text()='Site Admin']`,
+        learnerConfigLink: `//a[text()='Learner Configuration']`,
+        siteSettingsLink: `//a[text()='Site Settings']`,
+        adminConfigLink: `//a[text()='Admin Configuration']`,
+        // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
 
         //for Direct Content Launch
-        directContent:`//a[text()='Direct Content Launch']`,
+        directContent: `//a[text()='Direct Content Launch']`,
 
-        hoverOrgFromQuickAccess:(module:string)=>`//div[text()='${module}']`,
+        hoverOrgFromQuickAccess: (module: string) => `//div[text()='${module}']`,
        
 
-        adminhome:`//span[text()='Admin Home']` ,
-         clickEditOrganization:(createmodule:string)=> `(//div[text()='${createmodule}']/following::div[text()='Edit'])[1]`,
-                clickEditIconOfCreatedOrganization:(orgName:string)=>`(//div[text()='${orgName}']/following::a[@aria-label='Edit'])[1]`,
+        adminhome: `//span[text()='Admin Home']`,
+        clickEditOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Edit'])[1]`,
+        clickEditIconOfCreatedOrganization: (orgName: string) => `(//div[text()='${orgName}']/following::a[@aria-label='Edit'])[1]`,
 
-        clickCreateOrganization:(createmodule:string)=> `(//div[text()='${createmodule}']/following::div[text()='Create'])[1]`,
+        clickCreateOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Create'])[1]`,
 
         
-           //meta data library option
-        metaLibOption:(data:string)=>`//a[text()='${data}']`
+        //meta data library option
+        metaLibOption: (data: string) => `//a[text()='${data}']`,
+        dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`
     
-   }
+    }
     public async clickLearnerGroupLink() {
         try {
             await this.validateElementVisibility(this.selectors.learnerGrouplink, "Learner Group");
@@ -87,29 +88,29 @@ export class AdminHomePage extends AdminLogin {
             throw error;
         }
     }
-     async editModuleFromQuickAccess(module:string,createmodule:string){
-              await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
-            await this.wait("minWait");
-            await this.click(this.selectors.clickEditOrganization(createmodule), "Create module", "Button");
+    async editModuleFromQuickAccess(module: string, createmodule: string) {
+        await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+        await this.wait("minWait");
+        await this.click(this.selectors.clickEditOrganization(createmodule), "Create module", "Button");
  
-        }
+    }
 
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
         //this.common(page, context).catch(err => console.error("Error in common setup:", err));
         // this.setupPageListeners();
     }
-//To navigate from Enroll option to view/update status course tp:-
+    //To navigate from Enroll option to view/update status course tp:-
     public async clickviewUpdateStatusCourseTp() {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
     }
 
-    public async createModuleFromQuickAccess(module:string,createmodule:string) {
-            await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
-            await this.wait("minWait");
-            await this.click(this.selectors.clickCreateOrganization(createmodule), "Create module", "Button");
+    public async createModuleFromQuickAccess(module: string, createmodule: string) {
+        await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+        await this.wait("minWait");
+        await this.click(this.selectors.clickCreateOrganization(createmodule), "Create module", "Button");
 
-        }
+    }
     public async loadAndLogin(role: string) {
         console.log("Loading admin home page...")
         await this.page.goto(AdminLogin.pageUrl);
@@ -146,9 +147,9 @@ export class AdminHomePage extends AdminLogin {
         }
     }
 
-    async clickAdminHome(){
-            await this.click(this.selectors.adminhome,"Admin Home","Link");
-        }
+    async clickAdminHome() {
+        await this.click(this.selectors.adminhome, "Admin Home", "Link");
+    }
     public async isSignOut() {
         await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out");
         await this.page.waitForLoadState('load');
@@ -395,9 +396,9 @@ export class AdminHomePage extends AdminLogin {
     }
 
     public async clickEnroll() {
-    await this.wait("minWait");
+        await this.wait("minWait");
         await this.click(this.selectors.enrollLink, "Enrollment", "Link")
-                await this.wait("minWait");
+        await this.wait("minWait");
     }
 
     public async clickAdminRole() {
@@ -405,65 +406,69 @@ export class AdminHomePage extends AdminLogin {
 
     }
 
-        ///Site Admin////
-        public async siteAdmin() {
-            await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
-            await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
-        }
-        public async siteAdmin_learnerconfig() {
-            await this.validateElementVisibility(this.selectors.learnerConfigLink, "Learner Configuration");
-            await this.mouseHover(this.selectors.learnerConfigLink, "Learner Configuration");
-            await this.click(this.selectors.learnerConfigLink, "Learner Configuration", "Button");
-            await this.spinnerDisappear();
-        }
-        public async siteSettings() {
-            await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Settings");
-            await this.mouseHover(this.selectors.siteSettingsLink, "Site Settings");
-            await this.click(this.selectors.siteSettingsLink, "Site Settings", "Button");
-            await this.spinnerDisappear();
-        }
-        public async siteAdmin_Adminconfig() {
-            await this.wait("minWait");
-            await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
-            await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
-            await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
-            await this.spinnerDisappear();
-        }
+    ///Site Admin////
+    public async siteAdmin() {
+        await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
+        await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
+    }
+    public async siteAdmin_learnerconfig() {
+        await this.validateElementVisibility(this.selectors.learnerConfigLink, "Learner Configuration");
+        await this.mouseHover(this.selectors.learnerConfigLink, "Learner Configuration");
+        await this.click(this.selectors.learnerConfigLink, "Learner Configuration", "Button");
+        await this.spinnerDisappear();
+    }
+    public async siteSettings() {
+        await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Settings");
+        await this.mouseHover(this.selectors.siteSettingsLink, "Site Settings");
+        await this.click(this.selectors.siteSettingsLink, "Site Settings", "Button");
+        await this.spinnerDisappear();
+    }
+    public async siteAdmin_Adminconfig() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
+        await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
+        await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
+        await this.spinnerDisappear();
+    }
 
-        async clearBrowserCache(url: string) {
-            const baseUrl = await this.getBaseUrl(url)
-            await this.page.context().clearCookies();
-            await this.page.context().clearPermissions();
-            await this.page.goto(`${baseUrl}clearcache`);
-            await this.wait('minWait');
-            await this.page.goto(`${baseUrl}clearallcache`);
-        }
+    async clearBrowserCache(url: string) {
+        const baseUrl = await this.getBaseUrl(url)
+        await this.page.context().clearCookies();
+        await this.page.context().clearPermissions();
+        await this.page.goto(`${baseUrl}clearcache`);
+        await this.wait('minWait');
+        await this.page.goto(`${baseUrl}clearallcache`);
+    }
 
-        //For Direct Content Launch
-        public async clickDirectContentLaunchLink() {
-            await this.validateElementVisibility(this.selectors.directContent, "DirectContentLaunch");
-            await this.click(this.selectors.directContent, "DirectContentLaunch", "Button");
-            await this.page.waitForLoadState('load');
-        }
+    //For Direct Content Launch
+    public async clickDirectContentLaunchLink() {
+        await this.validateElementVisibility(this.selectors.directContent, "DirectContentLaunch");
+        await this.click(this.selectors.directContent, "DirectContentLaunch", "Button");
+        await this.page.waitForLoadState('load');
+    }
 
-        //Navigate learner side from admin page
-        public async navigateToLearner() {
-            await this.wait("minWait");
-            await this.page.locator(`#exp_logo`).click();
-            await this.page.waitForLoadState('load');
-            await this.spinnerDisappear();
-        }
+    //Navigate learner side from admin page
+    public async navigateToLearner() {
+        await this.wait("minWait");
+        await this.page.locator(`#exp_logo`).click();
+        await this.page.waitForLoadState('load');
+        await this.spinnerDisappear();
+    }
 
-        public async metaDataLibraryOption(data: string) {
+    public async metaDataLibraryOption(data: string) {
         await this.wait("minWait")
         await this.validateElementVisibility(this.selectors.metaLibOption(data), "Meta Data Library");
         await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
-
-
+    
+    public async dynamicShareableLinks() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
+        await this.mouseHover(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
+        await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
+        await this.spinnerDisappear();
+    }
 
 }
-
-
