@@ -178,15 +178,15 @@ switch (environmentSetup) {
   case "qaProduction":
     credentials = {
       CUSTOMERADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       CUSTOMERADMIN1: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       LEARNERADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       INSTRUCTORNAME: {
@@ -198,19 +198,19 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "Adella66@gmail.com",
+        username: "arjun",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       SUPERADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       PEOPLEADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       LEARNERPORTAL_User: {
@@ -228,7 +228,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       ENROLLADMIN: {
-        username: "lmsadmin@nomail.com",
+        username: "qanewprod@nomail.com",
         password: "Welcome1@",
       },
       NEWCUSTOMERADMIN: {
@@ -260,11 +260,11 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "autouser1@DonotUse",
+        username: "arjun1",
         password: "Welcome6@",
       },
       LearnerGroup2user: {
-        username: "autouser2@DonotUse",
+        username: "arjun2",
         password: "Welcome6@",
       },
     };
