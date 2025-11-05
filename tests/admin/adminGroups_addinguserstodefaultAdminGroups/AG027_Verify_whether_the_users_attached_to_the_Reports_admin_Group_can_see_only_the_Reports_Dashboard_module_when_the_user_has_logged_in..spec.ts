@@ -3,22 +3,20 @@ import { FakerData } from '../../../utils/fakerUtils';
 import { AdminRoleManager } from "../../../utils/adminRoleManager";
 import { UserPage } from "../../../pages/UserPage";
 import {  } from "../../../pages/AdminHomePage";
-import { AdminGroupPage } from "../../../pages/AdminGroupPage";
 
 
 let username=FakerData.getUserId();
 
 
-//let role:any;
-let role ="Super admin - Customer";
+let role:any;
 let systemDefaultRole: any;
-test.describe(`Verify whether the users attached to the Super Admin - Customer can see the following modules`, async () => {
+test.describe(`Verify whether the users attached to the Reports admin Group can see only the Reports Dashboard module when the user has logged in`, async () => {
     test.describe.configure({ mode: 'serial' })
-    test(`Verify whether the users attached to the Super Admin - Customer`, async ({ adminHome, createUser ,createCourse,adminGroup}) => {
+    test(`Verify whether the users attached to the Reports admin Group`, async ({ adminHome, createUser ,createCourse,adminGroup}) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Divya` },
-            { type: `TestCase`, description: `Verify whether the users attached to the Super Admin - Customer` },
-            { type: `Test Description`, description: `Verify whether the users attached to the Super Admin - Customer` }
+            { type: `Author`, description: `Tamilvanan` },
+            { type: `TestCase`, description: `Verify whether the users attached to the Reports admin Group can see only the Reports Dashboard module` },
+            { type: `Test Description`, description: `Creating the user and verifying whether the users attached to the Reports admin Group can see only the Reports Dashboard module` }
         );
 
             await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -37,8 +35,8 @@ test.describe(`Verify whether the users attached to the Super Admin - Customer c
             await adminHome.menuButton();
             await adminHome.people();
             await adminHome.adminGroup();
-            await adminGroup.searchAdmin("Super admin - Customer");
-            await adminGroup.clickGroup("Super admin - Customer");
+            await adminGroup.searchAdmin("Report admin");
+            await adminGroup.clickGroup("Report admin");
             role=await adminGroup.captureRole();
             console.log("role is "+role);
             await adminGroup.searchUser(username)
@@ -51,7 +49,7 @@ test.describe(`Verify whether the users attached to the Super Admin - Customer c
         
     )
 
-    test.only(`Verify whether the users attached to the Super Admin - Customer can see specified modules`, async ({ adminHome, adminGroup,learnerHome, createUser}) => {
+    test(`Verify whether the users attached to the Reports admin Group can see only the Reports Dashboard module`, async ({ adminHome, adminGroup,learnerHome, createUser}) => {
         systemDefaultRole = await adminGroup.getRoleDataByRoleName(role);
         console.log(`Using system default role: ${systemDefaultRole.roleName}`);     
         await learnerHome.basicLogin(username, "default");

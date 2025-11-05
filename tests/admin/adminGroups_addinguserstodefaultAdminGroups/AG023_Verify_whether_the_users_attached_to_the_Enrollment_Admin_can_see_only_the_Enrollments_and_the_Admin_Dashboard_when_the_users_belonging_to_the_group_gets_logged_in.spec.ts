@@ -50,7 +50,7 @@ test.describe(`Verify whether the users attached to the Enrollment Admin can see
     )
 
     test(`Verify whether the users attached to the Enrollment Admin can see only the Enrollments and the Admin Dashboard`, async ({ adminHome, adminGroup, learnerHome, createUser }) => {
-        systemDefaultRole = await AdminRoleManager.getRoleDataByRoleName(role);
+        systemDefaultRole = await adminGroup.getRoleDataByRoleName(role);
         console.log(`Using system default role: ${systemDefaultRole.roleName}`);
         await learnerHome.basicLogin(username, "default");
         await adminHome.menuButton();

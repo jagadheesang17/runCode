@@ -51,7 +51,7 @@ test.describe(`Verify whether the users attached to the Super Admin - E1 can see
     )
 
     test(`Verify whether the user can see all the modules`, async ({ adminHome, adminGroup,learnerHome, createUser}) => {
-        systemDefaultRole = await AdminGroupPage.getRoleDataByRoleName(role);
+        systemDefaultRole = await adminGroup.getRoleDataByRoleName(role);
         console.log(`Using system default role: ${systemDefaultRole.roleName}`);     
         await learnerHome.basicLogin(username, "default");
         await adminHome.menuButton();

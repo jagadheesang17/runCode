@@ -7,12 +7,6 @@ test.describe(`AG011 - System Default Admin Group Restrictions & Policy Validati
 
     let systemDefaultGroup: any;
 
-    test.beforeAll(async () => {
-        // Load system_default role data from predefined JSON
-        systemDefaultRole = await AdminRoleManager.getRoleDataByRoleName("system_default");
-        console.log(`Using system default role: ${systemDefaultRole.roleName}`);
-    });
-
     test(`Verify whether it does not allow to suspend a default admin Group`, async ({ adminHome, adminGroup }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },
