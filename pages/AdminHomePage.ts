@@ -60,6 +60,8 @@ export class AdminHomePage extends AdminLogin {
         adminConfigLink: `//a[text()='Admin Configuration']`,
         // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
+        clickBack:`//i[@id='dismissSidebar']`,
+        quickAccessCreate:(menu: string)=>`//div[text()='${menu}']//ancestor::div[@class='item-draggable']//div[text()='Create']`,
 
         //for Direct Content Launch
         directContent: `//a[text()='Direct Content Launch']`,

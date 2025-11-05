@@ -146,3 +146,7 @@ export function updateCronDataJSON(newData: tcData): void {
   });
 
 }
+
+export function getItemByProperty(arg0: string, arg1: string, roleName: string) {
+    throw new Error("Function not implemented.");
+}
