@@ -1774,30 +1774,11 @@ async handleSaveUntilProceed(maxRetries = 6) {
       console.log(list);
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
-      
-      // Use first() to avoid strict mode violation when multiple elements match
-      const timeLocator = this.page.locator(
-        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
-      );
-      
-      // Check if multiple elements exist and use first() to select the first match
-      const count = await timeLocator.count();
-      if (count > 1) {
-        console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
-        await timeLocator.first().click();
-      } else if (count === 1) {
-        await timeLocator.click();
-      } else {
-        console.log(`Time ${timeToSelect} not found, trying fallback approach`);
-        // Fallback: find the closest available time
-        for (const time of list) {
-          if (time >= timeToSelect) {
-            console.log('Selecting closest available time:', time);
-            await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
-            break;
-          }
-        }
-      }
+      await this.page
+        .locator(
+          `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
+        )
+        .click();
       /* for (const time of list) {
                 if (time >= timeToSelect) {
                     console.log('Selecting time:', time);
@@ -2374,27 +2355,15 @@ async handleSaveUntilProceed(maxRetries = 6) {
     index: number
   ) {
     //  const sessiontype = this.page.locator(this.selectors.selectType);
-    // function getCurrentTimePlusTwoHours() {
-    //   const now = new Date();
-    //   now.setHours(now.getHours() + 2); // Add 2 hours
-    //   let hours = now.getHours();
-    //   const minutes = now.getMinutes();
-    //   const ampm = hours >= 12 ? "PM" : "AM";
-    //   hours = hours % 12 || 12; // Convert to 12-hour format
-    //   const roundedMinutes = Math.ceil(minutes / 15) * 15;
-    //   const formattedMinutes =
-    //     roundedMinutes === 60
-    //       ? "00"
-    //       : roundedMinutes.toString().padStart(2, "0");
-    //   if (roundedMinutes === 60) {
-    //     hours = (hours % 12) + 1;
-    //   }
-    //   return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    // }
-    
-    // const targetTime = getCurrentTimePlusTwoHours();
-    // console.log("Current Time + 2 hours:", targetTime);
-
+    const pickRandomTime = async () => {
+      const timeElements = await this.page
+        .locator(`(//ul[@class='ui-timepicker-list'])[1]/li`)
+        .count();
+      const randomIndex = Math.floor(Math.random() * timeElements) + 1; // Random index from 1 to timeElements
+      return randomIndex;
+    };
+    const randomIndex = await pickRandomTime();
+    console.log("Random Index:", randomIndex);
     const country = "kolkata";
     const meetingUrl = FakerData.getMeetingUrl();
     await this.click(
@@ -2437,13 +2406,16 @@ async handleSaveUntilProceed(maxRetries = 6) {
       "Start Date",
       gettomorrowDateFormatted()
     );
-    // await this.click(
-    //   this.selectors.timeInputIndex(index),
-    //   "Start Time",
-    //   "Selected"
-    // );
-       await this.startandEndTime();
-    
+    await this.click(
+      this.selectors.timeInputIndex(index),
+      "Start Time",
+      "Selected"
+    );
+    await this.click(
+      this.selectors.chooseStartTimeIndex(index, randomIndex),
+      "StartTime",
+      "Selected"
+    );
     await this.type(
       this.selectors.attendeeUrlIndex(index),
       "Attendee url",

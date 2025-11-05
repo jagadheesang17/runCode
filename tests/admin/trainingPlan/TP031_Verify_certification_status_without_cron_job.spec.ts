@@ -13,7 +13,7 @@ test.describe(`TP031_Verify_recommended_learning_path_in_catalog_recommendations
     test(`Creation of E-learning single instance course for recommended learning path`, async ({ adminHome, createCourse, learningPath }) => {
 
         test.info().annotations.push(
-            { type: `Author`, description: `Tamilvanan` },
+            { type: `Author`, description: `Arivazhagan P` },
             { type: `TestCase`, description: `Create the course as Single instance for recommended access testing` },
             { type: `Test Description`, description: `Create course that will be used in certification for recommended access verification` }
 
@@ -44,7 +44,7 @@ test.describe(`TP031_Verify_recommended_learning_path_in_catalog_recommendations
 
     test(`Create certification with recommended access settings for group and user`, async ({ adminHome, learningPath, createCourse }) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Tamilvanan` },
+            { type: `Author`, description: `Arivazhagan P` },
             { type: `TestCase`, description: `Create certification with recommended access settings` },
             { type: `Test Description`, description: `Create certification and configure recommended access for both group and user to display in catalog recommendations` }
         );
@@ -84,8 +84,9 @@ test.describe(`TP031_Verify_recommended_learning_path_in_catalog_recommendations
     })
 
     test(`Verify recommended learning path appears in catalog recommendations tab`, async ({ learnerHome, dashboard, catalog }) => {
+
         test.info().annotations.push(
-            { type: `Author`, description: `Tamilvanan` },
+            { type: `Author`, description: `Arivazhagan P` },
             { type: `TestCase`, description: `Verify recommended learning path display in catalog recommendations` },
             { type: `Test Description`, description: `Verify that the recommended learning path is getting displayed in catalog page >> Recommendations tab when recommended access is set for group and user` }
 
