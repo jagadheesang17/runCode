@@ -2442,7 +2442,81 @@ async handleSaveUntilProceed(maxRetries = 6) {
     //   "Start Time",
     //   "Selected"
     // );
-       await this.startandEndTime();
+     //  await this.startandEndTime();
+  
+    await this.click(this.selectors.timeInput, "Start Time Input", "Input");
+    await this.wait("minWait");
+    /* const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
+        console.log(list); */
+    function getCurrentTimePlusTwoHours() {
+      const now = new Date();
+      now.setHours(now.getHours() + 1); // Add 2 hours
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12 || 12; // Convert to 12-hour format
+      const roundedMinutes = Math.ceil(minutes / 15) * 15;
+      const formattedMinutes =
+        roundedMinutes === 60
+          ? "00"
+          : roundedMinutes.toString().padStart(2, "0");
+      if (roundedMinutes === 60) {
+        hours = (hours % 12) + 1;
+      }
+      return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
+    }
+    async function selectNextAvailableTime() {
+      const list = await this.page
+        .locator("(//div[contains(@class,'timepicker')]//li)")
+        .allTextContents();
+      console.log(list);
+      const timeToSelect = getCurrentTimePlusTwoHours();
+      console.log("Current Time + 2 hours:", timeToSelect);
+      
+      // Use first() to avoid strict mode violation when multiple elements match
+      const timeLocator = this.page.locator(
+        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
+      );
+      
+      // Check if multiple elements exist and use first() to select the first match
+      const count = await timeLocator.count();
+      if (count > 1) {
+        console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
+        await timeLocator.first().click();
+      } else if (count === 1) {
+        await timeLocator.click();
+      } else {
+        console.log(`Time ${timeToSelect} not found, trying fallback approach`);
+        // Fallback: find the closest available time
+        for (const time of list) {
+          if (time >= timeToSelect) {
+            console.log('Selecting closest available time:', time);
+            await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
+            break;
+          }
+        }
+      }
+      /* for (const time of list) {
+                if (time >= timeToSelect) {
+                    console.log('Selecting time:', time);
+                    await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).click();
+                    break;
+                }
+            } */
+    }
+    await selectNextAvailableTime.call(this);
+
+    /* const pickRandomTime = async () => {
+            const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
+            console.log(timeElements);
+            const randomIndex = Math.floor(Math.random() * timeElements) + 1;
+            return randomIndex;
+        };
+        const randomIndex = await pickRandomTime();
+        console.log("Random Index:", randomIndex);
+        await this.click(this.selectors.timeInput, "Start Time", "Button");
+        await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
+  
     
     await this.type(
       this.selectors.attendeeUrlIndex(index),

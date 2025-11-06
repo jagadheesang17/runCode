@@ -113,58 +113,58 @@ test.describe(`TP035_Create_3_multi_instance_courses_and_attach_to_learning_path
         await createCourse.verifySuccessMessage();
         console.log("✅ Second multi-instance course created (E-Learning): " + courseName2);
 
-        // ====== CREATE THIRD MULTI-INSTANCE COURSE - VIRTUAL CLASS ======
-        // console.log("🔄 Creating third multi-instance course (Virtual Class)...");
-        // await adminHome.menuButton();
-        // await adminHome.clickLearningMenu();
-        // await adminHome.clickCourseLink();
-        // await createCourse.clickCreateCourse();
-        // await createCourse.verifyCreateUserLabel("CREATE COURSE");
-        // await createCourse.enter("course-title", courseName3);
-        // await createCourse.selectLanguage("English");
-        // await createCourse.typeDescription("Priced Virtual Class course: " + description);
-        // await createCourse.selectdeliveryType("Virtual Class");
-        // await createCourse.enterPrice(price);
-        // await createCourse.selectCurrency();
-        // await createCourse.handleCategoryADropdown();
-        // await createCourse.providerDropdown();
-        // await createCourse.selectTotalDuration();
-        // await createCourse.typeAdditionalInfo();
-        // await createCourse.clickCatalog();
-        // await createCourse.clickSave();
-        // await createCourse.clickProceed();
-        // await createCourse.verifySuccessMessage();
-        // await createCourse.clickEditCourseTabs();
-        // await createCourse.addInstances();
+        //====== CREATE THIRD MULTI-INSTANCE COURSE - VIRTUAL CLASS ======
+        console.log("🔄 Creating third multi-instance course (Virtual Class)...");
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickCourseLink();
+        await createCourse.clickCreateCourse();
+        await createCourse.verifyCreateUserLabel("CREATE COURSE");
+        await createCourse.enter("course-title", courseName3);
+        await createCourse.selectLanguage("English");
+        await createCourse.typeDescription("Priced Virtual Class course: " + description);
+        await createCourse.selectdeliveryType("Virtual Class");
+        await createCourse.enterPrice(price);
+        await createCourse.selectCurrency();
+        await createCourse.handleCategoryADropdown();
+        await createCourse.providerDropdown();
+        await createCourse.selectTotalDuration();
+        await createCourse.typeAdditionalInfo();
+        await createCourse.clickCatalog();
+        await createCourse.clickSave();
+        await createCourse.clickProceed();
+        await createCourse.verifySuccessMessage();
+        await createCourse.clickEditCourseTabs();
+        await createCourse.addInstances();
 
-        // // Add first Virtual Class instance
-        // await createCourse.selectInstanceDeliveryType("Virtual Class");
-        // await createCourse.clickCreateInstance();
-        // await createCourse.enter("course-title", instanceName3);
-        // await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting1", 1);
-        // await createCourse.typeAdditionalInfo();
-        // await createCourse.clickaddIcon();
-        // await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting1", 2);
-        // await createCourse.setMaxSeat();
-        // await createCourse.clickCatalog();
-        // await createCourse.clickUpdate();
+        // Add first Virtual Class instance
+        await createCourse.selectInstanceDeliveryType("Virtual Class");
+        await createCourse.clickCreateInstance();
+        await createCourse.enter("course-title", instanceName3);
+        await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting1", 1);
+        await createCourse.typeAdditionalInfo();
+        await createCourse.clickaddIcon();
+        await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting1", 2);
+        await createCourse.setMaxSeat();
+        await createCourse.clickCatalog();
+        await createCourse.clickUpdate();
 
-        // // Add second Virtual Class instance  
-        // await createCourse.editcourse();
-        // await createCourse.clickinstanceClass();
-        // await createCourse.addInstances();
-        // await createCourse.selectInstanceDeliveryType("Virtual Class");
-        // await createCourse.clickCreateInstance();
-        // await createCourse.enter("course-title", instanceName4);
-        // await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting2", 1);
-        // await createCourse.typeAdditionalInfo();
-        // await createCourse.clickaddIcon();
-        // await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting2", 2);
-        // await createCourse.setMaxSeat();
-        // await createCourse.clickCatalog();
-        // await createCourse.clickUpdate();
-        // await createCourse.verifySuccessMessage();
-        // console.log("✅ Third multi-instance course created (Virtual Class): " + courseName3);
+        // Add second Virtual Class instance  
+        await createCourse.editcourse();
+        await createCourse.clickinstanceClass();
+        await createCourse.addInstances();
+        await createCourse.selectInstanceDeliveryType("Virtual Class");
+        await createCourse.clickCreateInstance();
+        await createCourse.enter("course-title", instanceName4);
+        await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting2", 1);
+        await createCourse.typeAdditionalInfo();
+        await createCourse.clickaddIcon();
+        await createCourse.selectMeetingType(instructorName, courseName3 + "_Meeting2", 2);
+        await createCourse.setMaxSeat();
+        await createCourse.clickCatalog();
+        await createCourse.clickUpdate();
+        await createCourse.verifySuccessMessage();
+        console.log("✅ Third multi-instance course created (Virtual Class): " + courseName3);
 
         console.log("🎯 ALL 3 MULTI-INSTANCE COURSES CREATED SUCCESSFULLY:");
         console.log("   ✓ Course 1 (Classroom): " + courseName1);
@@ -205,10 +205,10 @@ test.describe(`TP035_Create_3_multi_instance_courses_and_attach_to_learning_path
         console.log("✅ Added second multi-instance course to learning path: " + courseName2);
 
         // Add third multi-instance course (Virtual Class)
-        // await learningPath.clickAddCourse();
-        // await learningPath.searchAndClickCourseCheckBox(courseName3);
-        // await learningPath.clickAddSelectCourse();
-        // console.log("✅ Added third multi-instance course to learning path: " + courseName3);
+        await learningPath.clickAddCourse();
+        await learningPath.searchAndClickCourseCheckBox(courseName3);
+        await learningPath.clickAddSelectCourse();
+        console.log("✅ Added third multi-instance course to learning path: " + courseName3);
 
         await learningPath.clickDetailTab();
         await learningPath.description("Learning path containing 3 different multi-instance courses");
