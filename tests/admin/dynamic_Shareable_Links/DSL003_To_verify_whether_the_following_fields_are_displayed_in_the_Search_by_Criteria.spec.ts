@@ -26,7 +26,7 @@ test.describe('DSL003 - Verify Search by Criteria functionality in Dynamic Share
         console.log('All expected Search by Criteria options verified successfully');
     });
 
-    test("DSL003b -To verify that the title matching to the entered text is getting displayed when Search by ,", async ({ adminHome, dynamicShareableLinks, page }) => {
+    test("DSL003b -To verify that the title matching to the entered text is getting displayed when Search by ,", async ({ adminHome, dynamicShareableLinks }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
@@ -52,7 +52,7 @@ test.describe('DSL003 - Verify Search by Criteria functionality in Dynamic Share
         await dynamicShareableLinks.performSearchByCriteria(searchCriteria);
     });
 
-    test("DSL003c - Verify autocomplete functionality", async ({ adminHome, dynamicShareableLinks, page }) => {
+    test("DSL003c - Verify autocomplete functionality", async ({ adminHome, dynamicShareableLinks }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
@@ -72,41 +72,12 @@ test.describe('DSL003 - Verify Search by Criteria functionality in Dynamic Share
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.dynamicShareableLinks();
-        await dynamicShareableLinks.selectDomainOption("newprod");
+        await dynamicShareableLinks.selectDomainOption(domain);
         
-        // Loop through each search criteria for autocomplete testing
-        for (const [searchBy, searchTerm] of Object.entries(searchCriteria)) {
-            if (!searchTerm) {
-                console.log(`⏭️ Skipping ${searchBy} - no search term provided`);
-                continue;
-            }
-            
-            console.log(`\n🔍 Testing Autocomplete for: ${searchBy} with term: "${searchTerm}"`);
-            
-            await dynamicShareableLinks.selectSearchByOption(searchBy);
-            await dynamicShareableLinks.wait('minWait');
-            
-            await dynamicShareableLinks.enterSearchText(searchTerm);
-            await dynamicShareableLinks.wait('mediumWait');
-            
-            // Verify search results are displayed using XPath
-            const resultXPath = "//div[contains(@id,'dsl_search-lms-scroll-results')]//li";
-            const resultElements = await page.locator(`xpath=${resultXPath}`).all();
-            
-            if (resultElements.length === 0) {
-                throw new Error(`❌ No autocomplete results found for ${searchBy}: "${searchTerm}"`);
-            }
-            
-            console.log(`✅ Autocomplete results visible for '${searchBy}' (${searchTerm}): ${resultElements.length} result(s) found`);
-            
-            await dynamicShareableLinks.clickClearButton();
-            await dynamicShareableLinks.wait('minWait');
-        }
-        
-        console.log('\n✅ All autocomplete functionality verified successfully with results displayed');
+        await dynamicShareableLinks.testAutocompleteWithResults(searchCriteria);
     });
 
-    test("DSL003d - Verify autocomplete is not displayed for non-matching search text", async ({ adminHome, dynamicShareableLinks, page }) => {
+    test("DSL003d - Verify autocomplete is not displayed for non-matching search text", async ({ adminHome, dynamicShareableLinks }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
@@ -126,36 +97,8 @@ test.describe('DSL003 - Verify Search by Criteria functionality in Dynamic Share
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.dynamicShareableLinks();
-        await dynamicShareableLinks.selectDomainOption("newprod");
-        
-        for (const [searchBy, searchTerm] of Object.entries(nonMatchingSearchCriteria)) {
-            if (!searchTerm) {
-                console.log(`⏭️ Skipping ${searchBy} - no search term provided`);
-                continue;
-            }
-            
-            console.log(`\n🔍 Testing Non-matching Autocomplete for: ${searchBy} with term: "${searchTerm}"`);
-            
-            await dynamicShareableLinks.selectSearchByOption(searchBy);
-            await dynamicShareableLinks.wait('minWait');
-            
-            await dynamicShareableLinks.enterSearchText(searchTerm);
-            await dynamicShareableLinks.wait('mediumWait');
-
-            const resultXPath = "//div[contains(@id,'dsl_search-lms-scroll-results')]//li";
-            const resultElements = await page.locator(`xpath=${resultXPath}`).all();
-            
-            if (resultElements.length > 0) {
-                throw new Error(`Unexpected autocomplete results found for non-matching ${searchBy}: "${searchTerm}" - Found ${resultElements.length} result(s)`);
-            }
-            
-            console.log(`✅ No autocomplete results displayed for non-matching '${searchBy}' (${searchTerm}): Correctly handled`);
-            
-            await dynamicShareableLinks.clickClearButton();
-            await dynamicShareableLinks.wait('minWait');
-        }
-        
-        console.log('\n✅ All non-matching search criteria verified - Autocomplete NOT displayed for non-matching text');
+        await dynamicShareableLinks.selectDomainOption(domain);
+        await dynamicShareableLinks.testAutocompleteWithoutResults(nonMatchingSearchCriteria);
     });
 
 });

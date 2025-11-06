@@ -17,14 +17,8 @@ test.describe('DSL005 - Verify Training Type filter in Dynamic Shareable Links',
         await adminHome.clickLearningMenu();
         await adminHome.dynamicShareableLinks();
         await dynamicShareableLinks.selectDomainOption(domain);
-
-        // Verify Training Type filter is displayed
         await dynamicShareableLinks.verifyTrainingTypeFilterDisplayed();
-
-        // Click on Training Type dropdown
         await dynamicShareableLinks.clickTrainingTypeDropdown();
-
-        // Verify Certification and Learning Path options are displayed
         const expectedTrainingTypes = [
             "Course",
             "Certification",

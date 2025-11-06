@@ -39,6 +39,7 @@ test("DSL001 - Verify all fields are displayed in Dynamic Share Link page", asyn
         await adminHome.clickLearningMenu();
         await adminHome.dynamicShareableLinks();
         await dynamicShareableLinks.verifyElements(['Domain']);
+        await dynamicShareableLinks.verifyNoDomainSelectedByDefault();
         await dynamicShareableLinks.selectDomainOption("newprod");
         await dynamicShareableLinks.verifyElements(elementsToVerify);
         console.log('*** DSL001: All elements verified successfully');
