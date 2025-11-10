@@ -44,6 +44,10 @@ export class AdminGroupPage extends PlaywrightWrapper {
         SaveOk:`//button[text()='OK']`,
         clickYes:`//button[text()='Yes']`,
 
+        // Group creation popup selectors
+        groupCreationPopupMessage: `//div[text()='Do you still want to go ahead and create a new group?']`,
+        groupCreationPopupYesButton: `//button[text()='Yes']`,
+
         yesButton: `//button[text()='Yes']`,
         activateGroupBtn: `//a[@data-bs-toggle='tooltip'][@aria-label='Activate']`,
         suspendBtn: `[name="suspend-btn"]`,
@@ -163,6 +167,26 @@ export class AdminGroupPage extends PlaywrightWrapper {
 
     public async clickSave() {
         await this.click(this.selectors.saveAdminGroup, "Custom Group Save ", "button")
+    }
+
+    public async handleGroupCreationPopup() {
+        try {
+            const popupLocator = this.page.locator(this.selectors.groupCreationPopupMessage);
+            if (await popupLocator.isVisible({ timeout: 3000 })) {
+                console.log("✅ Group creation popup detected: 'Do you still want to go ahead and create a new group?' - Clicking Yes");
+                await this.click(this.selectors.groupCreationPopupYesButton, "Group Creation Popup Yes", "Button");
+                await this.wait("minWait");
+                return true; // Popup was present and handled
+            }
+        } catch (error) {
+            console.log("ℹ️ No group creation popup appeared - continuing normally");
+        }
+        return false; // No popup was present
+    }
+
+    public async clickSaveWithPopupHandling() {
+        await this.clickSave();
+        return await this.handleGroupCreationPopup();
     }
 
     public async clickProceed() {

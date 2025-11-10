@@ -2771,6 +2771,49 @@ async handleSaveUntilProceed(maxRetries = 6) {
     }
   }
 
+  async addMultipleLearnerGroups(users: string[]) {
+    await this.wait("mediumWait");
+    const closeIcon = this.page.locator(this.selectors.accessCloseIcon);
+    const count = await closeIcon.count();
+    console.log(count);
+    console.log("learner groups : " + count);
+    
+    // Clear existing users first
+    for (let i = 1; i < count; i++) {
+      await this.mouseHover(this.selectors.MultiaccessCloseIcon, "close Icon");
+      await this.page
+        .locator(this.selectors.MultiaccessCloseIcon)
+        .click({ force: true });
+      await this.page.waitForTimeout(100);
+    }
+    
+    if (!users || users.length === 0) {
+      console.log("No users provided");
+      return;
+    }
+    
+    // Add each user
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      console.log(`Adding user: ${user}`);
+      
+      let learnerGroupValue = await this.getInnerText(
+        this.selectors.learnerGroup
+      );
+      console.log(learnerGroupValue);
+      
+      await this.type(this.selectors.accessUserInput, "User", user);
+      await this.click(`//li[text()='${user}']`, "User", "List");
+      
+      // Wait between adding users
+      if (i < users.length - 1) {
+        await this.wait("minWait");
+      }
+    }
+    
+    console.log(`Successfully added ${users.length} users: ${users.join(', ')}`);
+  }
+
   async saveAccessButton() {
     await this.click(this.selectors.saveAccessBtn, "Save Access", "Button");
     await this.wait("minWait");
@@ -2922,6 +2965,116 @@ async handleSaveUntilProceed(maxRetries = 6) {
       
     } catch (error) {
       console.log(`Error in learner group selection: ${error.message}`);
+    }
+    
+    // Close the dropdown
+    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
+    await this.wait("minWait");
+  }
+
+  async multipleLearnerGroupSelection(learnerGroupNames: string[]) {
+    await this.spinnerDisappear();
+    await this.wait("mediumWait");
+    
+    // Check if modify access button is visible and click if needed
+    if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 5000 })) {
+      await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
+      await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
+      await this.spinnerDisappear();
+      await this.wait("mediumWait");
+    }
+    
+    // Open learner group dropdown
+    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
+    await this.wait("minWait");
+    
+    try {
+      // Get all learner group options
+      const options = await this.page.locator(this.selectors.allLearnerGroupOptions).all();
+      const targetGroupsFound: string[] = [];
+      const targetGroupsSelected: string[] = [];
+      
+      for (const option of options) {
+        const value = await option.innerText();
+        console.log(`Processing learner group: ${value}`);
+        
+        if (learnerGroupNames.includes(value)) {
+          targetGroupsFound.push(value);
+          
+          // Check if the target learner group is already selected
+          try {
+            const groupOptionLocator = this.page.locator(
+              `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
+            ).first();
+            
+            if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
+              const parentElement = groupOptionLocator.locator('..');
+              const isSelected = await parentElement.evaluate((el) => {
+                const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+                return el.classList.contains('selected') || 
+                       checkbox?.checked || 
+                       el.getAttribute('aria-selected') === 'true';
+              });
+              
+              if (isSelected) {
+                console.log(`${value} is already selected - skipping`);
+                targetGroupsSelected.push(value);
+              } else {
+                console.log(`Selecting ${value}`);
+                await groupOptionLocator.click();
+                await this.wait("minWait");
+                targetGroupsSelected.push(value);
+              }
+            }
+          } catch (error) {
+            console.log(`Could not process target learner group ${value}: ${error.message}`);
+          }
+          continue;
+        }
+        
+        // For all other groups, try to unselect them
+        try {
+          const groupOptionLocator = this.page.locator(
+            `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
+          ).first();
+          
+          if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
+            // Check if the option is currently selected by looking for selected class or checked state
+            const parentElement = groupOptionLocator.locator('..');
+            const isSelected = await parentElement.evaluate((el) => {
+              const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+              return el.classList.contains('selected') || 
+                     checkbox?.checked || 
+                     el.getAttribute('aria-selected') === 'true';
+            });
+            
+            if (isSelected) {
+              console.log(`Unselecting ${value}`);
+              await groupOptionLocator.click();
+              await this.wait("minWait");
+            }
+          }
+        } catch (error) {
+          console.log(`Could not process learner group ${value}: ${error.message}`);
+        }
+      }
+      
+      // Check if all target groups were found and selected
+      const notFound = learnerGroupNames.filter(name => !targetGroupsFound.includes(name));
+      const notSelected = targetGroupsFound.filter(name => !targetGroupsSelected.includes(name));
+      
+      if (notFound.length > 0) {
+        console.log(`Warning: Target learner groups not found: ${notFound.join(', ')}`);
+      }
+      if (notSelected.length > 0) {
+        console.log(`Warning: Could not select target learner groups: ${notSelected.join(', ')}`);
+      }
+      if (targetGroupsSelected.length > 0) {
+        console.log(`Successfully selected learner groups: ${targetGroupsSelected.join(', ')}`);
+      }
+      
+    } catch (error) {
+      console.log(`Error in multiple learner group selection: ${error.message}`);
     }
     
     // Close the dropdown
