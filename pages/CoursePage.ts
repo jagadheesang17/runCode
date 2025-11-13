@@ -23,7 +23,6 @@ import { credentials } from "../constants/credentialData";
 import { da, th } from "@faker-js/faker";
 
 export class CoursePage extends AdminHomePage {
-<<<<<<< Updated upstream
   public selectors = {
     ...this.selectors,
     createUserLabel: "//h1[text()='Create Course']",
@@ -264,184 +263,6 @@ export class CoursePage extends AdminHomePage {
     unitInput: "//label[text()='Unit']/following-sibling::input",
     addCEUBtn: "//button[text()='Add CEU']",
     addedCEUData: "div[class='lms-ceu-wrapper'] div[class$='lms-scroll-pre']",
-=======
-   public selectors = {
-        ...this.selectors,
-        createUserLabel: "//h1[text()='Create Course']",
-        courseDescriptionInput: "//div[@id='course-description']//p",
-        uploadDiv: "//div[@id='upload-div']",
-        uploadInput: "//div[@id='upload-div']//input[@id='content_upload_file']",
-        clickHereuploadFile: `(//label[text()='Click here'])[1]`,
-        attachedContent: (fileName: string) => `//label[text()='Attached Content']/following::span/following-sibling::div[text()='${fileName}']`,
-        showInCatalogBtn: "//span[text()='Show in Catalog']",
-        modifyTheAccessBtn: "//footer/following::button[text()='No, modify the access']",
-        saveBtn: "//button[@id='course-btn-save' and text()='Save']",
-        proceedBtn: "//footer//following::button[contains(text(),'Yes, Proceed')]",
-        successMessage: "//div[@id='lms-overall-container']//h3",
-        domainBtn: "//label[text()='Domain']/following::button[1]",
-        //  domainOption: (domain_name: string) => `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
-        closeBtn: "//button[text()='Close']",
-        courseLanguagesWrapper: "//label[contains(text(),'Language')]/following::div[@id='wrapper-course-languages']",
-        courseLanguageInput: "//label[text()='Language']/following::input[1]",
-        courseLanguageLink: (language: string) => `(//label[text()='Language']//following::span[text()='${language}'])[1]`,
-        selectCategoryBtn: "//div[contains(@id,'categorys')]//div[text()='Select']",
-        categoryOption: (category: string) => `//span[text()='${category}']`,
-        addCategoryBtn: "//div[text()='Add Category']",
-        categoryInput: "//label[text()='Category']/following::input[@id='course-categorys']",
-        okButton: "//button[text()='OK']",
-        okBtn: "//span[contains(text(),'created successfully')]/following::button[text()='OK']",
-        cancelBtn: "//label[text()='Category']/following::span[contains(@class,'lms-cat-cancel')]",
-        providerDropdown: "//label[text()='Provider']//following-sibling::div",
-        providerDropdownValue: "//label[text()='Provider']//following-sibling::div//div//a",
-        providerOption: (provider: string) => `//a/span[text()='${provider}']`,
-        providerIndexBase: (index: string) => `(//label[text()='Provider']//following-sibling::div//a)[${index}]`,
-        totalDurationInput: "(//label[text()='Total Duration']/following::input)[1]",
-        additionalInfoInput: "//div[@id='additional_information_description_id']//p",
-        priceInput: "//label[text()='Price']/following::input[1]",
-        currencyDropdown: "//div[contains(@id,'currency')]",
-        currencyOption: "//label[text()='Currency']/following::a/span[text()='US Dollar']",
-        maxSeatsInput: "//label[text()='Seats-Max']/following::input[1]",
-        contactSupportInput: "//label[text()='Contact Support']/following::input[1]",
-        complianceField: "//div[@id='wrapper-course-compliance']",
-        complianceOption: "//footer/following-sibling::div//span[text()='Yes']",
-        validityField: "//div[@id='wrapper-course-compliance-validity']",
-        validityOption: "//footer/following::span[text()='Days']",
-        validityDateInput: "input[@id='validity_date-input']",
-        validityDaysInput: "//input[@id='complete_days']",
-        completeByField: "//div[@id='wrapper-course-complete-by']",
-        completeByDateInput: "#complete_by_date-input",
-        completeByDaysInput: "//input[@id='complete_days']",
-        completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
-        completeByOption: (option: string) => `//span[text()='${option}']`,
-        // completeByRule: `(//div[@id='wrapper-course-complete-by-rule']//button)[1]`,
-        completeByRule: "(//div[@id='wrapper-course-complete-by-rule']//button | //div[@id='wrapper-program-complete-by-rule']//button)[1]",
-        completeByRuleOption: `//footer/following-sibling::div//span[text()='Yes']`,
-        // postCompleteByStatusField: "//div[@id='wrapper-course-post-complete-by-status']",
-        postCompleteByStatusField: "//div[@id='wrapper-course-post-complete-by-status'] | //div[@id='wrapper-program-post-complete-by-status']",
-        postCompleteByOption: "//footer/following::a/span[text()='Overdue']",
-        courseInstancesField: "//div[@id='wrapper-course-instances']",
-        instanceTypeOption: "//span[text()='Multi Instance/Class']",
-        hideInCatalogCheckbox: "//span[contains(text(),'Hide in Catalog')]",
-        saveInDraftCheckbox: "//span[contains(text(),'Save as Draft')]",
-        deliveryTypeDropdown: "//div[@id='wrapper-course-delivery-type']",
-        deliveryTypeOption: (deliveryType: string) => `//span[text()='${deliveryType}']`,
-        editCourseTabLink: "//a[text()='Edit Course']",
-        addInstancesBtn: "//button[@id='course-btn-add-instances']",
-        instanceDeliveryTypeField: "//div[@id='wrapper-instanceDeliveryType']",
-        instanceDeliveryTypeOption: (delivery: string) => `//footer/following::a/span[text()='${delivery}']`,
-        instanceCountInput: "//div[@id='exp-course-instances-options']//input",
-        createInstanceBtn: "//button[@id='instance-add']",
-        sessionNameInput: "//label[text()='Session Name']/following-sibling::input",
-        sessionNameIndex: (index: number) => `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
-
-        instructorDropdown: "//label[text()='Instructor']/following-sibling::div//input",
-        instructorDropdownIndex: (index: number) => `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
-        instructorOption: (instructorName: string) => `//li[contains(text(),'${instructorName}')]`,
-        instructorOptionIndex: (instructorName: string, index: number) => `(//li[contains(text(),'${instructorName}')])[${index}]`,
-        locationSelection: "//label[text()='Select Location']/following-sibling::div//input[1]",
-        locationDropdown: "//label[text()='Select Location']/following-sibling::div//input[@placeholder='Search']",
-        locationOption: (locationName: string) => `//li[text()='${locationName}']`,
-        CourseCalendaricon: "//div[@id='complete_by_date']/input",
-        tomorrowdate: "//td[@class='today day']/following-sibling::td[1]",
-        nextMonth: `//div[@class='datepicker-days']//th[@class='next']`,
-        calanderIcon: "(//label[text()='Date']//following::button[contains(@class,'calendaricon')])[1]",
-        registrationEnd: `//div[@id='registration-ends']/input`,
-        completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
-        todayDate: "td[class='today day']",
-        randomDate: `(//td[@class='day']/following-sibling::td)[1]`,
-        seatMaxInput: "//label[text()='Seats-Max']/following-sibling::input",
-        timeInput: `//label[text()='Start Time']/following-sibling::input`,
-        chooseTimeOption: (randomIndex: string) => `(//div[contains(@class,'timepicker')]//li)[${randomIndex}]`,
-        chooseStartTimeIndex: (index: string, randomIndex: number) => `((//ul[@class='ui-timepicker-list'])[${index}]/li)[${randomIndex}]`,
-        waitlistInput: "//label[text()='Waitlist']/following-sibling::input",
-        updateBtn: "//button[text()='Update']",
-        detailsbtn: "//button[text()='Details']",
-        courseUpdateBtn: "//button[@id='course-btn-save']",
-        surveyAndAssessmentLink: "//button[text()='Survey/Assessment']",
-        //surveyCheckBox: "//div[@id='sur_ass-lms-scroll-survey-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
-        surveyCheckBox: "//div[contains(@id,'scroll-survey-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
-        editCourseBtn: "//a[text()='Edit Course']",
-        //assessmentCheckbox: "//div[@id='sur_ass-lms-scroll-assessment-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
-        assessmentCheckbox: "//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
-        addAssessmentBtn: "//button[text()='Add As Assessment']",
-        categoryDropdown: "//div[@class='dropdown-menu show']//input[@type='search']",
-        allCategoryOptions: "//select[@id='course-categorys-exp-select']/option",
-        providerOptions: "//select[@id='course-providers']/option",
-        provider: (Options: string) => `(//span[text()='${Options}'])[1]`,
-        progress: "//progress[@id='progress-bar'and@value='0']",
-        addSurveyBtn: "//button[text()='Add As Survey']",
-        deliveryLabel: "//label[text()='Delivery Type']",
-        instructorInput: "//input[contains(@id,'instructors') and (@placeholder='Search')]",
-        instructorInputIndex: (index: number) => `(//input[contains(@id,'instructors') and (@placeholder='Search')])[${index}]`,
-        //instance_Class: "//a[contains(@title,'Instance/Class')]", -->DOM Contented Changed 08-07-2024
-        // instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class')]", --> update on 18/07/2024
-        instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class') or contains(@title,'Instance/Class')]",
-        clickContentLibrary: "//span[text()='Add Content']//following::span[text()='Click here'][1]",
-        allContents: "//i[@class='fa-duotone fa-square icon_16_1']",
-        contentIndex: (index: number) => `(//i[contains(@class,'fa-duotone fa-square ico')])[${index}]`,
-        addContentButton: "//button[text()='Add Content']",
-        attachedContentLabel: "//label[text()='Attached Content']",
-        getCourse: "//input[@id='course-title']",
-        domainDropdown: "//a[@class='dropdown-item selected']",
-        domainDropdownValue: "//label[text()='Domain']/following-sibling::div//div[contains(@class,'dropdown-menu')]//span[@class='text']",
-        //domainDropdownIndex: (domain_index: number) => `(//a[@class='dropdown-item selected'])[${domain_index}]`,
-        domainSelectedText: "//div[contains(text(),'selected')]",
-        domainOption: (domain_name: string) => `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
-        portalDropdown: `(//label[text()='Domain']/following::div)[1]`,
-        allPortalOptions: `//label[text()='Domain']/following::div[@class='dropdown-menu show']//a`,
-        portalOption: (index: string) => `(//label[text()='Domain']/following::div[@class='dropdown-menu show']//a)[${index}]`,
-        domainNameOption: (portalName: string) => `//a[@class='dropdown-item']//span[text()='${portalName}']`,
-        portal: `(//label[text()='Domain']/following::div[@id='wrapper-user-portals']//button)[1]`,
-        image: "(//div[@class='img-wrapper']/img)[1]",
-        clickHere: "//div[@class='form-label']/span",
-        httpsInput: "input[id=content_url]",
-        addURLBtn: "button:text-is('Add URL')",
-        clickSaveasDraft: "//input[@id='draftcatalog']/parent::div//i[contains(@class,'fa-dot-circle')]",
-        willResolveLaterBtn: "//footer//following::button[text()='No, will resolve later']",
-        selectType: `//label[text()='Session Type']/following-sibling::div`,
-        sessionType: "(//label[text()='Session Type']/parent::div//button)[1]",
-        otherMeeting: "//span[text()='other Meetings']",
-        sessionTypeIndex: (index: number) => `(//label[text()='Session Type']/following-sibling::div)[${index}]`,
-        attendeeUrlIndex: (index: number) => `(//label[text()='Attendee URL']/following-sibling::input)[${index}]`,
-        presenterUrlIndex: (index: number) => `(//label[text()='Presenter URL']/following-sibling::input)[${index}]`,
-        timeZoneIndex: (timeZone: number) => `(//label[text()='Time Zone']/following-sibling::div//input)[${timeZone}]`,
-        otherMeetingIndex: (othermeeting: number) => `(//label[text()='Session Type']/following::div//span[text()='other Meetings'])[${othermeeting}]`,
-        timeZoneOption: `(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[1]`,
-        //  timeZoneOptionIndex:(timeOption:number) =>`(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[${timeOption}]`,
-        // indianTimezoneIndex:(timezoneIndia:number)=> `(//li[contains(text(),'Indian Standard Time/Kolkata')])[${timezoneIndia}]`,
-        indianTimezone: `//li[contains(text(),'Indian Standard Time/Kolkata')]`,
-        Date: "(//label[contains(text(),'Date')]/following-sibling::div/input)[1]",
-        startDateInstanceIndex: (index: number) => `(//label[text()='Start Date']/following-sibling::div/input)[${index}]`,
-        timeInputIndex: (index: number) => `(//label[text()='Start Time']/following-sibling::input)[${index}]`,
-        addDeleteIcon: `//label[text()='session add/delete']/following::i[contains(@class,'fad fa-plus')]`,
-        domainInnerValue: "//label[text()='Domain']/parent::div//div[@class='filter-option-inner']/div",
-        completionCertificationlink: "//span[text()='Completion Certificate']",
-        loadMoreBtn: "//div[contains(@id,'scroll-certificat')]//button[text()='Load More']",
-        certificateCheckboxCount: "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')]",
-        certificateCheckbox: (index: string) => `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')])[${index}]`,
-        addBtn: "//button[text()='Add']",
-        certificationVerifyMessage: "//span[text()='Completion Certificate has been created successfully.']",
-        accessBtn: "//span[text()='Access']//parent::button",//span[text()='Access'] -->lot of text has been created(12/8/2024)
-        accessCloseIcon: "//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i",
-        MultiaccessCloseIcon: "(//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i)[2]",
-        accessUserInput: "//label[text()='User']/parent::div/following-sibling::div//input",
-        saveAccessBtn: "//button[text()='Save Access']",
-        enforceSequencingCheckbox: "//span[text()='Enforce Sequencing']/preceding-sibling::i[@class='fa-duotone fa-square']",
-        // category:(categoryOption:string)=>`//div[@id='new-course-categorys']//following::select[@name='course-categorys-exp-select']/option[text()='${categoryOption}']`,
-        assessmentLabel: "//div[text()='Assessment']",
-        enforceSequence: `//span[text()='enforce launch sequence']/preceding-sibling::i[contains(@class,'fad fa-square ')]`,
-        learnerGroup: "div[id$='learner-group-list'] button div[class='filter-option-inner-inner']",
-        ceuLink: "//button[text()='CEU']",
-        ceuProviderName: "(//label[text()='CEU Provider Name']/following-sibling::div//button)[1]",
-        ceuProviderInnerValue: "div[id$='ceu-providers'] button div[class='filter-option-inner-inner']",
-        ceuType: "(//label[text()='CEU type']/following-sibling::div//button)[1]",
-        ceuTypeOption: (data: string) => `//div[@id='wrapper-course-ceu-type']//span[text()='${data}']`,
-        ceuProviderOption: (data: string) => `//div[@id='wrapper-course-ceu-providers']//span[text()='${data}']`,
-        ceuTypeInnerValue: "div[id$='ceu-type'] button div[class='filter-option-inner-inner']",
-        unitInput: "//label[text()='Unit']/following-sibling::input",
-        addCEUBtn: "//button[text()='Add CEU']",
-        addedCEUData: "div[class='lms-ceu-wrapper'] div[class$='lms-scroll-pre']",
->>>>>>> Stashed changes
 
     vcSessionTypeDropDown:
       "//label[text()='Session Type']/following-sibling::div",
@@ -488,25 +309,12 @@ export class CoursePage extends AdminHomePage {
     addPreCourseBtn: `//button[text()='ADD AS PREREQUISITE']`,
     preSearchField: `(//input[@id='exp-search-field'])[1]`,
 
-<<<<<<< Updated upstream
     //Equivalence course
     selectEquivalenceCourse: (course: string) =>
       `(//div[text()='${course}']//following::i[contains(@class,'fa-duotone fa-circle')])[1]`,
     addEquivalenceButton: `//button[text()='ADD AS Equivalence']`,
     saveEquivalenceButton: `(//button[text()='Save'])[1]`,
     equivalenceSuccessMessage: `//span[@class='rawtxt']//span[2]`,
-=======
-        // Overall Access Setting selectors for groups and users
-        groupAccessDropdown: `//button[contains(@data-id,'admin_leanr_head')]//div[text()='Set As']`,
-        userAccessDropdown: `//button[contains(@data-id,'admin_user_head')]//div[text()='Set As']`,
-        accessOption: (accessType: string) => `//div[@class='dropdown-menu show']//span[text()='${accessType}']`,
-
-        //Prerequisite course
-        courseOption: (data: string) => `//button[text()='${data}']`,
-        preCourseIndex: (index: number) => `(//div[@id='lms-scroll-preadded-list']//i[contains(@class,'fa-duotone fa-square icon')])[${index}]`,
-        addPreCourseBtn: `//button[text()='ADD AS PREREQUISITE']`,
-        preSearchField: `(//input[@id='exp-search-field'])[1]`,
->>>>>>> Stashed changes
 
     //To add a particular completion training to the Course/TP.
     clickCreatedCertificateCheckbox: (data: string) =>
@@ -3435,8 +3243,6 @@ async removeAddedAdminGroup(data: string) {
     await this.wait("maxWait");
   }
 
-<<<<<<< Updated upstream
-=======
   async accessSettings(accessType: string) {
     await this.wait("minWait");
     await this.click(
@@ -3475,7 +3281,7 @@ async removeAddedAdminGroup(data: string) {
 
   async overallAccessSettings(accessType: string) {
     await this.wait("minWait");
-        await this.wait("minWait");
+    await this.wait("minWait");
     await this.click(
       this.selectors.crsAccessSettingLink,
       "Access Setting Link",
@@ -3510,7 +3316,7 @@ async removeAddedAdminGroup(data: string) {
       `${accessType} User Access Selection`,
       "Dropdown"
     );
-        await this.click(
+    await this.click(
       this.selectors.crsAccessSettingsSave,
       "Access Setting Save",
       "Button"
@@ -3520,9 +3326,6 @@ async removeAddedAdminGroup(data: string) {
     console.log(`✅ Overall access settings configured: Groups and Users set to ${accessType}`);
   }
 
-  
-
->>>>>>> Stashed changes
   async verifyCurrencyNotPresent(currencyName: string): Promise<void> {
     await this.wait("minWait");
     await this.click(this.selectors.currencyDropdown, "Currency", "Field");

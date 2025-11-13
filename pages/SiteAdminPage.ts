@@ -54,7 +54,10 @@ emailUsed:string="";
         autoCodeConventionOff:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
         autoCodeConventionOn:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
 
-        
+            //For merge user
+        mergeUserToggle: `(//*[@class="col Merge users"]/div/label/i)[1]`,
+        okButton: `//button[text()='OK']`,
+
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -251,6 +254,21 @@ emailUsed:string="";
             await this.wait("minWait")
             //await this.page.reload();
         }
+
+           //For Merge User Enable
+    async mergeUserVerification() {
+        await this.wait("mediumWait")
+        const button = this.page.locator(this.selectors.mergeUserToggle);
+        const isDisabled = await button.isDisabled();
+        if (isDisabled) {
+            await this.page.locator(this.selectors.mergeUserToggle).click();
+            await this.wait("minWait")
+            await this.click(this.selectors.okButton, "OK", "Button")
+        }
+        else {
+            console.log("Merge user already enabled");
+        }
+    }
  
 }
 
