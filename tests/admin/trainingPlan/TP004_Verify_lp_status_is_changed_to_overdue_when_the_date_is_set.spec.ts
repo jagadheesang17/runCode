@@ -79,7 +79,6 @@ test.describe(`Verify_certification_status_is_changed_to_overdue_when_the_date_i
 
         );
 
-        // let title="Haptic Application Quantify";
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LeanrerPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();

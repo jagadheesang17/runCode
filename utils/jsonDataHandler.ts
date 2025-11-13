@@ -110,6 +110,14 @@ interface tcData {
   CRS023a?:string
   CRS023b?:string
   CRS023c?:string
+  TP045?:string
+  TP045a?:string
+  TP046?:string
+  TP046a?:string
+  TP047?:string
+  TP047a?:string
+  TP048?:string
+  TP048a?:string
    passwordHistoryStatusUpdateUsername?:string;
 }
 const cronFile = '../data/cronjob.json';
@@ -145,4 +153,8 @@ export function updateCronDataJSON(newData: tcData): void {
     }
   });
 
+}
+
+export function getItemByProperty(arg0: string, arg1: string, roleName: string) {
+    throw new Error("Function not implemented.");
 }

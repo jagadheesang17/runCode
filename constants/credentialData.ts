@@ -10,77 +10,98 @@ export let credentials: any;
 
 switch (environmentSetup) {
   case "automation":
-    credentials = {
-      CUSTOMERADMIN: {
-        username: "customadmin",
-        password: "Welcome1@",
-      },
-      LEARNERADMIN: {
-        username: "robretcollin@people.co",
-        password: "Welcome1@",
-      },
-      INSTRUCTORNAME: {
-        username: "arivazhaganp",
-        password: "Welcome1@",
-      },
-      MANAGERNAME: {
-        username: "managerUser",
-        password: "Welcome1@",
-      },
-      LEARNERUSERNAME: {
-        username: "learneruser1",
-        password: "Welcome1@",
-      },
-      COMMERCEADMIN: {
-        username: "commerceadmin",
-        password: "Welcome1@",
-      },
-      SUPERADMIN: {
-        username: "admin",
-        password: "Welcome1@",
-      },
-      PEOPLEADMIN: {
-        username: "peopleadmin",
-        password: "Welcome1@",
-      },
-      LEARNERPORTAL_User: {
-        username: "johnMathew",
-        password: "Welcome1@",
-      },
-      LEARNERPORTAL_2User: {
-        username: "Retta44@gmail.com",
-        password: "Welcome1@",
-      },
-      COMMONUSER: {
-        username: commonUser,
-        password: "Welcome1@",
-      },
-      ENROLLADMIN: {
-        username: "enrollAdmin",
-        password: "Welcome1@",
-      },
-      NEWCUSTOMERADMIN: {
-        username: "newcustomadmin",
-        password: "Welcome1@",
-      },
-      INTERNALUSER: {
-        username: internalUser,
-        password: "Welcome1@",
-      },
-      EXTERNALUSER: {
-        username: externalUser,
-        password: "Welcome1@",
-      },
-      TEAMUSER1: {
-        username: teamUser1,
-        password: "Welcome1@",
-      },
-      TEAMUSER2: {
-        username: teamUser2,
-        password: "Welcome1@",
-      },
-    };
-    break;
+        credentials = {
+		 CUSTOMERADMIN: {
+                username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        CUSTOMERADMIN1: {
+            username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        LEARNERADMIN: {
+           username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        INSTRUCTORNAME: {
+            username: "autoins",
+            password: "Welcome1@"
+        },
+        MANAGERNAME: {
+            username: "automnr",
+            password: "Welcome1@"
+        },
+        LEARNERUSERNAME: {
+             username:"tim",
+            password: "Welcome1@"
+        },
+        COMMERCEADMIN: {
+         username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        SUPERADMIN: {
+            username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        PEOPLEADMIN: {
+            username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        LEARNERPORTAL_User: {  //Portal1 user except main
+            username: "portaluser",
+            password: "Welcome1@"
+        },
+        LEARNERPORTAL_2User: { //Portal2 user except main
+            username: "portal1user",
+            password: "Welcome1@",
+        },
+        COMMONUSER: {
+            username: "johnCena@123",
+            password: "Welcome1@",
+        },
+        ENROLLADMIN: {
+            username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        NEWCUSTOMERADMIN: {
+               username: "lmsadmin@nomail.com",
+            password: "Welcome1@"
+        },
+        INTERNALUSER: {
+            username:internalUser ,
+            password: "Welcome1@"
+        },
+        EXTERNALUSER: {
+            username:externalUser,
+            password: "Welcome1@"
+        },
+        TEAMUSER1:{
+             username:"autodirect",
+            password: "Welcome1@"
+        }, 
+        TEAMUSER2:{
+             username:"autovirtual",
+            password: "Welcome1@"
+        },
+        SSOUSER: {
+            username: "arivazhaganp",
+            password: "Welcome1@"
+    
+        },
+        SSOUSEREMAIL: {
+            username1: "arivazhaganp@peopleone.co",
+            password1: "Welcome1@"
+        },
+        LearnerGroup1user: {
+            username: "autouser1@DonotUse",
+            password: "Welcome6@"
+        },
+        LearnerGroup2user: {
+            username: "autouser2@DonotUse",
+            password: "Welcome6@"
+			}   
+        }
+        break;
 
   case "qa":
     credentials = {

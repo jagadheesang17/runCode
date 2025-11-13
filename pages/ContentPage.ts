@@ -1,5 +1,6 @@
 import { BrowserContext, expect, Page } from "@playwright/test";
-import { AdminHomePage } from "./AdminHomePage";
+import { AdminHomePage, } from "./AdminHomePage";
+import { AdminGroupPage , } from "./AdminGroupPage";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -24,13 +25,14 @@ export class ContentHomePage extends AdminHomePage {
     //Delete content from the course page
     deleteIcon: `(//a[@aria-label="Delete"]/i)[1]`,
     confirmDelete: `//button[text()="Yes"]`,
-    // URL and validation selectors based on screenshot
-    urlInput: `//input[@placeholder='https://']`,
-    addUrlButton: `//button[text()='Add URL']`,
-    alertErrorMessage: `//div[contains(@class,'alert')]//ul//span`,
-    fileUploadArea: `//div[contains(text(),'DRAG AND DROP YOUR FILES OR') and contains(text(),'CLICK HERE TO UPLOAD')]`,
-    validationMessage: `//div[contains(text(),'Please upload') or contains(text(),'required') or contains(text(),'invalid')]`,
-    publishButton: `//button[text()='Publish']`,
+    editContent:`//a[text()="Edit Content"]`,
+    uploadURL:`//input[@name="content_url"]`,
+    addURL:`//button[text()='Add URL']`,
+    dltBtn:`//i[@aria-label="delete"]`,
+    clickYes:`//button[text()='Yes']`,
+    DefaultDuration:`(//input[@class="text-end form-control lms-border-end border-0 px-1 form_field_active"])[2]`,
+    AdminCode:`//input[@label="content code"]`,
+  
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -38,6 +40,36 @@ export class ContentHomePage extends AdminHomePage {
     // this.fileName = "AICC File containing a PPT - Storyline 11.zip"
     // this.path = `../data/${this.fileName}`
   }
+  public async clickEditContent() {
+    await this.click(this.selectors.editContent, "EditContent", "Button")
+    await this.wait("minWait")
+
+}
+public async getCntCode(){
+    const cntCode = await this.page.locator(this.selectors.AdminCode).inputValue();
+    console.log("Content Code is:", cntCode);
+    return cntCode;
+}
+public async uploadURL(url: string) 
+{
+    await this.click(this.selectors.uploadURL, "URL","")
+    await this.wait("minWait")
+    await this.keyboardType(this.selectors.uploadURL, url)
+    await this.click(this.selectors.addURL, "Add URL", "Button");
+    await this.wait("minWait")
+}
+public async getContentType(){
+    const contentType = await this.page.locator(this.selectors.contentType).innerText();
+    console.log("Content Type is:", contentType);
+    return contentType; 
+
+}
+public async autoVerifyContentType(contentType: string) {
+    const actualContentType = await this.page.locator(this.selectors.contentType).innerText();
+    console.log("Actual Content Type is:", actualContentType);
+    expect(contentType).toContain(actualContentType);
+}
+
 
   public async clickCreateContent() {
     await this.wait("mediumWait");
@@ -55,6 +87,27 @@ export class ContentHomePage extends AdminHomePage {
       "text field"
     );
   }
+  public async verifyURLERRMsg(msg:string){
+    await this.validateElementVisibility(this.selectors.verifyURLERRMsg(msg),"URL Error Message")
+    const text= await this.getInnerText(this.selectors.verifyURLERRMsg(msg))
+    console.log(text)
+    expect(text).toBe(msg);
+        
+}
+public async dltFuncUpload(data:string){
+    await this.click(this.selectors.dltBtn,"Delete","Button")
+    this.wait("minWait");
+    await expect(this.page.locator("//span[contains(text(),'Are you sure you want to delete the attached content')]")).toContainText(data)
+    this.wait("minWait");
+    await this.click(this.selectors.clickYes,"Yes","Button")
+}
+
+public async compareTitle(Contitle:string){
+    let title=await this.page.locator('#content-title').inputValue();
+    console.log("Title from page:", title)
+    expect(Contitle).toContain(title);
+    
+}
 
   public async uploadContent(fileName: string) {
     this.path = `../data/${fileName}`;
@@ -151,6 +204,15 @@ export class ContentHomePage extends AdminHomePage {
     );
     return await this.getInnerText(this.selectors.storageContent);
   }
+  public async getDefaultDuration(DefaultDuration:string){ 
+    await this.wait("minWait"); 
+    const duration = await this.page.locator(this.selectors.DefaultDuration).inputValue();
+    console.log("Default Duration is:", duration);
+    if(DefaultDuration.includes(duration)){
+        console.log("Default duration is verified as:", DefaultDuration);
+    }
+    
+  }
   public async gotoListing() {
     await this.wait("mediumWait");
     await this.validateElementVisibility(
@@ -222,40 +284,6 @@ export class ContentHomePage extends AdminHomePage {
       expect(matchedType).toBe(text);
     } else {
       throw new Error(`File type "${text}" not found.`);
-    }
-  }
-
-  // URL input methods
-  public async enterInvalidUrl(url: string) {
-    await this.wait("minWait");
-    await this.type(this.selectors.urlInput, "URL Input", url);
-  }
-
-  public async clickAddUrl() {
-    await this.wait("minWait");
-    await this.click(this.selectors.addUrlButton, "Add URL", "Button");
-  }
-
-  public async verifyAlertErrorMessage(expectedText: string) {
-    await this.wait("minWait");
-    await this.validateElementVisibility(this.selectors.alertErrorMessage, "Alert Error Message");
-    const actualText = await this.getInnerText(this.selectors.alertErrorMessage);
-    console.log(`Actual error message: ${actualText}`);
-    expect(actualText).toContain(expectedText);
-  }
-
-  public async clickPublish() {
-    await this.click(this.selectors.publishButton, "Publish", "Button");
-  }
-
-  public async uploadUnsupportedFile(fileName: string) {
-    this.path = `../data/${fileName}`;
-    await this.wait("mediumWait");
-    try {
-      await this.uploadFile(this.selectors.addContent, this.path);
-      await this.wait("mediumWait");
-    } catch (error) {
-      console.log(`File upload failed as expected for unsupported file: ${fileName}`);
     }
   }
 }

@@ -71,12 +71,22 @@ export class LearningPathPage extends AdminHomePage {
         tpWithModulesCheckBox:`//span[text()='Training Plan With Modules']//preceding::i[@class='fa-duotone fa-square']`,
         moduleExpandIcon:`//*[contains(text(),'module')]//following::i[contains(@class,'lms-chevron-up-down')]`,
         addNewModuleBtn:`//button[text()=' Add New Module']`,
+        moduleEditIcon:`//div[contains(text(),'module')]//preceding::i[@aria-label='Edit']`,
+        moduleNameInput:`//input[contains(@id,'module_name_text')]`,
+        moduleUpdateIcon:`//i[@aria-label='Update']`,
 
         //Attaching the different course to the recertification module:-
         // Choose Course Manually:-
         addCourseManually:`//span[text()='Add Courses Manually']`,
         // Save button :-
         saveButton:`//button[text()='SAVE']`,
+
+        //Course management in TP - Reorder, Delete, Optional
+        courseReorderIcon: (courseName: string) => `(//span[text()='${courseName}']//following::i[@aria-label='Reorder'])[1]`,
+        courseDeleteIcon: (courseName: string) => `(//span[text()='${courseName}']//following::i[@aria-label='Delete'])[1]`,
+        courseRequiredCheckbox: (courseName: string) => `//span[text()='${courseName}']//following::i[contains(@class,'fa-square-check')]`,
+        allCourseRequiredCheckboxes: (courseName: string) => `(//span[text()='${courseName}']//following::i[contains(@class,'fa-square-check')])[1]`,
+        completionRequiredInput: `//input[@name='completionrequired']`,
     };  
 	
     //Adding course manually to the recertification module:-
@@ -202,7 +212,164 @@ export class LearningPathPage extends AdminHomePage {
             const text = await this.page.locator("//span[@class='text-truncate']").nth(index).innerText();
             console.log("Selected Course =" + text);
         }
+    }
 
+    /**
+     * Reorder a course by dragging it down to another position
+     * @param sourceCourse - Name of the course to reorder
+     * @param targetCourse - Name of the course to drag to (below)
+     */
+    async reorderCourse(sourceCourse: string, targetCourse: string) {
+        console.log(`🔄 Reordering course: "${sourceCourse}" below "${targetCourse}"`);
+        
+        const reorderIcon = this.page.locator(this.selectors.courseReorderIcon(sourceCourse));
+        const targetElement = this.page.locator(`//span[text()='${targetCourse}']`);
+        
+        await reorderIcon.scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        
+        // Perform drag and drop
+        await reorderIcon.hover();
+        await this.page.mouse.down();
+        await this.wait("minWait");
+        await targetElement.hover();
+        await this.page.mouse.up();
+        await this.wait("minWait");
+        
+        console.log(`✅ Successfully reordered course: "${sourceCourse}"`);
+    }
+
+    /**
+     * Delete a course from the learning path
+     * @param courseName - Name of the course to delete
+     */
+    async deleteCourse(courseName: string) {
+        console.log(`🔄 Deleting course: "${courseName}"`);
+        
+        const deleteIcon = this.page.locator(this.selectors.courseDeleteIcon(courseName));
+        await deleteIcon.scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        await deleteIcon.click();
+        await this.wait("minWait");
+        
+        console.log(`✅ Successfully deleted course: "${courseName}"`);
+    }
+
+    /**
+     * Uncheck required checkbox to make a course optional
+     * @param courseName - Name of the course to make optional
+     */
+    async makeCourseOptional(courseName: string) {
+        console.log(`🔄 Making course optional: "${courseName}"`);
+        
+        const requiredCheckbox = this.page.locator(this.selectors.courseRequiredCheckbox(courseName));
+        await requiredCheckbox.scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        await requiredCheckbox.click();
+        await this.wait("minWait");
+        
+        console.log(`✅ Successfully made course optional: "${courseName}"`);
+    }
+
+    /**
+     * Randomly uncheck required checkboxes for a specified number of courses
+     * @param count - Number of courses to make optional
+     * @param courseNames - Array of course names to choose from
+     * @returns Array of indices that were made optional
+     */
+    async makeRandomCoursesOptional(count: number, courseNames: string[]): Promise<number[]> {
+        console.log(`🔄 Making ${count} random courses optional from ${courseNames.length} courses`);
+        
+        if (courseNames.length < count) {
+            console.log(`⚠️ Warning: Only ${courseNames.length} courses available, requested ${count}`);
+            count = courseNames.length;
+        }
+        
+        const selectedIndices: number[] = [];
+        const usedIndices = new Set<number>();
+        
+        // Generate random unique indices
+        while (selectedIndices.length < count) {
+            const randomIndex = Math.floor(Math.random() * courseNames.length);
+            if (!usedIndices.has(randomIndex)) {
+                usedIndices.add(randomIndex);
+                selectedIndices.push(randomIndex);
+            }
+        }
+        
+        // Uncheck selected checkboxes
+        for (const index of selectedIndices) {
+            const courseName = courseNames[index];
+            console.log(`Unchecking course: "${courseName}" at index: ${index}`);
+            const checkbox = this.page.locator(this.selectors.allCourseRequiredCheckboxes(courseName));
+            await checkbox.scrollIntoViewIfNeeded();
+            await checkbox.click();
+            await this.wait("minWait");
+        }
+        
+        console.log(`✅ Successfully made ${count} courses optional at indices: ${selectedIndices.join(', ')}`);
+        return selectedIndices;
+    }
+
+    /**
+     * Uncheck required checkboxes for the last N courses
+     * @param count - Number of courses from the end to make optional
+     * @param courseNames - Array of course names in order
+     * @returns Array of indices that were made optional
+     */
+    async makeLastCoursesOptional(count: number, courseNames: string[]): Promise<number[]> {
+        console.log(`🔄 Making last ${count} courses optional from ${courseNames.length} courses`);
+        
+        if (courseNames.length < count) {
+            console.log(`⚠️ Warning: Only ${courseNames.length} courses available, requested ${count}`);
+            count = courseNames.length;
+        }
+        
+        const selectedIndices: number[] = [];
+        
+        // Get indices of last N courses
+        const startIndex = courseNames.length - count;
+        for (let i = startIndex; i < courseNames.length; i++) {
+            selectedIndices.push(i);
+        }
+        
+        // Uncheck selected checkboxes
+        for (const index of selectedIndices) {
+            const courseName = courseNames[index];
+            console.log(`Unchecking course: "${courseName}" at index: ${index} (position ${index + 1}/${courseNames.length})`);
+            const checkbox = this.page.locator(this.selectors.allCourseRequiredCheckboxes(courseName));
+            await checkbox.scrollIntoViewIfNeeded();
+            await checkbox.click();
+            await this.wait("minWait");
+        }
+        
+        console.log(`✅ Successfully made last ${count} courses optional at indices: ${selectedIndices.join(', ')}`);
+        return selectedIndices;
+    }
+
+    /**
+     * Set completion required on an optional course
+     * @param index - Index of the completion required input (default: 0 for first optional course)
+     * @param completionValue - Number value to enter in the completion required field (default: 1)
+     */
+    async setCompletionRequired(completionValue:string) {
+        await this.wait("minWait");
+        await this.type(this.selectors.completionRequiredInput, "Completion Required Input", completionValue);
+      
+    }
+
+    /**
+     * Capture all course titles in the learning path structure
+     * @returns Array of course names in order
+     */
+    async captureCourseTitles(): Promise<string[]> {
+        console.log(`🔄 Capturing all course titles`);
+        
+        const courseTitles = await this.page.locator(`//span[@class='text-truncate']`).allTextContents();
+        const cleanedTitles = courseTitles.map(title => title.trim()).filter(title => title.length > 0);
+        
+        console.log(`📋 Captured ${cleanedTitles.length} course titles:`, cleanedTitles);
+        return cleanedTitles;
     }
 
     async clickEnforceCheckbox() {
@@ -372,9 +539,131 @@ export class LearningPathPage extends AdminHomePage {
     async tpWithModulesToAttachCreatedCourse(){
             await this.wait("minWait")
             await this.page.locator(this.selectors.tpWithModulesCheckBox).last().click({ force: true })
-            await this.page.locator(this.selectors.moduleExpandIcon).last().click({ force: true })
             await this.wait("minWait")
+            await this.page.locator(this.selectors.moduleExpandIcon).last().click({ force: true })
+
         }
 
+    /**
+     * Click Add New Module button to add another module
+     */
+    async clickAddNewModule() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.addNewModuleBtn, "Add New Module Button");
+        await this.click(this.selectors.addNewModuleBtn, "Add New Module", "Button");
+        await this.wait("minWait");
+        console.log("✅ Clicked Add New Module button");
+    }
+
+    /**
+     * Click module expand icon to expand/collapse module
+     * @param index - Index of the module (0-based)
+     */
+    async clickModuleExpandIcon(index: number) {
+        await this.wait("minWait");
+        const moduleExpandIcons = this.page.locator(this.selectors.moduleExpandIcon);
+        const count = await moduleExpandIcons.count();
         
+        if (index < count) {
+            await moduleExpandIcons.nth(index).scrollIntoViewIfNeeded();
+            await moduleExpandIcons.nth(index).click({ force: true });
+            await this.wait("minWait");
+            console.log(`✅ Clicked module expand icon at index ${index}`);
+        } else {
+            console.log(`⚠️ Module expand icon at index ${index} not found. Total count: ${count}`);
+        }
+    }
+
+    /**
+     * Edit module name by clicking edit icon, entering new name, and updating
+     * @param moduleIndex - Index of the module to edit (0-based)
+     * @param newModuleName - New name for the module
+     */
+    async editModuleName(moduleIndex: number, newModuleName: string) {
+        await this.wait("minWait");
+        
+        // Get all edit icons
+        const editIcons = this.page.locator(this.selectors.moduleEditIcon);
+        const editIconCount = await editIcons.count();
+        
+        if (moduleIndex < editIconCount) {
+            // Click edit icon
+            console.log(`🔄 Editing module ${moduleIndex + 1} name to: ${newModuleName}`);
+            await editIcons.nth(moduleIndex).scrollIntoViewIfNeeded();
+            await editIcons.nth(moduleIndex).click({ force: true });
+            await this.wait("minWait");
+            
+            // Enter new module name
+            const nameInputs = this.page.locator(this.selectors.moduleNameInput);
+            await nameInputs.nth(moduleIndex).clear();
+            await nameInputs.nth(moduleIndex).fill(newModuleName);
+            await this.wait("minWait");
+            
+            // Click update icon
+            const updateIcons = this.page.locator(this.selectors.moduleUpdateIcon);
+            await updateIcons.nth(moduleIndex).click({ force: true });
+            await this.wait("minWait");
+            
+            console.log(`✅ Successfully updated module ${moduleIndex + 1} name to: ${newModuleName}`);
+        } else {
+            console.log(`⚠️ Module edit icon at index ${moduleIndex} not found. Total count: ${editIconCount}`);
+        }
+    }
+
+    /**
+     * Add course to a specific module
+     * @param courseName - Name of the course to add
+     * @param moduleIndex - Index of the module (0-based)
+     */
+    async addCourseToModule(courseName: string, moduleIndex: number) {
+        await this.wait("minWait");
+        console.log(`🔄 Adding course "${courseName}" to module ${moduleIndex + 1}`);
+        
+        // Click Add Course button for the specific module
+        const addCourseButtons = this.page.locator(this.selectors.addCourseBtn);
+        await addCourseButtons.nth(moduleIndex).scrollIntoViewIfNeeded();
+        await addCourseButtons.nth(moduleIndex).click({ force: true });
+        await this.wait("mediumWait");
+        
+        // Search for the course
+        const addCourseInput = this.page.locator(this.selectors.addCourseSearchInput).last();
+        await addCourseInput.focus();
+        await this.page.keyboard.type(courseName, { delay: 800 });
+        await this.page.keyboard.press('Enter');
+        await this.wait('minWait');
+        
+        // Click course checkbox using courseCheckbox selector for multi-element
+        const courseCheckboxes = this.page.locator(this.selectors.checkAllCourse);
+        const checkboxCount = await courseCheckboxes.count();
+        console.log(`📊 Found ${checkboxCount} course checkboxes`);
+        
+        if (moduleIndex < checkboxCount) {
+            await courseCheckboxes.nth(moduleIndex).scrollIntoViewIfNeeded();
+            await courseCheckboxes.nth(moduleIndex).click({ force: true });
+            await this.wait("minWait");
+            console.log(`✅ Clicked course checkbox at index ${moduleIndex}`);
+        } else {
+            console.log(`⚠️ Checkbox at index ${moduleIndex} not found, using last checkbox`);
+            await courseCheckboxes.last().scrollIntoViewIfNeeded();
+            await courseCheckboxes.last().click({ force: true });
+            await this.wait("minWait");
+        }
+        
+        // Click Add Selected Course button
+        const addSelectedCourseButtons = this.page.locator(this.selectors.addSelectedCourseBtn);
+        await addSelectedCourseButtons.last().scrollIntoViewIfNeeded();
+        await addSelectedCourseButtons.last().click({ force: true });
+        await this.wait('minWait');
+        
+        // Log selected course
+        const courseElements = this.page.locator("//span[@class='text-truncate']");
+        const courseCount = await courseElements.count();
+        if (courseCount > 0) {
+            const selectedCourseText = await courseElements.last().innerText();
+            console.log(`Selected Course in Module ${moduleIndex + 1} = ${selectedCourseText}`);
+        }
+        
+        console.log(`✅ Successfully added course "${courseName}" to module ${moduleIndex + 1}`);
+    }
+
 }

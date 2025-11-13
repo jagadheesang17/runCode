@@ -8,7 +8,7 @@ import { getRandomItemFromFile } from "../utils/jsonDataHandler";
 
 export class SiteAdminPage extends AdminHomePage {
 emailUsed:string="";
-     public selectors = {
+    public selectors = {
         ...this.selectors,
         siteSettingsLabel: "//div[text()='Site Settings']",
         ////SSO////
@@ -32,11 +32,6 @@ emailUsed:string="";
        // saveBtn: `//button[text()='save' or text()='SAVE']`,
         //addressKey:(data: string)=>`//label[text()='${data}']//following-sibling::input`,
 
-
-        //For merge user
-        mergeUserToggle: `(//*[@class="col Merge users"]/div/label/i)[1]`,
-        okButton: `//button[text()='OK']`,
-
         //Password Policy:-
         passwordPolicyEditIcon: `//span[text()='Password Policy']/following::i[1]`,
         maxWrongAttempts: `//input[@id='max_wrong_attempts']`,
@@ -55,20 +50,13 @@ emailUsed:string="";
         contactSupport:`//span[text()='Contact Support']`,
         mailId:`//textarea[@id='specific_mail']`,
 
-
-          disabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
-        enabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
-
-        checkInheritAddress:`(//span[text()='Inherit Address']/preceding-sibling::i)[2]`,
-        checkEmergencyContact:`(//span[text()='Emergency Contact']/preceding-sibling::i)[2]`,
-
-        SAVE:`//button[text()='OK']`,
-
-        clickEditAddressInheritance:`//i[@data-bs-target='#AddressInheritanceAndEmergencyContact-content']`,
-
+        adminConfigLink:`//a[text()='Admin Configuration']`,
+        autoCodeConventionOff:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        autoCodeConventionOn:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
 
         
     };
+
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
     }
@@ -137,21 +125,6 @@ emailUsed:string="";
         }
         else {
             console.log("Address verification already enabled");
-        }
-    }
-
-    //For Merge User Enable
-    async mergeUserVerification() {
-        await this.wait("mediumWait")
-        const button = this.page.locator(this.selectors.mergeUserToggle);
-        const isDisabled = await button.isDisabled();
-        if (isDisabled) {
-            await this.page.locator(this.selectors.mergeUserToggle).click();
-            await this.wait("minWait")
-            await this.click(this.selectors.okButton, "OK", "Button")
-        }
-        else {
-            console.log("Merge user already enabled");
         }
     }
 
@@ -238,26 +211,46 @@ emailUsed:string="";
             await this.click(this.selectors.save,"save","button")
         }
     }
-        public async enableAddressInheritance(){
-             const button = this.page.locator(this.selectors.disabledAddressInheritance)
-        const isToggleEnabled=await button.isChecked();
 
-        if(!isToggleEnabled){
-            await this.wait("minWait");
-            await this.click(this.selectors.disabledAddressInheritance,"enable","toggle");
-             await this.click(this.selectors.SAVE,"save","button");
-            await this.click(this.selectors.clickEditAddressInheritance,"edit","button");
-            await this.click(this.selectors.checkInheritAddress,"check","checkbox");
-            await this.click(this.selectors.checkEmergencyContact,"check","checkbox");
-            await this.click(this.selectors.save,"save","button");
-            await this.wait("minWait");
+     public async autoCodeConventionTurnON()
+     {
 
-            await this.page.reload();
+        const button = this.page.locator(this.selectors.autoCodeConvention).isChecked();
+        await this.wait("mediumWait")
+        //const isToggleEnabled=await button.isChecked();
+        if(!button){
+            await this.click(this.selectors.autoCodeConvention,"enable","toggle");
+            this.clickOkBtn();
+            this.page.reload();
+            }
+        else {
+            console.log("Auto code convention is already enabled");
+            this.page.reload();
+            await this.wait("mediumWait")
         }
-    else{
-        console.log("Address Inheritance is already enabled");
-        
-    }}
+        }
+        public async autoCodeConventionTurnOFF(){
+
+        const button = this.page.locator(this.selectors.autoCodeConventionOff).isChecked();    
+        await this.wait("mediumWait")
+        //const isToggleEnabled=await button.isChecked();
+        if(button){
+            await this.click(this.selectors.autoCodeConventionOff,"disable","toggle");
+            this.clickOkBtn();
+            this.page.reload();
+            }
+        else {
+            console.log("Auto code convention is already disabled");
+            this.page.reload();
+            await this.wait("mediumWait")
+        }
+        }
+        async clickOkBtn(){
+            await this.wait("minWait")
+            await this.click(this.selectors.okBtn,"ok button","button");
+            await this.wait("minWait")
+            //await this.page.reload();
+        }
  
 }
 

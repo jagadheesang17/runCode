@@ -20,8 +20,251 @@ import * as fs from "fs";
 import * as path from "path";
 import { filePath } from "../data/MetadataLibraryData/filePathEnv";
 import { credentials } from "../constants/credentialData";
+import { da, th } from "@faker-js/faker";
 
 export class CoursePage extends AdminHomePage {
+<<<<<<< Updated upstream
+  public selectors = {
+    ...this.selectors,
+    createUserLabel: "//h1[text()='Create Course']",
+    courseDescriptionInput: "//div[@id='course-description']//p",
+    uploadDiv: "//div[@id='upload-div']",
+    uploadInput: "//div[@id='upload-div']//input[@id='content_upload_file']",
+    clickHereuploadFile: `(//label[text()='Click here'])[1]`,
+    attachedContent: (fileName: string) =>
+      `//label[text()='Attached Content']/following::span/following-sibling::div[text()='${fileName}']`,
+    showInCatalogBtn: "//span[text()='Show in Catalog']",
+    modifyTheAccessBtn:
+      "//footer/following::button[text()='No, modify the access']",
+    saveBtn: "//button[@id='course-btn-save' and text()='Save']",
+    proceedBtn: "//footer//following::button[contains(text(),'Yes, Proceed')]",
+    successMessage: "//div[@id='lms-overall-container']//h3",
+    domainBtn: "//label[text()='Domain']/following::button[1]",
+    //  domainOption: (domain_name: string) => `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
+    closeBtn: "//button[text()='Close']",
+    courseLanguagesWrapper:
+      "//label[contains(text(),'Language')]/following::div[@id='wrapper-course-languages']",
+    courseLanguageInput: "//label[text()='Language']/following::input[1]",
+    courseLanguageLink: (language: string) =>
+      `(//label[text()='Language']//following::span[text()='${language}'])[1]`,
+    selectCategoryBtn: "//div[contains(@id,'categorys')]//div[text()='Select']",
+    categoryOption: (category: string) => `//span[text()='${category}']`,
+    addCategoryBtn: "//div[text()='Add Category']",
+    categoryInput:
+      "//label[text()='Category']/following::input[@id='course-categorys']",
+    okButton: "//button[text()='OK']",
+    okBtn:
+      "//span[contains(text(),'created successfully')]/following::button[text()='OK']",
+    cancelBtn:
+      "//label[text()='Category']/following::span[contains(@class,'lms-cat-cancel')]",
+    providerDropdown: "//label[text()='Provider']//following-sibling::div",
+    providerDropdownValue:
+      "//label[text()='Provider']//following-sibling::div//div//a",
+    providerOption: (provider: string) => `//a/span[text()='${provider}']`,
+    providerIndexBase: (index: string) =>
+      `(//label[text()='Provider']//following-sibling::div//a)[${index}]`,
+    totalDurationInput:
+      "(//label[text()='Total Duration']/following::input)[1]",
+    additionalInfoInput:
+      "//div[@id='additional_information_description_id']//p",
+    priceInput: "//label[text()='Price']/following::input[1]",
+    currencyDropdown: "//div[contains(@id,'currency')]",
+    currencyOption:
+      "//label[text()='Currency']/following::a/span[text()='US Dollar']",
+    maxSeatsInput: "//label[text()='Seats-Max']/following::input[1]",
+    contactSupportInput:
+      "//label[text()='Contact Support']/following::input[1]",
+    complianceField: "//div[@id='wrapper-course-compliance']",
+    complianceOption: "//footer/following-sibling::div//span[text()='Yes']",
+    validityField: "//div[@id='wrapper-course-compliance-validity']",
+    validityOption: "//footer/following::span[text()='Days']",
+    validityDateInput: "input[@id='validity_date-input']",
+    validityDaysInput: "//input[@id='validity_days']",
+    completeByField: "//div[@id='wrapper-course-complete-by']",
+    completeByDateInput: "#complete_by_date-input",
+    completeByDaysInput: "//input[@id='complete_days']",
+    // completeByRule: `(//div[@id='wrapper-course-complete-by-rule']//button)[1]`,
+    completeByRule:
+      "(//div[@id='wrapper-course-complete-by-rule']//button | //div[@id='wrapper-program-complete-by-rule']//button)[1]",
+    completeByRuleOption: `//footer/following-sibling::div//span[text()='Yes']`,
+    // postCompleteByStatusField: "//div[@id='wrapper-course-post-complete-by-status']",
+    postCompleteByStatusField:
+      "//div[@id='wrapper-course-post-complete-by-status'] | //div[@id='wrapper-program-post-complete-by-status']",
+    postCompleteByOption: "//footer/following::a/span[text()='Overdue']",
+    courseInstancesField: "//div[@id='wrapper-course-instances']",
+    instanceTypeOption: "//span[text()='Multi Instance/Class']",
+    hideInCatalogCheckbox: "//span[contains(text(),'Hide in Catalog')]",
+    saveInDraftCheckbox: "//span[contains(text(),'Save as Draft')]",
+    deliveryTypeDropdown: "//div[@id='wrapper-course-delivery-type']",
+    deliveryTypeOption: (deliveryType: string) =>
+      `//span[text()='${deliveryType}']`,
+    editCourseTabLink: "//a[text()='Edit Course']",
+    addInstancesBtn: "//button[@id='course-btn-add-instances']",
+    instanceDeliveryTypeField: "//div[@id='wrapper-instanceDeliveryType']",
+    instanceDeliveryTypeOption: (delivery: string) =>
+      `//footer/following::a/span[text()='${delivery}']`,
+    instanceCountInput: "//div[@id='exp-course-instances-options']//input",
+    createInstanceBtn: "//button[@id='instance-add']",
+    sessionNameInput: "//label[text()='Session Name']/following-sibling::input",
+    sessionNameIndex: (index: number) =>
+      `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
+
+    instructorDropdown:
+      "(//label[text()='Instructor']/following-sibling::div//input)[1]",
+    instructorDropdownIndex: (index: number) =>
+      `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
+    instructorOption: (instructorName: string) =>
+      `//li[contains(text(),'${instructorName}')]`,
+    instructorOptionIndex: (instructorName: string, index: number) =>
+      `(//li[contains(text(),'${instructorName}')])[${index}]`,
+    locationSelection:
+      "//label[text()='Select Location']/following-sibling::div//input[1]",
+    locationDropdown:
+      "//label[text()='Select Location']/following-sibling::div//input[@placeholder='Search']",
+    locationOption: (locationName: string) => `//li[text()='${locationName}']`,
+    CourseCalendaricon: "//div[@id='complete_by_date']/input",
+    tomorrowdate: "//td[@class='today day']/following-sibling::td[1]",
+    nextMonth: `//div[@class='datepicker-days']//th[@class='next']`,
+    calanderIcon:
+      "(//label[text()='Date']//following::button[contains(@class,'calendaricon')])[1]",
+    registrationEnd: `//div[@id='registration-ends']/input`,
+    todayDate: "td[class='today day']",
+    randomDate: `(//td[@class='day']/following-sibling::td)[1]`,
+    seatMaxInput: "//label[text()='Seats-Max']/following-sibling::input",
+    timeInput: `//label[text()='Start Time']/following-sibling::input`,
+    chooseTimeOption: (randomIndex: string) =>
+      `(//div[contains(@class,'timepicker')]//li)[${randomIndex}]`,
+    chooseStartTimeIndex: (index: string, randomIndex: number) =>
+      `((//ul[@class='ui-timepicker-list'])[${index}]/li)[${randomIndex}]`,
+    waitlistInput: "//label[text()='Waitlist']/following-sibling::input",
+    updateBtn: "//button[text()='Update']",
+    detailsbtn: "//button[text()='Details']",
+    courseUpdateBtn: "//button[@id='course-btn-save']",
+    surveyAndAssessmentLink: "//button[text()='Survey/Assessment']",
+    //surveyCheckBox: "//div[@id='sur_ass-lms-scroll-survey-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
+    surveyCheckBox:
+      "//div[contains(@id,'scroll-survey-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
+    editCourseBtn: "//a[text()='Edit Course']",
+    //assessmentCheckbox: "//div[@id='sur_ass-lms-scroll-assessment-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
+    assessmentCheckbox:
+      "//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
+    addAssessmentBtn: "//button[text()='Add As Assessment']",
+    categoryDropdown:
+      "//div[@class='dropdown-menu show']//input[@type='search']",
+    allCategoryOptions: "//select[@id='course-categorys-exp-select']/option",
+    providerOptions: "//select[@id='course-providers']/option",
+    provider: (Options: string) => `(//span[text()='${Options}'])[1]`,
+    progress: "//progress[@id='progress-bar'and@value='0']",
+    addSurveyBtn: "//button[text()='Add As Survey']",
+    deliveryLabel: "//label[text()='Delivery Type']",
+    instructorInput:
+      "//input[contains(@id,'instructors') and (@placeholder='Search')]",
+    instructorInputIndex: (index: number) =>
+      `(//input[contains(@id,'instructors') and (@placeholder='Search')])[${index}]`,
+    //instance_Class: "//a[contains(@title,'Instance/Class')]", -->DOM Contented Changed 08-07-2024
+    // instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class')]", --> update on 18/07/2024
+    instance_Class:
+      "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class') or contains(@title,'Instance/Class')]",
+    clickContentLibrary:
+      "//span[text()='Add Content']//following::span[text()='Click here'][1]",
+    allContents: "//i[@class='fa-duotone fa-square icon_16_1']",
+    contentIndex: (index: number) =>
+      `(//i[contains(@class,'fa-duotone fa-square ico')])[${index}]`,
+    addContentButton: "//button[text()='Add Content']",
+    attachedContentLabel: "//label[text()='Attached Content']",
+    getCourse: "//input[@id='course-title']",
+    domainDropdown: "//a[@class='dropdown-item selected']",
+    domainDropdownValue:
+      "//label[text()='Domain']/following-sibling::div//div[contains(@class,'dropdown-menu')]//span[@class='text']",
+    //domainDropdownIndex: (domain_index: number) => `(//a[@class='dropdown-item selected'])[${domain_index}]`,
+    domainSelectedText: "//div[contains(text(),'selected')]",
+    domainOption: (domain_name: string) =>
+      `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
+    portalDropdown: `(//label[text()='Domain']/following::div)[1]`,
+    allPortalOptions: `//label[text()='Domain']/following::div[@class='dropdown-menu show']//a`,
+    portalOption: (index: string) =>
+      `(//label[text()='Domain']/following::div[@class='dropdown-menu show']//a)[${index}]`,
+    domainNameOption: (portalName: string) =>
+      `//a[@class='dropdown-item']//span[text()='${portalName}']`,
+    portal: `(//label[text()='Domain']/following::div[@id='wrapper-user-portals']//button)[1]`,
+    image: "(//div[@class='img-wrapper']/img)[1]",
+    clickHere: "//div[@class='form-label']/span",
+    httpsInput: "input[id=content_url]",
+    addURLBtn: "button:text-is('Add URL')",
+    clickSaveasDraft:
+      "//input[@id='draftcatalog']/parent::div//i[contains(@class,'fa-dot-circle')]",
+    willResolveLaterBtn:
+      "//footer//following::button[text()='No, will resolve later']",
+    selectType: `//label[text()='Session Type']/following-sibling::div`,
+    sessionType: "(//label[text()='Session Type']/parent::div//button)[1]",
+    otherMeeting: "//span[text()='other Meetings']",
+    sessionTypeIndex: (index: number) =>
+      `(//label[text()='Session Type']/following-sibling::div)[${index}]`,
+    attendeeUrlIndex: (index: number) =>
+      `(//label[text()='Attendee URL']/following-sibling::input)[${index}]`,
+    presenterUrlIndex: (index: number) =>
+      `(//label[text()='Presenter URL']/following-sibling::input)[${index}]`,
+    timeZoneIndex: (timeZone: number) =>
+      `(//label[text()='Time Zone']/following-sibling::div//input)[${timeZone}]`,
+    otherMeetingIndex: (othermeeting: number) =>
+      `(//label[text()='Session Type']/following::div//span[text()='other Meetings'])[${othermeeting}]`,
+    timeZoneOption: `(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[1]`,
+    //  timeZoneOptionIndex:(timeOption:number) =>`(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[${timeOption}]`,
+    // indianTimezoneIndex:(timezoneIndia:number)=> `(//li[contains(text(),'Indian Standard Time/Kolkata')])[${timezoneIndia}]`,
+    indianTimezone: `//li[contains(text(),'Indian Standard Time/Kolkata')]`,
+    Date: "(//label[contains(text(),'Date')]/following-sibling::div/input)[1]",
+    startDateInstanceIndex: (index: number) =>
+      `(//label[text()='Start Date']/following-sibling::div/input)[${index}]`,
+    timeInputIndex: (index: number) =>
+      `(//label[text()='Start Time']/following-sibling::input)[${index}]`,
+    addDeleteIcon: `//label[text()='session add/delete']/following::i[contains(@class,'fad fa-plus')]`,
+    domainInnerValue:
+      "//label[text()='Domain']/parent::div//div[@class='filter-option-inner']/div",
+    completionCertificationlink: "//span[text()='Completion Certificate']",
+    loadMoreBtn:
+      "//div[contains(@id,'scroll-certificat')]//button[text()='Load More']",
+    certificateCheckboxCount:
+      "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')]",
+    certificateCheckbox: (index: string) =>
+      `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')])[${index}]`,
+    addBtn: "//button[text()='Add']",
+    certificationVerifyMessage:
+      "//span[text()='Completion Certificate has been created successfully.']",
+    accessBtn: "//span[text()='Access']//parent::button", //span[text()='Access'] -->lot of text has been created(12/8/2024)
+    accessCloseIcon:
+      "//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i",
+      accessCloseIconAdmin:
+      "//label[text()='Admin Group']/parent::div//following-sibling::div[2]//div//i",
+    MultiaccessCloseIcon:
+      "(//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i)[2]",
+      MultiaccessCloseIconAdmin:(groupName:string,i:number)=>`(//label[text()='Admin Group']/following::label[text()='${groupName}']/following::i)[${i}]`,
+    accessUserInput:
+      "//label[text()='User']/parent::div/following-sibling::div//input",
+    saveAccessBtn: "//button[text()='Save Access']",
+    enforceSequencingCheckbox:
+      "//span[text()='Enforce Sequencing']/preceding-sibling::i[@class='fa-duotone fa-square']",
+    // category:(categoryOption:string)=>`//div[@id='new-course-categorys']//following::select[@name='course-categorys-exp-select']/option[text()='${categoryOption}']`,
+    assessmentLabel: "//div[text()='Assessment']",
+    enforceSequence: `//span[text()='enforce launch sequence']/preceding-sibling::i[contains(@class,'fad fa-square ')]`,
+    learnerGroup:
+      "div[id$='learner-group-list'] button div[class='filter-option-inner-inner']",
+    adminGroup: "div[id$='admin-group-list'] button div[class='filter-option-inner-inner']",
+    ceuLink: "//button[text()='CEU']",
+    ceuProviderName:
+      "(//label[text()='CEU Provider Name']/following-sibling::div//button)[1]",
+    ceuProviderInnerValue:
+      "div[id$='ceu-providers'] button div[class='filter-option-inner-inner']",
+    ceuType: "(//label[text()='CEU type']/following-sibling::div//button)[1]",
+    ceuTypeOption: (data: string) =>
+      `//div[@id='wrapper-course-ceu-type']//span[text()='${data}']`,
+    ceuProviderOption: (data: string) =>
+      `//div[@id='wrapper-course-ceu-providers']//span[text()='${data}']`,
+    ceuTypeInnerValue:
+      "div[id$='ceu-type'] button div[class='filter-option-inner-inner']",
+    unitInput: "//label[text()='Unit']/following-sibling::input",
+    addCEUBtn: "//button[text()='Add CEU']",
+    addedCEUData: "div[class='lms-ceu-wrapper'] div[class$='lms-scroll-pre']",
+=======
    public selectors = {
         ...this.selectors,
         createUserLabel: "//h1[text()='Create Course']",
@@ -64,10 +307,12 @@ export class CoursePage extends AdminHomePage {
         validityField: "//div[@id='wrapper-course-compliance-validity']",
         validityOption: "//footer/following::span[text()='Days']",
         validityDateInput: "input[@id='validity_date-input']",
-        validityDaysInput: "//input[@id='validity_days']",
+        validityDaysInput: "//input[@id='complete_days']",
         completeByField: "//div[@id='wrapper-course-complete-by']",
         completeByDateInput: "#complete_by_date-input",
         completeByDaysInput: "//input[@id='complete_days']",
+        completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
+        completeByOption: (option: string) => `//span[text()='${option}']`,
         // completeByRule: `(//div[@id='wrapper-course-complete-by-rule']//button)[1]`,
         completeByRule: "(//div[@id='wrapper-course-complete-by-rule']//button | //div[@id='wrapper-program-complete-by-rule']//button)[1]",
         completeByRuleOption: `//footer/following-sibling::div//span[text()='Yes']`,
@@ -101,6 +346,7 @@ export class CoursePage extends AdminHomePage {
         nextMonth: `//div[@class='datepicker-days']//th[@class='next']`,
         calanderIcon: "(//label[text()='Date']//following::button[contains(@class,'calendaricon')])[1]",
         registrationEnd: `//div[@id='registration-ends']/input`,
+        completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
         todayDate: "td[class='today day']",
         randomDate: `(//td[@class='day']/following-sibling::td)[1]`,
         seatMaxInput: "//label[text()='Seats-Max']/following-sibling::input",
@@ -195,179 +441,209 @@ export class CoursePage extends AdminHomePage {
         unitInput: "//label[text()='Unit']/following-sibling::input",
         addCEUBtn: "//button[text()='Add CEU']",
         addedCEUData: "div[class='lms-ceu-wrapper'] div[class$='lms-scroll-pre']",
+>>>>>>> Stashed changes
 
-        vcSessionTypeDropDown: "//label[text()='Session Type']/following-sibling::div",
-        vcMeetingType: (meetType: string) => `(//span[text()='${meetType}'])`,
-        vcselectTimezone: "//label[text()='Time Zone']/following-sibling::div",
-        vcSelectTimezoneClickSearch: "//input[@id='timezone_0']",
-        vcSelectTimeZone: "//li[contains(@class,'dropdown-item text-wrap')]",
+    vcSessionTypeDropDown:
+      "//label[text()='Session Type']/following-sibling::div",
+    vcMeetingType: (meetType: string) => `(//span[text()='${meetType}'])`,
+    vcselectTimezone: "//label[text()='Time Zone']/following-sibling::div",
+    vcSelectTimezoneClickSearch: "//input[@id='timezone_0']",
+    vcSelectTimeZone: "//li[contains(@class,'dropdown-item text-wrap')]",
 
-        //Course/TP Search:-
-        crs_TPCode: "(//span[text()='CODE:']/following-sibling::span)[1]",
-        crs_TPSearchField: "//input[@id='exp-search-field']",
+    //Course/TP Search:-
+    crs_TPCode: "(//span[text()='CODE:']/following-sibling::span)[1]",
+    crs_TPSearchField: "//input[@id='exp-search-field']",
 
-        //Assessment Attach:-
-        searchAssessmentField: "[id$='search-assessment-field']",
-        surveySearchField: `[id$='ass-exp-search-field']`,
+    //Assessment Attach:-
+    searchAssessmentField: "[id$='search-assessment-field']",
+    surveySearchField: `[id$='ass-exp-search-field']`,
 
-        //LearnerGroup Access modify
-        learnerGroupbtn: `(//label[text()='Learner Group']//following::button)[1]`,
-        allLearnerGroupOptions: `//select[@id='course-group-access-learner-group-list' or @id='program-group-access-learner-group-list']/option`,
+    //LearnerGroup Access modify
+    learnerGroupbtn: `(//label[text()='Learner Group']//following::button)[1]`,
+    allLearnerGroupOptions: `//select[@id='course-group-access-learner-group-list' or @id='program-group-access-learner-group-list']/option`,
 
-        //course-currency list
-        currencyListInCourse: `//select[@id='course-currency']/option`,
+    //course-currency list
+    currencyListInCourse: `//select[@id='course-currency']/option`,
 
-        //Instance Selection:-
-        selectInstanceDropdown: `//button[@data-id='course-instances']`,
-        instanceSelection: (instanceType: string) => `//span[text()='${instanceType}']`,
-        //  Course Access Setting learner group:-
+    //Instance Selection:-
+    selectInstanceDropdown: `//button[@data-id='course-instances']`,
+    instanceSelection: (instanceType: string) =>
+      `//span[text()='${instanceType}']`,
+    //  Course Access Setting learner group:-
 
-        crsAccessSettingLink: `//span[text()='Access Setting']`,
-        crsAccessDropDown: `(//div[contains(@id,'wrapper-admin_group_')])[1]`,
-        crsAccessMandatoryOption: `//div[@class='dropdown-menu show']//span[text()='Mandatory']`,
+    crsAccessSettingLink: `//span[text()='Access Setting']`,
+    crsAccessDropDown: `(//div[contains(@id,'wrapper-admin_group_')])[1]`,
+    crsAccessMandatoryOption: `//div[@class='dropdown-menu show']//span[text()='Mandatory']`,
 
-        // Course Access Setting learner selection:-
+    // Course Access Setting learner selection:-
 
-        crsAccessUserDropDown: `//button[contains(@data-id,'admin_group_lists')]`,
-        crsAccessUserMandatoryOption: `//div[@class='dropdown-menu show']//span[text()='Mandatory']`,
-        crsAccessSettingsSave: `//button[@id='add-language-btn']`,
+    crsAccessUserDropDown: `//button[contains(@data-id,'admin_group_lists')]`,
+    crsAccessUserMandatoryOption: `//div[@class='dropdown-menu show']//span[text()='Mandatory']`,
+    crsAccessSettingsSave: `//button[@id='add-language-btn']`,
 
-        // Parameterized Access Setting selectors
-        AccessMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
-        AccessUserMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
+    //Prerequisite course
+    courseOption: (data: string) => `//button[text()='${data}']`,
+    preCourseIndex: (index: number) =>
+      `(//div[@id='lms-scroll-preadded-list']//i[contains(@class,'fa-duotone fa-square icon')])[${index}]`,
+    addPreCourseBtn: `//button[text()='ADD AS PREREQUISITE']`,
+    preSearchField: `(//input[@id='exp-search-field'])[1]`,
+
+<<<<<<< Updated upstream
+    //Equivalence course
+    selectEquivalenceCourse: (course: string) =>
+      `(//div[text()='${course}']//following::i[contains(@class,'fa-duotone fa-circle')])[1]`,
+    addEquivalenceButton: `//button[text()='ADD AS Equivalence']`,
+    saveEquivalenceButton: `(//button[text()='Save'])[1]`,
+    equivalenceSuccessMessage: `//span[@class='rawtxt']//span[2]`,
+=======
+        // Overall Access Setting selectors for groups and users
+        groupAccessDropdown: `//button[contains(@data-id,'admin_leanr_head')]//div[text()='Set As']`,
+        userAccessDropdown: `//button[contains(@data-id,'admin_user_head')]//div[text()='Set As']`,
+        accessOption: (accessType: string) => `//div[@class='dropdown-menu show']//span[text()='${accessType}']`,
 
         //Prerequisite course
         courseOption: (data: string) => `//button[text()='${data}']`,
         preCourseIndex: (index: number) => `(//div[@id='lms-scroll-preadded-list']//i[contains(@class,'fa-duotone fa-square icon')])[${index}]`,
         addPreCourseBtn: `//button[text()='ADD AS PREREQUISITE']`,
         preSearchField: `(//input[@id='exp-search-field'])[1]`,
+>>>>>>> Stashed changes
 
-        //Equivalence course
-        selectEquivalenceCourse: (course: string) => `(//div[text()='${course}']//following::i[contains(@class,'fa-duotone fa-circle')])[1]`,
-        addEquivalenceButton: `//button[text()='ADD AS Equivalence']`,
-        saveEquivalenceButton: `(//button[text()='Save'])[1]`,
-        equivalenceSuccessMessage: `//span[@class='rawtxt']//span[2]`,
+    //To add a particular completion training to the Course/TP.
+    clickCreatedCertificateCheckbox: (data: string) =>
+      `(//div[text()='${data}']//following::i[contains(@class,'fa-duotone fa-circle icon')])[1]`,
 
-        //To add a particular completion training to the Course/TP.
-        clickCreatedCertificateCheckbox: (data: string) => `(//div[text()='${data}']//following::i[contains(@class,'fa-duotone fa-circle icon')])[1]`,
+    //Course list page Filter
+    filterInCourseList: `//h1[text()='Course']/following::div[text()='Filters']`,
+    searchTypeDropdown: `//span[text()='Type']//following::button[@data-id='search_type']`,
 
-        //Course list page Filter
-        filterInCourseList: `//h1[text()='Course']/following::div[text()='Filters']`,
-        searchTypeDropdown: `//span[text()='Type']//following::button[@data-id='search_type']`,
+    //thumbnail from custom gallery
+    clickHereThumbnail: `//div[@class='form-label']//span[text()='Click here']`,
+    addThumbnail: `//label[text()='Click here']/following::input[@type='file']`,
+    customGalleryRadioBtn: `//span[text()='custom']//preceding::i[contains(@class,'fa-duotone fa-circle icon')]`,
+    uploadedImgSrc: `//label[@for='course-thumbnail-image']//following::img[contains(@class,'upload')]`,
+    //thumbnail from system gallery
+    selectRandomThumbnailimages: `//div[@class='img-wrapper']`,
+    //Retrieving code from edit page
+    codeValue: `(//input[contains(@id,'ode')])[1]`,
+    //Extract content title from course creation page
+    contentTitleOnCoursePage: `(//div[contains(@id,'cnt_title')])[1]`,
 
-        //thumbnail from custom gallery
-        clickHereThumbnail: `//div[@class='form-label']//span[text()='Click here']`,
-        addThumbnail: `//label[text()='Click here']/following::input[@type='file']`,
-        customGalleryRadioBtn: `//span[text()='custom']//preceding::i[contains(@class,'fa-duotone fa-circle icon')]`,
-        uploadedImgSrc: `//label[@for='course-thumbnail-image']//following::img[contains(@class,'upload')]`,
-        //thumbnail from system gallery
-        selectRandomThumbnailimages: `//div[@class='img-wrapper']`,
-        //Retrieving code from edit page
-        codeValue: `(//input[contains(@id,'ode')])[1]`,
-        //Extract content title from course creation page
-        contentTitleOnCoursePage: `(//div[contains(@id,'cnt_title')])[1]`,
+    //Course Business Rules:-
+    courseBusinessRulesLink: `//span[text()='Business Rule']`,
+    courseDedicatetoTP: `//span[text()='Dedicated to Training Plan']`,
 
-        //Course Business Rules:-
-        courseBusinessRulesLink: `//span[text()='Business Rule']`,
-        courseDedicatetoTP: `//span[text()='Dedicated to Training Plan']`,
+    //Duration within 30min
+    selectDuration: `(//span[text()=' h ']//following::input)[1]`,
 
-        //Duration within 30min
-        selectDuration: `(//span[text()=' h ']//following::input)[1]`,
+    //click edit icon on course listing page
+    clickEdit: `//i[@aria-label='Edit Course']`,
+    //change single instance to multi instance
+    yesButton: `//button[text()='YES']`,
+    noButton: `//button[text()='NO']`,
+    instanceClass: `//div[text()='Instance  / Class']`,
 
-        //click edit icon on course listing page
-        clickEdit: `//i[@aria-label='Edit Course']`,
-        //change single instance to multi instance
-        yesButton: `//button[text()='YES']`,
-        noButton: `//button[text()='NO']`,
-        instanceClass: `//div[text()='Instance  / Class']`,
+    //edit instance
+    editInstance: `//span[@title='Edit Instance/Class']`,
+    //class cancel radio button
+    classCancel: `//span[contains(text(),'Cancel')]`,
 
-        //edit instance 
-        editInstance: `//span[@title='Edit Instance/Class']`,
-        //class cancel radio button
-        classCancel: `//span[contains(text(),'Cancel')]`,
+    //Class enrollment ILT/VC
+    classEnrollBtn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::i[@class='fa-duotone fa-money-check-pen icon_14_1']`,
 
-        //Class enrollment ILT/VC
-        classEnrollBtn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::i[@class='fa-duotone fa-money-check-pen icon_14_1']`,
+    //class complete radio button
+    classComplete: `//span[contains(text(),'Complete')]`,
 
-        //class complete radio button
-        classComplete: `//span[contains(text(),'Complete')]`,
+    //filter by status in course listing page
+    crsFilter: `//div[text()='Filters']`,
+    statusDropdown: `//span[text()='Status']//following::div[text()='Select']`,
+    selectStatus: (data: string) => `//span[text()='${data}']`,
 
-        //filter by status in course listing page
-        crsFilter: `//div[text()='Filters']`,
-        statusDropdown: `//span[text()='Status']//following::div[text()='Select']`,
-        selectStatus: (data: string) => `//span[text()='${data}']`,
+    //Class enrollment E-Learn as an admin from the course edit page:-
+    enrollElearn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::span[text()='Enrollments']`,
+    //bulk class creation - manual
+    NoOfClass: `//label[text()="Delivery Type"]/following::input[@type="text"]`,
+    sessionNameInput_bulk: (i) =>
+      `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${
+        i + 1
+      }]`,
+    instructorDropdown_bulk: (i) =>
+      `//input[@id="instructors_intance_${i}-filter-field"]`,
+    instructorOption_bulk: (instructorName: string, i) =>
+      `//input[@id="instructors_intance_${i}"]/following::li[contains(text(),'${instructorName}')]`,
+    locationSelection_bulk: (i) =>
+      `//input[@id="location_instance_${i}-filter-field"]`,
+    locationDropdown_bulk: (i) => `//input[@id="location_instance_${i}"]`,
+    locationOption_bulk: (locationName: string, i) =>
+      `//input[@id="location_instance_${i}"]/following::li[text()='${locationName}']`,
+    seatMaxInput_bulk: (i: any) => `//input[@id='instanceMaxSeats_${i}']`,
+    timeInput_bulk: (i: any) =>
+      `//input[@id="starttime_sesstime_instance_${i}"]`,
+    instructorInput_bulk: (i: any) => `//input[@id="instructors_intance_${i}"]`,
+    waitlistInput_bulk: (i: any) => `//input[@id='instanceWailtList_${i}']`,
+    Date_bulk: (i) => `//input[@name="startdate_instance_${i}"]`,
+    //bulk class creation - copy/paste
+    sessionNameInput_Copy: `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[1]`,
+    instructorDropdown_Copy: `//input[@id="instructors_intance_0-filter-field"]`,
+    instructorOption_Copy: (instructorName: string) =>
+      `//input[@id="instructors_intance_0"]/following::li[contains(text(),'${instructorName}')]`,
+    locationSelection_Copy: `//input[@id="location_instance_0-filter-field"]`,
+    locationDropdown_Copy: `//input[@id="location_instance_0"]`,
+    locationOption_Copy: (locationName: string) =>
+      `//input[@id='location_instance_0']/following::li[text()='${locationName}']`,
+    seatMaxInput_Copy: `//input[@id='instanceMaxSeats_0']`,
+    timeInput_Copy: `//input[@id="starttime_sesstime_instance_0"]`,
+    instructorInput_Copy: `//input[@id="instructors_intance_0"]`,
+    waitlistInput_Copy: `//input[@id='instanceWailtList_0']`,
+    Date_Copy: `//input[@name="startdate_instance_0"]`,
+    copyClass: `//i[@title="Copy"]`,
+    pasteClass: (i: any) => `(//i[@title="paste"])[${i + 1}]`,
+    //checkConflict
+    ConflictCheck: `//button[text()="Check Conflict"]`,
+    saveButtn: `//button[text()="Save"]`,
 
-        //Class enrollment E-Learn as an admin from the course edit page:-
-        enrollElearn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::span[text()='Enrollments']`,
-        //bulk class creation - manual
-        NoOfClass: `//label[text()="Delivery Type"]/following::input[@type="text"]`,
-        sessionNameInput_bulk: (i) => `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${i + 1}]`,
-        instructorDropdown_bulk: (i) => `//input[@id="instructors_intance_${i}-filter-field"]`,
-        instructorOption_bulk: (instructorName: string, i) => `//input[@id="instructors_intance_${i}"]/following::li[contains(text(),'${instructorName}')]`,
-        locationSelection_bulk: (i) => `//input[@id="location_instance_${i}-filter-field"]`,
-        locationDropdown_bulk: (i) => `//input[@id="location_instance_${i}"]`,
-        locationOption_bulk: (locationName: string, i) => `//input[@id="location_instance_${i}"]/following::li[text()='${locationName}']`,
-        seatMaxInput_bulk: (i: any) => `//input[@id='instanceMaxSeats_${i}']`,
-        timeInput_bulk: (i: any) => `//input[@id="starttime_sesstime_instance_${i}"]`,
-        instructorInput_bulk: (i: any) => `//input[@id="instructors_intance_${i}"]`,
-        waitlistInput_bulk: (i: any) => `//input[@id='instanceWailtList_${i}']`,
-        Date_bulk: (i) => `//input[@name="startdate_instance_${i}"]`,
-        //bulk class creation - copy/paste
-        sessionNameInput_Copy: `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[1]`,
-        instructorDropdown_Copy: `//input[@id="instructors_intance_0-filter-field"]`,
-        instructorOption_Copy: (instructorName: string) => `//input[@id="instructors_intance_0"]/following::li[contains(text(),'${instructorName}')]`,
-        locationSelection_Copy: `//input[@id="location_instance_0-filter-field"]`,
-        locationDropdown_Copy: `//input[@id="location_instance_0"]`,
-        locationOption_Copy: (locationName: string) => `//input[@id='location_instance_0']/following::li[text()='${locationName}']`,
-        seatMaxInput_Copy: `//input[@id='instanceMaxSeats_0']`,
-        timeInput_Copy: `//input[@id="starttime_sesstime_instance_0"]`,
-        instructorInput_Copy: `//input[@id="instructors_intance_0"]`,
-        waitlistInput_Copy: `//input[@id='instanceWailtList_0']`,
-        Date_Copy: `//input[@name="startdate_instance_0"]`,
-        copyClass: `//i[@title="Copy"]`,
-        pasteClass: (i: any) => `(//i[@title="paste"])[${i + 1}]`,
-        //checkConflict
-        ConflictCheck: `//button[text()="Check Conflict"]`,
-        saveButtn: `//button[text()="Save"]`,
+    //verifyCreatedBulkClasses
+    clickEditBulkClass: (k: any) =>
+      `(//i[@class="fa-duotone icon_14_1 fa-pen"])[${k}]`,
 
-        //verifyCreatedBulkClasses
-        clickEditBulkClass: (k: any) => `(//i[@class="fa-duotone icon_14_1 fa-pen"])[${k}]`,
+    //To add content validity
+    selectContentValidity: `//label[text()="Content Validity"]/following::div[text()="Select"]`,
+    validityType: (validity: string) =>
+      `//label[text()="Content Validity"]/following::div[text()="Select"]/following::span[text()='${validity}']`,
+    DateInput: `//input[@id="content_validity_date-input"]`,
+    DaysInput: `//input[@id="content_validity_days"]`,
 
-        //To add content validity
-        selectContentValidity: `//label[text()="Content Validity"]/following::div[text()="Select"]`,
-        validityType: (validity: string) => `//label[text()="Content Validity"]/following::div[text()="Select"]/following::span[text()='${validity}']`,
-        DateInput: `//input[@id="content_validity_date-input"]`,
-        DaysInput: `//input[@id="content_validity_days"]`,
+    //Recurring class creation
+    selectSessionType: `(//label[contains(@for,'is_recurring_multiple')]//i)[1]`,
+    clickDaysDropdown: `//button[contains(@data-id,'days')]`,
+    daysCount: `//select[contains(@name,'days')]//option`,
+    selectDays: (index: string) =>
+      `(//select[contains(@name,'days')]//option)[${index}]`,
+    daysOption: (days: string) => `//span[text()='${days}']`,
+    endDate: `(//label[contains(text(),'End Date')]/following-sibling::div/input)[1]`,
 
-        //Recurring class creation
-        selectSessionType: `(//label[contains(@for,'is_recurring_multiple')]//i)[1]`,
-        clickDaysDropdown: `//button[contains(@data-id,'days')]`,
-        daysCount: `//select[contains(@name,'days')]//option`,
-        selectDays: (index: string) => `(//select[contains(@name,'days')]//option)[${index}]`,
-        daysOption: (days: string) => `//span[text()='${days}']`,
-        endDate: `(//label[contains(text(),'End Date')]/following-sibling::div/input)[1]`,
+    //Delete Course
+    deleteCourse: `//span[text()='Delete Course']`,
+    //Delete course conform pop-up
+    removeButton: `//button[text()='Remove']`,
+    cancelButton: `//button[text()='Cancel']`,
 
-        //Delete Course
-        deleteCourse: `//span[text()='Delete Course']`,
-        //Delete course conform pop-up
-        removeButton: `//button[text()='Remove']`,
-        cancelButton: `//button[text()='Cancel']`,
+    //edit instance from course listing page
+    instanceIcon: `//i[@aria-label='Instances']`,
+    editInstanceFromCrsList: `//i[@aria-label='Instances']//following::i[@aria-label='Edit Course']`,
 
-        //edit instance from course listing page
-        instanceIcon: `//i[@aria-label='Instances']`,
-        editInstanceFromCrsList: `//i[@aria-label='Instances']//following::i[@aria-label='Edit Course']`,
+    //edit ILT/VC session
+    editSession: `//span[@title='Edit']/child::i`,
+    updateSession: `//span[@title='Update']`,
 
-        //edit ILT/VC session
-        editSession: `//span[@title='Edit']/child::i`,
-        updateSession: `//span[@title='Update']`,
+    editCourseFromListingPage: `//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen']`,
+    checkContactSupport: `//input[@id='course-contact-support']`,
+    adminGroupSelect:`(//div[contains(text(),'items selected')])[1]`, 
+    searchBoxAdminGrpAccess:`((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
+    adminGroupSearch: (adminGroup:string) => `//span[text()='${adminGroup}']`,
+    removeAddedAdminGroup: (adminGroup:string) => `(//label[text()='${adminGroup}']/following::i[contains(@class,"fa-duotone fa-times fa-swap-opacity icon")])[1]`,
+    suspendedGrp:(groupName:string) => `(//li[text()='${groupName}'])`,
+  };
 
-        editCourseFromListingPage: `//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen']`,
-        checkContactSupport: `//input[@id='course-contact-support']`,
-
-        organizationType:`//button[@data-id='user-org-type']/child::div/child::div/child::div`
-
-
-    };
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
   }
@@ -1054,12 +1330,18 @@ export class CoursePage extends AdminHomePage {
     let value = await this.page.locator(this.selectors.crs_TPCode).innerHTML();
     return value;
   }
+  async msgVerify() {
+    const msg = await this.page.locator("//h3[text()='There are no results that match your current filters. Try removing some of them to get better results.']");
+    if(msg.isVisible())
+    {
+      console.log("Course is not displayed for admin user if the access is not given");
+    }
+  }
 
   async typeDescription(data: string) {
     await this.type(this.selectors.courseDescriptionInput, "Description", data);
   }
 
-  
   async uploadvideo() {
     let videoContent = `testVideo1`;
     const path = `../data/${videoContent}.mp4`;
@@ -1446,9 +1728,25 @@ async handleSaveUntilProceed(maxRetries = 6) {
     await this.click(this.selectors.completeByField, "CompleteBy", "Field");
   }
 
+  /**
+   * Select Complete by option from dropdown
+   * @param option - "Days from hire" or "Days from enrollment"
+   */
+  async selectCompleteByOption(option: "Days from hire" | "Days from enrollment") {
+    await this.validateElementVisibility(
+      this.selectors.completeByDropdown,
+      "Complete by dropdown"
+    );
+    await this.click(this.selectors.completeByDropdown, "Complete by", "Dropdown");
+    await this.wait("minWait");
+    await this.mouseHover(this.selectors.completeByOption(option), option);
+    await this.click(this.selectors.completeByOption(option), option, "Option");
+    console.log(`✅ Selected Complete by option: ${option}`);
+  }
+
   async selectDaysfromEnrollment() {
     await this.click(
-      this.selectors.chooseTimeOption("Days from Enrollment"),
+      this.selectors.categoryOption("Days from enrollment"),
       "Days from Enrollment",
       "Dropdown"
     );
@@ -1456,7 +1754,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
 
   async selectDaysfromHire() {
     await this.click(
-      this.selectors.chooseTimeOption("Days from Hire"),
+      this.selectors.categoryOption("Days from hire"),
       "Days from Hire",
       "Dropdown"
     );
@@ -1584,6 +1882,23 @@ async handleSaveUntilProceed(maxRetries = 6) {
       this.selectors.registrationEnd,
       gettomorrowDateFormatted()
     );
+  }
+
+  /**
+   * Verify that required field popup is displayed
+   * @param expectedText - The expected text in the popup (e.g., "Complete by date is required." or "Complete days is required.")
+   */
+  async verifyCompleteByRequiredPopup(expectedText: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.completeByRequiredPopup,
+      "Complete by required popup"
+    );
+    await this.verification(
+      this.selectors.completeByRequiredPopup,
+      expectedText
+    );
+    console.log(`✅ Verified: ${expectedText} popup displayed`);
   }
 
   // async selectLocation(locationName: string) {
@@ -2739,7 +3054,6 @@ async handleSaveUntilProceed(maxRetries = 6) {
   }
 
   async clickAccessButton() {
-    await this.wait("minWait");
     await this.validateElementVisibility(this.selectors.accessBtn, "Access"),
       await this.click(this.selectors.accessBtn, "Access", "Link");
     await this.wait("mediumWait");
@@ -2747,7 +3061,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
 
   async addSingleLearnerGroup(data?: any) {
     await this.wait("mediumWait");
-    const closeIcon = this.page.locator(this.selectors.accessCloseIcon);
+    const closeIcon = this.page.locator(this.selectors.accessCloseIconAdmin);
     const count = await closeIcon.count();
     console.log(count);
     console.log("learner groups : " + count);
@@ -2770,6 +3084,49 @@ async handleSaveUntilProceed(maxRetries = 6) {
       await this.click(`//li[text()='${data}']`, "User", "List");
     }
   }
+  async addSingleAdminGroup(data?: string) {
+  await this.wait("mediumWait");
+    const groupLabel = await this.page.locator(`//label[text()='Admin Group']/parent::div//following-sibling::div[2]//label[@class="form-label d-block my-0 me-1 text-break"]`).allInnerTexts();
+    const groupLabels = await this.page.locator(`//label[text()='Admin Group']/parent::div//following-sibling::div[2]//label[@class="form-label d-block my-0 me-1 text-break"]`).count();
+    console.log(groupLabel);
+    console.log(`Current admin group count: ${groupLabels}`);
+
+    for (let i = 1; i<= groupLabels; i++) {
+      const groupName = groupLabel[i - 1].trim();
+      console.log(`Checking admin group: ${groupName}`);
+      if (groupName !== data.trim()) {
+        console.log(`Deleting admin group: ${groupName}`);
+        await this.page.locator(`(//label[text()='Admin Group']/parent::div//following-sibling::div[2]//label[text()='${groupName}']/following::label[@class="form-label d-block my-0 pointer"])[1]`).click({ force: true });
+        await this.page.waitForTimeout(300);
+      }
+    }
+
+}
+
+  async addAdminGroup(data: string) {
+    await this.wait("mediumWait");
+    await this.click(this.selectors.adminGroupSelect, "Admin Group", "Button");
+    await this.click(this.selectors.searchBoxAdminGrpAccess, "Search Box", "Field");
+    await this.type(this.selectors.searchBoxAdminGrpAccess, "Search Box", data);
+    await this.mouseHover(this.selectors.adminGroupSearch(data), "Admin Group");
+    await this.click(this.selectors.adminGroupSearch(data), "Admin Group", "Option");
+}
+async addingSuspendedAdminGroup(data: string) {
+  await this.wait("mediumWait");
+  await this.click(this.selectors.adminGroupSelect, "Admin Group", "Button");
+  await this.click(this.selectors.searchBoxAdminGrpAccess, "Search Box", "Field");
+  await this.type(this.selectors.searchBoxAdminGrpAccess, "Search Box", data);
+
+  const adminGroup = this.page.locator(this.selectors.suspendedGrp(data));
+  if (await adminGroup.isVisible()) {
+    console.log(`Admin Group ${data} is suspended and cannot be added.`);
+  }
+}
+async removeAddedAdminGroup(data: string) {
+    await this.wait("mediumWait");
+    await this.mouseHover(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group");
+    await this.click(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group", "Icon");
+}
 
   async addMultipleLearnerGroups(users: string[]) {
     await this.wait("mediumWait");
@@ -2777,15 +3134,6 @@ async handleSaveUntilProceed(maxRetries = 6) {
     const count = await closeIcon.count();
     console.log(count);
     console.log("learner groups : " + count);
-    
-    // Clear existing users first
-    for (let i = 1; i < count; i++) {
-      await this.mouseHover(this.selectors.MultiaccessCloseIcon, "close Icon");
-      await this.page
-        .locator(this.selectors.MultiaccessCloseIcon)
-        .click({ force: true });
-      await this.page.waitForTimeout(100);
-    }
     
     if (!users || users.length === 0) {
       console.log("No users provided");
@@ -2802,7 +3150,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
       );
       console.log(learnerGroupValue);
       
-      await this.type(this.selectors.accessUserInput, "User", user);
+      await this.keyboardType(this.selectors.accessUserInput, user);
       await this.click(`//li[text()='${user}']`, "User", "List");
       
       // Wait between adding users
@@ -2872,104 +3220,73 @@ async handleSaveUntilProceed(maxRetries = 6) {
   }
 
   async specificLearnerGroupSelection(learnerGroupName: string) {
+    // await this.wait('minWait')
+    // if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 10000 })) {
+    //     await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
+    //     await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
+    // }
+    // await this.spinnerDisappear();
+    // await this.wait("mediumWait")
+    // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+    // for (const options of await this.page.locator(this.selectors.allLearnerGroupOptions).all()) {
+    //     const value = await options.innerText();
+    //     console.log(value)
+    //     if (value !== learnerGroupName) {
+
+    //         await this.page.locator(`//footer//following::span[@class='text' and text()='${value}']`).nth(0).click();
+    //     }
+    // }
+    // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
     await this.spinnerDisappear();
     await this.wait("mediumWait");
-    
-    // Check if modify access button is visible and click if needed
-    if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 5000 })) {
-      await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
-      await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
-      await this.spinnerDisappear();
-      await this.wait("mediumWait");
-    }
-    
-    // Open learner group dropdown
-    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
-    await this.wait("minWait");
-    
-    try {
-      // Get all learner group options
-      const options = await this.page.locator(this.selectors.allLearnerGroupOptions).all();
-      let targetGroupFound = false;
-      let targetGroupSelected = false;
-      
-      for (const option of options) {
-        const value = await option.innerText();
-        console.log(`Processing learner group: ${value}`);
-        
-        if (value === learnerGroupName) {
-          targetGroupFound = true;
-          
-          // Check if the target learner group is already selected
-          try {
-            const groupOptionLocator = this.page.locator(
-              `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
-            ).first();
-            
-            if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
-              const parentElement = groupOptionLocator.locator('..');
-              const isSelected = await parentElement.evaluate((el) => {
-                const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-                return el.classList.contains('selected') || 
-                       checkbox?.checked || 
-                       el.getAttribute('aria-selected') === 'true';
-              });
-              
-              if (isSelected) {
-                console.log(`${learnerGroupName} is already selected - skipping`);
-                targetGroupSelected = true;
-              } else {
-                console.log(`Selecting ${learnerGroupName}`);
-                await groupOptionLocator.click();
-                await this.wait("minWait");
-                targetGroupSelected = true;
-              }
-            }
-          } catch (error) {
-            console.log(`Could not process target learner group ${value}: ${error.message}`);
-          }
-          continue;
-        }
-        // For all other groups, try to unselect them
-        try {
-          const groupOptionLocator = this.page.locator(
-            `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
-          ).first();
-          
-          if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
-            // Check if the option is currently selected by looking for selected class or checked state
-            const parentElement = groupOptionLocator.locator('..');
-            const isSelected = await parentElement.evaluate((el) => {
-              const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-              return el.classList.contains('selected') || 
-                     checkbox?.checked || 
-                     el.getAttribute('aria-selected') === 'true';
-            });
-            
-            if (isSelected) {
-              console.log(`Unselecting ${value}`);
-              await groupOptionLocator.click();
-              await this.wait("minWait");
-            }
-          }
-        } catch (error) {
-          console.log(`Could not process learner group ${value}: ${error.message}`);
+    await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+    for (const options of await this.page
+      .locator(this.selectors.allLearnerGroupOptions)
+      .all()) {
+      const value = await options.innerText();
+      console.log(value);
+      if (value !== learnerGroupName) {
+        const labelLocator = this.page.locator(
+          `//footer//following::span[@class='text' and text()='${value}']`
+        );
+        const checkMarkLocator = labelLocator
+          .locator("..")
+          .locator("span.check-mark");
+        const isChecked = await checkMarkLocator.evaluate((el) => {
+          return window.getComputedStyle(el, "::after").content !== "none";
+        });
+        if (!isChecked) {
+          await checkMarkLocator.click();
         }
       }
-      
-      if (!targetGroupFound) {
-        console.log(`Warning: Target learner group '${learnerGroupName}' was not found in the options`);
-      } else if (!targetGroupSelected) {
-        console.log(`Warning: Could not select target learner group '${learnerGroupName}'`);
-      }
-      
-    } catch (error) {
-      console.log(`Error in learner group selection: ${error.message}`);
     }
-    
-    // Close the dropdown
-    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
-    await this.wait("minWait");
+    await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+  }
+  async specificAdminGroupSelection(adminGroupName: string) {
+    await this.spinnerDisappear();
+    await this.wait("mediumWait");
+    await this.click(this.selectors.adminGroupbtn, "Portal", "dropdown");
+    for (const options of await this.page
+      .locator(this.selectors.allAdminGroupOptions)
+      .all()) {
+      const value = await options.innerText();
+      console.log(value);
+      if (value !== adminGroupName) {
+        const labelLocator = this.page.locator(
+          `//footer//following::span[@class='text' and text()='${value}']`
+        );
+        const checkMarkLocator = labelLocator
+          .locator("..")
+          .locator("span.check-mark");
+        const isChecked = await checkMarkLocator.evaluate((el) => {
+          return window.getComputedStyle(el, "::after").content !== "none";
+        });
+        if (!isChecked) {
+          await checkMarkLocator.click();
+        }
+      }
+    }
+    await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
   }
 
   async multipleLearnerGroupSelection(learnerGroupNames: string[]) {
@@ -3118,6 +3435,8 @@ async handleSaveUntilProceed(maxRetries = 6) {
     await this.wait("maxWait");
   }
 
+<<<<<<< Updated upstream
+=======
   async accessSettings(accessType: string) {
     await this.wait("minWait");
     await this.click(
@@ -3154,6 +3473,56 @@ async handleSaveUntilProceed(maxRetries = 6) {
     await this.wait("maxWait");
   }
 
+  async overallAccessSettings(accessType: string) {
+    await this.wait("minWait");
+        await this.wait("minWait");
+    await this.click(
+      this.selectors.crsAccessSettingLink,
+      "Access Setting Link",
+      "Link"
+    );
+    
+    // Set access for groups
+    console.log(`🔄 Setting group access to: ${accessType}`);
+    await this.click(
+      this.selectors.groupAccessDropdown,
+      "Group Access Dropdown",
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.accessOption(accessType),
+      `${accessType} Group Access Selection`,
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    
+    // Set access for users
+    console.log(`🔄 Setting user access to: ${accessType}`);
+    await this.click(
+      this.selectors.userAccessDropdown,
+      "User Access Dropdown", 
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.accessOption(accessType),
+      `${accessType} User Access Selection`,
+      "Dropdown"
+    );
+        await this.click(
+      this.selectors.crsAccessSettingsSave,
+      "Access Setting Save",
+      "Button"
+    );
+    await this.wait("maxWait");
+    
+    console.log(`✅ Overall access settings configured: Groups and Users set to ${accessType}`);
+  }
+
+  
+
+>>>>>>> Stashed changes
   async verifyCurrencyNotPresent(currencyName: string): Promise<void> {
     await this.wait("minWait");
     await this.click(this.selectors.currencyDropdown, "Currency", "Field");
@@ -3347,66 +3716,5 @@ async handleSaveUntilProceed(maxRetries = 6) {
       "edit",
       "button"
     );
-  }
-
-  /**
-   * Verifies if the Access Setting link is visible but not clickable (disabled state)
-   * @returns Promise<boolean> - Returns true if visible but disabled, false otherwise
-   */
-  async verifyAccessSettingLink(): Promise<boolean> {
-    try {
-      await this.wait("minWait");
-      
-      // Check if Access Setting span with deactivate_color class is visible
-      const disabledAccessSetting = this.page.locator(`//span[@class='icontxt crsMapIcon deactivate_color' and text()='Access Setting']`);
-      const isVisible = await disabledAccessSetting.isVisible({ timeout: 5000 });
-      
-      if (isVisible) {
-        console.log("Access Setting link is visible");
-        
-        // Verify it has the deactivate_color class (disabled state)
-        const hasDeactivateClass = await disabledAccessSetting.evaluate((element) => {
-          return element.classList.contains('deactivate_color');
-        });
-        
-        // Check if element is not clickable/enabled
-        const isClickable = await disabledAccessSetting.isEnabled();
-        
-        // Additional check: Try to get the data-bs-toggle attribute
-        const hasTooltip = await disabledAccessSetting.getAttribute('data-bs-toggle');
-        
-        console.log(`Access Setting has deactivate_color class: ${hasDeactivateClass}`);
-        console.log(`Access Setting is clickable: ${isClickable}`);
-        console.log(`Access Setting has tooltip: ${hasTooltip === 'tooltip'}`);
-        
-        if (hasDeactivateClass && isClickable) {
-          console.log("Access Setting is visible but correctly disabled (not clickable)");
-          return true;
-        } else if (hasDeactivateClass && !isClickable) {
-          console.log("Warning: Access Setting appears disabled but is still clickable");
-          return false;
-        } else {
-          console.log("Access Setting is visible but not in disabled state");
-          return false;
-        }
-      } else {
-        console.log("Access Setting link with deactivate_color class is not visible");
-        
-        // Fallback: Check if regular Access Setting exists
-        const regularAccessSetting = this.page.locator(this.selectors.crsAccessSettingLink);
-        const regularVisible = await regularAccessSetting.isVisible({ timeout: 2000 });
-        
-        if (regularVisible) {
-          console.log("Regular Access Setting found but not in disabled state");
-          return false;
-        } else {
-          console.log("No Access Setting link found on the page");
-          return false;
-        }
-      }
-    } catch (error) {
-      console.log(`Error verifying Access Setting link: ${error.message}`);
-      return false;
-    }
   }
 }

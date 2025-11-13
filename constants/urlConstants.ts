@@ -3,14 +3,14 @@ export let URLConstants: any
 //export let URLConstants
 switch (environmentSetup) {
     case "automation":
-        URLConstants = {
+      URLConstants = {
             adminURL: "https://qaautomation.expertusoneqa.cloud/backdoor",
-            leanerURL: "https://automation.expertusoneqa.in/learner/e1internal/",
-            learnerportal: "https://automation.expertusoneqa.in/learner/learnerportal/",
-            learnerportal2: "https://automation.expertusoneqa.in/learner/learnerportal2/",
-            portal1: "E1Internal",
-            portal2: "LearnerPortal",
-            portal3: "LearnerPortal2",
+            leanerURL: "https://qaautomation.expertusoneqa.cloud/learner/qaautomation/",
+            learnerportal: "https://qaautomation.expertusoneqa.cloud/learner/autoportal/",
+            learnerportal2: "https://qaautomation.expertusoneqa.cloud/learner/autoportal1/",
+            portal1: "qaautomation",
+            portal2: "autoportal",
+            portal3: "autoportal1",
             LearnerGroup1: "AutoLG1(Do not Use)",
             LearnerGroup2: "AutoLG2(Do not Use)",
             creditCardNumber: "4111111111111111",
@@ -19,7 +19,7 @@ switch (environmentSetup) {
             USPS_Client_Id:"ScI6WsAHlUa6YC27zLRbQ0otldGLFdGG",
             USPS_Client_Secret:"AG0WP7HYj4a00VXh",
             USPS_API_URL:"https://api-cat.usps.com/",
-            EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg",
+            EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg"
         }
         break;
     case "qa":

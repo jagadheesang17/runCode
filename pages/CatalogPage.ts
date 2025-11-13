@@ -76,6 +76,7 @@ export class CatalogPage extends LearnerHomePage {
         certificateCloseIcon: "//i[contains(@class,'pointer ms-auto')]",
         secondaryCourse: (course: string) => `//div[contains(text(),'${course}')]`,
         completePreviousContent: "//div[contains(text(),'You need to complete the previous content')]",
+        enforceSequenceErrorMessage: "//div[text()='You need to complete the previous content to launch this content.']",
         recommendationLink: `//a[text()='Recommendations']`,
         verifyRecommendCourse: (course: string) => `//div[text()='${course}']`,
         overDueText: "//*[text()='Overdue']",
@@ -143,6 +144,12 @@ export class CatalogPage extends LearnerHomePage {
 
         //Prerequisite mandatory message
         prerequisiteMandatoryMessage: `//div[contains(@class,'ustify-content-center information_text')]//span`,
+
+        //Optional courses
+        optionalCourseLabel: `//div[text()='Optional']`,
+        firstOptionalCourse: `(//div[text()='Optional'])[1]`,
+        optionalCourseRadioButton: `//div[text()='Optional']//following::div[contains(@class,'custom-radio')]`,
+        enrollButtonLP: `//button[contains(text(),'Enroll')]`,
 
         //verify thumbnail img
         thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
@@ -652,6 +659,53 @@ export class CatalogPage extends LearnerHomePage {
             console.log(`Console Log: ${msg.text()}`);
         }); */
   }
+
+  /**
+   * Click on the first optional course and enroll
+   * This method finds the first optional course, clicks it, then selects via radio button, and enrolls
+   */
+  async clickFirstOptionalCourseAndEnroll() {
+    console.log(`🔄 Looking for optional courses to enroll`);
+    
+    await this.wait("minWait");
+    
+    // First click on the first optional course element
+    const firstOptionalCourse = this.page.locator(this.selectors.firstOptionalCourse);
+    const optionalCourseCount = await firstOptionalCourse.count();
+    
+    if (optionalCourseCount > 0) {
+      console.log(`Found ${optionalCourseCount} optional course(s)`);
+      
+      // Step 1: Click the first optional course
+      await firstOptionalCourse.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await firstOptionalCourse.click();
+      await this.wait("minWait");
+      console.log(`✅ Clicked on first optional course`);
+      
+      // Step 2: Click the radio button to select the first optional course
+      const radioButton = this.page.locator(this.selectors.optionalCourseRadioButton).first();
+      await radioButton.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await radioButton.click();
+      await this.wait("minWait");
+      console.log(`✅ Selected first optional course via radio button`);
+      
+      // Step 3: Click the enroll button
+      const enrollButton = this.page.locator(this.selectors.enrollButtonLP);
+      await enrollButton.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await enrollButton.click();
+      await this.wait("minWait");
+      await this.spinnerDisappear();
+      console.log(`✅ Clicked enroll button for optional course`);
+      
+      console.log(`✅ Successfully enrolled in first optional course`);
+    } else {
+      console.log(`⚠️ No optional courses found`);
+    }
+  }
+
   async clickRequestapproval() {
     await this.click(
       this.selectors.requestApproval,
@@ -753,8 +807,7 @@ export class CatalogPage extends LearnerHomePage {
     await this.page.locator(playButton).hover({ force: true });
     await this.page.focus(playButton, { strict: true });
     await this.page.click(playButton, { force: true });
-    await this.wait("maxWait");
-    await this.wait("mediumWait");
+    await this.page.waitForTimeout(20000);
   }
 
   async clickSecondaryCourse(course: string, text?: string) {
@@ -871,6 +924,23 @@ export class CatalogPage extends LearnerHomePage {
     );
     await this.verification(this.selectors.expiredContent, "Expired");
   }
+
+  /**
+   * Verify that completion certificate is not attached to the training
+   */
+  async verifyNoCertificateAttached() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.noCertificate,
+      "No Certificate Message"
+    );
+    await this.verification(
+      this.selectors.noCertificate,
+      "Completion certificate not attached to this training."
+    );
+    console.log("✅ Verified: Completion certificate not attached to this training");
+  }
+
   async clickFilter() {
     //  await this.page.reload();
     await this.wait("maxWait");
@@ -1406,6 +1476,32 @@ export class CatalogPage extends LearnerHomePage {
       "Link"
     );
     await this.wait("maxWait");
+  }
+
+  /**
+   * Verify enforce sequence error message appears
+   * This message appears when learner tries to access a course before completing previous content
+   */
+  async verifyEnforceSequenceErrorMessage() {
+    console.log(`🔄 Verifying enforce sequence error message`);
+    
+    await this.wait("minWait");
+    const errorMessage = this.page.locator(this.selectors.enforceSequenceErrorMessage);
+    
+    await this.validateElementVisibility(
+      this.selectors.enforceSequenceErrorMessage,
+      "Enforce Sequence Error Message"
+    );
+    
+    const messageText = await errorMessage.innerText();
+    console.log(`📋 Error message displayed: "${messageText}"`);
+    
+    await this.verification(
+      this.selectors.enforceSequenceErrorMessage,
+      "You need to complete the previous content to launch this content."
+    );
+    
+    console.log(`✅ Enforce sequence error message verified successfully`);
   }
 
   async clickSessionConflictPopup() {

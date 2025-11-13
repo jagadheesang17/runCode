@@ -2,10 +2,97 @@ import axios from "axios";
 import { FakerData } from '../../../utils/fakerUtils';
 import fs from 'fs';
 import path from 'path';
+import { URLConstants } from '../../../constants/urlConstants';
 
-
-const BASE_URL = "https://newprod.expertusoneqa.in";
+const BASE_URL = URLConstants.adminURL.replace('/backdoor', '');
 const SESSION_COOKIE = fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8');
+
+const CURRENCY_MAP: { [key: string]: string } = {
+  'us dollar': 'currency_001',
+  'usd': 'currency_001',
+  'australian dollar': 'currency_002',
+  'aud': 'currency_002',
+  'brazilian real': 'currency_003',
+  'brl': 'currency_003',
+  'british pound': 'currency_004',
+  'gbp': 'currency_004',
+  'canadian dollar': 'currency_005',
+  'cad': 'currency_005',
+  'chilean peso': 'currency_006',
+  'clp': 'currency_006',
+  'chinese yuan renminbi': 'currency_007',
+  'cny': 'currency_007',
+  'czech koruna': 'currency_008',
+  'czk': 'currency_008',
+  'danish krone': 'currency_009',
+  'dkk': 'currency_009',
+  'euro': 'currency_010',
+  'eur': 'currency_010',
+  'hong kong dollar': 'currency_011',
+  'hkd': 'currency_011',
+  'hungarian forint': 'currency_012',
+  'huf': 'currency_012',
+  'indian rupee': 'currency_013',
+  'inr': 'currency_013',
+  'indonesian rupiah': 'currency_014',
+  'idr': 'currency_014',
+  'israeli shekel': 'currency_015',
+  'ils': 'currency_015',
+  'japanese yen': 'currency_016',
+  'jpy': 'currency_016',
+  'korean won': 'currency_017',
+  'krw': 'currency_017',
+  'malaysian ringgit': 'currency_018',
+  'myr': 'currency_018',
+  'mexican peso': 'currency_019',
+  'mxn': 'currency_019',
+  'new zealand dollar': 'currency_020',
+  'nzd': 'currency_020',
+  'norwegian krone': 'currency_021',
+  'nok': 'currency_021',
+  'pakistani rupee': 'currency_022',
+  'pkr': 'currency_022',
+  'philippine peso': 'currency_023',
+  'php': 'currency_023',
+  'polish zloty': 'currency_024',
+  'pln': 'currency_024',
+  'russian ruble': 'currency_025',
+  'rub': 'currency_025',
+  'singapore dollar': 'currency_026',
+  'sgd': 'currency_026',
+  'south african rand': 'currency_027',
+  'zar': 'currency_027',
+  'swedish krona': 'currency_028',
+  'sek': 'currency_028',
+  'swiss franc': 'currency_029',
+  'chf': 'currency_029',
+  'taiwan new dollar': 'currency_030',
+  'twd': 'currency_030',
+  'thai baht': 'currency_031',
+  'thb': 'currency_031',
+  'turkish lira': 'currency_032',
+  'try': 'currency_032',
+  'venezuelan bolivar': 'currency_033',
+  'vef': 'currency_033',
+  'egyptian pound': 'currency_034',
+  'egp': 'currency_034'
+};
+
+/**
+ * Convert currency name to currency code
+ * @param currencyName - Currency name (case-insensitive) e.g., "US Dollar", "usd", "Indian Rupee"
+ * @returns Currency code e.g., "currency_001"
+ */
+function getCurrencyCode(currencyName: string): string {
+  const normalizedName = currencyName.toLowerCase().trim();
+  const currencyCode = CURRENCY_MAP[normalizedName];
+  
+  if (!currencyCode) {
+    throw new Error(`Invalid currency name: "${currencyName}". Please provide a valid currency name or code.`);
+  }
+  
+  return currencyCode;
+}
 
 const COMMON_HEADERS = {
   "accept": "application/json, text/plain, */*",
@@ -73,7 +160,7 @@ async function listUploadedContent(contentId: number, uniqueId: string): Promise
 
   console.log(`\n*** UPLOAD CONTENT RESPONSE ***`);
   console.log(`Status Code: ${response.status}`);
-  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  // console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
   if (response.status !== 200) {
     throw new Error("Upload Content failed");
   }
@@ -85,8 +172,27 @@ async function createCourse(
   uniqueId: string,
   status: string,
   instances: string,
-  sub_type: string
+  sub_type: string,
+  price?: string,
+  currency?: string
 ): Promise<{ course_id: number; catalog_id: number }> {
+  // Handle price and currency
+  let priceValue = "";
+  let currencyCode = "";
+  
+  if (price && price.trim() !== "") {
+    priceValue = price.trim();
+    
+    // If price is provided, currency is required
+    if (!currency || currency.trim() === "") {
+      throw new Error("Currency is required when price is provided");
+    }
+    
+    currencyCode = getCurrencyCode(currency);
+    console.log(`\n💰 Price Configuration:`);
+    console.log(`   Price: ${priceValue}`);
+    console.log(`   Currency: ${currency} → ${currencyCode}\n`);
+  }
   const formData = new URLSearchParams();
   formData.append("changedFields", "[]");
   formData.append("skipconflictValidation", "false");
@@ -102,9 +208,9 @@ async function createCourse(
   formData.append("old_portals", "");
   formData.append("provider_id", "2");
   formData.append("categorys", "");
-  formData.append("price", "");
+  formData.append("price", priceValue);
   formData.append("old_course_price", "");
-  formData.append("currency_type", "");
+  formData.append("currency_type", currencyCode);
   formData.append("max_seat", "");
   formData.append("old_max_seat", "undefined");
   formData.append("contact_support", "playwrightAutomation@gmail.com");
@@ -215,12 +321,15 @@ export async function createCourseAPI(
   courseName: string,
   status = "published",
   instances = "single",
-  sub_type = "e-learning"
+  sub_type = "e-learning",
+  price?: string,
+  currency?: string
 ): Promise<string> {
   const uniqueId = Date.now().toString();
   const contentId = await searchContent(content);
   await listUploadedContent(contentId, uniqueId);
-  const { course_id, catalog_id } = await createCourse(courseName, uniqueId, status, instances, sub_type);
+  const { course_id, catalog_id } = await createCourse(courseName, uniqueId, status, instances, sub_type, price, currency);
   await createAccessGroupMapping(course_id, catalog_id, status);
   return courseName;
 }
+

@@ -7,6 +7,7 @@ import { readDataFromCSV } from "../../../utils/csvUtil";
 
 let courseName = FakerData.getCourseName();
 let description = FakerData.getDescription();
+const pageUrl = URLConstants.adminURL;
 
 // Generate test data
 const user1 = FakerData.getUserId();
@@ -27,7 +28,7 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
         const csvFilePath = './data/User.csv';
         const data = await readDataFromCSV(csvFilePath);
         const users = [user1, user2];
-
+        await adminHome.clearBrowserCache(pageUrl)
         await adminHome.loadAndLogin("SUPERADMIN");
 
         for (let i = 0; i < users.length; i++) {
@@ -42,7 +43,9 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
                 await adminHome.user();
                 await createUser.clickCreateUser();
                 await createUser.verifyCreateUserLabel();
-
+                await createUser.uncheckInheritAddressIfPresent();
+                await createUser.uncheckInheritEmergencyContactIfPresent();
+                await createUser.uncheckAutoGenerateUsernameIfPresent();
                 await createUser.enter("first_name", FakerData.getFirstName());
                 await createUser.enter("last_name", FakerData.getLastName());
                 await createUser.enter("username", user);
@@ -60,7 +63,7 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
                 await createUser.enter("user-mobile", FakerData.getMobileNumber());
                 await createUser.clickSave();
                 await createUser.verifyUserCreationSuccessMessage();
-                await contentHome.gotoListing();
+                await adminHome.page.reload();
                 break; // Only process first row of CSV data
             }
         }
@@ -87,10 +90,10 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
         await adminGroup.clickuserCheckbox(user1);
         await learnerGroup.clickSelelctLearners();
         await adminGroup.clickActivate();
-        
+
         // Save and handle popup if present for Learner Group 1
         await adminGroup.clickSaveWithPopupHandling();
-        
+
         await adminGroup.clickProceed();
         await createCourse.verifySuccessMessage();
         await contentHome.gotoListing();
@@ -100,21 +103,22 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
         console.log(`🔄 Creating Learner Group 2: ${learnerGroup2Title} with users: ${user1}, ${user2}`);
         await adminGroup.clickCreateGroup();
         await adminGroup.enterGroupTitle(learnerGroup2Title);
-        
+
         // Add User1
         await adminGroup.searchUser(user1);
         await adminGroup.clickuserCheckbox(user1);
-        
+     await learnerGroup.clickSelelctLearners();
+
         // Add User2  
         await adminGroup.searchUser(user2);
         await adminGroup.clickuserCheckbox(user2);
-        
+
         await learnerGroup.clickSelelctLearners();
         await adminGroup.clickActivate();
-        
+
         // Save and handle popup if present for Learner Group 2
         await adminGroup.clickSaveWithPopupHandling();
-        
+
         await adminGroup.clickProceed();
         await createCourse.verifySuccessMessage();
         await contentHome.gotoListing();
@@ -175,24 +179,24 @@ test.describe(`TP036_Verify_mandatory_learning_path_multiple_groups_and_users.sp
         await learningPath.clickUpdateBtn();
         await learningPath.verifySuccessMessage();
         await learningPath.clickEditLearningPath();
-        
+
         // Configure access with multiple learner groups
         await createCourse.clickAccessButton();
-        
+
         // Select both learner groups
         console.log(`🔄 Selecting multiple learner groups: ${learnerGroup1Title}, ${learnerGroup2Title}`);
         await createCourse.multipleLearnerGroupSelection([learnerGroup1Title, learnerGroup2Title]);
-        
+
         // Add both users
         console.log(`🔄 Adding multiple users: ${user1}, ${user2}`);
         await createCourse.addMultipleLearnerGroups([user1, user2]);
-        
+
         await createCourse.saveAccessButton();
 
         // Set access to "Mandatory" to enforce auto enrollment and prevent cancellation
-        await createCourse.accessSettings("Mandatory");
+        await createCourse.overallAccessSettings("Mandatory");
         console.log("✅ Mandatory access settings configured for multiple learner groups");
-        
+
         await learningPath.description(description);
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();

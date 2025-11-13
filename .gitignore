@@ -13,3 +13,4 @@ node_modules/
 
 # Ignore files with sensitive information
 jira/jira-integration.ts
+/data/cookies.txt

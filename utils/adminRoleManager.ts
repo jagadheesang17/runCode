@@ -101,10 +101,12 @@ export class AdminRoleManager {
      * @param fileName - Name of the JSON file (optional, defaults to CustomAdminRoles.json)
      * @returns Promise<any> - Role data object
      */
-    static async getRoleDataByRoleName(roleName: string, fileName: string = "CustomAdminRoles"): Promise<any> {
+    static async getRoleDataByRoleName(roleName: string, fileName: string): Promise<any> {
         const environmentFolder = this.getEnvironmentFolder();
+        console.log(`Fetching role data for environment: ${environmentFolder},${fileName}`);
         
         const filePath = `./data/MetadataLibraryData/${environmentFolder}/${fileName}.json`;
+        console.log(`Fetching role data from file: ${filePath}`);
         const role = getItemByProperty(filePath, "roleName", roleName);
         
         if (!role) {
@@ -112,7 +114,33 @@ export class AdminRoleManager {
         }
 
         return role;
-    }    /**
+    }
+
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * Retrieves the privileges associated with a given role name
+ * @param {string} roleName - The name of the role to retrieve privileges for
+
+/*******  58ece082-efc7-4238-96aa-1852590cd506  *******/
+    static async getprivilegesByRoleName(roleName: string)
+    {  
+       const role = await this.getRoleDataByRoleName(roleName);
+       console.log("role value : ",role);
+       const modulePrivilege: string[] = [];
+       console.log("role value : ",role.modulePrivileges);
+       for (const modulePrivilege of Object.entries(role.modulePrivileges)) 
+        {
+           
+           
+           // Loop through each privilege inside the module
+           for (const privilege of modulePrivilege) {
+               //console.log("privilege value : ",privilege);
+               
+           }
+       }
+      
+       }
+    /**
      * Setup multiple admin roles for comprehensive testing
      * @param adminHome - AdminHomePage instance
      * @param adminRoleHome - AdminRolePage instance
@@ -124,7 +152,7 @@ export class AdminRoleManager {
         
         for (const roleName of roleNames) {
             try {
-                const roleData = await this.getRoleDataByRoleName(roleName, fileName);
+                const roleData = await this.getRoleDataByRoleName(testType);
                 await this.ensureRoleExists(adminHome, adminRoleHome, roleData);
             } catch (error) {
                 console.error(`Error setting up role for role name '${roleName}':`, error);

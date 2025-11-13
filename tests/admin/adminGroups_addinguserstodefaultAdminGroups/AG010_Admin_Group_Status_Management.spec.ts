@@ -7,10 +7,6 @@ test.describe(`AG011 - System Default Admin Group Restrictions & Policy Validati
 
     let systemDefaultGroup: any;
 
-    test.beforeAll(async () => {
-        systemDefaultGroup = await AdminGroupManager.getGroupDataByType("system_default");
-    });
-
     test(`Verify whether it does not allow to suspend a default admin Group`, async ({ adminHome, adminGroup }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },

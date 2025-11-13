@@ -13,7 +13,7 @@ test.describe(`Verify whether the Export Functionality is working correctly`, as
     
     test.beforeAll(async () => {
         groupData = await AdminGroupManager.getGroupDataByType("basic");
-        roleData = await AdminRoleManager.getRoleDataByRoleName("QA_Basic_Admin_Role");
+        roleData = await AdminRoleManager.getRoleDataByRoleName("QA_Basic_Admin_Role", "CustomAdminRoles");
         console.log(`Using admin group: ${groupData.groupTitle}`);
         console.log(`Using admin role: ${roleData.roleName}`);
     });
