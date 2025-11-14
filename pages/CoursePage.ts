@@ -450,6 +450,12 @@ export class CoursePage extends AdminHomePage {
     adminGroupSearch: (adminGroup:string) => `//span[text()='${adminGroup}']`,
     removeAddedAdminGroup: (adminGroup:string) => `(//label[text()='${adminGroup}']/following::i[contains(@class,"fa-duotone fa-times fa-swap-opacity icon")])[1]`,
     suspendedGrp:(groupName:string) => `(//li[text()='${groupName}'])`,
+
+    // Dedicated to TP - Enrollment and Instance selectors
+    enrollmentsIcon: `//i[@aria-label='Enrollments']`,
+    enrollmentTable: `//table[contains(@class,'table')]`,
+    enrollmentRow: `//table//tbody//tr`,
+    enrollmentSourceColumn: (rowIndex: number) => `(//table//tbody//tr)[${rowIndex}]//td[contains(text(),'Learning Path') or contains(text(),'Direct')]`,
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -1260,7 +1266,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
   }
 
   async verifySuccessMessage() {
-    await this.wait("minWait");
+    await this.wait("maxWait");
     await this.verification(this.selectors.successMessage, "successfully");
   }
 
@@ -3510,6 +3516,7 @@ async removeAddedAdminGroup(data: string) {
   }
   //edit course from listing page after search:
   async editCourseFromListingPage() {
+    await this.page.waitForTimeout(8000);
     await this.validateElementVisibility(
       this.selectors.editCourseFromListingPage,
       "editCourse"
@@ -3520,4 +3527,38 @@ async removeAddedAdminGroup(data: string) {
       "button"
     );
   }
+
+  // Dedicated to TP Methods
+  async clickInstancesIcon() {
+    await this.wait('minWait');
+    await this.validateElementVisibility(this.selectors.instanceIcon, "Instances Icon");
+    await this.click(this.selectors.instanceIcon, "Instances", "Icon");
+    console.log("✅ Clicked Instances icon");
+  }
+
+  async clickEnrollmentsIcon() {
+    await this.wait('minWait');
+    await this.validateElementVisibility(this.selectors.enrollmentsIcon, "Enrollments Icon");
+    await this.click(this.selectors.enrollmentsIcon, "Enrollments", "Icon");
+    console.log("✅ Clicked Enrollments icon");
+  }
+
+  async getEnrollmentSource(rowIndex: number = 1): Promise<string> {
+    await this.wait('minWait');
+    const sourceSelector = this.selectors.enrollmentSourceColumn(rowIndex);
+    await this.validateElementVisibility(sourceSelector, "Enrollment Source");
+    const sourceText = await this.getInnerText(sourceSelector);
+    console.log(`ℹ️ Enrollment source for row ${rowIndex}: ${sourceText}`);
+    return sourceText.trim();
+  }
+
+  async verifyEnrollmentSource(expectedSource: string, rowIndex: number = 1) {
+    const actualSource = await this.getEnrollmentSource(rowIndex);
+    if (actualSource.includes(expectedSource)) {
+      console.log(`✅ Enrollment source verified: ${expectedSource}`);
+    } else {
+      throw new Error(`Expected enrollment source '${expectedSource}' but found '${actualSource}'`);
+    }
+  }
 }
+

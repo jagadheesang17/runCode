@@ -43,8 +43,10 @@ export class CatalogPage extends LearnerHomePage {
         posterElement: `//button[@class='vjs-big-play-button']//span[1]`,
         viewCertificationDetailsBtn: "//button[text()='View Certification Details']",
         viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
-        viewCertificateBtn: "//div[text()='modules/courses']/parent::div//span[text()='View Certificate']",
+        viewCertificateBtn: "(//i[@aria-label='View Certificate'])[1]",
         okBtn: "//button[text()='Ok']",
+        downloadPdfBtn: "(//i[contains(@class,'download')])[1]",
+        certificateModal: "//div[contains(@class,'modal-dialog modal-xl')]",
         addToCart: `//span[text()='Add to cart']`,
         contentLaunchBtn: "//button//span[text()='Launch']",
         contentsLabel: "//button[text()='Save Learning Status']//following::span[contains(text(),'Content')]",
@@ -194,7 +196,13 @@ export class CatalogPage extends LearnerHomePage {
             costcenterValue:`//input[@id='cc']`,
 
             // Verify label selector for any text verification
-            verifyLabel: (text: string) => `//div[text()='${text}']`
+    verifyLabel: (text: string) => `//div[text()='${text}']`,
+            closeCertificateIcon:`//div[contains(@class,'modal-header')]/i`,
+
+        // Dedicated to TP selectors
+        dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
+        enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
+        enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
 
     };
   constructor(page: Page, context: BrowserContext) {
@@ -1055,7 +1063,7 @@ export class CatalogPage extends LearnerHomePage {
     await this.spinnerDisappear();
   }
 
-  async clickViewCertificate() {
+  async   clickViewCertificate() {
     await this.mouseHover(
       this.selectors.viewCertificateBtn,
       "View Certificate"
@@ -1067,6 +1075,77 @@ export class CatalogPage extends LearnerHomePage {
     );
     await this.wait("minWait");
   }
+
+  async verifyCertificateModalDisplayed() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.certificateModal,
+      "Certificate Modal"
+    );
+    console.log("✅ Certificate modal is displayed");
+  }
+
+  async verifyCertificateContent(learnerName: string, trainingTitle: string) {
+    await this.wait("minWait");
+    const certificateModal = this.page.locator(this.selectors.certificateModal);
+    const modalText = await certificateModal.innerText();
+    const nameVisible = modalText.includes(learnerName);
+    if (nameVisible) {
+      console.log(`✅ Learner name "${learnerName}" verified in certificate`);
+    } else {
+      throw new Error(`❌ Learner name "${learnerName}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
+    }
+    
+    // Verify training title is visible in certificate
+    const titleVisible = modalText.includes(trainingTitle);
+    if (titleVisible) {
+      console.log(`✅ Training title "${trainingTitle}" verified in certificate`);
+    } else {
+      throw new Error(`❌ Training title "${trainingTitle}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
+    }
+    
+    console.log("✅ Certificate content validated successfully");
+  }
+
+  async downloadCertificateAsPDF(): Promise<string> {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.downloadPdfBtn,
+      "Download as PDF Button"
+    );
+    
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.click(this.selectors.downloadPdfBtn, "Download as PDF", "Button")
+    ]);
+    
+    const fileName = download.suggestedFilename();
+    const downloadPath = `test-results/${fileName}`;
+    await download.saveAs(downloadPath);
+    
+    console.log(`✅ Certificate PDF downloaded: ${fileName}`);
+    return downloadPath;
+  }
+
+  async verifyPDFFile(pdfPath: string) {
+    const fs = require('fs');
+    
+    if (!fs.existsSync(pdfPath)) {
+      throw new Error(`❌ PDF file not found at: ${pdfPath}`);
+    }
+    const stats = fs.statSync(pdfPath);
+    if (stats.size === 0) {
+      throw new Error(`❌ Downloaded PDF file is empty: ${pdfPath}`);
+    }
+    if (stats.size < 10000) {
+      throw new Error(`❌ PDF file seems too small: ${stats.size} bytes`);
+    }
+    console.log(`✅ PDF file validated: ${pdfPath} (${stats.size} bytes)`);
+    await this.closeCertificate();
+  }
+
+
+
 
   public async addToCart() {
     await this.validateElementVisibility(
@@ -1665,4 +1744,80 @@ async verifyAddedToWishlist(courseName: string) {
    async verifyCostCentrerInApprovalPopup(value: string) {
         await this.verificationInputValue(this.selectors.costcenterValue,value);
     }
+
+  async closeCertificate() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.certificateCloseIcon,
+      "Close Certificate"
+    );
+    await this.click(
+      this.selectors.certificateCloseIcon,
+      "Close Certificate",
+      "Button"
+    );
+    await this.page.waitForLoadState("load");
+    }
+
+  async verifyNoCertificateAvailable() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.noCertificate,
+      "No Certificate Message"
+    );
+    await this.verification(
+      this.selectors.noCertificate,
+      "Completion certificate not attached to this training"
+    );
+    console.log("✅ Verified: No certificate available for incomplete course");
+  }
+
+  // Dedicated to TP Methods
+  async getDedicatedToTPMessage(): Promise<string> {
+    await this.wait('minWait');
+    const messageSelector = this.selectors.dedicatedToTPMessage;
+    
+    try {
+      await this.validateElementVisibility(messageSelector, "Dedicated to TP Message");
+      const messageText = await this.getInnerText(messageSelector);
+      console.log(`ℹ️ Dedicated to TP message: ${messageText}`);
+      return messageText.trim();
+    } catch (error) {
+      console.log("ℹ️ No dedicated to TP message found");
+      return "";
+    }
+  }
+
+  async verifyDedicatedToTPMessage() {
+    const message = await this.getDedicatedToTPMessage();
+    if (message.toLowerCase().includes('dedicated to training plan')) {
+      console.log("✅ Dedicated to Training Plan message verified");
+    } else {
+      throw new Error(`Expected dedicated to TP message but found: ${message}`);
+    }
+  }
+
+  async isEnrollButtonDisabled(): Promise<boolean> {
+    await this.wait('minWait');
+    const enrollButton = this.page.locator(this.selectors.enrollButton);
+    
+    try {
+      const isDisabled = await enrollButton.isDisabled({ timeout: 5000 });
+      console.log(`ℹ️ Enroll button disabled state: ${isDisabled}`);
+      return isDisabled;
+    } catch (error) {
+      console.log("ℹ️ Enroll button not found or not disabled");
+      return false;
+    }
+  }
+
+  async verifyEnrollButtonDisabled() {
+    const isDisabled = await this.isEnrollButtonDisabled();
+    if (isDisabled) {
+      console.log("✅ Enroll button is disabled as expected");
+    } else {
+      throw new Error("Expected enroll button to be disabled but it's not");
+    }
+  }
 }
+

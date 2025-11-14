@@ -46,9 +46,6 @@ test.describe('CC001 - Ensure that a new certificate can be created ,Edited & Pu
         await adminHome.clickCompletionCertification();
         await CompletionCertification.searchCompletionCertificate(title)
         await CompletionCertification.verifyPublishedCount();
-        
-
-
     });
   
 });

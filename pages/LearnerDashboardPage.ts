@@ -10,7 +10,7 @@ export class LearnerDashboardPage extends LearnerHomePage {
     learningPathAndCertification:
       "//div[@id='mydashboard']//div[text()='Learning path / Certification']",
     certification: "a:text-is('Certification')",
-    certificationInput: "#exp-searchundefined input",
+    certificationInput: "//input[@id='exp-searchundefined-field']",
     verifyText: (titleName: string) => `//div[text()='${titleName}']`,
     recertifyIcon: (course: string) =>
       `//div[text()='${course}']//following::i[contains(@class,'certificate')]`,
@@ -20,7 +20,7 @@ export class LearnerDashboardPage extends LearnerHomePage {
     // mandatoryText: "//div[text()='Mandatory']",  //Not in use
     // complianceText: "//div[text()='Compliance']", //Not in use
     mdtryandcmplText: "//div[text()='Mandatory' or text()='Compliance']",
-    verifyCerificate: (cerTitle: string) =>
+    verifyCertificate: (cerTitle: string) =>
       `//span[contains(text(),'To complete')]/following::div[text()='${cerTitle}']`,
     //Learning History
     learningHistory: "//div[@id='mydashboard']//div[text()='Learning History']",
@@ -48,6 +48,13 @@ export class LearnerDashboardPage extends LearnerHomePage {
     clickMore: (data: string) =>
       `(//div[text()='${data}']//following::i[@aria-label='More'])[1]`,
     titleClick: (title: string) => `//div[contains(text(),'${title}')]`,
+    myCertificateLink: `//div[text()='My Certificates']`,
+    selectCertificationType: (cerTitle: string) => `//a[contains(text(),'${cerTitle}')]`,
+    filterbtn: `//button[@id='undefined-filters-trigger']`,
+    fromdate: `//input[@id='mycertificate_date_range_filter-from-input']`,
+    todate: `//input[@id='mycertificate_date_range_filter-to-input']`,
+    applyBtn: `//button[text()='Apply']`,
+    completedCertificates:`//h5[contains(@class,'title_active')]`
   };
 
   //To Navigate to Bookmark->Content/Certification/Learning Path pages
@@ -118,12 +125,12 @@ export class LearnerDashboardPage extends LearnerHomePage {
     );
   }
   async clickLearningPath_And_Certification() {
-    await this.wait("minWait");
+    await this.wait("maxWait");
     await this.validateElementVisibility(
       this.selectors.learningPathAndCertification,
       "LearningPath and Certification"
     );
-    await this.wait("minWait");
+    await this.wait("maxWait");
     await this.click(
       this.selectors.learningPathAndCertification,
       "LearningPath and Certification",
@@ -180,8 +187,17 @@ export class LearnerDashboardPage extends LearnerHomePage {
 
   async verifyTOCompleteCert(cerTitle: string) {
     await this.validateElementVisibility(
-      this.selectors.verifyCerificate(cerTitle),
-      "Cerificate"
+      this.selectors.verifyCertificate(cerTitle),
+      "Certificate"
+    );
+  }
+
+  async clickCertificateTitle(cerTitle: string) {
+    await this.wait("maxWait");
+    await this.click(
+      this.selectors.verifyCertificate(cerTitle),
+      "Certificate",
+      "Link"
     );
   }
 
@@ -262,4 +278,47 @@ export class LearnerDashboardPage extends LearnerHomePage {
     await this.mouseHover(this.selectors.titleClick(title), "Title");
     await this.click(this.selectors.titleClick(title), "Title", "");
   }
+
+  async selectCertificateType(cerTitle: string) {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(this.selectors.myCertificateLink, "My Certificate");
+    await this.click(this.selectors.myCertificateLink, "My Certificate", "Link");
+    await this.validateElementVisibility(this.selectors.selectCertificationType(cerTitle), "Certificate Type");
+    await this.click(this.selectors.selectCertificationType(cerTitle), "Certificate Type", "Link");
+  }
+
+  async filterByTodaysDate() {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const year = today.getFullYear();
+    const todayDate = `${month}/${day}/${year}`;
+    await this.wait("minWait");
+    await this.click(this.selectors.filterbtn, "Filter", "Button");
+    await this.wait("minWait");
+    await this.typeAndEnter(this.selectors.fromdate, "From Date", todayDate);
+    await this.wait("minWait");
+    await this.typeAndEnter(this.selectors.todate, "To Date", todayDate);
+    await this.wait("minWait");
+    await this.click(this.selectors.applyBtn, "Apply", "Button");
+  }
+
+  async verifyCompletedCertificate(certificateTitle: string) {
+    await this.wait("minWait");
+    await this.spinnerDisappear();
+    const completedCertificates = await this.page.locator(this.selectors.completedCertificates).allTextContents();
+    console.log(`✅ Total completed certificates found: ${completedCertificates.length}`);
+    console.log(`Certificate titles: ${completedCertificates.join(', ')}`);
+    const isCertificatePresent = completedCertificates.some(cert => cert.includes(certificateTitle));
+    if (!isCertificatePresent) {
+      throw new Error(`Certificate "${certificateTitle}" not found in completed certificates. Available certificates: ${completedCertificates.join(', ')}`);
+    }
+    console.log(`✅ Certificate "${certificateTitle}" is present in completed certificates`);
+  }
+
+
+
+
+
 }
+

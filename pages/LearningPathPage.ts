@@ -3,6 +3,7 @@ import { PlaywrightWrapper } from "../utils/playwright";
 import { AdminHomePage } from "./AdminHomePage";
 
 import { FakerData, getCurrentDateFormatted, gettomorrowDateFormatted } from "../utils/fakerUtils";
+import { create } from "domain";
 
 export class LearningPathPage extends AdminHomePage {
 
@@ -17,7 +18,7 @@ export class LearningPathPage extends AdminHomePage {
      //  proceedBtn: "//button[text()='Yes, Proceed']", //commented on 24-02-2025
          proceedBtn:"//footer//following::button[contains(text(),'Yes, Proceed')]",
         //reCertificationAddCourseBtn: "(//button[text()='Add Selected Course'])[2]",
-        addCourseBtn: "//button[text()=' Add Course']",  //-->changed on 05/07/2024
+        addCourseBtn: "//button[contains(text(),'Add Course')]",
         addCourseCheckBox: "//i[contains(@class,'fa-duotone fa-square icon')]",
         courseChexbox: (course: string) => `(//div[text()='${course}']//following::i[contains(@class,'square icon')])[1]`,
         checkBox: (index: string) => `(//i[contains(@class,'fa-duotone fa-square icon')])[${index}]`,
@@ -29,6 +30,7 @@ export class LearningPathPage extends AdminHomePage {
         addCourseSearchInput: "input[id^='program-structure-title-search']",
         successMessage: "//div[@id='lms-overall-container']//h3",
         createCertification: "//button[text()='CREATE CERTIFICATION']",
+        createLearningPath: "//button[text()='CREATE LEARNING PATH']",
         editCertification: "//a[text()='Edit Certification']",
         hasRecertification: "//span[text()='Has Recertification']/preceding::i[contains(@class,'fad fa-square icon')]",
         //expiresBtn: "//label[text()='Expires']/parent::div//button[contains(@class,'customselectpicker')]", ---->Label has been changed
@@ -174,9 +176,8 @@ export class LearningPathPage extends AdminHomePage {
      } */
 
     async clickAddCourse() {
-        await this.wait("mediumWait") //Added by arivu for checking purpose
-        await this.spinnerDisappear();
-        await this.page.locator(this.selectors.addCourseBtn).last().isVisible({ timeout: 10000 });
+        await this.wait("maxWait") //Added by arivu for checking purpose
+        await this.page.locator(this.selectors.addCourseBtn).last().isVisible({ timeout: 15000 });
         await this.page.locator(this.selectors.addCourseBtn).last().scrollIntoViewIfNeeded();
         //await this.click(this.selectors.addCourseBtn, "Add Course Button", "Button");
         await this.page.locator(this.selectors.addCourseBtn).last().click({ force: true })

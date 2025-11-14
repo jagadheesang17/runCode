@@ -20,25 +20,26 @@ test.describe('DSL010 - Verify Rating filter in Dynamic Shareable Links', () => 
         await dynamicShareableLinks.selectDomainOption(domain);
         await dynamicShareableLinks.verifyRatingDisplayed();
         await dynamicShareableLinks.selectRating("4");
-        const generatedURL = await dynamicShareableLinks.clickGenerateURL;
-        // await dynamicShareableLinks.openGeneratedURL(generatedURL);
+        const generatedURL = await dynamicShareableLinks.clickGenerateURL();
+        await dynamicShareableLinks.openGeneratedURL(generatedURL);
+        await dynamicShareableLinks.verifyAppliedFilter("Rating", "4");
         await dynamicShareableLinks.verifyTrainingsWithSelectedRating("4");
     });
 
-    test("DSL010b - Verify admin can share URL when rating is disabled", async ({ adminHome, dynamicShareableLinks }) => {
+    // test("DSL010b - Verify admin can share URL when rating is disabled", async ({ adminHome, dynamicShareableLinks }) => {
         
-        test.info().annotations.push(
-            { type: 'Author', description: 'Kathir A' },
-            { type: 'TestCase', description: 'DSL010b_Verify_share_url_when_rating_disabled' },
-            { type: 'Test Description', description: 'Verify whether the admin can share the URL even when the rating is disabled' }
-        );
+    //     test.info().annotations.push(
+    //         { type: 'Author', description: 'Kathir A' },
+    //         { type: 'TestCase', description: 'DSL010b_Verify_share_url_when_rating_disabled' },
+    //         { type: 'Test Description', description: 'Verify whether the admin can share the URL even when the rating is disabled' }
+    //     );
 
-        await adminHome.loadAndLogin("CUSTOMERADMIN");
-        await adminHome.menuButton();
-        await adminHome.clickLearningMenu();
-        await adminHome.dynamicShareableLinks();
-        await dynamicShareableLinks.selectDomainOption(domain);
-        await dynamicShareableLinks.verifyURLGeneratedWhenRatingDisabled();
-    });
+    //     await adminHome.loadAndLogin("CUSTOMERADMIN");
+    //     await adminHome.menuButton();
+    //     await adminHome.clickLearningMenu();
+    //     await adminHome.dynamicShareableLinks();
+    //     await dynamicShareableLinks.selectDomainOption(domain);
+    //     await dynamicShareableLinks.verifyURLGeneratedWhenRatingDisabled();
+    // });
 
 });

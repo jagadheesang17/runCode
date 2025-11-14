@@ -39,7 +39,7 @@ export class ExportPage extends PlaywrightWrapper {
     }
 
     // For AG013 - JSON-based validation (compares UI data with exported file)
-    public async validateExported(filetype: string): Promise<void> {
+    public async validateExported(filetype: string, jsonFileName: string): Promise<void> {
         // Get the latest exported file
         const projectDownloadsDir = path.join(process.cwd(), 'test-results', 'downloads');
         const files = fs.readdirSync(projectDownloadsDir);
@@ -62,9 +62,9 @@ export class ExportPage extends PlaywrightWrapper {
 
         let validationResult = false;
         if (filetype === 'CSV') {
-            validationResult = await ExportValidator.validateCSV(filePath);
+            validationResult = await ExportValidator.validateCSV(filePath, jsonFileName);
         } else if (filetype === 'Excel') {
-            validationResult = await ExportValidator.validateExcel(filePath);
+            validationResult = await ExportValidator.validateExcel(filePath, jsonFileName);
         }
         
         if (!validationResult) {

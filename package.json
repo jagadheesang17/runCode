@@ -13,6 +13,7 @@
     "@playwright/test": "^1.56.0",
     "@types/jimp": "^0.2.1",
     "@types/node": "^20.19.19",
+    "@types/pdf-parse": "^1.1.5",
     "@types/pg": "^8.11.6",
     "allure-commandline": "^2.32.0"
   },
@@ -30,6 +31,7 @@
     "jira-client": "^8.2.2",
     "jsdom": "^24.1.0",
     "mysql2": "^3.10.2",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.12.0",
     "qrcode-reader": "^1.0.4",
     "typescript": "^5.5.4",

@@ -431,8 +431,8 @@ export class AdminGroupPage extends PlaywrightWrapper {
     }
 
     // Delegate to ExportPage for JSON-based validation
-    public async validateExported(filetype: string): Promise<void> {
-        return await this.exportPage.validateExported(filetype);
+    public async validateExported(filetype: string, jsonFileName: string): Promise<void> {
+        return await this.exportPage.validateExported(filetype, jsonFileName);
     }
 
     // Delegate to ExportPage for username validation

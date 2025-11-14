@@ -103,12 +103,9 @@ test.describe(`Verify whether the Export Functionality is working correctly`, as
         const uiUsers = await adminGroup.getAddedUsers();
         console.log(`Successfully extracted ${uiUsers.length} users from UI`);
 
-        // Export Excel file
         await exportPage.clickExportAs("Excel");
         
-        // Validate the exported file matches UI data
-        await exportPage.validateExported("Excel");
-
+        await exportPage.validateExported("Excel", "addedUsers");
 
         
     });

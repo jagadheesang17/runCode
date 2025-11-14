@@ -60,8 +60,8 @@ export class AdminHomePage extends AdminLogin {
         adminConfigLink: `//a[text()='Admin Configuration']`,
         // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
-        clickBack:`//i[@id='dismissSidebar']`,
-        quickAccessCreate:(menu: string)=>`//div[text()='${menu}']//ancestor::div[@class='item-draggable']//div[text()='Create']`,
+        clickBack: `//i[@id='dismissSidebar']`,
+        quickAccessCreate: (menu: string) => `//div[text()='${menu}']//ancestor::div[@class='item-draggable']//div[text()='Create']`,
 
         //for Direct Content Launch
         directContent: `//a[text()='Direct Content Launch']`,
@@ -78,7 +78,7 @@ export class AdminHomePage extends AdminLogin {
         
         //meta data library option
         metaLibOption: (data: string) => `//a[text()='${data}']`,
-        dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`
+        dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
     
     }
     public async clickLearnerGroupLink() {
@@ -471,6 +471,18 @@ export class AdminHomePage extends AdminLogin {
         await this.mouseHover(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
         await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
         await this.spinnerDisappear();
+    }
+
+    public async verifyDynamicShareableLinks(expectedState: "Enabled" | "Disabled") {
+        await this.wait("mediumWait");
+        const isVisible = await this.page.locator(this.selectors.dynamicShareableLinks).isVisible();
+        if (expectedState === "Enabled") {
+            expect(isVisible).toBeTruthy();
+            console.log("✅ Verified: Dynamic Shareable Links is displayed in the menu (Enabled)");
+        } else if (expectedState === "Disabled") {
+            expect(isVisible).toBeFalsy();
+            console.log("✅ Verified: Dynamic Shareable Links is NOT displayed in the menu (Disabled)");
+        }
     }
 
 }

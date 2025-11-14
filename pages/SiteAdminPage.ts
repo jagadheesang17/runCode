@@ -1,5 +1,5 @@
 import { AdminHomePage } from "./AdminHomePage";
-import { BrowserContext, Page } from "@playwright/test";
+import { BrowserContext, Page, expect } from "@playwright/test";
 import fs from 'fs'
 import path from "path";
 import { URLConstants } from "../constants/urlConstants";
@@ -7,13 +7,13 @@ import { getRandomItemFromFile } from "../utils/jsonDataHandler";
 
 
 export class SiteAdminPage extends AdminHomePage {
-emailUsed:string="";
+    emailUsed: string = "";
     public selectors = {
         ...this.selectors,
         siteSettingsLabel: "//div[text()='Site Settings']",
         ////SSO////
         learnerConfigLocator: "//div[text()='Learner Configuration']",
-        adminConfigLocator: "//div[text()='Admin Configuration']",
+        adminConfigLocator: "//a[text()='Admin Configuration']",
         learnerSignInLabel: "//span[text()='Sign In & Sign Up']",
         portalList: (data: string) => `//nav[@id='portaltab']//following::button[contains(@class,'h2') and text()='${data}']`,
         nativeLoginEditIcon: `//*[@class="col Native Login"]/div/span/i`,
@@ -28,8 +28,8 @@ emailUsed:string="";
         uspsAPIURL: `//label[text()='USPS API URL']//following-sibling::input`,
         easyPostAPIKey: `//label[text()='EasyPost API Key']//following-sibling::input`,
         addressVerificationToggle: `(//*[@class="col Address Verification"]/div/label/i)[1]`,
-        saveBtn:`//button[text()='save']`,
-       // saveBtn: `//button[text()='save' or text()='SAVE']`,
+        saveBtn: `//button[text()='save']`,
+        // saveBtn: `//button[text()='save' or text()='SAVE']`,
         //addressKey:(data: string)=>`//label[text()='${data}']//following-sibling::input`,
 
         //Password Policy:-
@@ -39,21 +39,25 @@ emailUsed:string="";
         //Max seat override
         businessRulesEditIcon: `//*[@class="col Business Rules"]/div/span/i`,
         maxSeatOverRideCheckbox: `(//label[contains(@for,'submod_admn_max_seat_override_input')]//i)[1]`,
-        maxSeatOverRideCheckboxToCheck:`//label[contains(@for,'submod_admn_max_seat_override_input')]//i[contains(@class,'fa-square icon')]`,
-        businessRulesSaveBtn:`//div[@id='BusinessRules-content']//button[text()='SAVE']`,
+        maxSeatOverRideCheckboxToCheck: `//label[contains(@for,'submod_admn_max_seat_override_input')]//i[contains(@class,'fa-square icon')]`,
+        businessRulesSaveBtn: `//div[@id='BusinessRules-content']//button[text()='SAVE']`,
 
         //For contact support
-        editButtonInContactSupport:`//i[@data-bs-target='#ContactSupport-content']`,
+        editButtonInContactSupport: `//i[@data-bs-target='#ContactSupport-content']`,
         specificMail: `//label[@for='specific_mail_radio']/child::i[@class='fa-duotone fa-circle icon_16_1']`,
-        adminMail:`//label[@for='admin_mail_radio']/child::i[@class='fa-duotone fa-circle icon_16_1']`,
-        save:`(//button[text()='SAVE'])[1]`,
-        contactSupport:`//span[text()='Contact Support']`,
-        mailId:`//textarea[@id='specific_mail']`,
+        adminMail: `//label[@for='admin_mail_radio']/child::i[@class='fa-duotone fa-circle icon_16_1']`,
+        save: `(//button[text()='SAVE'])[1]`,
+        contactSupport: `//span[text()='Contact Support']`,
+        mailId: `//textarea[@id='specific_mail']`,
 
-        adminConfigLink:`//a[text()='Admin Configuration']`,
-        autoCodeConventionOff:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
-        autoCodeConventionOn:`//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
-
+        adminConfigLink: `//a[text()='Admin Configuration']`,
+        autoCodeConventionOff: `//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        autoCodeConventionOn: `//span[text()='Code Convention']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+        dynamicShareableLinks: `//span[text()='Course & Training Plan']//following::div[contains(@class,'Dynamic Sharable Link')]`,
+        dynamicShareableLinksToggle: `//div[contains(@class,'Dynamic Sharable Link')]//i`,
+        dynamicShareableLinksToggleOff: `//div[contains(@class,'Dynamic Sharable Link')]//i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+        dynamicShareableLinksToggleOn: `//div[contains(@class,'Dynamic Sharable Link')]//i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        okbutton: `//button[text()='OK']`,
             //For merge user
         mergeUserToggle: `(//*[@class="col Merge users"]/div/label/i)[1]`,
         okButton: `//button[text()='OK']`,
@@ -108,7 +112,7 @@ emailUsed:string="";
         await this.click(this.selectors.learnerConfigLocator, "Learner Configuration", "Button");
     }
     async adminConfiguration() {
-        await this.validateElementVisibility(this.selectors.adminConfigLocator, "Admin Configuration")
+        await this. validateElementVisibility(this.selectors.adminConfigLocator, "Admin Configuration")
         await this.click(this.selectors.adminConfigLocator, "Admin Configuration", "Button");
     }
 
@@ -132,18 +136,18 @@ emailUsed:string="";
     }
 
 
-  //Max Seat Override
+    //Max Seat Override
     async clickBusinessRulesEditIcon() {
         await this.wait("mediumWait")
-    try {
-        await this.validateElementVisibility(this.selectors.businessRulesEditIcon, "Business Rules Edit", { timeout: 5000 });
-        await this.click(this.selectors.businessRulesEditIcon, "Business Rules Edit", "Button");
-    } catch (error) {
-           await this.page.locator("//div[text()='Admin site configuration']").click();
-           await this.click(this.selectors.businessRulesEditIcon, "Business Rules Edit", "Button");
+        try {
+            await this.validateElementVisibility(this.selectors.businessRulesEditIcon, "Business Rules Edit", { timeout: 5000 });
+            await this.click(this.selectors.businessRulesEditIcon, "Business Rules Edit", "Button");
+        } catch (error) {
+            await this.page.locator("//div[text()='Admin site configuration']").click();
+            await this.click(this.selectors.businessRulesEditIcon, "Business Rules Edit", "Button");
             
-       }
-      // await this.validateElementVisibility(this.selectors.businessRulesEditIcon, "Business Rules Edit");
+        }
+        // await this.validateElementVisibility(this.selectors.businessRulesEditIcon, "Business Rules Edit");
             
     }
     async maxSeatOverRideInBusinessRules(data?: string) {
@@ -169,79 +173,78 @@ emailUsed:string="";
 
     //For contact support
 
-    async clickEditContactSupport(){
+    async clickEditContactSupport() {
         await this.validateElementVisibility(this.selectors.editButtonInContactSupport, "Edit Contact")
-        await this.click(this.selectors.editButtonInContactSupport,"edit","button")
+        await this.click(this.selectors.editButtonInContactSupport, "edit", "button")
     }
 
     async checkSpecificMailRadioButton() {
-        const isSpecificRadioBtn=await this.page.locator(this.selectors.specificMail).isChecked();
+        const isSpecificRadioBtn = await this.page.locator(this.selectors.specificMail).isChecked();
         let usedmail = "";
-        if(isSpecificRadioBtn==true){
-            usedmail= await this.getEmailsFromJson()
+        if (isSpecificRadioBtn == true) {
+            usedmail = await this.getEmailsFromJson()
         }
         else {
-           await this.validateElementVisibility(this.selectors.specificMail, "Edit Contact")
-            await this.click(this.selectors.specificMail,"edit","button")
+            await this.validateElementVisibility(this.selectors.specificMail, "Edit Contact")
+            await this.click(this.selectors.specificMail, "edit", "button")
             await this.validateElementVisibility(this.selectors.mailId, "mail")
-            usedmail=await this.getEmailsFromJson();
+            usedmail = await this.getEmailsFromJson();
         }
-        this.emailUsed=usedmail;
+        this.emailUsed = usedmail;
     }
 
     //getting the emails from contactAdminEmails json file for entering the emails randomly to the text box of specific mail radio button
-        async getEmailsFromJson() {
-            const emails = getRandomItemFromFile("../data/contactAdminEmails.json");
-           // const randomEmails = emails;
-            await this.wait("minWait")
-            await this.keyboardType(this.selectors.mailId, emails);
-            await this.validateElementVisibility(this.selectors.save, "save button")
-            await this.click(this.selectors.save,"save","button")
-            return emails;
-        }
+    async getEmailsFromJson() {
+        const emails = getRandomItemFromFile("../data/contactAdminEmails.json");
+        // const randomEmails = emails;
+        await this.wait("minWait")
+        await this.keyboardType(this.selectors.mailId, emails);
+        await this.validateElementVisibility(this.selectors.save, "save button")
+        await this.click(this.selectors.save, "save", "button")
+        return emails;
+    }
 
-        async checkAdminMailRadioButton() {
-        const isAdminRadioBtn=await this.page.locator(this.selectors.adminMail).isChecked();
-        if(isAdminRadioBtn==true){
-        await this.validateElementVisibility(this.selectors.contactSupport,"discard");
-        await this.click(this.selectors.contactSupport,"button","discard");
+    async checkAdminMailRadioButton() {
+        const isAdminRadioBtn = await this.page.locator(this.selectors.adminMail).isChecked();
+        if (isAdminRadioBtn == true) {
+            await this.validateElementVisibility(this.selectors.contactSupport, "discard");
+            await this.click(this.selectors.contactSupport, "button", "discard");
         }
         else {
             await this.wait("minWait")
             await this.validateElementVisibility(this.selectors.adminMail, "Edit Contact")
-            await this.click(this.selectors.adminMail,"button","radio")
+            await this.click(this.selectors.adminMail, "button", "radio")
             await this.validateElementVisibility(this.selectors.save, "save button")
-            await this.click(this.selectors.save,"save","button")
+            await this.click(this.selectors.save, "save", "button")
         }
     }
 
-     public async autoCodeConventionTurnON()
-     {
+    public async autoCodeConventionTurnON() {
 
         const button = this.page.locator(this.selectors.autoCodeConvention).isChecked();
         await this.wait("mediumWait")
         //const isToggleEnabled=await button.isChecked();
-        if(!button){
-            await this.click(this.selectors.autoCodeConvention,"enable","toggle");
+        if (!button) {
+            await this.click(this.selectors.autoCodeConvention, "enable", "toggle");
             this.clickOkBtn();
             this.page.reload();
-            }
+        }
         else {
             console.log("Auto code convention is already enabled");
             this.page.reload();
             await this.wait("mediumWait")
         }
-        }
-        public async autoCodeConventionTurnOFF(){
+    }
+    public async autoCodeConventionTurnOFF() {
 
-        const button = this.page.locator(this.selectors.autoCodeConventionOff).isChecked();    
+        const button = this.page.locator(this.selectors.autoCodeConventionOff).isChecked();
         await this.wait("mediumWait")
         //const isToggleEnabled=await button.isChecked();
-        if(button){
-            await this.click(this.selectors.autoCodeConventionOff,"disable","toggle");
+        if (button) {
+            await this.click(this.selectors.autoCodeConventionOff, "disable", "toggle");
             this.clickOkBtn();
             this.page.reload();
-            }
+        }
         else {
             console.log("Auto code convention is already disabled");
             this.page.reload();
@@ -269,7 +272,28 @@ emailUsed:string="";
             console.log("Merge user already enabled");
         }
     }
- 
+
+    async verifyDynamicShareableLinksInAdminConfig() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
+        const isVisible = await this.page.locator(this.selectors.dynamicShareableLinks).isVisible();
+        expect(isVisible).toBeTruthy();
+        console.log("✅ Verified: Dynamic Shareable link is displayed in Admin Configuration");
+    }
+
+    async enableDynamicShareableLinks() {
+        await this.wait("mediumWait");
+        const toggleOffElement = this.page.locator(this.selectors.dynamicShareableLinksToggleOff);
+        const isToggledOff = await toggleOffElement.isVisible();
+        if (isToggledOff) {
+            await this.click(this.selectors.dynamicShareableLinksToggleOff, "Enable Dynamic Shareable Links", "Toggle");
+            await this.wait("mediumWait");
+            await this.clickOkBtn();
+           console.log("✅ Enabled: Dynamic Shareable Links toggle is now ON");
+        } else {
+            console.log("ℹ️ Dynamic Shareable Links is already enabled");
+        }
+
+    }
+
 }
-
-

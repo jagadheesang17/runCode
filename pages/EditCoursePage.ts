@@ -12,11 +12,11 @@ export class EditCoursePage extends AdminHomePage {
         closeBtn: "(//button[text()='Close'])[1]",
         courseMenu: (menuName: string) => `//span//span[text()='${menuName}']`,
         tagMenu: "//span//span[text()='Tags']",
-        completionCertificateMenu: "//span//span[text()='Completion Certificate']",
+        completionCertificateMenu: "//button[.//span[normalize-space(text())='Completion Certificate']]",
         tagsSearchField: "//input[@id='tags-search-field']",
         tagListItem: (tagName: string) => `//li[text()='${tagName}']`,
         okBtnTag: "(//button[text()='OK'])",
-        okBtnCertificate: "(//button[text()='OK'])[2]",
+        okBtnCertificate: "(//button[text()='OK'])",
         certificateSearchField: "#exp-search-certificate-field",
         certificateRadioBtn: (certificateName: string) => `(//div[text()='${certificateName}']/following::i)[1]`,
         addBtn: "//button[text()='Add']",
@@ -57,6 +57,10 @@ export class EditCoursePage extends AdminHomePage {
         //Allow single registration
         checkAllowRecReg: `(//span[contains(text(),'Allow')]/preceding-sibling::i)[2]`,
 
+        // Dedicated to TP selectors
+        dedicatedToTPCheckbox: `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`,
+        dedicatedToTPLabel: `//span[text()='Dedicated to Training Plan']`,
+
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -79,8 +83,9 @@ export class EditCoursePage extends AdminHomePage {
     }
 
     async clickCompletionCertificate() {
-        const selector = this.selectors.completionCertificateMenu;
-        await this.click(selector, "completion Certificate", "Link");
+        await this.wait("maxWait");
+        await this.mouseHover(this.selectors.completionCertificateMenu, "completion Certificate");
+        await this.click(this.selectors.completionCertificateMenu, "completion Certificate", "Link");
     }
 
     async selectTags() {
@@ -105,6 +110,7 @@ export class EditCoursePage extends AdminHomePage {
         const certSelector = this.selectors.certificateRadioBtn(certificateName);
         await this.click(certSelector, "Certificate", "Radio button");
         await this.click(this.selectors.addBtn, "Add", "Button");
+        await this.wait("maxWait");
         await this.mouseHover(this.selectors.okBtnCertificate, "OK");
         await this.click(this.selectors.okBtnCertificate, "OK", "Button");
     }
@@ -241,6 +247,70 @@ export class EditCoursePage extends AdminHomePage {
         await this.wait('mediumWait')
         await this.click(this.selectors.updateBtn, "Update", "Button")
         await this.wait('mediumWait')
+    }
+
+    // Dedicated to Training Plan Methods
+    async enableDedicatedToTP() {
+        await this.wait('minWait');
+        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
+        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
+            const input = el.tagName === 'I' ? el.previousElementSibling : el;
+            return input ? (input as HTMLInputElement).checked : false;
+        });
+        
+        if (!isChecked) {
+            await this.validateElementVisibility(this.selectors.dedicatedToTPCheckbox, "Dedicated to TP Checkbox");
+            await this.click(this.selectors.dedicatedToTPCheckbox, "Dedicated to Training Plan", "Checkbox");
+            console.log("✅ Enabled Dedicated to Training Plan");
+        } else {
+            console.log("ℹ️ Dedicated to Training Plan already enabled");
+        }
+    }
+
+    async disableDedicatedToTP() {
+        await this.wait('minWait');
+        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
+        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
+            const input = el.tagName === 'I' ? el.previousElementSibling : el;
+            return input ? (input as HTMLInputElement).checked : false;
+        });
+        
+        if (isChecked) {
+            await this.validateElementVisibility(this.selectors.dedicatedToTPCheckbox, "Dedicated to TP Checkbox");
+            await this.click(this.selectors.dedicatedToTPCheckbox, "Dedicated to Training Plan", "Checkbox");
+            console.log("✅ Disabled Dedicated to Training Plan");
+        } else {
+            console.log("ℹ️ Dedicated to Training Plan already disabled");
+        }
+    }
+
+    async isDedicatedToTPChecked(): Promise<boolean> {
+        await this.wait('minWait');
+        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
+        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
+            const input = el.tagName === 'I' ? el.previousElementSibling : el;
+            return input ? (input as HTMLInputElement).checked : false;
+        });
+        console.log(`ℹ️ Dedicated to TP checked state: ${isChecked}`);
+        return isChecked;
+    }
+
+    async isDedicatedToTPDisabled(): Promise<boolean> {
+        await this.wait('minWait');
+        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
+        const isDisabled = await checkbox.evaluate((el: HTMLElement) => {
+            const input = el.tagName === 'I' ? el.previousElementSibling : el;
+            return input ? (input as HTMLInputElement).disabled : false;
+        });
+        console.log(`ℹ️ Dedicated to TP disabled state: ${isDisabled}`);
+        return isDisabled;
+    }
+
+    async isDedicatedToTPEditable(): Promise<boolean> {
+        const isDisabled = await this.isDedicatedToTPDisabled();
+        const isEditable = !isDisabled;
+        console.log(`ℹ️ Dedicated to TP editable state: ${isEditable}`);
+        return isEditable;
     }
 
 }
