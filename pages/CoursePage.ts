@@ -232,11 +232,11 @@ export class CoursePage extends AdminHomePage {
     accessBtn: "//span[text()='Access']//parent::button", //span[text()='Access'] -->lot of text has been created(12/8/2024)
     accessCloseIcon:
       "//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i",
-      accessCloseIconAdmin:
+    accessCloseIconAdmin:
       "//label[text()='Admin Group']/parent::div//following-sibling::div[2]//div//i",
     MultiaccessCloseIcon:
       "(//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i)[2]",
-      MultiaccessCloseIconAdmin:(groupName:string,i:number)=>`(//label[text()='Admin Group']/following::label[text()='${groupName}']/following::i)[${i}]`,
+    MultiaccessCloseIconAdmin: (groupName: string, i: number) => `(//label[text()='Admin Group']/following::label[text()='${groupName}']/following::i)[${i}]`,
     accessUserInput:
       "//label[text()='User']/parent::div/following-sibling::div//input",
     saveAccessBtn: "//button[text()='Save Access']",
@@ -270,6 +270,7 @@ export class CoursePage extends AdminHomePage {
     vcselectTimezone: "//label[text()='Time Zone']/following-sibling::div",
     vcSelectTimezoneClickSearch: "//input[@id='timezone_0']",
     vcSelectTimeZone: "//li[contains(@class,'dropdown-item text-wrap')]",
+
 
     //Course/TP Search:-
     crs_TPCode: "(//span[text()='CODE:']/following-sibling::span)[1]",
@@ -371,8 +372,7 @@ export class CoursePage extends AdminHomePage {
     //bulk class creation - manual
     NoOfClass: `//label[text()="Delivery Type"]/following::input[@type="text"]`,
     sessionNameInput_bulk: (i) =>
-      `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${
-        i + 1
+      `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${i + 1
       }]`,
     instructorDropdown_bulk: (i) =>
       `//input[@id="instructors_intance_${i}-filter-field"]`,
@@ -435,6 +435,16 @@ export class CoursePage extends AdminHomePage {
     removeButton: `//button[text()='Remove']`,
     cancelButton: `//button[text()='Cancel']`,
 
+    // Parameterized Access Setting selectors
+    AccessMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
+    AccessUserMandatoryOption: (data: string) => `//div[@class='dropdown-menu show']//span[text()='${data}']`,
+
+    // Overall Access Setting selectors for groups and users
+    groupAccessDropdown: `//button[contains(@data-id,'admin_leanr_head')]//div[text()='Set As']`,
+    userAccessDropdown: `//button[contains(@data-id,'admin_user_head')]//div[text()='Set As']`,
+    accessOption: (accessType: string) => `//div[@class='dropdown-menu show']//span[text()='${accessType}']`,
+
+
     //edit instance from course listing page
     instanceIcon: `//i[@aria-label='Instances']`,
     editInstanceFromCrsList: `//i[@aria-label='Instances']//following::i[@aria-label='Edit Course']`,
@@ -445,6 +455,7 @@ export class CoursePage extends AdminHomePage {
 
     editCourseFromListingPage: `//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen']`,
     checkContactSupport: `//input[@id='course-contact-support']`,
+<<<<<<< Updated upstream
     adminGroupSelect:`(//div[contains(text(),'items selected')])[1]`, 
     searchBoxAdminGrpAccess:`((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
     adminGroupSearch: (adminGroup:string) => `//span[text()='${adminGroup}']`,
@@ -456,6 +467,16 @@ export class CoursePage extends AdminHomePage {
     enrollmentTable: `//table[contains(@class,'table')]`,
     enrollmentRow: `//table//tbody//tr`,
     enrollmentSourceColumn: (rowIndex: number) => `(//table//tbody//tr)[${rowIndex}]//td[contains(text(),'Learning Path') or contains(text(),'Direct')]`,
+=======
+    adminGroupSelect: `(//div[contains(text(),'items selected')])[1]`,
+    searchBoxAdminGrpAccess: `((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
+    adminGroupSearch: (adminGroup: string) => `//span[text()='${adminGroup}']`,
+    removeAddedAdminGroup: (adminGroup: string) => `(//label[text()='${adminGroup}']/following::i[contains(@class,"fa-duotone fa-times fa-swap-opacity icon")])[1]`,
+    suspendedGrp: (groupName: string) => `(//li[text()='${groupName}'])`,
+    completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
+    completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
+    completeByOption: (option: string) => `//span[text()='${option}']`,
+>>>>>>> Stashed changes
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -697,7 +718,7 @@ export class CoursePage extends AdminHomePage {
   }
 
   //Bulk class creation
-  async bulkClassCreation(classNos: any, mode: "manual" | "copy/paste",title:string) {
+  async bulkClassCreation(classNos: any, mode: "manual" | "copy/paste", title: string) {
     await this.click(this.selectors.NoOfClass, "TextBox", "click");
     await this.keyboardType(this.selectors.NoOfClass, classNos);
     await this.clickCreateInstance();
@@ -707,7 +728,7 @@ export class CoursePage extends AdminHomePage {
         const allSessionNames: string[] = [];
 
         for (let i = 0; i < classNos; i++) {
-          let str=title+"_"+FakerData.getSession();
+          let str = title + "_" + FakerData.getSession();
           allSessionNames.push(str);
           await this.enterSessionName_bulk(FakerData.getSession(), i);
           await this.captureDropdownValues(
@@ -722,16 +743,16 @@ export class CoursePage extends AdminHomePage {
           const filePath = path.join(__dirname, '../data/instanceNames.json');
           fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
           for (const sessionName of allSessionNames) {
-          console.log('Stored session name:', sessionName);
+            console.log('Stored session name:', sessionName);
           }
         }
         const filePath = path.join(__dirname, '../data/instanceNames.json');
-                fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
+        fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
 
         await this.checkConflict();
         //console.log("next");
         break;
-       case "copy/paste":
+      case "copy/paste":
         await this.enterSessionName_copy(FakerData.getSession());
         await this.selectInstructor_Copy(credentials.INSTRUCTORNAME.username);
         await this.selectLocation_Copy();
@@ -852,8 +873,7 @@ export class CoursePage extends AdminHomePage {
       console.log("Current Time + 2 hours:", timeToSelect);
       await this.page
         .locator(
-          `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])[${
-            i + 1
+          `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])[${i + 1
           }]`
         )
         .click();
@@ -1146,8 +1166,7 @@ export class CoursePage extends AdminHomePage {
   }
   async msgVerify() {
     const msg = await this.page.locator("//h3[text()='There are no results that match your current filters. Try removing some of them to get better results.']");
-    if(msg.isVisible())
-    {
+    if (msg.isVisible()) {
       console.log("Course is not displayed for admin user if the access is not given");
     }
   }
@@ -1219,42 +1238,42 @@ export class CoursePage extends AdminHomePage {
  * Handles clicking Save and retrying based on API response status.
  */
 
-async handleSaveUntilProceed(maxRetries = 6) {
-  let attempt = 0;
+  async handleSaveUntilProceed(maxRetries = 6) {
+    let attempt = 0;
 
-  while (attempt < maxRetries) {
-    attempt++;
-    console.log(`Attempt ${attempt}: Clicking Save button...`);
+    while (attempt < maxRetries) {
+      attempt++;
+      console.log(`Attempt ${attempt}: Clicking Save button...`);
 
-    try {
-      // Wait before clicking each time
-      await this.wait("mediumWait");
+      try {
+        // Wait before clicking each time
+        await this.wait("mediumWait");
 
-      // Click Save button
-      await this.click(this.selectors.saveBtn, "Save", "Button");
-      await this.spinnerDisappear();
-      const proceedVisible = await this.page.locator(this.selectors.proceedBtn).isVisible();
-      const saveVisible = await this.page.locator(this.selectors.saveBtn).isVisible();
+        // Click Save button
+        await this.click(this.selectors.saveBtn, "Save", "Button");
+        await this.spinnerDisappear();
+        const proceedVisible = await this.page.locator(this.selectors.proceedBtn).isVisible();
+        const saveVisible = await this.page.locator(this.selectors.saveBtn).isVisible();
 
-      if (proceedVisible) {
-        console.log("Proceed button visible. Save successful.");
-        return;
+        if (proceedVisible) {
+          console.log("Proceed button visible. Save successful.");
+          return;
+        }
+
+        if (!saveVisible) {
+          console.log("Save button hidden. Assuming Save successful.");
+          return;
+        }
+
+        console.log("Save button still visible. Retrying...");
+
+      } catch (error) {
+        console.log(`Error during Save attempt ${attempt}: ${error.message}`);
       }
-
-      if (!saveVisible) {
-        console.log("Save button hidden. Assuming Save successful.");
-        return;
-      }
-
-      console.log("Save button still visible. Retrying...");
-
-    } catch (error) {
-      console.log(`Error during Save attempt ${attempt}: ${error.message}`);
     }
-  }
 
-  console.log("Proceed button not visible even after 6 attempts. Save may have failed.");
-}
+    console.log("Proceed button not visible even after 6 attempts. Save may have failed.");
+  }
 
 
 
@@ -1903,12 +1922,12 @@ async handleSaveUntilProceed(maxRetries = 6) {
       console.log(list);
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
-      
+
       // Use first() to avoid strict mode violation when multiple elements match
       const timeLocator = this.page.locator(
         `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
       );
-      
+
       // Check if multiple elements exist and use first() to select the first match
       const count = await timeLocator.count();
       if (count > 1) {
@@ -1992,9 +2011,9 @@ async handleSaveUntilProceed(maxRetries = 6) {
       this.selectors.courseUpdateBtn,
       "button"
     );
-      
+
     await this.type(this.selectors.courseDescriptionInput, "Description", "updated description");
-  
+
 
     await this.click(this.selectors.courseUpdateBtn, "Update", "button");
   }
@@ -2520,7 +2539,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
     //   }
     //   return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
     // }
-    
+
     // const targetTime = getCurrentTimePlusTwoHours();
     // console.log("Current Time + 2 hours:", targetTime);
 
@@ -2571,8 +2590,8 @@ async handleSaveUntilProceed(maxRetries = 6) {
     //   "Start Time",
     //   "Selected"
     // );
-     //  await this.startandEndTime();
-  
+    //  await this.startandEndTime();
+
     await this.click(this.selectors.timeInput, "Start Time Input", "Input");
     await this.wait("minWait");
     /* const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
@@ -2601,12 +2620,12 @@ async handleSaveUntilProceed(maxRetries = 6) {
       console.log(list);
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
-      
+
       // Use first() to avoid strict mode violation when multiple elements match
       const timeLocator = this.page.locator(
         `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
       );
-      
+
       // Check if multiple elements exist and use first() to select the first match
       const count = await timeLocator.count();
       if (count > 1) {
@@ -2645,8 +2664,8 @@ async handleSaveUntilProceed(maxRetries = 6) {
         console.log("Random Index:", randomIndex);
         await this.click(this.selectors.timeInput, "Start Time", "Button");
         await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
-  
-    
+
+
     await this.type(
       this.selectors.attendeeUrlIndex(index),
       "Attendee url",
@@ -2899,13 +2918,13 @@ async handleSaveUntilProceed(maxRetries = 6) {
     }
   }
   async addSingleAdminGroup(data?: string) {
-  await this.wait("mediumWait");
+    await this.wait("mediumWait");
     const groupLabel = await this.page.locator(`//label[text()='Admin Group']/parent::div//following-sibling::div[2]//label[@class="form-label d-block my-0 me-1 text-break"]`).allInnerTexts();
     const groupLabels = await this.page.locator(`//label[text()='Admin Group']/parent::div//following-sibling::div[2]//label[@class="form-label d-block my-0 me-1 text-break"]`).count();
     console.log(groupLabel);
     console.log(`Current admin group count: ${groupLabels}`);
 
-    for (let i = 1; i<= groupLabels; i++) {
+    for (let i = 1; i <= groupLabels; i++) {
       const groupName = groupLabel[i - 1].trim();
       console.log(`Checking admin group: ${groupName}`);
       if (groupName !== data.trim()) {
@@ -2915,7 +2934,7 @@ async handleSaveUntilProceed(maxRetries = 6) {
       }
     }
 
-}
+  }
 
   async addAdminGroup(data: string) {
     await this.wait("mediumWait");
@@ -2924,23 +2943,23 @@ async handleSaveUntilProceed(maxRetries = 6) {
     await this.type(this.selectors.searchBoxAdminGrpAccess, "Search Box", data);
     await this.mouseHover(this.selectors.adminGroupSearch(data), "Admin Group");
     await this.click(this.selectors.adminGroupSearch(data), "Admin Group", "Option");
-}
-async addingSuspendedAdminGroup(data: string) {
-  await this.wait("mediumWait");
-  await this.click(this.selectors.adminGroupSelect, "Admin Group", "Button");
-  await this.click(this.selectors.searchBoxAdminGrpAccess, "Search Box", "Field");
-  await this.type(this.selectors.searchBoxAdminGrpAccess, "Search Box", data);
-
-  const adminGroup = this.page.locator(this.selectors.suspendedGrp(data));
-  if (await adminGroup.isVisible()) {
-    console.log(`Admin Group ${data} is suspended and cannot be added.`);
   }
-}
-async removeAddedAdminGroup(data: string) {
+  async addingSuspendedAdminGroup(data: string) {
+    await this.wait("mediumWait");
+    await this.click(this.selectors.adminGroupSelect, "Admin Group", "Button");
+    await this.click(this.selectors.searchBoxAdminGrpAccess, "Search Box", "Field");
+    await this.type(this.selectors.searchBoxAdminGrpAccess, "Search Box", data);
+
+    const adminGroup = this.page.locator(this.selectors.suspendedGrp(data));
+    if (await adminGroup.isVisible()) {
+      console.log(`Admin Group ${data} is suspended and cannot be added.`);
+    }
+  }
+  async removeAddedAdminGroup(data: string) {
     await this.wait("mediumWait");
     await this.mouseHover(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group");
     await this.click(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group", "Icon");
-}
+  }
 
   async addMultipleLearnerGroups(users: string[]) {
     await this.wait("mediumWait");
@@ -2948,31 +2967,31 @@ async removeAddedAdminGroup(data: string) {
     const count = await closeIcon.count();
     console.log(count);
     console.log("learner groups : " + count);
-    
+
     if (!users || users.length === 0) {
       console.log("No users provided");
       return;
     }
-    
+
     // Add each user
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
       console.log(`Adding user: ${user}`);
-      
+
       let learnerGroupValue = await this.getInnerText(
         this.selectors.learnerGroup
       );
       console.log(learnerGroupValue);
-      
+
       await this.keyboardType(this.selectors.accessUserInput, user);
       await this.click(`//li[text()='${user}']`, "User", "List");
-      
+
       // Wait between adding users
       if (i < users.length - 1) {
         await this.wait("minWait");
       }
     }
-    
+
     console.log(`Successfully added ${users.length} users: ${users.join(', ')}`);
   }
 
@@ -3106,7 +3125,7 @@ async removeAddedAdminGroup(data: string) {
   async multipleLearnerGroupSelection(learnerGroupNames: string[]) {
     await this.spinnerDisappear();
     await this.wait("mediumWait");
-    
+
     // Check if modify access button is visible and click if needed
     if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 5000 })) {
       await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
@@ -3114,39 +3133,39 @@ async removeAddedAdminGroup(data: string) {
       await this.spinnerDisappear();
       await this.wait("mediumWait");
     }
-    
+
     // Open learner group dropdown
     await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
     await this.wait("minWait");
-    
+
     try {
       // Get all learner group options
       const options = await this.page.locator(this.selectors.allLearnerGroupOptions).all();
       const targetGroupsFound: string[] = [];
       const targetGroupsSelected: string[] = [];
-      
+
       for (const option of options) {
         const value = await option.innerText();
         console.log(`Processing learner group: ${value}`);
-        
+
         if (learnerGroupNames.includes(value)) {
           targetGroupsFound.push(value);
-          
+
           // Check if the target learner group is already selected
           try {
             const groupOptionLocator = this.page.locator(
               `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
             ).first();
-            
+
             if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
               const parentElement = groupOptionLocator.locator('..');
               const isSelected = await parentElement.evaluate((el) => {
                 const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-                return el.classList.contains('selected') || 
-                       checkbox?.checked || 
-                       el.getAttribute('aria-selected') === 'true';
+                return el.classList.contains('selected') ||
+                  checkbox?.checked ||
+                  el.getAttribute('aria-selected') === 'true';
               });
-              
+
               if (isSelected) {
                 console.log(`${value} is already selected - skipping`);
                 targetGroupsSelected.push(value);
@@ -3162,23 +3181,23 @@ async removeAddedAdminGroup(data: string) {
           }
           continue;
         }
-        
+
         // For all other groups, try to unselect them
         try {
           const groupOptionLocator = this.page.locator(
             `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
           ).first();
-          
+
           if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
             // Check if the option is currently selected by looking for selected class or checked state
             const parentElement = groupOptionLocator.locator('..');
             const isSelected = await parentElement.evaluate((el) => {
               const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
-              return el.classList.contains('selected') || 
-                     checkbox?.checked || 
-                     el.getAttribute('aria-selected') === 'true';
+              return el.classList.contains('selected') ||
+                checkbox?.checked ||
+                el.getAttribute('aria-selected') === 'true';
             });
-            
+
             if (isSelected) {
               console.log(`Unselecting ${value}`);
               await groupOptionLocator.click();
@@ -3189,11 +3208,11 @@ async removeAddedAdminGroup(data: string) {
           console.log(`Could not process learner group ${value}: ${error.message}`);
         }
       }
-      
+
       // Check if all target groups were found and selected
       const notFound = learnerGroupNames.filter(name => !targetGroupsFound.includes(name));
       const notSelected = targetGroupsFound.filter(name => !targetGroupsSelected.includes(name));
-      
+
       if (notFound.length > 0) {
         console.log(`Warning: Target learner groups not found: ${notFound.join(', ')}`);
       }
@@ -3203,11 +3222,11 @@ async removeAddedAdminGroup(data: string) {
       if (targetGroupsSelected.length > 0) {
         console.log(`Successfully selected learner groups: ${targetGroupsSelected.join(', ')}`);
       }
-      
+
     } catch (error) {
       console.log(`Error in multiple learner group selection: ${error.message}`);
     }
-    
+
     // Close the dropdown
     await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
     await this.wait("minWait");
@@ -3293,7 +3312,7 @@ async removeAddedAdminGroup(data: string) {
       "Access Setting Link",
       "Link"
     );
-    
+
     // Set access for groups
     console.log(`🔄 Setting group access to: ${accessType}`);
     await this.click(
@@ -3308,12 +3327,12 @@ async removeAddedAdminGroup(data: string) {
       "Dropdown"
     );
     await this.wait("minWait");
-    
+
     // Set access for users
     console.log(`🔄 Setting user access to: ${accessType}`);
     await this.click(
       this.selectors.userAccessDropdown,
-      "User Access Dropdown", 
+      "User Access Dropdown",
       "Dropdown"
     );
     await this.wait("minWait");
@@ -3328,7 +3347,7 @@ async removeAddedAdminGroup(data: string) {
       "Button"
     );
     await this.wait("maxWait");
-    
+
     console.log(`✅ Overall access settings configured: Groups and Users set to ${accessType}`);
   }
 

@@ -8,14 +8,14 @@ const module1Name = "Module 1 - " + FakerData.getFirstName();
 const module2Name = "Module 2 - " + FakerData.getFirstName();
 
 
-test.describe(`TP038_Verify_admin_able_to_create_learning_path_with_multiple_modules_separately.spec.ts`, async () => {
+test.describe(`TP057_Verify_admin_able_to_create_certification_with_multiple_modules_separately.spec.ts`, async () => {
     test.describe.configure({ mode: "serial" });
 
     test(`Create first E-Learning single instance course`, async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Create first E-Learning course for learning path modules` },
-            { type: `Test Description`, description: `Create a single instance E-Learning course to be added as module in learning path` }
+            { type: `TestCase`, description: `Create first E-Learning course for certification modules` },
+            { type: `Test Description`, description: `Create a single instance E-Learning course to be added as module in certification` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -53,30 +53,30 @@ test.describe(`TP038_Verify_admin_able_to_create_learning_path_with_multiple_mod
         console.log(`✅ Successfully created second course: ${courseName2}`);
     });
 
-    const learningPathTitle = FakerData.getCourseName();
+    const certificationTitle = "CERT " + FakerData.getCourseName();
 
-    test(`Verify admin able to create learning path with multiple modules separately`, async ({ adminHome, learningPath, createCourse }) => {
+    test(`Verify admin able to create certification with multiple modules separately`, async ({ adminHome, learningPath, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `TP038 - Verify admin able to create learning path with multiple modules separately` },
-            { type: `Test Description`, description: `Admin creates a learning path, adds multiple modules separately, edits module names, and attaches courses to each module` }
+            { type: `TestCase`, description: `TP057 - Verify admin able to create certification with multiple modules separately` },
+            { type: `Test Description`, description: `Admin creates a certification, adds multiple modules separately, edits module names, and attaches courses to each module` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
-        await adminHome.clickLearningPath();
-        await learningPath.clickCreateLearningPath();
+        await adminHome.clickCertification();
+        await learningPath.clickCreateCertification();
         
-        console.log(`🔄 Creating learning path: ${learningPathTitle}`);
-        await learningPath.title(learningPathTitle);
+        console.log(`🔄 Creating certification: ${certificationTitle}`);
+        await learningPath.title(certificationTitle);
         await learningPath.description(description);
         await learningPath.language();
         await learningPath.clickSaveAsDraftBtn();
         await learningPath.clickSave();
         await learningPath.clickProceedBtn();
         
-        console.log(`🔄 Adding first module to learning path`);
+        console.log(`🔄 Adding first module to certification`);
         // Enable Training Plan with Modules
         await learningPath.tpWithModulesToAttachCreatedCourse();
         await learningPath.wait("minWait");
@@ -107,30 +107,30 @@ test.describe(`TP038_Verify_admin_able_to_create_learning_path_with_multiple_mod
         await learningPath.addCourseToModule(courseName2, 1);
         await learningPath.wait("minWait");
         
-        console.log(`🔄 Setting learning path to catalog`);
+        console.log(`🔄 Setting certification to catalog`);
         await learningPath.clickDetailTab();
         await learningPath.clickCatalogBtn();
         await learningPath.clickUpdateBtn();
         await learningPath.verifySuccessMessage();
         
-        console.log(`✅ Successfully created learning path with multiple modules: ${learningPathTitle}`);
+        console.log(`✅ Successfully created certification with multiple modules: ${certificationTitle}`);
         console.log(`   ${module1Name}: ${courseName1}`);
         console.log(`   ${module2Name}: ${courseName2}`);
     });
 
-    test(`Verify learning path with multiple modules is visible in catalog`, async ({ learnerHome, catalog,readContentHome }) => {
+    test(`Verify certification with multiple modules is visible in catalog`, async ({ learnerHome, catalog, readContentHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Verify created learning path appears in catalog` },
-            { type: `Test Description`, description: `Navigate to catalog and verify the learning path with multiple modules is available and functional` }
+            { type: `TestCase`, description: `Verify created certification appears in catalog` },
+            { type: `Test Description`, description: `Navigate to catalog and verify the certification with multiple modules is available and functional` }
         );
 
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
-        await catalog.searchCatalog(learningPathTitle);
+        await catalog.searchCatalog(certificationTitle);
         await catalog.clickEnrollButton();
-        await catalog.clickViewLearningPathDetails();
+        await catalog.clickViewCertificationDetails();
         
         console.log(`🔄 Launching and completing first module course`);
         await readContentHome.readPassed_FailedScrom2004();
@@ -142,11 +142,11 @@ test.describe(`TP038_Verify_admin_able_to_create_learning_path_with_multiple_mod
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.saveLearningStatus();
-        
+        await catalog.verifyStatus("Completed");
         console.log(`🔄 Verifying completion certificate`);
         await catalog.clickViewCertificate();
         await catalog.verifyNoCertificateAttached();
         
-        console.log(`✅ Learning path with multiple modules completed successfully`);
+        console.log(`✅ Certification with multiple modules completed successfully`);
     });
 });

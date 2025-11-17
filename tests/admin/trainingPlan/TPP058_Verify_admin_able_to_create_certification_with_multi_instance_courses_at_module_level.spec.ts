@@ -11,15 +11,17 @@ const module2Name = "Module 2 - VC - " + FakerData.getFirstName();
 const instanceName1 = "ILT_Instance_" + FakerData.getFirstName();
 const sessionName1 = "Session_" + FakerData.getFirstName();
 const instanceName2 = "VC_Instance_" + FakerData.getFirstName();
-const instructorName =credentials.INSTRUCTORNAME.username;
+const instructorName = credentials.INSTRUCTORNAME.username;
 const price = FakerData.getPrice();
-test.describe(`TP039_Verify_admin_able_to_create_learning_path_with_multi_instance_courses_at_module_level.spec.ts`, async () => {
+
+test.describe(`TP058_Verify_admin_able_to_create_certification_with_multi_instance_courses_at_module_level.spec.ts`, async () => {
     test.describe.configure({ mode: "serial" });
+    
     test(`Create multi-instance Classroom (ILT) course`, async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Create multi-instance Classroom course for learning path module` },
-            { type: `Test Description`, description: `Create a multi-instance Classroom (ILT) course to be added as module in learning path` }
+            { type: `TestCase`, description: `Create multi-instance Classroom course for certification module` },
+            { type: `Test Description`, description: `Create a multi-instance Classroom (ILT) course to be added as module in certification` }
         );
 
         console.log("🔄 Creating multi-instance Classroom (ILT) course...");
@@ -59,8 +61,8 @@ test.describe(`TP039_Verify_admin_able_to_create_learning_path_with_multi_instan
     test(`Create multi-instance Virtual Class (VC) course`, async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Create multi-instance Virtual Class course for learning path module` },
-            { type: `Test Description`, description: `Create a multi-instance Virtual Class course to be added as module in learning path` }
+            { type: `TestCase`, description: `Create multi-instance Virtual Class course for certification module` },
+            { type: `Test Description`, description: `Create a multi-instance Virtual Class course to be added as module in certification` }
         );
 
         console.log("🔄 Creating multi-instance Virtual Class (VC) course...");
@@ -99,30 +101,30 @@ test.describe(`TP039_Verify_admin_able_to_create_learning_path_with_multi_instan
         console.log(`✅ Successfully created multi-instance Virtual Class course: ${courseName2}`);
     });
 
-    const learningPathTitle = FakerData.getCourseName();
+    const certificationTitle = "CERT " + FakerData.getCourseName();
 
-    test(`Verify admin able to create learning path with multi-instance courses at module level`, async ({ adminHome, learningPath, createCourse }) => {
+    test(`Verify admin able to create certification with multi-instance courses at module level`, async ({ adminHome, learningPath, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `TP039 - Verify admin able to create learning path with multi-instance courses at module level` },
-            { type: `Test Description`, description: `Admin creates a learning path, adds multiple modules separately, edits module names, and attaches multi-instance ILT and VC courses to each module` }
+            { type: `TestCase`, description: `TP058 - Verify admin able to create certification with multi-instance courses at module level` },
+            { type: `Test Description`, description: `Admin creates a certification, adds multiple modules separately, edits module names, and attaches multi-instance ILT and VC courses to each module` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
-        await adminHome.clickLearningPath();
-        await learningPath.clickCreateLearningPath();
+        await adminHome.clickCertification();
+        await learningPath.clickCreateCertification();
         
-        console.log(`🔄 Creating learning path: ${learningPathTitle}`);
-        await learningPath.title(learningPathTitle);
+        console.log(`🔄 Creating certification: ${certificationTitle}`);
+        await learningPath.title(certificationTitle);
         await learningPath.description(description);
         await learningPath.language();
         await learningPath.clickSaveAsDraftBtn();
         await learningPath.clickSave();
         await learningPath.clickProceedBtn();
         
-        console.log(`🔄 Adding first module to learning path`);
+        console.log(`🔄 Adding first module to certification`);
         // Enable Training Plan with Modules
         await learningPath.tpWithModulesToAttachCreatedCourse();
         await learningPath.wait("minWait");
@@ -153,30 +155,30 @@ test.describe(`TP039_Verify_admin_able_to_create_learning_path_with_multi_instan
         await learningPath.addCourseToModule(courseName2, 1);
         await learningPath.wait("minWait");
         
-        console.log(`🔄 Setting learning path to catalog`);
+        console.log(`🔄 Setting certification to catalog`);
         await learningPath.clickDetailTab();
         await learningPath.clickCatalogBtn();
         await learningPath.clickUpdateBtn();
         await learningPath.verifySuccessMessage();
         
-        console.log(`✅ Successfully created learning path with multi-instance courses at module level: ${learningPathTitle}`);
+        console.log(`✅ Successfully created certification with multi-instance courses at module level: ${certificationTitle}`);
         console.log(`   ${module1Name}: ${courseName1} (ILT)`);
         console.log(`   ${module2Name}: ${courseName2} (VC)`);
     });
 
-    test(`Verify learning path with multi-instance courses is visible in catalog`, async ({ learnerHome, catalog }) => {
+    test(`Verify certification with multi-instance courses is visible in catalog`, async ({ learnerHome, catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Verify created learning path with multi-instance courses appears in catalog` },
-            { type: `Test Description`, description: `Navigate to catalog, enroll in learning path, and verify multi-instance course selection and enrollment` }
+            { type: `TestCase`, description: `Verify created certification with multi-instance courses appears in catalog` },
+            { type: `Test Description`, description: `Navigate to catalog, enroll in certification, and verify multi-instance course selection and enrollment` }
         );
 
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
-        await catalog.searchCatalog(learningPathTitle);
+        await catalog.searchCatalog(certificationTitle);
         await catalog.clickEnrollButton();
-        await catalog.clickViewLearningPathDetails();
-        console.log(`✅ Learning path with multi-instance courses (ILT & VC) at module level enrolled successfully`);
+        await catalog.clickViewCertificationDetails();
+        console.log(`✅ Certification with multi-instance courses (ILT & VC) at module level enrolled successfully`);
     });
 });

@@ -118,6 +118,14 @@ interface tcData {
   TP047a?:string
   TP048?:string
   TP048a?:string
+  TP060?:string
+  TP060a?:string
+  TP061?:string
+  TP061a?:string
+  TP067?:string
+  TP067a?:string
+  TP067b?:string
+  TP068?:string
    passwordHistoryStatusUpdateUsername?:string;
 }
 const cronFile = '../data/cronjob.json';

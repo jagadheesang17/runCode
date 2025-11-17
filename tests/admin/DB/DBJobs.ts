@@ -100,7 +100,7 @@ async function certificationExpiry_CronJob() {
 
   
 
-        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${formattedNewTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certification' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${formattedNewTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certifications with Past Validity' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
         console.log(cronJob);
 
     } catch (error) {

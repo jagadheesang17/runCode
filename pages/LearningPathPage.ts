@@ -35,13 +35,37 @@ export class LearningPathPage extends AdminHomePage {
         hasRecertification: "//span[text()='Has Recertification']/preceding::i[contains(@class,'fad fa-square icon')]",
         //expiresBtn: "//label[text()='Expires']/parent::div//button[contains(@class,'customselectpicker')]", ---->Label has been changed
         expiresBtn: "(//label[text()='Expiry Based On']/parent::span//following-sibling::div//button)[1]",
+        recertExpiresBtn: "(//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-compliance-validity'])[1]",
         //expiresInput: "//label[text()='Expires']/parent::div/input",
         expiresInput: "//input[@id='validity_days' or @id='expires_in_value']",
         daysLocator: "//span[text()='Days']",
         specificDateLocator: "//span[text()='Specific Date']",
         completionDateDDValue: "//span[text()='Completion Date']",
         complilanceOption: "div[id$='course-compliance-option'] button[class$='title']",
+        
+        // Anniversary Date selectors
+        anniversaryDateLocator: "//span[text()='Anniversary Date']",
+        anniversaryTypeDropdown: "//div[@id='wrapper-anniversary-type']",
+        anniversaryTypeOption: (value: string) => `//span[text()='${value}']`,
+        anniversaryRangeDropdown: "#wrapper-anniversary-range",
+        anniversaryRangeOption: (value: string) => `//span[text()='${value}']`,
+        afterYearsInput: "//input[@id='fieldsMetadata.after_years.id']",
+        validityDateInput: "#validity_date-input",
+        
+        // Period Range selectors
+        periodDropdown: "//button[@data-id='period-value']",
+        periodOption: (value: string) => `//span[text()='${value}']`,
+        periodYearsInput: "//input[@id='fieldsMetadata.period_years.id']",
 
+        // Recertification expiry selectors
+        recertSpecificDateLocator: "(//label[contains(text(),'Recertification')]//following::span[text()='Specific Date'])[1]",
+        recertAnniversaryDateLocator: "(//label[contains(text(),'Recertification')]//following::span[text()='Anniversary Date'])[1]",
+        recertAnniversaryTypeDropdown: "(//label[contains(text(),'Recertification')]//following::button[@data-id='recert-anniversary-type'])[1]",
+        recertAnniversaryRangeDropdown: "(//label[contains(text(),'Recertification')]//following::button[@data-id='recert-anniversary-range'])[1]",
+        recertAfterYearsInput: "(//label[contains(text(),'Recertification')]//following::input[@id='fieldsMetadata.after_years.id'])[1]",
+        recertValidityDateInput: "(//label[contains(text(),'Recertification')]//following::input[@id='recert_validity_date-input'])[1]",
+        recertPeriodDropdown: "(//label[contains(text(),'Recertification')]//following::button[@data-id='recert-period-value'])[1]",
+        recertPeriodYearsInput: "(//label[contains(text(),'Recertification')]//following::input[@id='fieldsMetadata.after_years.id'])[1]",
         monthsLocator: "//span[text()='Months']",
         yearsLocator: "//span[text()='Years']",
         price: "input#program-price",
@@ -80,6 +104,9 @@ export class LearningPathPage extends AdminHomePage {
         //Attaching the different course to the recertification module:-
         // Choose Course Manually:-
         addCourseManually:`//span[text()='Add Courses Manually']`,
+        addCourseManuallyRadioBtn:`//span[text()='Add Courses Manually']//preceding-sibling::i[contains(@class,'fa-circle')]`,
+        copyFromCertificationPath:`//span[text()='Copy from certification path']`,
+        copyFromCertificationPathRadioBtn:`//span[text()='Copy from certification path']//preceding-sibling::i[contains(@class,'fa-circle')]`,
         // Save button :-
         saveButton:`//button[text()='SAVE']`,
 
@@ -133,6 +160,209 @@ export class LearningPathPage extends AdminHomePage {
         await this.type(this.selectors.expiresInput, "Expires Input", "1");
         await this.click(this.selectors.complilanceOption, "complilanceOption", "DD Button");
         await this.click(this.selectors.daysLocator, "Day", "DD Value")
+    }
+
+    async clickExpiresDropdown() {
+        await this.click(this.selectors.expiresBtn, "Expires", "Button");
+        await this.wait("minWait");
+    }
+  async clickReCertExpiresDropdown() {
+        await this.wait("minWait");
+        await this.page.locator(this.selectors.recertExpiresBtn).scrollIntoViewIfNeeded();
+        await this.click(this.selectors.recertExpiresBtn, "Expires", "Button");
+        await this.wait("minWait");
+    }
+    /**
+     * Click Expires Button with runtime expiry type option
+     * @param expiryType - "Specific Date" or "Anniversary Date"
+     * @param options - Configuration options based on expiry type
+     * - For "Specific Date": no additional options needed (uses getTomorrowdateFormatted)
+     * - For "Anniversary Date": 
+     *   - anniversaryType: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date"
+     *   - anniversaryRange: "Fixed Date" | "Period Range"
+     *   - afterYears: string (number of years for Fixed Date)
+     *   - period: "Month" | "Quarter" | "Year" (required for Period Range)
+     *   - periodYears: string (number of years for Period Range)
+     */
+    
+    async clickExpiresButtonWithType(
+        expiryType: "Specific Date" | "Anniversary Date",
+        options?: {
+            anniversaryType?: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date";
+            anniversaryRange?: "Fixed Date" | "Period Range";
+            afterYears?: string;
+            period?: "Month" | "Quarter" | "Year";
+            periodYears?: string;
+        }
+    ) {
+        console.log(`🔄 Setting expiry type: ${expiryType}`)
+
+        if (expiryType === "Specific Date") {
+            // Select Specific Date option
+            await this.click(this.selectors.specificDateLocator, "Specific Date", "Option");
+            await this.wait("minWait");
+            
+            // Enter tomorrow's date
+            const tomorrowDate = gettomorrowDateFormatted();
+            await this.type(this.selectors.validityDateInput, "Validity Date", tomorrowDate);
+            console.log(`✅ Set Specific Date: ${tomorrowDate}`);
+            
+        } else if (expiryType === "Anniversary Date") {
+            // Select Anniversary Date option
+            await this.click(this.selectors.anniversaryDateLocator, "Anniversary Date", "Option");
+            await this.wait("minWait");
+
+            if (!options?.anniversaryType || !options?.anniversaryRange) {
+                throw new Error("Anniversary Date requires anniversaryType and anniversaryRange options");
+            }
+
+            // Select Anniversary Type (Birth Date, Hire Date, Enrollment Date, Completion Date)
+            console.log(`🔄 Selecting Anniversary Type: ${options.anniversaryType}`);
+            await this.click(this.selectors.anniversaryTypeDropdown, "Anniversary Type", "Dropdown");
+            await this.wait("minWait");
+            await this.click(
+                this.selectors.anniversaryTypeOption(options.anniversaryType),
+                options.anniversaryType,
+                "Option"
+            );
+
+            // Select Anniversary Range (Fixed Date, Period Range)
+            console.log(`🔄 Selecting Anniversary Range: ${options.anniversaryRange}`);
+            await this.click(this.selectors.anniversaryRangeDropdown, "Anniversary Range", "Dropdown");
+            await this.wait("minWait");
+            await this.click(
+                this.selectors.anniversaryRangeOption(options.anniversaryRange),
+                options.anniversaryRange,
+                "Option"
+            );
+
+            // Handle Fixed Date or Period Range
+            if (options.anniversaryRange === "Fixed Date") {
+                if (!options.afterYears) {
+                    throw new Error("Fixed Date requires afterYears option");
+                }
+                // Enter After Years for Fixed Date
+                console.log(`🔄 Setting After Years: ${options.afterYears}`);
+                await this.type(this.selectors.afterYearsInput, "After Years", options.afterYears);
+                console.log(`✅ Set Anniversary Date - Type: ${options.anniversaryType}, Range: Fixed Date, After Years: ${options.afterYears}`);
+                
+            } else if (options.anniversaryRange === "Period Range") {
+                if (!options.period || !options.periodYears) {
+                    throw new Error("Period Range requires period (Month/Quarter/Year) and periodYears options");
+                }
+                
+                // Select Period (Month, Quarter, Year)
+                console.log(`🔄 Selecting Period: ${options.period}`);
+                await this.click(this.selectors.periodDropdown, "Period", "Dropdown");
+                await this.wait("minWait");
+                await this.click(
+                    this.selectors.periodOption(options.period),
+                    options.period,
+                    "Option"
+                );
+                
+                // Enter Period Years
+                console.log(`🔄 Setting Period Years: ${options.periodYears}`);
+                await this.type(this.selectors.periodYearsInput, "Period Years", options.periodYears);
+                console.log(`✅ Set Anniversary Date - Type: ${options.anniversaryType}, Range: Period Range, Period: ${options.period}, Years: ${options.periodYears}`);
+            }
+        }
+    }
+
+    /**
+     * Click Recertification Expires Button with runtime expiry type option
+     * @param expiryType - "Specific Date" or "Anniversary Date"
+     * @param options - Configuration options based on expiry type
+     * - For "Specific Date": no additional options needed (uses getTomorrowdateFormatted)
+     * - For "Anniversary Date": 
+     *   - anniversaryType: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date"
+     *   - anniversaryRange: "Fixed Date" | "Period Range"
+     *   - afterYears: string (number of years for Fixed Date)
+     *   - period: "Month" | "Quarter" | "Year" (required for Period Range)
+     *   - periodYears: string (number of years for Period Range)
+     */
+    async clickReCertExpiresButtonWithType(
+        expiryType: "Specific Date" | "Anniversary Date",
+        options?: {
+            anniversaryType?: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date";
+            anniversaryRange?: "Fixed Date" | "Period Range";
+            afterYears?: string;
+            period?: "Month" | "Quarter" | "Year";
+            periodYears?: string;
+        }
+    ) {
+        console.log(`🔄 Setting recertification expiry type: ${expiryType}`);
+
+        if (expiryType === "Specific Date") {
+            // Select Specific Date option for recertification
+            await this.click(this.selectors.recertSpecificDateLocator, "Recertification Specific Date", "Option");
+            await this.wait("minWait");
+            
+            // Enter tomorrow's date
+            const tomorrowDate = gettomorrowDateFormatted();
+            await this.type(this.selectors.recertValidityDateInput, "Recertification Validity Date", tomorrowDate);
+            console.log(`✅ Set Recertification Specific Date: ${tomorrowDate}`);
+            
+        } else if (expiryType === "Anniversary Date") {
+            // Select Anniversary Date option for recertification
+            await this.click(this.selectors.recertAnniversaryDateLocator, "Recertification Anniversary Date", "Option");
+            await this.wait("minWait");
+
+            if (!options?.anniversaryType || !options?.anniversaryRange) {
+                throw new Error("Anniversary Date requires anniversaryType and anniversaryRange options");
+            }
+
+            // Select Anniversary Type (Birth Date, Hire Date, Enrollment Date, Completion Date)
+            console.log(`🔄 Selecting Recertification Anniversary Type: ${options.anniversaryType}`);
+            await this.click(this.selectors.recertAnniversaryTypeDropdown, "Recertification Anniversary Type", "Dropdown");
+            await this.wait("minWait");
+            await this.click(
+                this.selectors.anniversaryTypeOption(options.anniversaryType),
+                options.anniversaryType,
+                "Option"
+            );
+
+            // Select Anniversary Range (Fixed Date, Period Range)
+            console.log(`🔄 Selecting Recertification Anniversary Range: ${options.anniversaryRange}`);
+            await this.click(this.selectors.recertAnniversaryRangeDropdown, "Recertification Anniversary Range", "Dropdown");
+            await this.wait("minWait");
+            await this.click(
+                this.selectors.anniversaryRangeOption(options.anniversaryRange),
+                options.anniversaryRange,
+                "Option"
+            );
+
+            // Handle Fixed Date or Period Range
+            if (options.anniversaryRange === "Fixed Date") {
+                if (!options.afterYears) {
+                    throw new Error("Fixed Date requires afterYears option");
+                }
+                // Enter After Years for Fixed Date
+                console.log(`🔄 Setting Recertification After Years: ${options.afterYears}`);
+                await this.type(this.selectors.recertAfterYearsInput, "Recertification After Years", options.afterYears);
+                console.log(`✅ Set Recertification Anniversary Date - Type: ${options.anniversaryType}, Range: Fixed Date, After Years: ${options.afterYears}`);
+                
+            } else if (options.anniversaryRange === "Period Range") {
+                if (!options.period || !options.periodYears) {
+                    throw new Error("Period Range requires period (Month/Quarter/Year) and periodYears options");
+                }
+                
+                // Select Period (Month, Quarter, Year)
+                console.log(`🔄 Selecting Recertification Period: ${options.period}`);
+                await this.click(this.selectors.recertPeriodDropdown, "Recertification Period", "Dropdown");
+                await this.wait("minWait");
+                await this.click(
+                    this.selectors.periodOption(options.period),
+                    options.period,
+                    "Option"
+                );
+                
+                // Enter Period Years
+                console.log(`🔄 Setting Recertification Period Years: ${options.periodYears}`);
+                await this.type(this.selectors.recertPeriodYearsInput, "Recertification Period Years", options.periodYears);
+                console.log(`✅ Set Recertification Anniversary Date - Type: ${options.anniversaryType}, Range: Period Range, Period: ${options.period}, Years: ${options.periodYears}`);
+            }
+        }
     }
 
     async description(data: string) {
@@ -441,6 +671,34 @@ export class LearningPathPage extends AdminHomePage {
     async addRecertificationCourse() {
         await this.mouseHover(this.selectors.recertificationAddCourse, "Add Course");
         await this.click(this.selectors.recertificationAddCourse, "Add Course", "Button");
+    }
+
+    /**
+     * Choose preferred method for recertification course
+     * @param method - "Copy from certification path" (default) or "Add Courses Manually"
+     */
+    async chooseRecertificationMethod(method: "Copy from certification path" | "Add Courses Manually" = "Copy from certification path") {
+        await this.wait("minWait");
+        
+        console.log(`🔄 Choosing recertification method: ${method}`);
+        
+        if (method === "Copy from certification path") {
+            // Check if already selected, if not click it
+            const isVisible = await this.page.locator(this.selectors.copyFromCertificationPath).isVisible();
+            if (isVisible) {
+                console.log(`✅ Copy from certification path is default, clicking Save`);
+                await this.click(this.selectors.saveButton, "Save Button", "Button");
+            }
+        } else if (method === "Add Courses Manually") {
+            // Click Add Courses Manually radio button
+            await this.validateElementVisibility(this.selectors.addCourseManually, "Add Courses Manually");
+            await this.click(this.selectors.addCourseManuallyRadioBtn, "Add Courses Manually", "Radio Button");
+            await this.wait("minWait");
+            console.log(`✅ Selected Add Courses Manually`);
+            await this.click(this.selectors.saveButton, "Save Button", "Button");
+        }
+        
+        console.log(`✅ Recertification method selected: ${method}`);
     }
 
     async getCodeValue() {

@@ -22,5 +22,8 @@
   "passwordHistoryStatusUpdateUsername": "Dovie54@hotmail.com",
   "CRS023a": "Wireless Monitor Input",
   "TP045": "LP_overdue_days_from_enrollment Bluetooth Application Generate",
-  "TP047": "LP_incomplete_days_from_enrollment Auxiliary Sensor Back up"
+  "TP047": "LP_incomplete_days_from_enrollment Auxiliary Sensor Back up",
+  "TP060": "CERT_overdue_days_from_enrollment Cross-platform Matrix Connect",
+  "TP068": "CERT_Anniversary_Auxiliary Hard drive Program",
+  "TP067": "CERT_SpecificDate_Online Interface Calculate"
 }

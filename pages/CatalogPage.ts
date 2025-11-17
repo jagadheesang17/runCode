@@ -1063,7 +1063,12 @@ export class CatalogPage extends LearnerHomePage {
     await this.spinnerDisappear();
   }
 
+<<<<<<< Updated upstream
   async   clickViewCertificate() {
+=======
+  async clickViewCertificate() {
+     await this.page.locator(this.selectors.viewCertificateBtn).scrollIntoViewIfNeeded()
+>>>>>>> Stashed changes
     await this.mouseHover(
       this.selectors.viewCertificateBtn,
       "View Certificate"
@@ -1500,6 +1505,7 @@ export class CatalogPage extends LearnerHomePage {
   //Learnerside->Course Completion Status
   async verifyStatus(data: string) {
     await this.wait("maxWait");
+    await this.page.locator(this.selectors.statusOnDetailsPage).scrollIntoViewIfNeeded();
     await this.validateElementVisibility(
       this.selectors.statusOnDetailsPage,
       "Enrollment Status"
@@ -1549,6 +1555,9 @@ export class CatalogPage extends LearnerHomePage {
   async clickOnNextCourse(data: string) {
     await this.wait("minWait");
     //const courseName=data.toLowerCase()
+      await this.page
+      .locator(this.selectors.clickNextCourse(data))
+      .scrollIntoViewIfNeeded();
     await this.click(
       this.selectors.clickNextCourse(data),
       "Select Next course",
