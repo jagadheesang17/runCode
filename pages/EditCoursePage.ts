@@ -1,3 +1,4 @@
+import { th } from "@faker-js/faker";
 import { filePath } from "../data/MetadataLibraryData/filePathEnv";
 import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
 import { getRandomItemFromFile } from "../utils/jsonDataHandler";
@@ -58,9 +59,17 @@ export class EditCoursePage extends AdminHomePage {
         checkAllowRecReg: `(//span[contains(text(),'Allow')]/preceding-sibling::i)[2]`,
 
         // Dedicated to TP selectors
-        dedicatedToTPCheckbox: `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`,
+        dedicatedToTPCheckbox: `//span[text()='Dedicated to Training Plan']/preceding-sibling::i[1]`,
         dedicatedToTPLabel: `//span[text()='Dedicated to Training Plan']`,
-
+        dedicatedToTPClickable: `//span[text()='Dedicated to Training Plan']`,
+        warningMessage: `(//button[normalize-space()='OK']/ancestor::div[contains(@class,'modal-content')]//span)[1]`,
+        blockingAlertMessage: `//div[contains(@class,'alert') and contains(@class,'mandatory')]//span[contains(text(),'cannot be performed')]`,
+        blockingAlertCloseBtn: `//div[@class='msg-close-btn']`,
+        saveBtn: `//button[text()='Save']`,
+        enrollments:`//span[contains(@id,'crs-enrol-attr')]`,
+        enrollmentEntry:`(//table[contains(@class,'viewupdate-status')]//tr)[2]`,
+        selectInstance:`//div[text()='Single Instance/Class']`,
+        multiInstance :`//span[text()='Multi Instance/Class']`,
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -154,7 +163,7 @@ export class EditCoursePage extends AdminHomePage {
         await this.click(this.selectors.indianTimezone, "Indian Timezone", "Selected")
     }
     async clickBusinessRule() {
-        await this.validateElementVisibility(this.selectors.businessRule, "Business Rule")
+        await this.wait('mediumWait')
         await this.click(this.selectors.businessRule, "Business Rule", "sub-Menu")
     }
     async clickUncheckSingReg() {
@@ -243,24 +252,32 @@ export class EditCoursePage extends AdminHomePage {
         expect(booleanChk).toBeFalsy();
     }
 
-    async clickUpdate() {
-        await this.wait('mediumWait')
-        await this.click(this.selectors.updateBtn, "Update", "Button")
-        await this.wait('mediumWait')
-    }
-
     // Dedicated to Training Plan Methods
     async enableDedicatedToTP() {
         await this.wait('minWait');
-        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
-        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
-            const input = el.tagName === 'I' ? el.previousElementSibling : el;
-            return input ? (input as HTMLInputElement).checked : false;
-        });
+        const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
+        const icons = this.page.locator(containerSelector);
+        
+        // Check if checkbox is checked by looking at which icon is visible
+        // When checked: first icon (fa-square-check) is visible
+        // When unchecked: second icon (fa-square) is visible
+        const firstIconVisible = await icons.first().isVisible();
+        const secondIconVisible = await icons.nth(1).isVisible();
+        
+        const isChecked = firstIconVisible && !secondIconVisible;
+        
+        console.log(`📝 Enable - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
         
         if (!isChecked) {
-            await this.validateElementVisibility(this.selectors.dedicatedToTPCheckbox, "Dedicated to TP Checkbox");
-            await this.click(this.selectors.dedicatedToTPCheckbox, "Dedicated to Training Plan", "Checkbox");
+            await this.validateElementVisibility(this.selectors.dedicatedToTPLabel, "Dedicated to TP Checkbox");
+            await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
+            await this.wait('maxWait');
+            const expectedMessage = "By selecting the rule, this course and all its classes will be hidden from the catalog. Learner can enroll to this course only via Learning Path/ Certification to which the course is associated.";
+            await this.verification(this.selectors.warningMessage, expectedMessage);
+            console.log("✅ Validated Dedicated to TP warning message: Course will be hidden from catalog");
+            await this.click(this.selectors.okBtnTag, "OK", "Button");
+            await this.wait('minWait');
+            await this.click(this.selectors.saveBtn, "Save", "Button");
             console.log("✅ Enabled Dedicated to Training Plan");
         } else {
             console.log("ℹ️ Dedicated to Training Plan already enabled");
@@ -269,28 +286,50 @@ export class EditCoursePage extends AdminHomePage {
 
     async disableDedicatedToTP() {
         await this.wait('minWait');
-        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
-        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
-            const input = el.tagName === 'I' ? el.previousElementSibling : el;
-            return input ? (input as HTMLInputElement).checked : false;
-        });
+        const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
+        const icons = this.page.locator(containerSelector);
+        
+        // Check if checkbox is checked by looking at which icon is visible
+        const firstIconVisible = await icons.first().isVisible();
+        const secondIconVisible = await icons.nth(1).isVisible();
+        
+        const isChecked = firstIconVisible && !secondIconVisible;
+        
+        console.log(`📝 Disable - Initial state - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
         
         if (isChecked) {
-            await this.validateElementVisibility(this.selectors.dedicatedToTPCheckbox, "Dedicated to TP Checkbox");
-            await this.click(this.selectors.dedicatedToTPCheckbox, "Dedicated to Training Plan", "Checkbox");
+            // Uncheck the checkbox
+            await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
+            
+            // Handle the warning message
+            await this.wait('minWait');
+            const expectedMessage = "unchecking this checkbox means the course will be visible in the catalog";
+            await this.verification(this.selectors.warningMessage, expectedMessage);
+            await this.click(this.selectors.okBtnTag, "OK", "Button");
+            
+            // Click Save button
+            await this.wait('minWait');
+            await this.click(this.selectors.saveBtn, "Save", "Button");
+            await this.wait('minWait');
+            
             console.log("✅ Disabled Dedicated to Training Plan");
+            return true;
         } else {
             console.log("ℹ️ Dedicated to Training Plan already disabled");
+            return false;
         }
     }
 
     async isDedicatedToTPChecked(): Promise<boolean> {
         await this.wait('minWait');
-        const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
-        const isChecked = await checkbox.evaluate((el: HTMLElement) => {
-            const input = el.tagName === 'I' ? el.previousElementSibling : el;
-            return input ? (input as HTMLInputElement).checked : false;
-        });
+        const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
+        const icons = this.page.locator(containerSelector);
+        
+        // Check which icon is visible to determine checked state
+        const firstIconVisible = await icons.first().isVisible();
+        const secondIconVisible = await icons.nth(1).isVisible();
+        const isChecked = firstIconVisible && !secondIconVisible;
+        
         console.log(`ℹ️ Dedicated to TP checked state: ${isChecked}`);
         return isChecked;
     }
@@ -299,8 +338,9 @@ export class EditCoursePage extends AdminHomePage {
         await this.wait('minWait');
         const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
         const isDisabled = await checkbox.evaluate((el: HTMLElement) => {
-            const input = el.tagName === 'I' ? el.previousElementSibling : el;
-            return input ? (input as HTMLInputElement).disabled : false;
+            // Check if element or its parent has disabled class/attribute
+            return el.classList.contains('disabled') || el.hasAttribute('disabled') || 
+                   (el.parentElement?.classList.contains('disabled') ?? false);
         });
         console.log(`ℹ️ Dedicated to TP disabled state: ${isDisabled}`);
         return isDisabled;
@@ -313,4 +353,28 @@ export class EditCoursePage extends AdminHomePage {
         return isEditable;
     }
 
+    public async clickEnrollments() {
+        await this.wait("minWait");
+        await this.click(this.selectors.enrollments, "Enrollment", "Link")
+    }
+
+    async verifyNewEnrollmentEntry() {
+        await this.wait("maxWait");
+        const enrollmentRowSelector = this.selectors.enrollmentEntry;
+        await this.validateElementVisibility(enrollmentRowSelector, "New enrollment entry");
+        const isVisible = await this.page.locator(enrollmentRowSelector).isVisible();
+        
+        if (isVisible) {
+            console.log("✅ Verified - New enrollment entry has been added in the enrollments table");
+            return true;
+        } else {
+            throw new Error("Expected enrollment entry not found in the table");
+        }
+    }
+
+
+    async selectMultiInstance() {
+        await this.click(this.selectors.selectInstance, "instance", "Button")
+        await this.click(this.selectors.multiInstance, "Multi instance", "Button")
+    }
 }

@@ -55,6 +55,9 @@ export class EnrollmentPage extends AdminHomePage {
         clickEnrollButton: `//a[contains(@class,'btn') and text()='Enroll']`,
         goToHome: `//a[text()='Go to Home']`,
         
+        //Dedicated to Training Plan message
+        dedicatedToTPMsg: `//div[contains(@class,'justify-content-center text')]//span`,
+        
         //selecting the user for order creation
         selectUserForOrderCreation: (data: string) => `//td[contains(text(),'${data}')]//following::i[contains(@class,'fa-circle icon')][1]`,
         clickCheckoutBtn: `//button[text()='checkout']`,
@@ -328,4 +331,33 @@ export class EnrollmentPage extends AdminHomePage {
         await this.wait("minWait");
         await this.click(this.selectors.enrollBtn, "Select Course", "Button");
     }
+
+    async verifyDedicatedToTPWarningMessage() {
+        await this.wait('minWait');
+        await this.validateElementVisibility(this.selectors.dedicatedToTPMsg, "Dedicated to Training Plan Message");
+        const messageText = await this.page.locator(this.selectors.dedicatedToTPMsg).textContent();
+        const expectedText = "The selected course or class is marked as Dedicated to a Training Plan";
+        
+        if (messageText && messageText.includes(expectedText)) {
+            console.log(`✅ Verified - Message: "${messageText}"`);
+            return true;
+        } else {
+            throw new Error(`Expected message to contain "${expectedText}" but got "${messageText}"`);
+        }
+    }
+
+    async verifyDedicatedTPCourseNotFound(courseName: string) {
+        await this.type(this.selectors.searchcourseOrUser, "Course Name", courseName);
+        await this.wait("minWait");
+        const courseCount = await this.page.locator(this.selectors.courseList).count();        
+        if (courseCount === 0) {
+            console.log(`✅ Verified - The selected course or class is marked as Dedicated to TP (Course not found in search results)`);
+            return true;
+        } else {
+            throw new Error(`Expected course count to be 0 (not found) but got ${courseCount} courses`);
+        }
+    }
+
+
+
 }

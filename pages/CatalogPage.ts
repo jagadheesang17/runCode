@@ -1356,11 +1356,11 @@ export class CatalogPage extends LearnerHomePage {
         for (let index = 0; index < 1; index++) {
           await starIcon.nth(randomIndex1).click();
           await this.wait("minWait");
-        }
       }
     }
   }
 
+}
   async clickSubmitSurvey() {
     let submitSurvey = this.page.locator(this.selectors.sumbitSurveyBtn);
     if (await submitSurvey.isVisible()) {
@@ -1803,29 +1803,6 @@ async verifyAddedToWishlist(courseName: string) {
       console.log("✅ Dedicated to Training Plan message verified");
     } else {
       throw new Error(`Expected dedicated to TP message but found: ${message}`);
-    }
-  }
-
-  async isEnrollButtonDisabled(): Promise<boolean> {
-    await this.wait('minWait');
-    const enrollButton = this.page.locator(this.selectors.enrollButton);
-    
-    try {
-      const isDisabled = await enrollButton.isDisabled({ timeout: 5000 });
-      console.log(`ℹ️ Enroll button disabled state: ${isDisabled}`);
-      return isDisabled;
-    } catch (error) {
-      console.log("ℹ️ Enroll button not found or not disabled");
-      return false;
-    }
-  }
-
-  async verifyEnrollButtonDisabled() {
-    const isDisabled = await this.isEnrollButtonDisabled();
-    if (isDisabled) {
-      console.log("✅ Enroll button is disabled as expected");
-    } else {
-      throw new Error("Expected enroll button to be disabled but it's not");
     }
   }
 }

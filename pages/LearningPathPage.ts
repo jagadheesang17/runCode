@@ -366,6 +366,7 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async description(data: string) {
+        await this.wait("mediumWait");
         await this.type(this.selectors.description, "Description", data)
     }
     async selectSpecificPortal(portal: string) {

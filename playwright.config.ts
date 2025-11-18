@@ -61,6 +61,7 @@ export default defineConfig({
   '*/tests/admin/dynamic_Shareable_Links/**/*.spec.ts',
   '*/tests/admin/trainingPlan/**/*.spec.ts',
     '*/tests/admin/managerApproval/**/*.spec.ts',
+    '*/tests/admin/dedicatedToTP/**/*.spec.ts',
       '*/tests/Collaboration-Hub/**/*.spec.ts',
       '*/tests/LearnerSide/**/*.spec.ts',
       '*/tests/Instructor/**/*.spec.ts',

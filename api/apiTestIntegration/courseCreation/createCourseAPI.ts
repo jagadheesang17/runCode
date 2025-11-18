@@ -78,6 +78,18 @@ const CURRENCY_MAP: { [key: string]: string } = {
   'egp': 'currency_034'
 };
 
+const CLASSROOM_LOCATIONS = [
+  { id: 1, name: 'Bahringer Cape', capacity: 100 },
+  { id: 2, name: 'Barton Place', capacity: 100 },
+  { id: 3, name: 'Bergstrom Junction', capacity: 100 },
+  { id: 4, name: 'Castle Lane', capacity: 100 },
+  { id: 5, name: 'Chennai', capacity: 100 },
+  { id: 6, name: 'EcoTech', capacity: 100 },
+  { id: 7, name: 'Harris Common', capacity: 100 },
+  { id: 8, name: 'Larch Close', capacity: 100 },
+  { id: 9, name: 'Mepz', capacity: 100 }
+];
+
 /**
  * Convert currency name to currency code
  * @param currencyName - Currency name (case-insensitive) e.g., "US Dollar", "usd", "Indian Rupee"
@@ -167,6 +179,57 @@ async function listUploadedContent(contentId: number, uniqueId: string): Promise
 }
 
 const description=FakerData.getDescription();
+
+/**
+ * Get random location from predefined list
+ */
+function getRandomLocation(): { id: number; name: string; capacity: number } {
+  const randomIndex = Math.floor(Math.random() * CLASSROOM_LOCATIONS.length);
+  return CLASSROOM_LOCATIONS[randomIndex];
+}
+
+/**
+ * Generate future date from today
+ * @param daysFromNow - Number of days from today
+ */
+function getFutureDate(daysFromNow: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
+/**
+ * Generate random time in AM/PM format
+ */
+function getRandomTime(): string {
+  const hours = Math.floor(Math.random() * 12) + 1; // 1-12
+  const minutes = Math.random() < 0.5 ? '00' : '30';
+  const period = Math.random() < 0.5 ? 'AM' : 'PM';
+  return `${String(hours).padStart(2, '0')}:${minutes} ${period}`;
+}
+
+/**
+ * Calculate end time (1 hour after start)
+ */
+function getEndTime(startTime: string): string {
+  const [time, period] = startTime.split(' ');
+  const [hours, minutes] = time.split(':').map(Number);
+  let endHour = hours + 1;
+  let endPeriod = period;
+  
+  if (endHour === 12) {
+    endPeriod = period === 'AM' ? 'PM' : 'AM';
+  } else if (endHour > 12) {
+    endHour = 1;
+    endPeriod = period === 'AM' ? 'PM' : 'AM';
+  }
+  
+  return `${String(endHour).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${endPeriod}`;
+}
+
 async function createCourse(
   courseName: string,
   uniqueId: string,
@@ -281,6 +344,118 @@ async function createCourse(
   return { course_id: response.data.course_id, catalog_id: response.data.catalog_id };
 }
 
+/**
+ * Create Classroom Course (Multi-Instance)
+ */
+async function createClassroomCourse(
+  courseName: string,
+  uniqueId: string,
+  status: string,
+  price?: string,
+  currency?: string
+): Promise<{ course_id: number; catalog_id: number }> {
+  // Handle price and currency
+  let priceValue = "";
+  let currencyCode = "";
+  
+  if (price && price.trim() !== "") {
+    priceValue = price.trim();
+    
+    if (!currency || currency.trim() === "") {
+      throw new Error("Currency is required when price is provided");
+    }
+    
+    currencyCode = getCurrencyCode(currency);
+    console.log(`\n💰 Price Configuration:`);
+    console.log(`   Price: ${priceValue}`);
+    console.log(`   Currency: ${currency} → ${currencyCode}\n`);
+  }
+
+  const formData = new URLSearchParams();
+  formData.append("changedFields", "[]");
+  formData.append("skipconflictValidation", "false");
+  formData.append("description", `<p>${description}</p>`);
+  formData.append("master_title", courseName);
+  formData.append("master_code", "");
+  formData.append("title", courseName);
+  formData.append("code", "");
+  formData.append("language", "lang_00002");
+  formData.append("old_course_languages", "");
+  formData.append("language_name", "English");
+  formData.append("portals", "2,3,4");
+  formData.append("old_portals", "");
+  formData.append("provider_id", "2");
+  formData.append("categorys", "");
+  formData.append("price", priceValue);
+  formData.append("old_course_price", "");
+  formData.append("currency_type", currencyCode);
+  formData.append("max_seat", "");
+  formData.append("old_max_seat", "undefined");
+  formData.append("contact_support", "playwrightAutomation@gmail.com");
+  formData.append("duration", "");
+  formData.append("instances", "multiple");
+  formData.append("type", "course");
+  formData.append("sub_type", "classroom");
+  formData.append("old_sub_type", "");
+  formData.append("old_course_title", "");
+  formData.append("overdue_status", "");
+  formData.append("waitlist_seat", "");
+  formData.append("registration_end_on", "");
+  formData.append("additional_info", "");
+  formData.append("addn_catalog_show", "0");
+  formData.append("addn_notify_show", "0");
+  formData.append("discussion", "");
+  formData.append("published_on", "");
+  formData.append("no_of_instance", "1");
+  formData.append("catalog_id", "null");
+  formData.append("categoryflag", "false");
+  formData.append("status", status);
+  formData.append("is_recurring", "0");
+  formData.append("session_list", "[]");
+  formData.append("complianceExists", "0");
+  formData.append("is_compliance", "0");
+  formData.append("compliance_validity", "");
+  formData.append("validity_date", "");
+  formData.append("validity_days", "");
+  formData.append("complete_by_rule", "0");
+  formData.append("complete_by", "date");
+  formData.append("complete_by_date", "");
+  formData.append("exceeds_deadline_status", "incomplete");
+  formData.append("complete_days", "");
+  formData.append("min_seat", "");
+  formData.append("expiry_data", '{\r\n  "expiry_type": "",\r\n  "specific_date": "",\r\n  "completion_date": {},\r\n  "anniversary_date": {}}');
+  formData.append("thumbnail", '{"filename":{"square":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703095247-31874d97-sq.png","width":120,"height":120},"thumb":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703095247-31874d97-th.png","width":144,"height":87},"2small":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/07/03/20240703095247-31874d97-2s.png","width":240,"height":146},"xsmall":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703095247-31874d97-xs.png","width":432,"height":263},"small":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703095247-31874d97-sm.png","width":576,"height":351},"medium":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703095247-31874d97.png","width":"598","height":"365"},"large":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703095247-31874d97.png","width":"598","height":"365"},"xlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703095247-31874d97.png","width":"598","height":"365"},"xxlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703095247-31874d97.png","width":"598","height":"365"}}}');
+  formData.append("is_primary", "1");
+  formData.append("is_single", "0");
+  formData.append("course_view", "1");
+  formData.append("class_view", "0");
+  formData.append("create_course_unique_id", uniqueId);
+
+  const response = await axios.post(
+    `${BASE_URL}/ajax/admin/learning/catalog/create`,
+    formData,
+    {
+      headers: {
+        ...COMMON_HEADERS,
+        "origin": `${BASE_URL}`,
+        "referer": `${BASE_URL}/admin/learning/course/create`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      maxBodyLength: Infinity,
+    }
+  );
+
+  console.log(`\n*** CREATE CLASSROOM COURSE RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
+  if (response.status !== 200 || !response.data.course_id || !response.data.catalog_id) {
+    throw new Error("Create Classroom Course failed");
+  }
+  
+  return { course_id: response.data.course_id, catalog_id: response.data.catalog_id };
+}
+
 async function createAccessGroupMapping(
   course_id: number,
   catalog_id: number,
@@ -316,6 +491,121 @@ async function createAccessGroupMapping(
   }
 }
 
+/**
+ * Add Classroom Instances
+ */
+async function addClassroomInstances(
+  course_id: number,
+  courseName: string,
+  instanceCount: number,
+  status: string
+): Promise<void> {
+  // Generate instance data
+  const initSessions = [];
+  const sessionList = [];
+  
+  for (let i = 0; i < instanceCount; i++) {
+    const daysFromNow = (i + 1) * 7; // Each instance 1 week apart
+    const startDate = getFutureDate(daysFromNow);
+    const startTime = getRandomTime();
+    const endTime = getEndTime(startTime);
+    const location = getRandomLocation();
+    
+    // Init session structure
+    initSessions.push({
+      Id: 0,
+      code: "",
+      name: "",
+      start_date: "",
+      end_date: "",
+      days: [],
+      start_time: "",
+      end_time: "",
+      instructors: [],
+      location: {},
+      maxSeat: "",
+      wailtList: "",
+      isStatusChecked: true
+    });
+    
+    // Actual session data
+    sessionList.push({
+      Id: 0,
+      code: "",
+      name: `Instance ${i + 1}`,
+      start_date: startDate,
+      end_date: "",
+      days: [],
+      start_time: startTime,
+      end_time: endTime,
+      instructors: [],
+      location: location,
+      maxSeat: "12",
+      wailtList: "",
+      isStatusChecked: i === instanceCount - 1, // Last instance checked
+      disableStatusCheckbox: i === 0, // First instance disabled
+      hasTimeError: false,
+      status: "noconflict",
+      duration: 60
+    });
+  }
+  
+  const instanceData = {
+    createInstanceCount: instanceCount,
+    deliveryType: "classroom",
+    access: true,
+    accessSettings: true,
+    assessment: true,
+    businessRule: true,
+    observationCheckList: true,
+    category: true,
+    ceu: true,
+    files: true,
+    survey: true,
+    tags: true,
+    certificate: true,
+    esignature: true,
+    instanceClassName: courseName,
+    initSessions: initSessions
+  };
+
+  const formData = new URLSearchParams();
+  formData.append("id", course_id.toString());
+  formData.append("createInstanceCount", instanceCount.toString());
+  formData.append("language", "lang_00002");
+  formData.append("language_name", "English");
+  formData.append("courseStatus", status);
+  formData.append("deliveryType", "classroom");
+  formData.append("instanceData", JSON.stringify(instanceData));
+  formData.append("session_list", JSON.stringify(sessionList));
+  formData.append("instance_title", courseName);
+  formData.append("is_recurring", "0");
+  formData.append("skipconflictValidation", "true");
+  formData.append("callFrom", "bulkClassCreation");
+
+  const response = await axios.post(
+    `${BASE_URL}/ajax/admin/learning/catalog/create_instance`,
+    formData,
+    {
+      headers: {
+        ...COMMON_HEADERS,
+        "origin": `${BASE_URL}`,
+        "referer": `${BASE_URL}/admin/learning/course/edit`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      maxBodyLength: Infinity,
+    }
+  );
+
+  console.log(`\n*** ADD CLASSROOM INSTANCES RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
+  if (response.status !== 200) {
+    throw new Error("Add Classroom Instances failed");
+  }
+}
+
 export async function createCourseAPI(
   content: string,
   courseName: string,
@@ -333,3 +623,44 @@ export async function createCourseAPI(
   return courseName;
 }
 
+/**
+ * Create Classroom Multi-Instance Course (ILT)
+ * @param courseName - Name of the classroom course
+ * @param status - Course status (default: "published")
+ * @param instanceCount - Number of instances to create (default: 2)
+ * @param price - Optional price for the course
+ * @param currency - Optional currency (required if price is provided)
+ * @returns Course name
+ */
+export async function createILTMultiInstance(
+  courseName: string,
+  status = "published",
+  instanceCount = 2,
+  price?: string,
+  currency?: string
+): Promise<string> {
+  console.log(`\n🎓 Creating Classroom Multi-Instance Course: ${courseName}`);
+  console.log(`📊 Instance Count: ${instanceCount}\n`);
+  
+  const uniqueId = Date.now().toString();
+  
+  // Step 1: Create Classroom Course
+  const { course_id, catalog_id } = await createClassroomCourse(
+    courseName,
+    uniqueId,
+    status,
+    price,
+    currency
+  );
+  
+  await createAccessGroupMapping(course_id, catalog_id, status);
+  
+  await addClassroomInstances(course_id, courseName, instanceCount, status);
+  
+  console.log(`\n✅ Successfully created Classroom Multi-Instance Course: ${courseName}`);
+  console.log(`   Course ID: ${course_id}`);
+  console.log(`   Catalog ID: ${catalog_id}`);
+  console.log(`   Instances Created: ${instanceCount}\n`);
+  
+  return courseName;
+}

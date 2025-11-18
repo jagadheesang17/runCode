@@ -14,6 +14,7 @@ export class UniversalSearchPage extends LearnerHomePage {
         univ_SearchClear: "//div[text()='Clear all']",
         univ_SearchBox2: "//input[@id='exp-searchfrom-ussearch-field']",
         univ_SeachClick2: "//div[@id='exp-searchfrom-ussearch-icon']",
+        noResultmsg: `//div[contains(@class, 'information_text')][contains(text(), 'No results found')]`,
 
 
     }
@@ -55,11 +56,22 @@ export class UniversalSearchPage extends LearnerHomePage {
         await this.wait("maxWait")
     }
 
+ async verifyDedicatedTPCourseNotDisplayed() {
+    await this.wait("maxWait");
+    const noResultsMsg = await this.page.locator(this.selectors.noResultmsg);
+    const count = await noResultsMsg.count();
+    
+    if (count === 4) {
+      console.log(`✅ Verified - The selected course or class is marked as Dedicated to TP`);
+      console.log(`No results found in Enrolled Courses, Enrolled Learning Paths / Certifications, Catalog, Standalone`);
+      return true;
+    } else {
+      throw new Error(`Expected 4 'No results found' messages but got ${count}`);
+    }
+  }
+
+
+
+
 
 }
-
-
-
-
-
-

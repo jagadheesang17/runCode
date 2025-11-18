@@ -455,7 +455,6 @@ export class CoursePage extends AdminHomePage {
 
     editCourseFromListingPage: `//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen']`,
     checkContactSupport: `//input[@id='course-contact-support']`,
-<<<<<<< Updated upstream
     adminGroupSelect:`(//div[contains(text(),'items selected')])[1]`, 
     searchBoxAdminGrpAccess:`((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
     adminGroupSearch: (adminGroup:string) => `//span[text()='${adminGroup}']`,
@@ -463,20 +462,9 @@ export class CoursePage extends AdminHomePage {
     suspendedGrp:(groupName:string) => `(//li[text()='${groupName}'])`,
 
     // Dedicated to TP - Enrollment and Instance selectors
-    enrollmentsIcon: `//i[@aria-label='Enrollments']`,
-    enrollmentTable: `//table[contains(@class,'table')]`,
-    enrollmentRow: `//table//tbody//tr`,
-    enrollmentSourceColumn: (rowIndex: number) => `(//table//tbody//tr)[${rowIndex}]//td[contains(text(),'Learning Path') or contains(text(),'Direct')]`,
-=======
-    adminGroupSelect: `(//div[contains(text(),'items selected')])[1]`,
-    searchBoxAdminGrpAccess: `((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
-    adminGroupSearch: (adminGroup: string) => `//span[text()='${adminGroup}']`,
-    removeAddedAdminGroup: (adminGroup: string) => `(//label[text()='${adminGroup}']/following::i[contains(@class,"fa-duotone fa-times fa-swap-opacity icon")])[1]`,
-    suspendedGrp: (groupName: string) => `(//li[text()='${groupName}'])`,
     completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
     completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
     completeByOption: (option: string) => `//span[text()='${option}']`,
->>>>>>> Stashed changes
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -1170,6 +1158,8 @@ export class CoursePage extends AdminHomePage {
       console.log("Course is not displayed for admin user if the access is not given");
     }
   }
+
+ 
 
   async typeDescription(data: string) {
     await this.type(this.selectors.courseDescriptionInput, "Description", data);
@@ -3547,7 +3537,6 @@ export class CoursePage extends AdminHomePage {
     );
   }
 
-  // Dedicated to TP Methods
   async clickInstancesIcon() {
     await this.wait('minWait');
     await this.validateElementVisibility(this.selectors.instanceIcon, "Instances Icon");
@@ -3555,29 +3544,6 @@ export class CoursePage extends AdminHomePage {
     console.log("✅ Clicked Instances icon");
   }
 
-  async clickEnrollmentsIcon() {
-    await this.wait('minWait');
-    await this.validateElementVisibility(this.selectors.enrollmentsIcon, "Enrollments Icon");
-    await this.click(this.selectors.enrollmentsIcon, "Enrollments", "Icon");
-    console.log("✅ Clicked Enrollments icon");
-  }
-
-  async getEnrollmentSource(rowIndex: number = 1): Promise<string> {
-    await this.wait('minWait');
-    const sourceSelector = this.selectors.enrollmentSourceColumn(rowIndex);
-    await this.validateElementVisibility(sourceSelector, "Enrollment Source");
-    const sourceText = await this.getInnerText(sourceSelector);
-    console.log(`ℹ️ Enrollment source for row ${rowIndex}: ${sourceText}`);
-    return sourceText.trim();
-  }
-
-  async verifyEnrollmentSource(expectedSource: string, rowIndex: number = 1) {
-    const actualSource = await this.getEnrollmentSource(rowIndex);
-    if (actualSource.includes(expectedSource)) {
-      console.log(`✅ Enrollment source verified: ${expectedSource}`);
-    } else {
-      throw new Error(`Expected enrollment source '${expectedSource}' but found '${actualSource}'`);
-    }
-  }
+ 
 }
 
