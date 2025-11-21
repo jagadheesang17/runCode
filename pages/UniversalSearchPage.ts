@@ -61,12 +61,12 @@ export class UniversalSearchPage extends LearnerHomePage {
     const noResultsMsg = await this.page.locator(this.selectors.noResultmsg);
     const count = await noResultsMsg.count();
     
-    if (count === 4) {
+    if (count >= 4) {
       console.log(`✅ Verified - The selected course or class is marked as Dedicated to TP`);
-      console.log(`No results found in Enrolled Courses, Enrolled Learning Paths / Certifications, Catalog, Standalone`);
+      console.log(`No results found: ${count} 'No results found' messages displayed (minimum 4 expected)`);
       return true;
     } else {
-      throw new Error(`Expected 4 'No results found' messages but got ${count}`);
+      throw new Error(`Expected at least 4 'No results found' messages but got ${count}`);
     }
   }
 

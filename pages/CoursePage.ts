@@ -352,7 +352,7 @@ export class CoursePage extends AdminHomePage {
     instanceClass: `//div[text()='Instance  / Class']`,
 
     //edit instance
-    editInstance: `//span[@title='Edit Instance/Class']`,
+    editInstance: `((//span[@title='Edit Instance/Class']) | (//i[contains(@class,'fa-pen')]))[1]`,
     //class cancel radio button
     classCancel: `//span[contains(text(),'Cancel')]`,
 
@@ -428,6 +428,7 @@ export class CoursePage extends AdminHomePage {
       `(//select[contains(@name,'days')]//option)[${index}]`,
     daysOption: (days: string) => `//span[text()='${days}']`,
     endDate: `(//label[contains(text(),'End Date')]/following-sibling::div/input)[1]`,
+    openCourseLink:".router-link-active",
 
     //Delete Course
     deleteCourse: `//span[text()='Delete Course']`,
@@ -952,6 +953,8 @@ export class CoursePage extends AdminHomePage {
 
   //edit instance on course edit page
   async clickEditInstance() {
+    await this.wait("maxWait");
+    await this.page.locator(this.selectors.editInstance).scrollIntoViewIfNeeded();
     await this.wait("minWait");
     await this.validateElementVisibility(
       this.selectors.editInstance,
@@ -3544,6 +3547,13 @@ export class CoursePage extends AdminHomePage {
     console.log("✅ Clicked Instances icon");
   }
 
- 
+  // openCourseLink
+  async clickCourseFromInstance() {
+    await this.wait('minWait');
+    await this.validateElementVisibility(this.selectors.openCourseLink, "Course Link");
+    await this.click(this.selectors.openCourseLink, "Course Link", "Link");
+    console.log("✅ Clicked Course Link from Instance page");
+  }
 }
+
 

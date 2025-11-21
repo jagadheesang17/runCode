@@ -253,7 +253,11 @@ export class EditCoursePage extends AdminHomePage {
     }
 
     // Dedicated to Training Plan Methods
-    async enableDedicatedToTP() {
+    /**
+     * Check Dedicated to Training Plan checkbox
+     * @param level - "Course" for course level (shows warning message) or "Instance" for instance/class level (no warning)
+     */
+    async checkDedicatedToTP(level: "Course" | "Instance" = "Course") {
         await this.wait('minWait');
         const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
         const icons = this.page.locator(containerSelector);
@@ -266,25 +270,35 @@ export class EditCoursePage extends AdminHomePage {
         
         const isChecked = firstIconVisible && !secondIconVisible;
         
-        console.log(`📝 Enable - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
+        console.log(`📝 Enable (${level} Level) - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
         
         if (!isChecked) {
             await this.validateElementVisibility(this.selectors.dedicatedToTPLabel, "Dedicated to TP Checkbox");
             await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
-            await this.wait('maxWait');
-            const expectedMessage = "By selecting the rule, this course and all its classes will be hidden from the catalog. Learner can enroll to this course only via Learning Path/ Certification to which the course is associated.";
-            await this.verification(this.selectors.warningMessage, expectedMessage);
-            console.log("✅ Validated Dedicated to TP warning message: Course will be hidden from catalog");
-            await this.click(this.selectors.okBtnTag, "OK", "Button");
+            
+            if (level === "Course") {
+                // Course level: Handle warning message
+                await this.wait('maxWait');
+                const expectedMessage = "By selecting the rule, this course and all its classes will be hidden from the catalog. Learner can enroll to this course only via Learning Path/ Certification to which the course is associated.";
+                await this.verification(this.selectors.warningMessage, expectedMessage);
+                console.log("✅ Validated Dedicated to TP warning message: Course will be hidden from catalog");
+                await this.click(this.selectors.okBtnTag, "OK", "Button");
+            }
+            
+            // Click Save button
             await this.wait('minWait');
             await this.click(this.selectors.saveBtn, "Save", "Button");
-            console.log("✅ Enabled Dedicated to Training Plan");
+            console.log(`✅ Enabled Dedicated to Training Plan at ${level} level`);
         } else {
-            console.log("ℹ️ Dedicated to Training Plan already enabled");
+            console.log(`ℹ️ Dedicated to Training Plan already enabled at ${level} level`);
         }
     }
 
-    async disableDedicatedToTP() {
+    /**
+     * Uncheck Dedicated to Training Plan checkbox
+     * @param level - "Course" for course level (shows warning message) or "Instance" for instance/class level (no warning)
+     */
+    async unCheckDedicatedToTP(level: "Course" | "Instance" = "Course") {
         await this.wait('minWait');
         const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
         const icons = this.page.locator(containerSelector);
@@ -295,27 +309,29 @@ export class EditCoursePage extends AdminHomePage {
         
         const isChecked = firstIconVisible && !secondIconVisible;
         
-        console.log(`📝 Disable - Initial state - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
+        console.log(`📝 Disable (${level} Level) - Initial state - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
         
         if (isChecked) {
             // Uncheck the checkbox
             await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
             
-            // Handle the warning message
-            await this.wait('minWait');
-            const expectedMessage = "unchecking this checkbox means the course will be visible in the catalog";
-            await this.verification(this.selectors.warningMessage, expectedMessage);
-            await this.click(this.selectors.okBtnTag, "OK", "Button");
+            if (level === "Course") {
+                // Course level: Handle warning message
+                await this.wait('minWait');
+                const expectedMessage = "unchecking this checkbox means the course will be visible in the catalog";
+                await this.verification(this.selectors.warningMessage, expectedMessage);
+                await this.click(this.selectors.okBtnTag, "OK", "Button");
+            }
             
             // Click Save button
             await this.wait('minWait');
             await this.click(this.selectors.saveBtn, "Save", "Button");
             await this.wait('minWait');
             
-            console.log("✅ Disabled Dedicated to Training Plan");
+            console.log(`✅ Disabled Dedicated to Training Plan at ${level} level`);
             return true;
         } else {
-            console.log("ℹ️ Dedicated to Training Plan already disabled");
+            console.log(`ℹ️ Dedicated to Training Plan already disabled at ${level} level`);
             return false;
         }
     }
@@ -351,6 +367,51 @@ export class EditCoursePage extends AdminHomePage {
         const isEditable = !isDisabled;
         console.log(`ℹ️ Dedicated to TP editable state: ${isEditable}`);
         return isEditable;
+    }
+
+    /**
+     * Verify Dedicated to Training Plan checkbox state dynamically
+     * @param enableState - Expected enable state: "Enabled" or "Disabled"
+     * @param checkedState - Expected checked state: "Checked" or "Unchecked"
+     * @example await editCourse.verifyDedicatedToCheckBox("Disabled", "Checked")
+     * @example await editCourse.verifyDedicatedToCheckBox("Enabled", "Unchecked")
+     */
+    async verifyDedicatedToCheckBox(enableState: "Enabled" | "Disabled", checkedState: "Checked" | "Unchecked"): Promise<void> {
+        await this.wait('minWait');
+        
+        const checkboxInput = this.page.locator(`//input[@id='dedicated-to-tp']`);
+        const checkedIcon = this.page.locator(`//label[@for='dedicated-to-tp']//i[contains(@class,'fa-square-check')]`);
+        const uncheckedIcon = this.page.locator(`//label[@for='dedicated-to-tp']//i[contains(@class,'fa-square') and not(contains(@class,'fa-square-check'))]`);
+        
+        // Verify Enabled/Disabled state
+        const isDisabled = await checkboxInput.isDisabled();
+        const actualEnableState = isDisabled ? "Disabled" : "Enabled";
+        
+        if (actualEnableState !== enableState) {
+            throw new Error(`❌ Dedicated to TP checkbox enable state mismatch! Expected: ${enableState}, Actual: ${actualEnableState}`);
+        }
+        console.log(`✅ Verified - Dedicated to TP checkbox is ${enableState}`);
+        
+        // Verify Checked/Unchecked state
+        const isCheckedIconVisible = await checkedIcon.isVisible();
+        const isUncheckedIconVisible = await uncheckedIcon.isVisible();
+        
+        let actualCheckedState: "Checked" | "Unchecked";
+        
+        if (isCheckedIconVisible && !isUncheckedIconVisible) {
+            actualCheckedState = "Checked";
+        } else if (!isCheckedIconVisible && isUncheckedIconVisible) {
+            actualCheckedState = "Unchecked";
+        } else {
+            throw new Error(`❌ Checkbox state is ambiguous! Checked icon visible: ${isCheckedIconVisible}, Unchecked icon visible: ${isUncheckedIconVisible}`);
+        }
+        
+        if (actualCheckedState !== checkedState) {
+            throw new Error(`❌ Dedicated to TP checkbox checked state mismatch! Expected: ${checkedState}, Actual: ${actualCheckedState}`);
+        }
+        console.log(`✅ Verified - Dedicated to TP checkbox is ${checkedState}`);
+        
+        console.log(`🎯 Final Verification: Checkbox is ${actualEnableState} and ${actualCheckedState}`);
     }
 
     public async clickEnrollments() {

@@ -4,20 +4,20 @@ import { FakerData } from '../../../utils/fakerUtils';
 import { credentials } from '../../../constants/credentialData';
 import { createILTMultiInstance } from '../../../api/apiTestIntegration/courseCreation/createCourseAPI';
 
-test.describe('DTP004 - Verify Enable disable Course And Class Level', () => {
+test.describe.serial('DTP003 - Verify Enable disable Course And Class Level', () => {
 
-    const courseName = FakerData.getCourseName();
-    const instructorName = credentials.INSTRUCTORNAME.username;
+    const courseName = "Haptic Driver Back up";//FakerData.getCourseName();
+    console.log("Course Name: " + courseName);
     
-    test("DTP004a - Verify that dedicated to tp rule when it is applied at the course & Test level", async ({ adminHome, createCourse, editCourse, learningPath, enrollHome }) => {
+    test("DTP003a - Verify that dedicated to tp rule is greyed out and remain in checked state in the class level when it is applied at the course level", async ({ adminHome, createCourse, editCourse, learningPath, enrollHome }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
-            { type: 'TestCase', description: 'DTP004a_TP_Enrollment_Entry' },
+            { type: 'TestCase', description: 'DTP003a_dedicated to tp applied at the course level' },
             { type: 'Test Description', description: 'Verify that dedicated to tp rule when it is applied at the course & Test level' }
         );
-        console.log("Course Name: " + courseName);
-        await createILTMultiInstance(courseName, 'published', 2);
+
+        // await createILTMultiInstance(courseName, 'published', 2);
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();
@@ -26,20 +26,48 @@ test.describe('DTP004 - Verify Enable disable Course And Class Level', () => {
         await createCourse.catalogSearch(courseName);
         await createCourse.editCourseFromListingPage();
         await editCourse.clickBusinessRule();
-        await editCourse.enableDedicatedToTP();
+        await editCourse.checkDedicatedToTP();
         await editCourse.clickBusinessRule();
 
-           
+        await createCourse.clickEditInstance();
+        await editCourse.clickBusinessRule();
+        //checkbox should be disabled and checked
+        console.log("Verifying Dedicated to TP checkbox state in Instance Level");
+        await editCourse.verifyDedicatedToCheckBox("Disabled", "Checked");
+        await editCourse.clickBusinessRule();
+        console.log("DTP004a - Verified that dedicated to tp rule is greyed out and remain in checked state in the class level when it is applied at the course level");
+   
     });
 
-    // test("DTP003b - Verify able to disable dedicated to TP for course associated to TP", async ({ adminHome, createCourse, editCourse, learningPath }) => {
+    test("DTP003b - Verify that dedicated to tp rule is greyed out and remain in unchecked state in the course level when it is applied at the class level", async ({ adminHome, createCourse, editCourse, learningPath }) => {
         
-    //     test.info().annotations.push(
-    //         { type: 'Author', description: 'Kathir A' },
-    //         { type: 'TestCase', description: 'DTP003b_Disable_With_TP_Association' },
-    //         { type: 'Test Description', description: 'Verify able to disable dedicated to TP rule for course which is associated to TP' }
-    //     );
-
+        test.info().annotations.push(
+            { type: 'Author', description: 'Kathir A' },
+            { type: 'TestCase', description: 'DTP003b_dedicated to tp applied at the class level' },
+            { type: 'Test Description', description: 'Verify that dedicated to tp rule is greyed out and remain in unchecked state in the course level when it is applied at the class level' }
+        );
     
-    // });
+
+        await adminHome.loadAndLogin("CUSTOMERADMIN");
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickCourseLink();
+        await createCourse.catalogSearch(courseName);
+        await createCourse.editCourseFromListingPage();
+        await editCourse.clickBusinessRule();
+        await editCourse.unCheckDedicatedToTP();
+        await editCourse.clickBusinessRule();
+
+        await createCourse.clickEditInstance();
+        await editCourse.clickBusinessRule();
+        await editCourse.checkDedicatedToTP("Instance");
+        await editCourse.clickBusinessRule();
+
+        await createCourse.clickCourseFromInstance();
+        await editCourse.clickBusinessRule();
+        //checkbox should be disabled and unchecked
+        console.log("Verifying Dedicated to TP checkbox state in Course Level");
+        await editCourse.verifyDedicatedToCheckBox("Disabled", "Unchecked");
+
+    });
 });

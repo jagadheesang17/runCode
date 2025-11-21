@@ -734,6 +734,10 @@ export class CatalogPage extends LearnerHomePage {
     );
   }
 
+  async submitRequest() {
+        await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
 
 
   async requstcostCenterdetails() {
@@ -1063,12 +1067,8 @@ export class CatalogPage extends LearnerHomePage {
     await this.spinnerDisappear();
   }
 
-<<<<<<< Updated upstream
-  async   clickViewCertificate() {
-=======
   async clickViewCertificate() {
      await this.page.locator(this.selectors.viewCertificateBtn).scrollIntoViewIfNeeded()
->>>>>>> Stashed changes
     await this.mouseHover(
       this.selectors.viewCertificateBtn,
       "View Certificate"

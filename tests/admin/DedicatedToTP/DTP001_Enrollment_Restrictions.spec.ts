@@ -4,16 +4,16 @@ import { FakerData } from '../../../utils/fakerUtils';
 import { createCourseAPI } from "../../../api/apiTestIntegration/courseCreation/createCourseAPI";
 import { LearnerLogin } from '../../../pages/LearnerLogin';
 
-test.describe('DTP002 - Enrollment Restrictions for Dedicated to TP Courses', () => {
+test.describe.serial('DTP001 - Enrollment Restrictions for Dedicated to TP Courses', () => {
 
     const courseName = FakerData.getCourseName();
     const learnerUsername = 'test_learner';
 
-    test("DTP002a - Verify cannot enroll through course edit page", async ({ adminHome, createCourse, editCourse, enrollHome, catalog }) => {
+    test("DTP001a - Verify cannot enroll through course edit page", async ({ adminHome, createCourse, editCourse, enrollHome, catalog }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
-            { type: 'TestCase', description: 'DTP002a_Cannot_Enroll_List_Page' },
+            { type: 'TestCase', description: 'DTP001a_Cannot_Enroll_List_Page' },
             { type: 'Test Description', description: 'Verify that cannot enroll dedicated to TP course through list page' }
         );
 
@@ -28,18 +28,18 @@ test.describe('DTP002 - Enrollment Restrictions for Dedicated to TP Courses', ()
         await createCourse.catalogSearch(courseName);
         await createCourse.editCourseFromListingPage();
         await editCourse.clickBusinessRule();
-        await editCourse.enableDedicatedToTP();
+        await editCourse.checkDedicatedToTP();
         await editCourse.clickEnrollments();
         await enrollHome.selectEnroll();
         await enrollHome.verifyDedicatedToTPWarningMessage();
     });
 
     //admin - manage enrollments
-    test("DTP002b - Verify cannot enroll through Manage enrollments", async ({ adminHome, createCourse, enrollHome }) => {
+    test("DTP001b - Verify cannot enroll through Manage enrollments", async ({ adminHome, createCourse, enrollHome }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
-            { type: 'TestCase', description: 'DTP002b_Cannot_Enroll_Manage_Enrollments' },
+            { type: 'TestCase', description: 'DTP001b_Cannot_Enroll_Manage_Enrollments' },
             { type: 'Test Description', description: 'Verify that cannot enroll dedicated to TP course through Manage enrollments' }
         );
 
@@ -51,11 +51,11 @@ test.describe('DTP002 - Enrollment Restrictions for Dedicated to TP Courses', ()
         
     });
 
-    test("DTP002c -  Verify that could not able to enroll the course through list page", async ({ learnerHome, universalSearch, enrollHome }) => {
+    test("DTP001c -  Verify that could not able to enroll the course through list page", async ({ learnerHome, universalSearch, enrollHome }) => {
         
         test.info().annotations.push(
             { type: 'Author', description: 'Kathir A' },
-            { type: 'TestCase', description: 'DTP002c_Cannot_Enroll_List_Page' },
+            { type: 'TestCase', description: 'DTP001c_Cannot_Enroll_List_Page' },
             { type: 'Test Description', description: 'Verify that cannot enroll dedicated to TP course through list page' }
         );
 
