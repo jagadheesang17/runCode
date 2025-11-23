@@ -173,7 +173,9 @@ async function updateCertificationComplianceFlow() {
     const formattedNewTime = format(newTime, 'yyyy-MM-dd HH:mm:ss');
     console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
     let updateLearningPlan = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run='${formattedNewTime}',current_status='waiting',previous_status=''  WHERE name='Learning Plan & Certification AutoRegister' and tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`);
+    let batchExecution = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run='${formattedNewTime}',current_status='waiting',previous_status=''  WHERE name='Batch Execution of Auto-Register Jobs' and tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`);
     console.log(updateLearningPlan);
+    console.log(batchExecution);
 }
 
 

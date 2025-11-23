@@ -126,6 +126,48 @@ interface tcData {
   TP067a?:string
   TP067b?:string
   TP068?:string
+  TP069?:string
+  TP070?:string
+  TP071?:string
+  TP072?:string
+  TP073?:string
+  TP074?:string
+  TP075?:string
+  TP076?:string
+  TP077?:string
+  TP078?:string
+  TPC079?:string
+  TPC080?:string
+  TPC081?:string
+  TPC082?:string
+  TPC083?:string
+  TPC084?:string
+  TPC085?:string
+  TPC086?:string
+  TPC087?:string
+  TPC088?:string
+  TPC089?:string
+  TPC090?:string
+  TPC091?:string
+  TPC092?:string
+  TPC093?:string
+  TPC094?:string
+  TPC095?:string
+  TPC096?:string
+  TPC097?:string
+  TPC098?:string
+  TPC099?:string
+  TP089?:string
+  TP090?:string
+  TP091?:string
+  TP092?:string
+  TP093?:string
+  TP094?:string
+  TP095?:string
+  TP096?:string
+  TP097?:string
+  TP098?:string
+  TP099?:string
    passwordHistoryStatusUpdateUsername?:string;
 }
 const cronFile = '../data/cronjob.json';

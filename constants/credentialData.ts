@@ -219,7 +219,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "bala@learner",
+        username: "arjun",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {

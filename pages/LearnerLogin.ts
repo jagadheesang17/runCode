@@ -40,6 +40,8 @@ const passwordAttemptErrMsg =
  //Landing page verification
  const pageName = (data: string) => `(//h1[text()='${data}'])[1]`;
 
+ const myProfileCloseBtn=`//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`;
+
 export class LearnerLogin extends PlaywrightWrapper {
 
 
@@ -137,6 +139,7 @@ export class LearnerLogin extends PlaywrightWrapper {
             console.log(`Login successful`);
             console.log(await this.getTitle())
             await this.wait('maxWait');
+            await this.click(myProfileCloseBtn,"Close Button","Button");
         } catch (error) {
             console.error(`Login attempt failed: ${error}`);
             throw error;

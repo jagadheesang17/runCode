@@ -9,14 +9,14 @@ const recertificationCourseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const portal = URLConstants.portal1;
 
-test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, async () => {
+test.describe(`TPC082_Verify_compliance_certification_expiration_with_anniversary_birth_date_period_year`, async () => {
     test.describe.configure({ mode: "serial" });
 
-    test(`Create E-learning course for certification`, async ({ adminHome, createCourse }) => {
+    test(`Create E-learning course for compliance certification`, async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Create E-learning course for certification` },
-            { type: `Test Description`, description: `Create single instance E-learning course to be attached to certification` }
+            { type: `TestCase`, description: `Create E-learning course for compliance certification` },
+            { type: `Test Description`, description: `Create single instance E-learning course to be attached to compliance certification` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -29,7 +29,7 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription(description);
         await createCourse.selectDomainOption(portal);
-        await createCourse.contentLibrary(); // Default YouTube content will be attached
+        await createCourse.contentLibrary();
         await createCourse.clickHere();
         await createCourse.selectImage();
         await createCourse.clickCatalog();
@@ -56,7 +56,7 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription(description);
         await createCourse.selectDomainOption(portal);
-        await createCourse.contentLibrary(); // Default YouTube content will be attached
+        await createCourse.contentLibrary();
         await createCourse.clickHere();
         await createCourse.selectImage();
         await createCourse.clickCatalog();
@@ -66,16 +66,16 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         console.log(`✅ Successfully created recertification course: ${recertificationCourseName}`);
     });
 
-    const titleAnniversaryDate = ("CERT_Anniversary_" + FakerData.getCourseName());
-    test(`Create certification with Anniversary Date expiration`, async ({ adminHome, learningPath, createCourse }) => {
+    const titleAnniversaryDate = ("COMPL_CERT_BirthDate_Year_" + FakerData.getCourseName());
+    test(`Create compliance certification with Anniversary Date - Birth Date, Period Range Year`, async ({ adminHome, learningPath, createCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Create certification with Anniversary Date expiration` },
-            { type: `Test Description`, description: `Create certification with expiry based on anniversary date (Completion Date, Fixed Date, 1 year)` }
+            { type: `TestCase`, description: `Create compliance certification with Anniversary Date - Birth Date, Period Range Year` },
+            { type: `Test Description`, description: `Create compliance certification with expiry based on Birth Date, Period Range, Year, 1 year` }
         );
 
         const newData = {
-            TP068: titleAnniversaryDate
+            TPC082: titleAnniversaryDate
         };
         updateCronDataJSON(newData);
 
@@ -87,27 +87,28 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await learningPath.title(titleAnniversaryDate);
         await learningPath.description(description);
         await learningPath.language();
+        await learningPath.clickAndSelectCompliance();
         await learningPath.hasRecertification();
+        await learningPath.registractionEnds();
         
-        // Set expiration with Anniversary Date
-        console.log(`🔄 Setting expiration with Anniversary Date - Completion Date, Fixed Date, 1 year`);
+        console.log(`🔄 Setting expiration with Anniversary Date - Birth Date, Period Range, Year`);
         await learningPath.clickExpiresDropdown();
         await learningPath.clickExpiresButtonWithType("Anniversary Date", {
-            anniversaryType: "Completion Date",
-            anniversaryRange: "Fixed Date",
-            afterYears: "1"
+            anniversaryType: "Birth Date",
+            anniversaryRange: "Period Range",
+            period: "Year",
+            periodYears: "1"
         });
         
+        await learningPath.clickAndSelectCompleteByRule();
         await learningPath.clickSaveAsDraftBtn();
         await learningPath.clickSave();
         await learningPath.clickProceedBtn();
         
-        // Add course to certification
         await learningPath.clickAddCourse();
         await learningPath.searchAndClickCourseCheckBox(courseName);
         await learningPath.clickAddSelectCourse();
         
-        // Add recertification course
         await learningPath.clickDetailTab();
         await learningPath.addRecertificationCourse();
         await learningPath.chooseRecertificationMethod("Add Courses Manually");
@@ -119,7 +120,6 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await learningPath.clickUpdateBtn();
         await learningPath.verifySuccessMessage();
         
-        // Add completion certificate
         await learningPath.clickEditCertification();
         await createCourse.clickCompletionCertificate();
         await createCourse.clickCertificateCheckBox();
@@ -129,14 +129,14 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
         
-        console.log(`✅ Successfully created certification with Anniversary Date expiration: ${titleAnniversaryDate}`);
+        console.log(`✅ Successfully created compliance certification: ${titleAnniversaryDate}`);
     });
 
-    test(`Verify learner can enroll and complete certification with Anniversary Date expiry`, async ({ learnerHome, catalog }) => {
+    test(`Verify learner can enroll and complete compliance certification`, async ({ learnerHome, catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Verify learner enrollment and completion for Anniversary Date certification` },
-            { type: `Test Description`, description: `Learner enrolls, completes certification, and receives certificate` }
+            { type: `TestCase`, description: `Verify learner enrollment and completion` },
+            { type: `Test Description`, description: `Learner enrolls, completes compliance certification, and receives certificate` }
         );
 
         await learnerHome.learnerLogin("LEARNERUSERNAME", "Default");
@@ -149,17 +149,35 @@ test.describe(`TP068_Verify_certification_expiration_with_anniversary_date`, asy
         await catalog.saveLearningStatus();
         await catalog.clickViewCertificate();
         
-        console.log(`✅ Learner completed certification with Anniversary Date: ${titleAnniversaryDate}`);
+        console.log(`✅ Learner completed compliance certification: ${titleAnniversaryDate}`);
     });
 
-    test(`Run cron job to verify certification expiry`, async ({ }) => {
+    test(`Run cron job to verify compliance certification expiry`, async ({ }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Run cron job to make certification expire` },
-            { type: `Test Description`, description: `Execute certification expiry cron job to process expiration logic for anniversary date` }
+            { type: `TestCase`, description: `Run cron job to make compliance certification expire` },
+            { type: `Test Description`, description: `Execute certification expiry cron job` }
         );
 
         await certificationExpiry_CronJob();
-        console.log(`✅ Certification expiry cron job executed successfully for Anniversary Date`);
+        console.log(`✅ Certification expiry cron job executed successfully`);
+    });
+
+    test(`Verify compliance certification has expired status after cron execution`, async ({ learnerHome, dashboard, catalog }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Tamilvanan` },
+            { type: `TestCase`, description: `Verify compliance certification expired status` },
+            { type: `Test Description`, description: `Verify that compliance certification shows expired status in learner dashboard after cron job execution` }
+        );
+
+        await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
+        await learnerHome.clickDashboardLink();
+        await dashboard.clickLearningPath_And_Certification();
+        await dashboard.clickCertificationLink();
+        await dashboard.searchCertification(titleAnniversaryDate);
+        await dashboard.verifyTheEnrolledCertification(titleAnniversaryDate);
+        await dashboard.clickTitle(titleAnniversaryDate);
+        await catalog.verifyStatus("Expired");
+        console.log(`✅ Successfully verified compliance certification expired status: ${titleAnniversaryDate}`);
     });
 });

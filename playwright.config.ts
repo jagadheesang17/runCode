@@ -12,9 +12,13 @@ export default defineConfig({
   
  
   testDir: './tests',
+<<<<<<< Updated upstream
 
 //  globalSetup: require.resolve('./global-setup.ts'),
 
+=======
+ //globalSetup: require.resolve('./global-setup.ts'),
+>>>>>>> Stashed changes
 
 
 

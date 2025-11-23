@@ -42,6 +42,20 @@ export class LearningPathPage extends AdminHomePage {
         specificDateLocator: "//span[text()='Specific Date']",
         completionDateDDValue: "//span[text()='Completion Date']",
         complilanceOption: "div[id$='course-compliance-option'] button[class$='title']",
+        recertExpiresInput: "//input[@id='program-recert-expires-days']",
+        recertComplianceOption: "//label[contains(text(),'Recertification')]//following::button[@data-id='recert-course-compliance-option']",
+        recertCompletionDateDDValue: "(//label[contains(text(),'Recertification')]//following::span[text()='Completion Date'])[1]",
+        recertDaysLocator: "(//label[contains(text(),'Recertification')]//following::span[text()='Days'])[1]",
+        
+        // Recertification Complete by Rule selectors
+        recertCompleteByRuleBtn: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by-rule']",
+        recertCompleteByRuleYesOption: "//label[contains(text(),'Recertification')]//following::span[text()='Yes']",
+        recertCompleteByDropdown: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by']",
+        recertCompleteByDateOption: "//label[contains(text(),'Recertification')]//following::span[text()='Date']",
+        recertCompleteByDaysFromEnrollmentOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from enrollment']",
+        recertCompleteByDaysFromHireOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from hire']",
+        recertCompleteDaysInput: "//label[contains(text(),'Recertification')]//following::input[@id='program-recert-complete-days']",
+        recertCompleteByDateInput: "//label[contains(text(),'Recertification')]//following::input[@id='program-recert-complete-by-date-input']",
         
         // Anniversary Date selectors
         anniversaryDateLocator: "//span[text()='Anniversary Date']",
@@ -49,16 +63,19 @@ export class LearningPathPage extends AdminHomePage {
         anniversaryTypeOption: (value: string) => `//span[text()='${value}']`,
         anniversaryRangeDropdown: "#wrapper-anniversary-range",
         anniversaryRangeOption: (value: string) => `//span[text()='${value}']`,
-        afterYearsInput: "//input[@id='fieldsMetadata.after_years.id']",
+        afterYearsInput: "//label[text()='After Years']//following::input[1]",
         validityDateInput: "#validity_date-input",
         
         // Period Range selectors
         periodDropdown: "//button[@data-id='period-value']",
         periodOption: (value: string) => `//span[text()='${value}']`,
-        periodYearsInput: "//input[@id='fieldsMetadata.period_years.id']",
+        periodYearsInput: "//label[text()='After Years']//following::input[1]",
 
         // Recertification expiry selectors
         recertSpecificDateLocator: "(//label[contains(text(),'Recertification')]//following::span[text()='Specific Date'])[1]",
+        recertAnniversaryRangeOption: (value: string) => `(//label[contains(text(),'Recertification')]//following::span[text()='${value}'])[1]`,
+        recertPeriodOption: (value: string) => `(//label[contains(text(),'Recertification')]//following::span[text()='${value}'])[1]`,
+        recertAnniversaryTypeOption: (value: string) => `(//label[contains(text(),'Recertification')]//following::span[text()='${value}'])[1]`,
         recertAnniversaryDateLocator: "(//label[contains(text(),'Recertification')]//following::span[text()='Anniversary Date'])[1]",
         recertAnniversaryTypeDropdown: "(//label[contains(text(),'Recertification')]//following::button[@data-id='recert-anniversary-type'])[1]",
         recertAnniversaryRangeDropdown: "(//label[contains(text(),'Recertification')]//following::button[@data-id='recert-anniversary-range'])[1]",
@@ -162,6 +179,17 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.daysLocator, "Day", "DD Value")
     }
 
+    async clickReCertExpiresButton() {
+        await this.wait("minWait");
+        await this.page.locator(this.selectors.recertExpiresBtn).scrollIntoViewIfNeeded();
+        await this.click(this.selectors.recertExpiresBtn, "Recertification Expires", "Button");
+        await this.click(this.selectors.recertCompletionDateDDValue, "Recertification Completion Date", "Button");
+        await this.type(this.selectors.recertExpiresInput, "Recertification Expires Input", "1");
+        await this.click(this.selectors.recertComplianceOption, "Recertification Compliance Option", "DD Button");
+        await this.click(this.selectors.recertDaysLocator, "Recertification Day", "DD Value");
+        console.log("✅ Set recertification expiry: Completion Date, 1 Day");
+    }
+
     async clickExpiresDropdown() {
         await this.click(this.selectors.expiresBtn, "Expires", "Button");
         await this.wait("minWait");
@@ -186,9 +214,9 @@ export class LearningPathPage extends AdminHomePage {
      */
     
     async clickExpiresButtonWithType(
-        expiryType: "Specific Date" | "Anniversary Date",
+             expiryType: "Specific Date" | "Anniversary Date",
         options?: {
-            anniversaryType?: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date";
+            anniversaryType?: "Birth Date" | "hire date" | "Enrollment Date" | "Completion Date";
             anniversaryRange?: "Fixed Date" | "Period Range";
             afterYears?: string;
             period?: "Month" | "Quarter" | "Year";
@@ -263,7 +291,7 @@ export class LearningPathPage extends AdminHomePage {
                 
                 // Enter Period Years
                 console.log(`🔄 Setting Period Years: ${options.periodYears}`);
-                await this.type(this.selectors.periodYearsInput, "Period Years", options.periodYears);
+                await this.type(this.selectors.afterYearsInput, "Period Years", options.periodYears);
                 console.log(`✅ Set Anniversary Date - Type: ${options.anniversaryType}, Range: Period Range, Period: ${options.period}, Years: ${options.periodYears}`);
             }
         }
@@ -282,9 +310,9 @@ export class LearningPathPage extends AdminHomePage {
      *   - periodYears: string (number of years for Period Range)
      */
     async clickReCertExpiresButtonWithType(
-        expiryType: "Specific Date" | "Anniversary Date",
+           expiryType: "Specific Date" | "Anniversary Date",
         options?: {
-            anniversaryType?: "Birth Date" | "Hire Date" | "Enrollment Date" | "Completion Date";
+            anniversaryType?: "Birth date" | "Hire date" | "Enrollment" | "Completion";
             anniversaryRange?: "Fixed Date" | "Period Range";
             afterYears?: string;
             period?: "Month" | "Quarter" | "Year";
@@ -317,7 +345,7 @@ export class LearningPathPage extends AdminHomePage {
             await this.click(this.selectors.recertAnniversaryTypeDropdown, "Recertification Anniversary Type", "Dropdown");
             await this.wait("minWait");
             await this.click(
-                this.selectors.anniversaryTypeOption(options.anniversaryType),
+                this.selectors.recertAnniversaryTypeOption(options.anniversaryType),
                 options.anniversaryType,
                 "Option"
             );
@@ -327,7 +355,7 @@ export class LearningPathPage extends AdminHomePage {
             await this.click(this.selectors.recertAnniversaryRangeDropdown, "Recertification Anniversary Range", "Dropdown");
             await this.wait("minWait");
             await this.click(
-                this.selectors.anniversaryRangeOption(options.anniversaryRange),
+                this.selectors.recertAnniversaryRangeOption(options.anniversaryRange),
                 options.anniversaryRange,
                 "Option"
             );
@@ -352,7 +380,7 @@ export class LearningPathPage extends AdminHomePage {
                 await this.click(this.selectors.recertPeriodDropdown, "Recertification Period", "Dropdown");
                 await this.wait("minWait");
                 await this.click(
-                    this.selectors.periodOption(options.period),
+                    this.selectors.recertPeriodOption(options.period),
                     options.period,
                     "Option"
                 );
@@ -667,6 +695,40 @@ export class LearningPathPage extends AdminHomePage {
 
     async clickAndSelectCompleteByRule() {
         await this.keyboardType(this.selectors.completeByInput, gettomorrowDateFormatted());
+    }
+
+    /**
+     * Click and select recertification complete by rule with different options
+     * @param completeByType - "Date" | "Days from enrollment" | "Days from hire"
+     */
+    async clickAndSelectRecertCompleteByRule(completeByType: "Date" | "Days from enrollment" | "Days from hire") {
+        console.log(`🔄 Setting recertification complete by rule: ${completeByType}`);
+        
+        await this.wait("minWait");
+        await this.click(this.selectors.recertCompleteByRuleBtn, "Recertification Complete by Rule", "Button");
+        await this.click(this.selectors.recertCompleteByRuleYesOption, "Yes", "Option");
+        await this.wait("minWait");
+        
+        await this.click(this.selectors.recertCompleteByDropdown, "Recertification Complete By", "Dropdown");
+        await this.wait("minWait");
+        
+        if (completeByType === "Date") {
+            await this.click(this.selectors.recertCompleteByDateOption, "Date", "Option");
+            await this.wait("minWait");
+            const tomorrowDate = gettomorrowDateFormatted();
+            await this.type(this.selectors.recertCompleteByDateInput, "Recertification Complete By Date", tomorrowDate);
+            console.log(`✅ Set recertification complete by Date: ${tomorrowDate}`);
+        } else if (completeByType === "Days from enrollment") {
+            await this.click(this.selectors.recertCompleteByDaysFromEnrollmentOption, "Days from enrollment", "Option");
+            await this.wait("minWait");
+            await this.type(this.selectors.recertCompleteDaysInput, "Recertification Complete Days", "1");
+            console.log(`✅ Set recertification complete by Days from enrollment: 1`);
+        } else if (completeByType === "Days from hire") {
+            await this.click(this.selectors.recertCompleteByDaysFromHireOption, "Days from hire", "Option");
+            await this.wait("minWait");
+            await this.type(this.selectors.recertCompleteDaysInput, "Recertification Complete Days", "1");
+            console.log(`✅ Set recertification complete by Days from hire: 1`);
+        }
     }
 
     async addRecertificationCourse() {

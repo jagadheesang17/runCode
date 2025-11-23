@@ -2,7 +2,7 @@ import { credentials } from "../../../constants/credentialData";
 import { URLConstants } from "../../../constants/urlConstants";
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
-import { updateCertificationComplianceFlow, updateSingleInstanceAutoRegister } from "../../../tests/admin/DB/DBJobs";
+import { updateCertificationComplianceFlow, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 let description = FakerData.getDescription();
@@ -140,7 +140,7 @@ test.describe(`TP054_Verify_mandatory_certification_cannot_be_canceled.spec.ts`,
                 console.log("❌ FAILURE: Cancel enrollment option was available for mandatory certification");
                 throw new Error("Mandatory certification should NOT allow cancellation");
             } catch (cancelError) {
-                if ((cancelError as Error).message.includes("should NOT allow cancellation")) {
+                if (cancelError.message.includes("should NOT allow cancellation")) {
                     throw cancelError;
                 }
                 // Expected behavior - cancel enrollment not available or failed
@@ -148,7 +148,7 @@ test.describe(`TP054_Verify_mandatory_certification_cannot_be_canceled.spec.ts`,
             }
 
         } catch (error) {
-            if ((error as Error).message.includes("should NOT allow cancellation")) {
+            if (error.message.includes("should NOT allow cancellation")) {
                 throw error;
             }
             console.log("⚠️ Certification may not be visible or there was an issue accessing it");

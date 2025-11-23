@@ -463,9 +463,20 @@ export class CoursePage extends AdminHomePage {
     suspendedGrp:(groupName:string) => `(//li[text()='${groupName}'])`,
 
     // Dedicated to TP - Enrollment and Instance selectors
+<<<<<<< Updated upstream
     completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
     completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
     completeByOption: (option: string) => `//span[text()='${option}']`,
+=======
+    enrollmentsIcon: `//i[@aria-label='Enrollments']`,
+    enrollmentTable: `//table[contains(@class,'table')]`,
+    enrollmentRow: `//table//tbody//tr`,
+    enrollmentSourceColumn: (rowIndex: number) => `(//table//tbody//tr)[${rowIndex}]//td[contains(text(),'Learning Path') or contains(text(),'Direct')]`,
+    completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
+    completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
+    completeByOption: (option: string) => `//span[text()='${option}']`,
+
+>>>>>>> Stashed changes
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -2891,13 +2902,13 @@ export class CoursePage extends AdminHomePage {
     const count = await closeIcon.count();
     console.log(count);
     console.log("learner groups : " + count);
-    for (let i = 1; i < count; i++) {
-      await this.mouseHover(this.selectors.MultiaccessCloseIcon, "close Icon");
-      await this.page
-        .locator(this.selectors.MultiaccessCloseIcon)
-        .click({ force: true });
-      await this.page.waitForTimeout(100);
-    }
+    // for (let i = 1; i < count; i++) {
+    //   await this.mouseHover(this.selectors.MultiaccessCloseIcon, "close Icon");
+    //   await this.page
+    //     .locator(this.selectors.MultiaccessCloseIcon)
+    //     .click({ force: true });
+    //   await this.page.waitForTimeout(100);
+    // }
     if (!data) {
       console.log("No data");
       return;
@@ -3045,49 +3056,49 @@ export class CoursePage extends AdminHomePage {
     await this.wait("maxWait");
   }
 
-  async specificLearnerGroupSelection(learnerGroupName: string) {
-    // await this.wait('minWait')
-    // if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 10000 })) {
-    //     await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
-    //     await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
-    // }
-    // await this.spinnerDisappear();
-    // await this.wait("mediumWait")
-    // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
-    // for (const options of await this.page.locator(this.selectors.allLearnerGroupOptions).all()) {
-    //     const value = await options.innerText();
-    //     console.log(value)
-    //     if (value !== learnerGroupName) {
+  // async specificLearnerGroupSelection(learnerGroupName: string) {
+  //   // await this.wait('minWait')
+  //   // if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 10000 })) {
+  //   //     await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
+  //   //     await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
+  //   // }
+  //   // await this.spinnerDisappear();
+  //   // await this.wait("mediumWait")
+  //   // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+  //   // for (const options of await this.page.locator(this.selectors.allLearnerGroupOptions).all()) {
+  //   //     const value = await options.innerText();
+  //   //     console.log(value)
+  //   //     if (value !== learnerGroupName) {
 
-    //         await this.page.locator(`//footer//following::span[@class='text' and text()='${value}']`).nth(0).click();
-    //     }
-    // }
-    // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
-    await this.spinnerDisappear();
-    await this.wait("mediumWait");
-    await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
-    for (const options of await this.page
-      .locator(this.selectors.allLearnerGroupOptions)
-      .all()) {
-      const value = await options.innerText();
-      console.log(value);
-      if (value !== learnerGroupName) {
-        const labelLocator = this.page.locator(
-          `//footer//following::span[@class='text' and text()='${value}']`
-        );
-        const checkMarkLocator = labelLocator
-          .locator("..")
-          .locator("span.check-mark");
-        const isChecked = await checkMarkLocator.evaluate((el) => {
-          return window.getComputedStyle(el, "::after").content !== "none";
-        });
-        if (!isChecked) {
-          await checkMarkLocator.click();
-        }
-      }
-    }
-    await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
-  }
+  //   //         await this.page.locator(`//footer//following::span[@class='text' and text()='${value}']`).nth(0).click();
+  //   //     }
+  //   // }
+  //   // await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+  //   await this.spinnerDisappear();
+  //   await this.wait("mediumWait");
+  //   await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+  //   for (const options of await this.page
+  //     .locator(this.selectors.allLearnerGroupOptions)
+  //     .all()) {
+  //     const value = await options.innerText();
+  //     console.log(value);
+  //     if (value !== learnerGroupName) {
+  //       const labelLocator = this.page.locator(
+  //         `//footer//following::span[@class='text' and text()='${value}']`
+  //       );
+  //       const checkMarkLocator = labelLocator
+  //         .locator("..")
+  //         .locator("span.check-mark");
+  //       const isChecked = await checkMarkLocator.evaluate((el) => {
+  //         return window.getComputedStyle(el, "::after").content !== "none";
+  //       });
+  //       if (!isChecked) {
+  //         await checkMarkLocator.click();
+  //       }
+  //     }
+  //   }
+  //   await this.click(this.selectors.learnerGroupbtn, "Portal", "dropdown");
+  // }
   async specificAdminGroupSelection(adminGroupName: string) {
     await this.spinnerDisappear();
     await this.wait("mediumWait");
@@ -3553,6 +3564,107 @@ export class CoursePage extends AdminHomePage {
     await this.validateElementVisibility(this.selectors.openCourseLink, "Course Link");
     await this.click(this.selectors.openCourseLink, "Course Link", "Link");
     console.log("✅ Clicked Course Link from Instance page");
+  }
+
+   async specificLearnerGroupSelection(learnerGroupName: string) {
+    await this.spinnerDisappear();
+    await this.wait("mediumWait");
+    
+    // Check if modify access button is visible and click if needed
+    if (await this.page.locator(this.selectors.modifyTheAccessBtn).isVisible({ timeout: 5000 })) {
+      await this.mouseHover(this.selectors.modifyTheAccessBtn, "No, Modify The Access");
+      await this.click(this.selectors.modifyTheAccessBtn, "No, Modify The Access", "Button");
+      await this.spinnerDisappear();
+      await this.wait("mediumWait");
+    }
+    
+    // Open learner group dropdown
+    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
+    await this.wait("minWait");
+    
+    try {
+      // Get all learner group options
+      const options = await this.page.locator(this.selectors.allLearnerGroupOptions).all();
+      let targetGroupFound = false;
+      let targetGroupSelected = false;
+      
+      for (const option of options) {
+        const value = await option.innerText();
+        console.log(`Processing learner group: ${value}`);
+        
+        if (value === learnerGroupName) {
+          targetGroupFound = true;
+          
+          // Check if the target learner group is already selected
+          try {
+            const groupOptionLocator = this.page.locator(
+              `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
+            ).first();
+            
+            if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
+              const parentElement = groupOptionLocator.locator('..');
+              const isSelected = await parentElement.evaluate((el) => {
+                const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+                return el.classList.contains('selected') || 
+                       checkbox?.checked || 
+                       el.getAttribute('aria-selected') === 'true';
+              });
+              
+              if (isSelected) {
+                console.log(`${learnerGroupName} is already selected - skipping`);
+                targetGroupSelected = true;
+              } else {
+                console.log(`Selecting ${learnerGroupName}`);
+                await groupOptionLocator.click();
+                await this.wait("minWait");
+                targetGroupSelected = true;
+              }
+            }
+          } catch (error) {
+            console.log(`Could not process target learner group ${value}: ${error.message}`);
+          }
+          continue;
+        }
+        // For all other groups, try to unselect them
+        try {
+          const groupOptionLocator = this.page.locator(
+            `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
+          ).first();
+          
+          if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
+            // Check if the option is currently selected by looking for selected class or checked state
+            const parentElement = groupOptionLocator.locator('..');
+            const isSelected = await parentElement.evaluate((el) => {
+              const checkbox = el.querySelector('input[type="checkbox"]') as HTMLInputElement;
+              return el.classList.contains('selected') || 
+                     checkbox?.checked || 
+                     el.getAttribute('aria-selected') === 'true';
+            });
+            
+            if (isSelected) {
+              console.log(`Unselecting ${value}`);
+              await groupOptionLocator.click();
+              await this.wait("minWait");
+            }
+          }
+        } catch (error) {
+          console.log(`Could not process learner group ${value}: ${error.message}`);
+        }
+      }
+      
+      if (!targetGroupFound) {
+        console.log(`Warning: Target learner group '${learnerGroupName}' was not found in the options`);
+      } else if (!targetGroupSelected) {
+        console.log(`Warning: Could not select target learner group '${learnerGroupName}'`);
+      }
+      
+    } catch (error) {
+      console.log(`Error in learner group selection: ${error.message}`);
+    }
+    
+    // Close the dropdown
+    await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
+    await this.wait("minWait");
   }
 }
 
