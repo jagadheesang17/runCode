@@ -1805,5 +1805,23 @@ async verifyAddedToWishlist(courseName: string) {
       throw new Error(`Expected dedicated to TP message but found: ${message}`);
     }
   }
+
+  async inProgress() {
+  await this.page.waitForLoadState("load");
+  await this.spinnerDisappear();
+  let content = this.page.locator(this.selectors.contentLabel);
+  if (await content.isVisible({ timeout: 20000 })) {
+    await content.scrollIntoViewIfNeeded();
+  }
+  const playButton = this.page.locator("//button[@title='Play Video']");
+  await playButton.waitFor({ state: "visible", timeout: 20000 });
+  // FIRST attempt – normal click
+  await playButton.click({ force: true });
+  await this.page.waitForTimeout(5000);
+  await this.page.locator(this.selectors.saveLearningStatus).click();
+  await this.wait("mediumWait");
+}
+
+
 }
 

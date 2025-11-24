@@ -546,12 +546,20 @@ export class UserPage extends AdminHomePage {
   }
 
   public async clickLogOutButton() {
+    const closebutton = `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`;
+    const closeicon = this.page.locator(closebutton);
+      if (await closeicon.isVisible()) {
+          await this.click(closebutton, "Close Button", "Button");
+      }
+    await this.wait("maxWait");
+    await this.validateElementVisibility(this.selectors.logOutBtn, "Log Out");
     await this.mouseHover(this.selectors.logOutBtn, "Log Out");
-    await this.click(this.selectors.logOutBtn, "Log Out", "Icon");
+    await this.page.locator(this.selectors.logOutBtn).first().click({ force: true });
   }
   public async userValidate(uname: string) {
     await this.verification(this.selectors.validateUser(uname), uname);
   }
+  
 
   //Manage Enrollments Label:-
 

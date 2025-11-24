@@ -45,6 +45,7 @@ export class AdminHomePage extends AdminLogin {
         assessmentLink: "//a[text()='Assessment']",
         enrollMenu: `//span[text()='Enrollments']`,
         enrollLink: `//a[text()='Enroll']`,
+        viewUpdateEnrollmentLink: `//a[text()='View/Modify Enrollment']`,
 
         quickAccessIcon: `#dd-icon-wrapper i`,
         quickAccessDD: `button div:text-is('Select Quick Access Buttons To Add Below')`,
@@ -106,6 +107,11 @@ export class AdminHomePage extends AdminLogin {
     public async clickviewUpdateStatusCourseTp() {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
     }
+
+    public async clickviewUpdateEnrollmentBtn() {
+        await this.click(this.selectors.viewUpdateEnrollmentLink, "View/Modify Enrollment", "Link");
+    }
+
 
     public async createModuleFromQuickAccess(module: string, createmodule: string) {
         await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");

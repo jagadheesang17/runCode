@@ -25,7 +25,8 @@ export class EnrollmentPage extends AdminHomePage {
         reaonDesc: `//textarea[@id='check_box_msgsenrollmentviewstatususer']`,
         submitReason: `//button[text()='Submit']`,
         saveStatus: `//button[text()='Save']`,
-
+        dateInput: `//input[contains(@id,'input')]`,
+        
         //Admin Enrollment:-
         clickModifyEnroll: `//a[text()='View/Modify Enrollment']`,
         completionDateInput: `//div[contains(@id,'check_box')]/input`,
@@ -69,6 +70,53 @@ export class EnrollmentPage extends AdminHomePage {
         paymentMethod: (option: string) => `//span[text()='${option}']`,
         orderSuccessMsg: `//section[contains(@class,'lms-success')]//h3`,
         loadMoreBtn: `//button[text()='Load More']`,
+        
+        //Mandatory checkbox
+        mandatoryCheckbox: `(//input[@id='ismandatory']//following::label)[1]`,
+
+        //View/Update Status - Course/TP Table Fields
+        viewUpdateStatusTable: `//table[contains(@class,'viewupdate-status-crstp')]`,
+        tableHeaderByName: (fieldName: string) => `//table[contains(@class,'viewupdate-status-crstp')]//th[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'${fieldName.toLowerCase()}')]`,
+        
+        // Learner row locators (by username)
+        learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]`,
+        learnerFieldValue: (username: string, fieldName: string) => {
+            const fieldIndex: { [key: string]: number } = {
+                'name': 1,
+                'username': 2,
+                'manager': 3,
+                'organization': 4,
+                'reg from': 5,
+                'date': 6,
+                'score': 7,
+                'status': 8,
+                'enrollment type': 9,
+                'checklist': 10,
+                'action': 11,
+                'add notes': 12,
+                'files': 13,
+                'progress': 14
+            };
+            const index = fieldIndex[fieldName.toLowerCase()] || 1;
+            return `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[${index}]`;
+        },
+        
+        // Specific field locators
+        learnerName: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[1]`,
+        learnerUsername: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[2]`,
+        learnerManager: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[3]`,
+        learnerOrganization: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[4]`,
+        learnerRegFrom: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[5]`,
+        learnerDate: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[6]`,
+        learnerScore: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[7]`,
+        learnerScoreManyButton: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[7]//button[contains(text(),'Many')]`,
+        learnerStatus: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//select`,
+        learnerStatusDropdown: (username: string) => `(//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//button)[1]`,
+        learnerStatusOption: (username: string, status: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//select//option[@value='${status.toLowerCase()}']`,
+        learnerEnrollmentType: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[9]`,
+        learnerProgress: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[14]`,
+        learnerAddNotesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[12]//i[contains(@class,'fa-note-sticky')]`,
+        learnerFilesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[13]//i[contains(@class,'fa-upload')]`,
 
 
     };
@@ -358,6 +406,317 @@ export class EnrollmentPage extends AdminHomePage {
         }
     }
 
+    // View/Update Status - Table Field Verification Methods
+
+    /**
+     * Verify table header field is visible
+     * @param fieldName - The header field name (e.g., "Name", "Username", "Status")
+     */
+    async verifyTableHeader(fieldName: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.tableHeaderByName(fieldName),
+            `Table Header: ${fieldName}`
+        );
+        console.log(`✅ Verified - Table header "${fieldName}" is visible`);
+    }
+
+    /**
+     * Verify all table headers are visible
+     */
+    async verifyAllTableHeaders() {
+        await this.wait("minWait");
+        const headers = [
+            "Name", "Username", "Manager", "Organization", "Reg From", 
+            "Date", "Score", "Status", "Enrollment Type", "Checklist",
+            "Action", "Add Notes", "Files", "Progress"
+        ];
+        
+        for (const header of headers) {
+            await this.verifyTableHeader(header);
+        }
+        console.log(`✅ Verified - All table headers are visible`);
+    }
+
+    /**
+     * Generic method to verify field value for a specific learner
+     * @param fieldName - The field name to verify (Name, Username, Status, etc.)
+     * @param expectedValue - The expected value
+     * @param username - The username to identify the learner row
+     */
+    async verifyField(fieldName: string, expectedValue: string, username: string) {
+        await this.wait("minWait");
+        const selector = this.selectors.learnerFieldValue(username, fieldName);
+        
+        // Special handling for status field
+        if (fieldName.toLowerCase() === "status") {
+            // Try to find dropdown first (for Enrolled, In Progress, Canceled)
+            const statusDropdownSelector = this.selectors.learnerStatus(username);
+            const dropdownCount = await this.page.locator(statusDropdownSelector).count();
+            
+            if (dropdownCount > 0) {
+                // Status is displayed as dropdown
+                await this.validateElementVisibility(statusDropdownSelector, `Status dropdown for ${username}`);
+                const statusValue = await this.page.locator(statusDropdownSelector).getAttribute('title');
+                
+                if (statusValue && statusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
+                    console.log(`✅ Verified - ${fieldName}: "${statusValue}" contains "${expectedValue}" (dropdown)`);
+                    return true;
+                } else {
+                    throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${statusValue}" (dropdown)`);
+                }
+            } else {
+                // Status is displayed as plain text (for Completed)
+                const statusTextSelector = `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//span`;
+                await this.validateElementVisibility(statusTextSelector, `Status text for ${username}`);
+                const statusValue = await this.page.locator(statusTextSelector).textContent();
+                const cleanStatusValue = statusValue?.trim() || '';
+                
+                if (cleanStatusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
+                    console.log(`✅ Verified - ${fieldName}: "${cleanStatusValue}" contains "${expectedValue}" (text)`);
+                    return true;
+                } else {
+                    throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${cleanStatusValue}" (text)`);
+                }
+            }
+        }
+        
+        // For other fields
+        await this.validateElementVisibility(selector, `${fieldName} field for ${username}`);
+        const actualValue = await this.page.locator(selector).textContent();
+        const cleanActualValue = actualValue?.trim() || '';
+        
+        if (cleanActualValue.toLowerCase().includes(expectedValue.toLowerCase())) {
+            console.log(`✅ Verified - ${fieldName}: "${cleanActualValue}" contains "${expectedValue}"`);
+            return true;
+        } else {
+            throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${cleanActualValue}"`);
+        }
+    }
+
+    /**
+     * Verify learner name
+     * @param expectedName - Expected name value
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerName(expectedName: string, username: string) {
+        await this.verifyField("Name", expectedName, username);
+    }
+
+    /**
+     * Verify learner username
+     * @param expectedUsername - Expected username value
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerUsername(expectedUsername: string, username: string) {
+        await this.verifyField("Username", expectedUsername, username);
+    }
+
+    /**
+     * Verify learner status
+     * @param expectedStatus - Expected status (Enrolled, In Progress, Completed, Canceled)
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerStatus(expectedStatus: string, username: string) {
+        await this.verifyField("Status", expectedStatus, username);
+    }
+
+    /**
+     * Verify learner progress percentage
+     * @param expectedProgress - Expected progress value (e.g., "25", "50", "100")
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerProgress(expectedProgress: string, username: string) {
+        await this.wait("minWait");
+        const selector = this.selectors.learnerProgress(username);
+        await this.validateElementVisibility(selector, `Progress field for ${username}`);
+        
+        const actualProgress = await this.page.locator(selector).textContent();
+        const cleanProgress = actualProgress?.trim().replace(/\s+/g, ' ') || '';
+        
+        // Check if progress contains the expected percentage
+        if (cleanProgress.includes(expectedProgress)) {
+            console.log(`✅ Verified - Progress: "${cleanProgress}" contains "${expectedProgress}%"`);
+            return true;
+        } else {
+            throw new Error(`Expected progress to contain "${expectedProgress}%" but got "${cleanProgress}"`);
+        }
+    }
+
+    /**
+     * Verify learner enrollment type
+     * @param expectedType - Expected enrollment type (Optional, Mandatory, etc.)
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerEnrollmentType(expectedType: string, username: string) {
+        await this.verifyField("Enrollment Type", expectedType, username);
+    }
+
+    /**
+     * Verify Add Notes icon is visible for a learner
+     * @param username - The username to identify the learner row
+     */
+    async verifyAddNotesIconVisible(username: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.learnerAddNotesIcon(username),
+            `Add Notes icon for ${username}`
+        );
+        console.log(`✅ Verified - Add Notes icon is visible for ${username}`);
+    }
+
+    /**
+     * Click Add Notes icon for a learner
+     * @param username - The username to identify the learner row
+     */
+    async clickAddNotesIcon(username: string) {
+        await this.wait("minWait");
+        await this.click(
+            this.selectors.learnerAddNotesIcon(username),
+            `Add Notes for ${username}`,
+            "Icon"
+        );
+    }
+
+    /**
+     * Verify Files (Upload) icon is visible for a learner
+     * @param username - The username to identify the learner row
+     */
+    async verifyFilesIconVisible(username: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.learnerFilesIcon(username),
+            `Files icon for ${username}`
+        );
+        console.log(`✅ Verified - Files icon is visible for ${username}`);
+    }
+
+    /**
+     * Click Files icon for a learner
+     * @param username - The username to identify the learner row
+     */
+    async clickFilesIcon(username: string) {
+        await this.wait("minWait");
+        await this.click(
+            this.selectors.learnerFilesIcon(username),
+            `Upload Files for ${username}`,
+            "Icon"
+        );
+    }
+
+    /**
+     * Change learner status in View/Update Status page
+     * @param username - The username to identify the learner row
+     * @param status - Status to change to: "Completed", "Canceled", "Enrolled", or "In Progress"
+     */
+    async changeLearnerStatus(username: string, status: string) {
+        await this.wait("minWait");
+        
+        const dropdownSelector = this.selectors.learnerStatusDropdown(username);
+        await this.validateElementVisibility(dropdownSelector, `Status dropdown for ${username}`);
+        
+        // Click the dropdown button to open options
+        await this.click(dropdownSelector, `Status dropdown for ${username}`, "Button");
+        await this.wait("minWait");
+        
+        // Click the status option (more specific - from the dropdown menu that just opened)
+        const statusOptionSelector = `//div[contains(@class,'dropdown-menu') and contains(@class,'show')]//span[text()='${status}']`;
+        await this.validateElementVisibility(statusOptionSelector, `${status} option`);
+        await this.page.locator(statusOptionSelector).first().click({ force: true });
+        console.log(`✅ Changed status to "${status}" for ${username}`);
+        
+        await this.wait("minWait");
+        
+        // Handle different status types
+        if (status.toLowerCase() === "completed") {
+            // For Completed: Enter date
+            await this.type(this.selectors.dateInput, "Date", getCurrentDateFormatted());
+        } else if (status.toLowerCase() === "canceled") {
+            // For Canceled: Enter reason
+            await this.type(this.selectors.reaonDesc, "Cancel Reason", FakerData.getDescription());
+        }
+        
+        // Click Submit and Save
+        await this.click(this.selectors.submitReason, "Submit button", "Button");
+        await this.wait("minWait");
+        await this.click(this.selectors.saveStatus, "Save Status", "Button");
+        await this.wait("minWait");
+        console.log(`✅ Status change saved for ${username}`);
+    }
+
+    /**
+     * Verify learner enrollment date
+     * @param username - The username to identify the learner row
+     * @param expectedDate - Expected date (e.g., "2025-11-20")
+     */
+    async verifyLearnerDate(username: string, expectedDate: string) {
+        await this.verifyField(username, "Date", expectedDate);
+    }
+
+    /**
+     * Verify learner is present in the table
+     * @param username - The username to verify
+     */
+    async verifyLearnerInTable(username: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.learnerRow(username),
+            `Learner row for ${username}`
+        );
+        console.log(`✅ Verified - Learner "${username}" is present in the table`);
+    }
+
+    /**
+     * Click Mandatory checkbox
+     */
+    async clickMandatory() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.mandatoryCheckbox,
+            "Mandatory Checkbox"
+        );
+        await this.click(
+            this.selectors.mandatoryCheckbox,
+            "Mandatory",
+            "Checkbox"
+        );
+    }
+
+    /**
+     * Verify learner score field
+     * @param expectedScore - Expected score value or "Many" for completed courses with multiple assessments
+     * @param username - Username to identify the learner row
+     */
+    async verifyLearnerScore(expectedScore: string, username: string) {
+        await this.wait("minWait");
+        const scoreSelector = this.selectors.learnerScore(username);
+        
+        await this.validateElementVisibility(scoreSelector, `Score field for ${username}`);
+        
+        // Check if it's the "Many" button (for completed courses with multiple scores)
+        if (expectedScore.toLowerCase() === "many") {
+            const manyButtonSelector = this.selectors.learnerScoreManyButton(username);
+            const isManyButtonVisible = await this.page.locator(manyButtonSelector).isVisible();
+            
+            if (isManyButtonVisible) {
+                console.log(`✅ Verified - Score field shows "Many" button for ${username}`);
+                return true;
+            } else {
+                throw new Error(`Expected "Many" button in score field but it was not found for ${username}`);
+            }
+        }
+        
+        // Otherwise, verify the actual score value
+        const actualScore = await this.page.locator(scoreSelector).textContent();
+        const cleanScore = actualScore?.trim() || '';
+        
+        if (cleanScore.includes(expectedScore)) {
+            console.log(`✅ Verified - Score for ${username}: "${cleanScore}" contains "${expectedScore}"`);
+            return true;
+        } else {
+            throw new Error(`Expected score to contain "${expectedScore}" but got "${cleanScore}"`);
+        }
+    }
 
 
 }

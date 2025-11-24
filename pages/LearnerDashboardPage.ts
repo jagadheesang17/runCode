@@ -54,7 +54,9 @@ export class LearnerDashboardPage extends LearnerHomePage {
     fromdate: `//input[@id='mycertificate_date_range_filter-from-input']`,
     todate: `//input[@id='mycertificate_date_range_filter-to-input']`,
     applyBtn: `//button[text()='Apply']`,
-    completedCertificates:`//h5[contains(@class,'title_active')]`
+    completedCertificates: `//h5[contains(@class,'title_active')]`,
+    resultCourse_TP: (data: string) => `//h5[text()='${data}']`,
+    courseStatus: (courseName: string, status: string) => `//h5[text()='${courseName}']//following::div[contains(text(),'${status}')]`
   };
 
   //To Navigate to Bookmark->Content/Certification/Learning Path pages
@@ -316,7 +318,14 @@ export class LearnerDashboardPage extends LearnerHomePage {
     console.log(`✅ Certificate "${certificateTitle}" is present in completed certificates`);
   }
 
-
+  async vaidatVisibleCourse_Program(data: string, status: string) {
+    await this.wait("mediumWait");
+    await this.validateElementVisibility(
+      this.selectors.courseStatus(data, status),
+      "Course/Training Plan with Status"
+    );
+    await this.verification(this.selectors.courseStatus(data, status), status);
+  }
 
 
 
