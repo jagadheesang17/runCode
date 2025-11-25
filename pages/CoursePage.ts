@@ -292,8 +292,6 @@ export class CoursePage extends AdminHomePage {
 
     //Course/TP Search:-
     crs_TPCode: "//label[@for='code']/following::input[@id='code']",
-    crs_TPSearchField: "//input[@id='exp-search-field']",
-    crs_TPCode: "(//span[text()='CODE:']/following-sibling::span)[1]",
     crs_TPSearchField: "(//input[@id='exp-search-field'])[1]",
 
     //Assessment Attach:-
