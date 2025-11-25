@@ -32,4 +32,4 @@ test(`Verify_that_a_created_certificate_can_be_successfully_added_to_the_course`
     await createCourse.clickCatalog();
     await createCourse.clickUpdate();
     await createCourse.verifySuccessMessage()
-})
+});

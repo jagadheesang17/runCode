@@ -9,214 +9,202 @@ import { th } from "@faker-js/faker";
 
 export class CatalogPage extends LearnerHomePage {
   public selectors = {
-    ...this.selectors,
-    searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
-    searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
-    mostRecentMenuItem: `//div[text()="Most Recent"]`,
-    createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
-    moreButton: (course: string) =>
-      `(//div[text()="${course}"]/following::a/i)[1]`,
-    enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
-    courseToEnroll: (course: string) =>
-      `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
-    selectCourse: (course: string, index: number) =>
-      `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
-    enrollButton: `//span[text()='Enroll']`,
-    requestApproval: `//span[text()='Request approval']`,
-    requestClass: `//button[text()='Request Class ']`,
-    approvalcostcenter: `//input[@id='cc']`,
-    submitRequest: `//button[text()='Submit request']`,
-    closeBtn: `(//button[text()='Close'])[1]`,
-    //launchButton:`//button[text()="Launch Content"]`,
-    completedButton: `//a[contains(text(),"Completed")]`,
-    completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
-    filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
-    searchButton: `(//span[text()='Tags']/following::input[@placeholder='Select'])[1]`,
-    selectTagnames: `//input[@id='catalog_search_tags']`,
-    reultantTagname: (tagname: string) => `//li[text()='${tagname}']`,
-    applyButton: `//button[text()='Apply']`,
-    viewCourseDetails: `//button[text()='View Course Details']`,
-    launchButton: `(//div//i[@aria-label='Click to play'])[1]`,
-    saveLearningStatus: "//button[text()='Save Learning Status']",
-    verificationEnrollment: "//span[text()='View Certificate']",
-    unsupportMedia: "//div[contains(text(), 'The media could not be loaded')]",
-    posterElement: `//button[@class='vjs-big-play-button']//span[1]`,
-    viewCertificationDetailsBtn:
-      "//button[text()='View Certification Details']",
-    viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
-    viewCertificateBtn:
-      "//div[text()='modules/courses']/parent::div//span[text()='View Certificate']",
-    okBtn: "//button[text()='Ok']",
-    addToCart: `//span[text()='Add to cart']`,
-    contentLaunchBtn: "//button//span[text()='Launch']",
-    contentsLabel:
-      "//button[text()='Save Learning Status']//following::span[contains(text(),'Content')]",
-    completedVideo: "//span[text()='100%']",
-    expiredContent: "//span[text()='Expired']",
-    recertifyBtn: "//span[text()='Recertify']",
-    shoppingCardIcon:
-      "//div[@aria-label='shopping cart']//i[contains(@class,'cart-shopping')]",
-    addedToCartBtn: "//span[text()='Added to Cart']",
-    proceedToCheckoutBtn: "//button[text()=' Proceed to checkout']",
-    resultNotFound: `(//div[@id='most_recent']/following::div[text()='No results found.'])[1]`,
-    checkBox: `//i[contains(@class,'fa-circle icon') ]`,
-    RadioBtn: `//i[contains(@class,'fa-square icon')]`,
-    assessmentDropdown: `[id^='wrapper-ques'] button[data-bs-toggle='dropdown']`,
-    questionInput: `div[class='question-wrapper'] input[type=text]`,
-    starIcon: `//i[contains(@class,'fa-star icon')]`,
-    submitMyAnswerBtn: `div[class^='pagination-wrapper'] span:text-is('Submit my Answers')`,
-    submitSurveyBtn: `div[class^='pagination-wrapper'] span:text-is('submit survey')`,
-    filterDeliverytype: (delivery: string) =>
-      `//span[text()='${delivery}']/preceding-sibling::i[1]`,
-    multiInstancefilter: `(//div[text()='Filters'])[1]`,
-    clickPlayIcon: `(//a[contains(@class,'launch-content')])[1]`,
-    //doneBtn: `//span[text()='done']`, --> Element has been changed (06/08/2024)
-    //doneBtn: `//button[text()='Done']`,
-    doneBtn: `//i[contains(@class,'fa-circle-check icon')]//following::button[text()='Done']`,
-    //recievedScore: `//span[text()='Score:']//parent::div`, Element has been changed (06/08/2024)
-    //recievedScore: `//div[contains(text(),'Score:')]`
-    recievedScore: `//i[contains(@class,'fa-circle-check icon')]//following::div[contains(text(),'Score:')]`,
-    surveyPlayBtn:
-      "//i[contains(@class,'fa-file-edit')]//parent::div//following-sibling::div//i",
-    noCertificate:
-      "//span[text()='Completion certificate not attached to this training.']",
-    certificateCloseIcon: "//i[contains(@class,'pointer ms-auto')]",
-    secondaryCourse: (course: string) => `//div[contains(text(),'${course}')]`,
-    completePreviousContent:
-      "//div[contains(text(),'You need to complete the previous content')]",
-    recommendationLink: `//a[text()='Recommendations']`,
-    verifyRecommendCourse: (course: string) => `//div[text()='${course}']`,
-    overDueText: "//*[text()='Overdue']",
-    contentLabel: `//span[contains(text(),'Content')]`,
-    surveyDoneButton: `//div[text()='Thank you for completing the survey.']/following::button[text()='Done']`,
+        ...this.selectors,
+        searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+        searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+        mostRecentMenuItem: `//div[text()="Most Recent"]`,
+        createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+        moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+        enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+        courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+        selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+        enrollButton: `//span[text()='Enroll']`,
+        requestApproval: `//span[text()='Request approval']`,
+        approvalcostcenter: `//input[@id='cc']`,
+        submitRequest: `//button[text()='Submit request']`,
+        closeBtn: `(//button[text()='Close'])[1]`,
+        //launchButton:`//button[text()="Launch Content"]`,
+        completedButton: `//a[contains(text(),"Completed")]`,
+        completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+        filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+        // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+        searchButton:`//input[contains(@id,'catalog_search')]`,
+        // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
 
-    //Negative Assessment
-    negAnsDoneButton: `//div[text()="Sorry! You didn't pass the assessment."]//following::button[text()='Done']`,
+        selectTagnames:`//input[@id='catalog_search_tags']`,
+        // reultantTagname: (tagname: string) => `//a[contains(@class,'dropdown-item active')]//span[text()='${tagname}']`,
+        resultantTagname:(tagname: string) =>`//li[text()='${tagname}']`,
+        applyButton: `//button[text()='Apply']`,
+        viewCourseDetails: `//button[text()='View Course Details']`,
+        launchButton: `(//div//i[@aria-label='Click to play'])[1]`,
+        saveLearningStatus: "//button[text()='Save Learning Status']",
+        verificationEnrollment: "//span[text()='View Certificate']",
+        unsupportMedia: "//div[contains(text(), 'The media could not be loaded')]",
+        posterElement: `//button[@class='vjs-big-play-button']//span[1]`,
+        viewCertificationDetailsBtn: "//button[text()='View Certification Details']",
+        viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
+        viewCertificateBtn: "(//i[@aria-label='View Certificate'])[1]",
+        okBtn: "//button[text()='Ok']",
+        downloadPdfBtn: "(//i[contains(@class,'download')])[1]",
+        certificateModal: "//div[contains(@class,'modal-dialog modal-xl')]",
+        addToCart: `//span[text()='Add to cart']`,
+        contentLaunchBtn: "//button//span[text()='Launch']",
+        contentsLabel: "//button[text()='Save Learning Status']//following::span[contains(text(),'Content')]",
+        completedVideo: "//span[text()='100%']",
+        expiredContent: "//span[text()='Expired']",
+        recertifyBtn: "//span[text()='Recertify']",
+        shoppingCardIcon: "//div[@aria-label='shopping cart']//i[contains(@class,'cart-shopping')]",
+        addedToCartBtn: "//span[text()='Added to Cart']",
+        proceedToCheckoutBtn: "//button[text()=' Proceed to checkout']",
+        resultNotFound: `(//div[@id='most_recent']/following::div[text()='No results found.'])[1]`,
+        checkBox: `//i[contains(@class,'fa-circle icon') ]`,
+        RadioBtn: `//i[contains(@class,'fa-square icon')]`,
+        assessmentDropdown: `[id^='wrapper-ques'] button[data-bs-toggle='dropdown']`,
+        questionInput: `div[class='question-wrapper'] input[type=text]`,
+        starIcon: `//i[contains(@class,'fa-star icon')]`,
+        submitMyAnswerBtn: `div[class^='pagination-wrapper'] span:text-is('Submit my Answers')`,
+        submitSurveyBtn: `div[class^='pagination-wrapper'] span:text-is('submit survey')`,
+        filterDeliverytype: (delivery: string) => `//span[text()='${delivery}']/preceding-sibling::i[1]`,
+        multiInstancefilter: `(//div[text()='Filters'])[1]`,
+        clickPlayIcon: `(//a[contains(@class,'launch-content')])[1]`,
+        //doneBtn: `//span[text()='done']`, --> Element has been changed (06/08/2024)
+        //doneBtn: `//button[text()='Done']`,
+        doneBtn: `//i[contains(@class,'fa-circle-check icon')]//following::button[text()='Done']`,
+        //recievedScore: `//span[text()='Score:']//parent::div`, Element has been changed (06/08/2024)
+        //recievedScore: `//div[contains(text(),'Score:')]`
+        recievedScore: `//i[contains(@class,'fa-circle-check icon')]//following::div[contains(text(),'Score:')]`,
+        surveyPlayBtn: "//i[contains(@class,'fa-file-edit')]//parent::div//following-sibling::div//i",
+        noCertificate: "//span[text()='Completion certificate not attached to this training.']",
+        certificateCloseIcon: "//i[contains(@class,'pointer ms-auto')]",
+        secondaryCourse: (course: string) => `//div[contains(text(),'${course}')]`,
+        completePreviousContent: "//div[contains(text(),'You need to complete the previous content')]",
+        enforceSequenceErrorMessage: "//div[text()='You need to complete the previous content to launch this content.']",
+        recommendationLink: `//a[text()='Recommendations']`,
+        verifyRecommendCourse: (course: string) => `//div[text()='${course}']`,
+        overDueText: "//*[text()='Overdue']",
+        contentLabel: `//span[contains(text(),'Content')]`,
+        surveyDoneButton: `//div[text()='Thank you for completing the survey.']/following::button[text()='Done']`,
 
-    //TP-Reenroll
-    reenrollbutton: `//span[text()='re-enroll']`,
-    incompleteText: `//*[text()='Incomplete']`, //Arivu is changed from span to *
-    tpCompletedText: `//span[text()='Completed']`,
-    tpPreAssbutton: `//span[text()='Pre Assessment ']//parent::div//span[text()='Launch']`,
-    tpPostAssbutton: `//span[text()='Assessment/Survey ']//parent::div//span[text()='Launch']`,
-    tpCourseExpandIcon: `//i[contains(@class,'fa-chevron-down fa')]`,
+        //Negative Assessment 
+        negAnsDoneButton: `//div[text()="Sorry! You didn't pass the assessment."]//following::button[text()='Done']`,
 
-    // Catalog-No results found message:-
-    noResultFound_MostRecent: `//div[@id='most_recent']//div[text()='No results found.']`,
+        //TP-Reenroll
+        reenrollbutton: `//span[text()='re-enroll']`,
+        incompleteText: `//*[text()='Incomplete']`, //Arivu is changed from span to *
+        tpCompletedText: `//span[text()='Completed']`,
+        tpPreAssbutton: `//span[text()='Pre Assessment ']//parent::div//span[text()='Launch']`,
+        tpPostAssbutton: `//span[text()='Assessment/Survey ']//parent::div//span[text()='Launch']`,
+        tpCourseExpandIcon: `//i[contains(@class,'fa-chevron-down fa')]`,
 
-    //Survey
-    textareaInput: `textarea[class^='form-control']`,
-    sumbitSurveyBtn: `//span[text()='submit survey']`,
+        // Catalog-No results found message:-
+        noResultFound_MostRecent: `//div[@id='most_recent']//div[text()='No results found.']`,
 
-    //TP Course Filter:-
-    clickTPCourseFilter: `//div[text()='Filters']`,
-    clickTPCourseDeliveryFilter: (data: string) =>
-      `(//span[text()='${data}']//preceding-sibling::i)[2]`,
-    clickTPCourseApplyButton: `//button[text()='Apply']`,
-    selectTPCourse: `//div[contains(text(),'Seats')]//following::div[contains(@class,'custom-radio')]`,
-    clickTPSelectedCourseRegisterButton: `//button[contains(text(),'Enroll')]`,
+        //Survey 
+        textareaInput: `textarea[class^='form-control']`,
+        sumbitSurveyBtn: `//span[text()='submit survey']`,
 
-    toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,
-    //completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
-    enrolledCourseCode: `//span[contains(text(),'code:')]/following-sibling::span`,
+        //TP Course Filter:-
+        clickTPCourseFilter: `//div[text()='Filters']`,
+        clickTPCourseDeliveryFilter: (data: string) => `(//span[text()='${data}']//preceding-sibling::i)[2]`,
+        clickTPCourseApplyButton: `//button[text()='Apply']`,
+        selectTPCourse: `//div[contains(text(),'Seats')]//following::div[contains(@class,'custom-radio')]`,
+        clickTPSelectedCourseRegisterButton: `//button[contains(text(),'Enroll')]`,
 
-    //Video Content:-
-    endVideoTime: `//span[text()='0:00' and @class='vjs-remaining-time-display']`,
+        toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,
+        //completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
+        enrolledCourseCode: `//span[contains(text(),'code:')]/following-sibling::span`,
 
-    //MyLearning:-
-    noResultFound: `//div[text()='No results found.']`,
-    courseIncompleteText: `//div[text()='In complete']`,
-    mylearningViewClassDetails: (clsTitle: string) =>
-      `(//h5[text()='${clsTitle}'])`, //To navigate to class details
-    mandatoryText: `//div[text()='Mandatory']`,
-    contentPlayBtn: `(//i[@aria-label='Click to play'])[1]`,
+        //Video Content:-
+        endVideoTime: `//span[text()='0:00' and @class='vjs-remaining-time-display']`,
 
-    //admin enrollments:-
-    noResultFound_Mylearning: `//div[text()='No results found.']`,
+        //MyLearning:-
+        noResultFound: `//div[text()='No results found.']`,
+        courseIncompleteText: `//div[text()='In complete']`,
+        mylearningViewClassDetails: (clsTitle: string) => `(//h5[text()='${clsTitle}'])`, //To navigate to class details
+        mandatoryText: `//div[text()='Mandatory']`,
+        contentPlayBtn: `(//i[@aria-label='Click to play'])[1]`,
 
-    //myLearningClassCancel:-
-    mylearningClassCancel: ` //span[text()='Cancel Enrollment']`,
-    mylearningcancelreason: `//input[@id='cancel_reason']`,
-    mylearningyesbutton: `//button[text()='Yes']`,
-    mylearningcancelverification: `//span[text()='Canceled']`,
-    mandatoryAlertMessage: `//span[text()='This training is Mandatory and cannot be canceled']`,
+        //admin enrollments:-
+        noResultFound_Mylearning: `//div[text()='No results found.']`,
 
-    //myLearningChangeClass:-
-    mylearningChangeClass: `//span[text()='Change Class/Instance']`,
+        //myLearningClassCancel:-
+        mylearningClassCancel: ` //span[text()='Cancel Enrollment']`,
+        mylearningcancelreason: `//input[@id='cancel_reason']`,
+        mylearningyesbutton: `//button[text()='Yes']`,
+        mylearningcancelverification: `//span[text()='Canceled']`,
+        mandatoryAlertMessage: `//span[text()='This training is Mandatory and cannot be canceled']`,
 
-    //click course on details page for prerequisite
-    clickCourseDetailsPage: (course: string) =>
-      `//span[contains(@class,'field_title') and text()='${course}']`,
+        //myLearningChangeClass:-
+        mylearningChangeClass: `//span[text()='Change Class/Instance']`,
 
-    //Confirmation popup for Equivalence course
-    confimationPopupEql: (option: string) =>
-      `//span[contains(text(),'You have been granted completion')]//following::button[text()='${option}']`,
-    grantedMessageForEql: `//span[@class='rawtxt']//span[2]`,
+        //click course on details page for prerequisite
+        clickCourseDetailsPage: (course: string) => `//span[contains(@class,'field_title') and text()='${course}']`,
 
-    //Prerequisite mandatory message
-    prerequisiteMandatoryMessage: `//div[contains(@class,'ustify-content-center information_text')]//span`,
+        //Confirmation popup for Equivalence course
+        confimationPopupEql: (option: string) => `//span[contains(text(),'You have been granted completion')]//following::button[text()='${option}']`,
+        grantedMessageForEql: `//span[@class='rawtxt']//span[2]`,
 
-    //verify thumbnail img
-    thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
+        //Prerequisite mandatory message
+        prerequisiteMandatoryMessage: `//div[contains(@class,'ustify-content-center information_text')]//span`,
 
-    //content play based on name
-    contentPlay: (contentName: string) =>
-      `(//div[text()='${contentName}']//following::i[@aria-label='Click to play'])[1]`,
-    statusOnDetailsPage: `//div[contains(@class,'card-header')]//span`,
+        //Optional courses
+        optionalCourseLabel: `//div[text()='Optional']`,
+        firstOptionalCourse: `(//div[text()='Optional'])[1]`,
+        optionalCourseRadioButton: `//div[text()='Optional']//following::div[contains(@class,'custom-radio')]`,
+        enrollButtonLP: `//button[contains(text(),'Enroll')]`,
 
-    //verifyTPOverallProgress:-
-    tpOverallProgressPercentage: `(//div[text()='About This Course']//following::span[contains(@class,'progress__value')])[1]`,
+        //verify thumbnail img
+        thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
 
-    //To verify TP course status whether completed/incompleted
-    tpCourseStatus: (data: string, status: string) =>
-      `(//span[contains(text(),'${data}')]//following::div[text()='${status}'])[1]`,
+        //content play based on name
+        contentPlay: (contentName: string) => `(//div[text()='${contentName}']//following::i[@aria-label='Click to play'])[1]`,
+        statusOnDetailsPage: `//div[contains(@class,'card-header')]//span`,
 
-    //Verifying attached content progress value in course details page
-    contentProgressValue: (data: string) =>
-      `(//div[text()='${data}']//following::span[contains(@class,'progress__value')])[1]`,
+        //verifyTPOverallProgress:-
+        tpOverallProgressPercentage: `(//div[text()='About This Course']//following::span[contains(@class,'progress__value')])[1]`,
 
-    //catalog items
-    learnWithinMins: `//div[text()="Learn within 30 mins"]`,
-    watchItAgain: `//div[text()="Watch it again"]`,
-    //verifyContentValdity
-    ContentExpireCheck: `//span[text()=" can no longer be launched as the validity has expired or there are no attempts left."]`,
+        //To verify TP course status whether completed/incompleted
+        tpCourseStatus: (data: string, status: string) => `(//span[contains(text(),'${data}')]//following::div[text()='${status}'])[1]`,
 
-    //Bookmark Functionality:-
-    specificContentBookmark: (clsName: string) =>
-      `//div[text()='${clsName}']/following::i[contains(@id,'bookmark')]`,
-    // classBookmark:`//div[@id='enrolled_catalog']//span/i[@aria-label='Bookmark']`
-    classBookmark: (clsName: string) =>
-      `(//span[text()='${clsName}']//following::i[contains(@aria-label,'Bookmark')])[1]`,
+        //Verifying attached content progress value in course details page
+        contentProgressValue: (data: string) => `(//div[text()='${data}']//following::span[contains(@class,'progress__value')])[1]`,
 
-    //Wishlist Functionality:-
-    wishlistIcon: `(//i[contains(@id,'wishlist')])[1]`,
-    wishlistButton: `//span[text()='Add to Wishlist'] | //button[contains(text(),'Wishlist')]`,
-    wishlistSection: `//div[text()='Wishlist'] | //a[text()='Wishlist']`,
-    removeWishlistButton: `//span[text()='Remove from Wishlist'] | //button[contains(text(),'Remove')]`,
-    wishlistVerification: (courseName: string) =>
-      `//div[contains(@class,'wishlist')]//span[text()='${courseName}'] | //span[text()='${courseName}']//following::i[contains(@class,'fa-heart')]`,
-    wishlistEmptyMessage: `//div[text()='No items in wishlist'] | //div[text()='Your wishlist is empty']`,
-    addedToWishlist: `//i[@aria-label='Remove from Wishlist']`,
+        //catalog items
+        learnWithinMins: `//div[text()="Learn within 30 mins"]`,
+        watchItAgain: `//div[text()="Watch it again"]`,
+        //verifyContentValdity
+        ContentExpireCheck: `//span[text()=" can no longer be launched as the validity has expired or there are no attempts left."]`,
 
+        //Bookmark Functionality:-
+        specificContentBookmark: (clsName: string) => `//div[text()='${clsName}']/following::i[contains(@id,'bookmark')]`,
+        // classBookmark:`//div[@id='enrolled_catalog']//span/i[@aria-label='Bookmark']`
+        classBookmark: (clsName: string) => `(//span[text()='${clsName}']//following::i[contains(@aria-label,'Bookmark')])[1]`,
 
+        //Verifying no seats left message on leaner side
+        noSeatLeftPopupMsg: `//div[contains(@class,'information_text')]//span`,
+        seatFullOnDetailsPage: (courseName: string) => `(//span[text()='${courseName}']//following::span[contains(@class,'rawtxt ')])[1]`,
+        selectCourseRadioBtn: (courseName: string) => `(//span[text()='${courseName}']//following::div[contains(@class,'custom-radio')])[1]`,
+        //for selecting second course in program module
+        clickNextCourse: (data: string) => `//span[contains(text(),'${data}')]`,
+        //recurring session creation
+        sessionConflictPopup: `//span[contains(text(),'Session has conflict')]`,
 
-    //Verifying no seats left message on leaner side
-    noSeatLeftPopupMsg: `//div[contains(@class,'information_text')]//span`,
-    seatFullOnDetailsPage: (courseName: string) =>
-      `(//span[text()='${courseName}']//following::span[contains(@class,'rawtxt ')])[1]`,
-    selectCourseRadioBtn: (courseName: string) =>
-      `(//span[text()='${courseName}']//following::div[contains(@class,'custom-radio')])[1]`,
-    //for selecting second course in program module
-    clickNextCourse: (data: string) => `//span[contains(text(),'${data}')]`,
-    //recurring session creation
-    sessionConflictPopup: `//span[contains(text(),'Session has conflict')]`,
+        DCLNotEnrolledMessage: "//span[contains(text(), 'You are not enrolled in the class')]",
 
-    DCLNotEnrolledMessage:
-      "//span[contains(text(), 'You are not enrolled in the class')]",
+            clickCourse:(data: string) =>`(//div[text()='${data}'])[1]`,
 
-    clickCourse: (data: string) => `(//div[text()='${data}'])[1]`,
-  };
+            costcenterValue:`//input[@id='cc']`,
 
+            // Verify label selector for any text verification
+    verifyLabel: (text: string) => `//div[text()='${text}']`,
+            closeCertificateIcon:`//div[contains(@class,'modal-header')]/i`,
+
+        // Dedicated to TP selectors
+        dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
+        enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
+        enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
+
+              };
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
   }
@@ -301,11 +289,11 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   //Verifying attached content progress value in course details page
-  async verifyContentProgressValue(contentName: string) {
+  async verifyContentProgressValue(contentName: string, progress: string) {
     await this.wait("minWait");
     await this.verification(
       this.selectors.contentProgressValue(contentName),
-      "100%"
+      progress
     );
   }
 
@@ -567,6 +555,16 @@ export class CatalogPage extends LearnerHomePage {
       "course"
     );
     await this.mouseHover(this.selectors.verifyRecommendCourse(course), "Text");
+  }
+
+  // Verify label method - can be used to verify any text/label on the catalog page
+  async verifyLabel(text: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.verifyLabel(text),
+      `Label: ${text}`
+    );
+    await this.verification(this.selectors.verifyLabel(text), text);
   }
 
   async cronstoragejson(filepath: string, data: string) {
@@ -839,6 +837,53 @@ export class CatalogPage extends LearnerHomePage {
             console.log(`Console Log: ${msg.text()}`);
         }); */
   }
+
+  /**
+   * Click on the first optional course and enroll
+   * This method finds the first optional course, clicks it, then selects via radio button, and enrolls
+   */
+  async clickFirstOptionalCourseAndEnroll() {
+    console.log(`🔄 Looking for optional courses to enroll`);
+    
+    await this.wait("minWait");
+    
+    // First click on the first optional course element
+    const firstOptionalCourse = this.page.locator(this.selectors.firstOptionalCourse);
+    const optionalCourseCount = await firstOptionalCourse.count();
+    
+    if (optionalCourseCount > 0) {
+      console.log(`Found ${optionalCourseCount} optional course(s)`);
+      
+      // Step 1: Click the first optional course
+      await firstOptionalCourse.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await firstOptionalCourse.click();
+      await this.wait("minWait");
+      console.log(`✅ Clicked on first optional course`);
+      
+      // Step 2: Click the radio button to select the first optional course
+      const radioButton = this.page.locator(this.selectors.optionalCourseRadioButton).first();
+      await radioButton.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await radioButton.click();
+      await this.wait("minWait");
+      console.log(`✅ Selected first optional course via radio button`);
+      
+      // Step 3: Click the enroll button
+      const enrollButton = this.page.locator(this.selectors.enrollButtonLP);
+      await enrollButton.scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await enrollButton.click();
+      await this.wait("minWait");
+      await this.spinnerDisappear();
+      console.log(`✅ Clicked enroll button for optional course`);
+      
+      console.log(`✅ Successfully enrolled in first optional course`);
+    } else {
+      console.log(`⚠️ No optional courses found`);
+    }
+  }
+
   async clickRequestapproval() {
     await this.click(
       this.selectors.requestApproval,
@@ -859,6 +904,10 @@ export class CatalogPage extends LearnerHomePage {
     );
   }
 
+  async submitRequest() {
+        await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
 
 
   async requstcostCenterdetails() {
@@ -940,9 +989,29 @@ export class CatalogPage extends LearnerHomePage {
     await this.page.locator(playButton).hover({ force: true });
     await this.page.focus(playButton, { strict: true });
     await this.page.click(playButton, { force: true });
-    await this.wait("maxWait");
-    await this.wait("mediumWait");
+    await this.page.waitForTimeout(20000);
   }
+async inProgress() {
+  await this.page.waitForLoadState("load");
+  await this.spinnerDisappear();
+
+  let content = this.page.locator(this.selectors.contentLabel);
+  if (await content.isVisible({ timeout: 20000 })) {
+    await content.scrollIntoViewIfNeeded();
+  }
+
+  const playButton = this.page.locator("//button[@title='Play Video']");
+  await playButton.waitFor({ state: "visible", timeout: 20000 });
+
+  // FIRST attempt – normal click
+  await playButton.click({ force: true });
+  await this.page.waitForTimeout(5000);
+
+  await this.page.locator(this.selectors.saveLearningStatus).click();
+  await this.wait("mediumWait");
+
+}
+
 
   async clickSecondaryCourse(course: string, text?: string) {
     await this.validateElementVisibility(
@@ -1214,6 +1283,7 @@ export class CatalogPage extends LearnerHomePage {
   async clickCompletedButton() {
     await this.wait("mediumWait");
     const name = "Completed Button";
+    await this.page.mouse.wheel(0, -300);
     const completedButtonSelector = this.selectors.completedButton;
     await this.mouseHover(completedButtonSelector, name);
     await this.validateElementVisibility(completedButtonSelector, name);
@@ -1234,6 +1304,23 @@ export class CatalogPage extends LearnerHomePage {
     );
     await this.verification(this.selectors.expiredContent, "Expired");
   }
+
+  /**
+   * Verify that completion certificate is not attached to the training
+   */
+  async verifyNoCertificateAttached() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.noCertificate,
+      "No Certificate Message"
+    );
+    await this.verification(
+      this.selectors.noCertificate,
+      "Completion certificate not attached to this training."
+    );
+    console.log("✅ Verified: Completion certificate not attached to this training");
+  }
+
   async clickFilter() {
     //  await this.page.reload();
     await this.wait("maxWait");
@@ -1349,6 +1436,7 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   async clickViewCertificate() {
+     await this.page.locator(this.selectors.viewCertificateBtn).scrollIntoViewIfNeeded()
     await this.mouseHover(
       this.selectors.viewCertificateBtn,
       "View Certificate"
@@ -1360,6 +1448,77 @@ export class CatalogPage extends LearnerHomePage {
     );
     await this.wait("minWait");
   }
+
+  async verifyCertificateModalDisplayed() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.certificateModal,
+      "Certificate Modal"
+    );
+    console.log("✅ Certificate modal is displayed");
+  }
+
+  async verifyCertificateContent(learnerName: string, trainingTitle: string) {
+    await this.wait("minWait");
+    const certificateModal = this.page.locator(this.selectors.certificateModal);
+    const modalText = await certificateModal.innerText();
+    const nameVisible = modalText.includes(learnerName);
+    if (nameVisible) {
+      console.log(`✅ Learner name "${learnerName}" verified in certificate`);
+    } else {
+      throw new Error(`❌ Learner name "${learnerName}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
+    }
+    
+    // Verify training title is visible in certificate
+    const titleVisible = modalText.includes(trainingTitle);
+    if (titleVisible) {
+      console.log(`✅ Training title "${trainingTitle}" verified in certificate`);
+    } else {
+      throw new Error(`❌ Training title "${trainingTitle}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
+    }
+    
+    console.log("✅ Certificate content validated successfully");
+  }
+
+  async downloadCertificateAsPDF(): Promise<string> {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.downloadPdfBtn,
+      "Download as PDF Button"
+    );
+    
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download'),
+      this.click(this.selectors.downloadPdfBtn, "Download as PDF", "Button")
+    ]);
+    
+    const fileName = download.suggestedFilename();
+    const downloadPath = `test-results/${fileName}`;
+    await download.saveAs(downloadPath);
+    
+    console.log(`✅ Certificate PDF downloaded: ${fileName}`);
+    return downloadPath;
+  }
+
+  async verifyPDFFile(pdfPath: string) {
+    const fs = require('fs');
+    
+    if (!fs.existsSync(pdfPath)) {
+      throw new Error(`❌ PDF file not found at: ${pdfPath}`);
+    }
+    const stats = fs.statSync(pdfPath);
+    if (stats.size === 0) {
+      throw new Error(`❌ Downloaded PDF file is empty: ${pdfPath}`);
+    }
+    if (stats.size < 10000) {
+      throw new Error(`❌ PDF file seems too small: ${stats.size} bytes`);
+    }
+    console.log(`✅ PDF file validated: ${pdfPath} (${stats.size} bytes)`);
+    await this.closeCertificate();
+  }
+
+
+
 
   public async addToCart() {
     await this.validateElementVisibility(
@@ -1565,11 +1724,11 @@ export class CatalogPage extends LearnerHomePage {
         for (let index = 0; index < 1; index++) {
           await starIcon.nth(randomIndex1).click();
           await this.wait("minWait");
-        }
       }
     }
   }
 
+}
   async clickSubmitSurvey() {
     let submitSurvey = this.page.locator(this.selectors.sumbitSurveyBtn);
     if (await submitSurvey.isVisible()) {
@@ -1714,6 +1873,7 @@ export class CatalogPage extends LearnerHomePage {
   //Learnerside->Course Completion Status
   async verifyStatus(data: string) {
     await this.wait("maxWait");
+    await this.page.locator(this.selectors.statusOnDetailsPage).scrollIntoViewIfNeeded();
     await this.validateElementVisibility(
       this.selectors.statusOnDetailsPage,
       "Enrollment Status"
@@ -1763,12 +1923,41 @@ export class CatalogPage extends LearnerHomePage {
   async clickOnNextCourse(data: string) {
     await this.wait("minWait");
     //const courseName=data.toLowerCase()
+      await this.page
+      .locator(this.selectors.clickNextCourse(data))
+      .scrollIntoViewIfNeeded();
     await this.click(
       this.selectors.clickNextCourse(data),
       "Select Next course",
       "Link"
     );
     await this.wait("maxWait");
+  }
+
+  /**
+   * Verify enforce sequence error message appears
+   * This message appears when learner tries to access a course before completing previous content
+   */
+  async verifyEnforceSequenceErrorMessage() {
+    console.log(`🔄 Verifying enforce sequence error message`);
+    
+    await this.wait("minWait");
+    const errorMessage = this.page.locator(this.selectors.enforceSequenceErrorMessage);
+    
+    await this.validateElementVisibility(
+      this.selectors.enforceSequenceErrorMessage,
+      "Enforce Sequence Error Message"
+    );
+    
+    const messageText = await errorMessage.innerText();
+    console.log(`📋 Error message displayed: "${messageText}"`);
+    
+    await this.verification(
+      this.selectors.enforceSequenceErrorMessage,
+      "You need to complete the previous content to launch this content."
+    );
+    
+    console.log(`✅ Enforce sequence error message verified successfully`);
   }
 
   async clickSessionConflictPopup() {
@@ -2079,4 +2268,62 @@ async verifyAddedToWishlist(courseName: string) {
       return null;
     }
   }
+
+   async verifyCostCentrerInApprovalPopup(value: string) {
+        await this.verificationInputValue(this.selectors.costcenterValue,value);
+    }
+
+  async closeCertificate() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.certificateCloseIcon,
+      "Close Certificate"
+    );
+    await this.click(
+      this.selectors.certificateCloseIcon,
+      "Close Certificate",
+      "Button"
+    );
+    await this.page.waitForLoadState("load");
+    }
+
+  async verifyNoCertificateAvailable() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.noCertificate,
+      "No Certificate Message"
+    );
+    await this.verification(
+      this.selectors.noCertificate,
+      "Completion certificate not attached to this training"
+    );
+    console.log("✅ Verified: No certificate available for incomplete course");
+  }
+
+  // Dedicated to TP Methods
+  async getDedicatedToTPMessage(): Promise<string> {
+    await this.wait('minWait');
+    const messageSelector = this.selectors.dedicatedToTPMessage;
+    
+    try {
+      await this.validateElementVisibility(messageSelector, "Dedicated to TP Message");
+      const messageText = await this.getInnerText(messageSelector);
+      console.log(`ℹ️ Dedicated to TP message: ${messageText}`);
+      return messageText.trim();
+    } catch (error) {
+      console.log("ℹ️ No dedicated to TP message found");
+      return "";
+    }
+  }
+
+  async verifyDedicatedToTPMessage() {
+    const message = await this.getDedicatedToTPMessage();
+    if (message.toLowerCase().includes('dedicated to training plan')) {
+      console.log("✅ Dedicated to Training Plan message verified");
+    } else {
+      throw new Error(`Expected dedicated to TP message but found: ${message}`);
+    }
+  }
+
 }
+

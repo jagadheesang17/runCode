@@ -13,7 +13,6 @@ test.describe(`Certification_enroll_and_completion_with_single_instance.spec`, a
             { type: `Author`, description: `Selvakumar B` },
             { type: `TestCase`, description: `Create the course as Single instance` },
             { type: `Test Description`, description: `Verify portal1 course is not availble to portal2 users` }
-
         );
         await adminHome.loadAndLogin("CUSTOMERADMIN")
         await adminHome.menuButton();

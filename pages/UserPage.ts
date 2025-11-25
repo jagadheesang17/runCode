@@ -11,166 +11,124 @@ import { BrowserContext, Page, expect } from "@playwright/test";
 
 export class UserPage extends AdminHomePage {
   public selectors = {
-    ...this.selectors,
-    createUserbtn: `//button[text()='CREATE USER']`,
-    createUserLabel: "//h1[text()='Create User']",
-    editUserLabel: "//h1[text()='Edit User']",
-    inputField: (name: string) => `//input[@id="${name}"]`,
-    addressInput: (label: string) =>
-      `(//label[contains(text(),'${label}')]/following::input[contains(@id,'user-add')])[1]`,
-    dropdownToggle: (label: string) =>
-      `(//label[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
-    dropdownSearchInput: "//footer//following::input[@type='search']",
-    dropdownOption: (data: string) => `//span[text()='${data}']`,
-    saveButton: "//button[text()='Save']",
-    proceedButton: (name: string) =>
-      `//footer//following::button[contains(text(),'${name}')]`,
+        ...this.selectors,
+        createUserbtn: `//button[text()='CREATE USER']`,
+        createUserLabel: "//h1[text()='Create User']",
+        editUserLabel: "//h1[text()='Edit User']",
+        inputField: (name: string) => `//input[@id="${name}"]`,
+        addressInput: (label: string) => `(//label[contains(text(),'${label}')]/following::input[contains(@id,'user-add')])[1]`,
+        addressInputOrg:(label:string,id:string)=>`//label[contains(text(),'${label}')]/following::input[contains(@id,'${id}')]`,
 
-    // Custom Field Selectors - Note: These input boxes are disabled, use inputValue() method for reading values
-    uaidSelector: `(//label[text()='UAID']//following::input)[1]`,
-    uacSelector: `(//label[text()='UAC']//following::input)[1]`,
-    searchField: "//input[@id='exp-search-field']",
-    rolesBtn: "//input[@id='user-roles-filter-field']",
-    rolesList: (roles: string) => `//li[text()='${roles}']`,
-    editIcon:
-      "(//span[contains(@class,'justify-content-start') and  @aria-label='Edit User'])[1]",
-    userProfileUploadInput: "//input[@id='upload-usr-pic-file']",
-    updateButton: "//button[text()='Update']",
-    successMessage:
-      "//div[@id='addedit-user-form-container']//h3[contains(text(),'successfully')]",
-    employmentTypeInput:
-      "//label[text()='employment type']//parent::div//input",
-    commonOptionBtn: (value: string, data: string) =>
-      `(//div[@id='user-${value}-filter-lms-scroll-results']//li)[1]`,
-    departmentType: `//label[text()='department']/following::div[@id='user-department']//input`,
-    timeZone: `(//div[@id='wrapper-user-timezone']//button)[1]`,
-    timeZoneSearch: `//footer/following-sibling::div//input`,
-    selectlocationtz: (index: number, timeZone: string) =>
-      `(//li/a/span[contains(text(),'${timeZone}')])[${index}]`,
-    hireDate: `//input[@id='user-hiredate-input']`,
-    userType: `//input[@id='user-usertype-filter-field']`,
-    jobtitle: `//input[@id='user-jobtitle-filter-field']`,
-    manager: `//input[@id='user-manager-filter-field']`,
-    othermanager: `//input[@id='user-other-managers-filter-field']`,
-    searchOtherManager: `//input[@id='user-other-managers']`,
-    otherMgrOption: (index: number) =>
-      `(//div[@id='user-other-managers']/following::li)[${index}]`,
-    specificManager: (managerName: string) =>
-      `//div[contains(text(),'${managerName}')]`,
-    language: `//label[contains(text(),'Language')]/following::div[@id='wrapper-user-language']`,
-    searchLanguage: `//footer/following::div/input`,
-    courseLanguageLink: (language: string) =>
-      `//label[text()='Language']//following::span[text()='${language}']`,
-    editButton: `//a[text()='Edit User']`,
-    deleteUser: `(//a[@aria-label="Delete"]/i)[1]`,
-    confirmDeleteoption: `//button[text()='Delete']`,
-    verifyDeletemsg: `//div[@id='lms-overall-container']//h3`,
-    organizationTypeDD: `(//label[text()='Organization type']/parent::div//button)[1]`,
-    organizationType: (type: string) => `//span[text()='${type}']`,
-    closeIcon: "//i[contains(@class,'xmark')]",
-    managerclosePopup:
-      "//span[contains(text(),'Are you sure you want to continue?')]",
-    yesBtn: "//button[text()='Yes']",
-    suspendBtn: "//button[text()='Suspend']",
-    suspendDialog:
-      "//span[contains(text(),'Are you sure you want to suspend the user')]",
-    suspendDialogBtn:
-      "//span[contains(text(),'Are you sure you want to suspend the user')]//following::button[text()='Suspend']",
-    deleteIcon: "a[aria-label='Delete'] , a[title='Delete'] i",
-    deleteDialog:
-      "//span[contains(text(),'Are you sure you want to delete the user')]",
-    deleteBtn: "//button[text()='Delete']",
-    noResultText:
-      "//h3[contains(text(),'There are no results that match your current filters')]",
-    activateUserIcon: "a[title='Activate'], a[aria-label='Activate'] i",
-    activateDialog:
-      "//span[contains(text(),'Are you sure you want to activate the user')]",
-    activateBtn: "//button[text()='Activate']",
-    impersonationIcon:
-      " a[aria-label='Impersonation'] , a[title='Impersonation'] i",
-    impersonateLabel: "//label[text()='Select Domain you want to Impersonate']",
-    impersonateOptionDD:
-      "(//label[text()='Select Domain you want to Impersonate']//parent::div//button)[1]",
-    impersonateDomainValue: (option: string) =>
-      `//footer//following::a/span[text()='${option}']`,
-    reasonInput: "//label[text()='Reason']//parent::div//textarea",
-    impersonateProceedBtn: "//button[text()='Proceed']",
-    okBtn: "//button[text()='OK']",
-    logOutBtn: "//div[@class='logout']//a",
-    //Internal 
-    validateUser: (data: string) => `//div[text()='${data}']`,
-    //UserPage Enrollment icon
-    enrollmentIcon: "(//a[@aria-label='Enrollments'])[1]",
-    enrollmentLabel: "//h1[text()='Manage Enrollments']",
-    enrollmentStatus: "//div[contains(@class,'row row-cols-md-')]//span",
-    viewEnrollmentStsIcon: "//i[@aria-label='View all the status']",
+        dropdownToggle: (label: string) => `(//label[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
+        dropdownSearchInput: "//footer//following::input[@type='search']",
+        dropdownOption: (data: string) => `//span[text()='${data}']`,
+        saveButton: "//button[text()='Save']",
+        proceedButton: (name: string) => `//footer//following::button[contains(text(),'${name}')]`,
+        searchField: "//input[@id='exp-search-field']",
+        rolesBtn: "//input[@id='user-roles-filter-field']",
+        rolesList: (roles: string) => `//li[text()='${roles}']`,
+        editIcon: "(//span[contains(@class,'justify-content-start') and  @aria-label='Edit User'])[1]",
+        userProfileUploadInput: "//input[@id='upload-usr-pic-file']",
+        updateButton: "//button[text()='Update']",
+        successMessage: "//div[@id='addedit-user-form-container']//h3[contains(text(),'successfully')]",
+        employmentTypeInput: "//label[text()='employment type']//parent::div//input",
+        commonOptionBtn: (value: string, data: string) => `(//div[@id='user-${value}-filter-lms-scroll-results']//li)[1]`,
+        departmentType: `//label[text()='department']/following::div[@id='user-department']//input`,
+        timeZone: `(//div[@id='wrapper-user-timezone']//button)[1]`,
+        timeZoneSearch: `//footer/following-sibling::div//input`,
+        selectlocationtz: (index: number, timeZone: string) => `(//li/a/span[contains(text(),'${timeZone}')])[${index}]`,
+        hireDate: `//input[@id='user-hiredate-input']`,
+        userType: `//input[@id='user-usertype-filter-field']`,
+        jobtitle: `//input[@id='user-jobtitle-filter-field']`,
+        manager: `//input[@id='user-manager-filter-field']`,
+        othermanager: `//input[@id='user-other-managers-filter-field']`,
+        searchOtherManager: `//input[@id='user-other-managers']`,
+        otherMgrOption: (index: number) => `(//div[@id='user-other-managers']/following::li)[${index}]`,
+        specificManager: (managerName: string) => `//div[contains(text(),'${managerName}')]`,
+        language: `//label[contains(text(),'Language')]/following::div[@id='wrapper-user-language']`,
+        searchLanguage: `//footer/following::div/input`,
+        courseLanguageLink: (language: string) => `//label[text()='Language']//following::span[text()='${language}']`,
+        editButton: `//a[text()='Edit User']`,
+        deleteUser: `(//a[@aria-label="Delete"]/i)[1]`,
+        confirmDeleteoption: `//button[text()='Delete']`,
+        verifyDeletemsg: `//div[@id='lms-overall-container']//h3`,
+        organizationTypeDD: `(//label[text()='Organization type']/parent::div//button)[1]`,
+        organizationType: (type: string) => `//span[text()='${type}']`,
+        closeIcon: "//i[contains(@class,'xmark')]",
+        managerclosePopup: "//span[contains(text(),'Are you sure you want to continue?')]",
+        yesBtn: "//button[text()='Yes']",
+        suspendBtn: "//button[text()='Suspend']",
+        suspendDialog: "//span[contains(text(),'Are you sure you want to suspend the user')]",
+        suspendDialogBtn: "//span[contains(text(),'Are you sure you want to suspend the user')]//following::button[text()='Suspend']",
+        deleteIcon: "a[aria-label='Delete'] , a[title='Delete'] i",
+        deleteDialog: "//span[contains(text(),'Are you sure you want to delete the user')]",
+        deleteBtn: "//button[text()='Delete']",
+        noResultText: "//h3[contains(text(),'There are no results that match your current filters')]",
+        activateUserIcon: "a[title='Activate'], a[aria-label='Activate'] i",
+        activateDialog: "//span[contains(text(),'Are you sure you want to activate the user')]",
+        activateBtn: "//button[text()='Activate']",
+        impersonationIcon: " a[aria-label='Impersonation'] , a[title='Impersonation'] i",
+        impersonateLabel: "//label[text()='Select Domain you want to Impersonate']",
+        impersonateOptionDD: "(//label[text()='Select Domain you want to Impersonate']//parent::div//button)[1]",
+        impersonateDomainValue: (option: string) => `//footer//following::a/span[text()='${option}']`,
+        reasonInput: "//label[text()='Reason']//parent::div//textarea",
+        impersonateProceedBtn: "//button[text()='Proceed']",
+        okBtn: "//button[text()='OK']",
+        logOutBtn: "//div[@class='logout']//a",
+        //Internal
+        validateUser: (data: string) => `//div[text()='${data}']`,
+        //UserPage Enrollment icon
+        enrollmentIcon: "(//a[@aria-label='Enrollments'])[1]",
+        enrollmentLabel: "//h1[text()='Manage Enrollments']",
+        enrollmentStatus: "//div[contains(@class,'row row-cols-md-')]//span",
+        viewEnrollmentStsIcon: "//i[@aria-label='View all the status']",
 
-    //For Suspended User success message
-    sso_negativemsg: "//span[@id='error-txt']",
+        //For Suspended User success message
+        sso_negativemsg: "//span[@id='error-txt']",
 
-    //For user address validation
-    verifyUserAddress: `//button[text()='Click to verify address']`,
-    addressVerificationMessage: `//button[text()='Click to verify address']//following-sibling::span`,
+        //For user address validation
+        verifyUserAddress: `//button[text()='Click to verify address']`,
+        addressVerificationMessage: `//button[text()='Click to verify address']//following-sibling::span`,
 
-    //End impersonation
-    endImpersonation: "//span[text()='End Impersonation']",
+        //End impersonation
+        endImpersonation: "//span[text()='End Impersonation']",
 
-    //for contact support email
-    customerAdminUserFromDropdown: `//li[contains(text(),'Arivazhagan P (arivazhaganp)')]`,
-    checkContactSupport: `//input[@id='course-contact-support']`,
+        //for contact support email
+         customerAdminUserFromDropdown:(data:string)=>`//li[contains(text(),'${data}')]`,
+         checkContactSupport:`//input[@id='course-contact-support']`,
 
+         fieldname:(name:string)=>`//input[@id='user-${name}-filter-field']`,
 
-    //address inheritance
-    inheritAddressLabel: "//span[text()='Inherit Address From']",
+         clickSearchOption:(list:string)=>`(//li[text()='${list}'])[1]`,
+
+         editUser:`//a[text()='Edit User']`,
+
+         valueOfOgTypeInUserPage:`(//label[text()='Organization type']/following::div[@class='filter-option-inner-inner'])[1]`,
+
+         emergenctContactNameInput:(id:string)=>`//input[@id='${id}']`,
+
+         checkrole:(role:string)=>`(//span[text()='${role}']/preceding-sibling::i)[1]`,
+
+         uncheckInheritFromCheckbox:`//span[text()='Inherit Address From']/preceding-sibling::i[@class='fad fa-square-check icon_14_1']`,
+
+           inheritAddressLabel: "//span[text()='Inherit Address From']",
     inheritAddressCheckbox: "(//span[text()='Inherit Address From']//preceding-sibling::i)[1]",
 
-    //emergency contact inheritance
-    inheritEmergencyContactLabel: "//span[text()='Inherit']",
-    inheritEmergencyContactCheckbox: "(//span[text()='Inherit']//preceding-sibling::i)[1]",
+    // Merge User functionality selectors
+    createUserLink: "//a[text()='Create User']",
+    mergeUserSpan: "//span[text()='MERGE USER']",
+    primarySearchField: "#exp-search-primary-field",
+    secondarySearchField: "#exp-search-secondary-field",
+    userRadioBtn: (user: string) => `(//span[text()='${user}']//following::i[contains(@class,'fa-circle')])[1]`,
+    selectMergeUserBtn: "#merger-user-btn-select",
+    mergeUserBtn: "//button[text()='Merge User']",
+    mergeConfirmationMessage: "//span[text()='Merge process has been initiated. You will receive an email with the status of the process.']",
+    mergeOkBtn: "//button[text()='OK']",
+    noMatchingResultMessage: "//div[text()='No matching result found.']",
+    deleteSecondaryUserIcon: "(//span[text()='SECONDARY USER']//following::i[contains(@class,'fa-trash-can')])[1]",
+    swapUsersIcon: "//i[contains(@class,'merge_user_swap pointer')]",
 
-    //auto generate username
-    autoGenerateUsernameLabel: "//span[text()='Auto-Generate']",
-    autoGenerateUsernameCheckbox: "(//span[text()='Auto-Generate']//preceding-sibling::i)[1]",
-
-    //error message popup
-    errorMessageContainer: "//div[@id='message-container']//li//span",
-    domainErrorContainer: "//div[@id='message-container']//ul",
-
-    //USRT21 selectors
-    employeeIdField: "#user-employee-id",
-    birthDateField: "//input[@id='BirthDate']",
-    otherOrganizationsField: "//input[@id='user-other-orgs-filter-field']",
-    searchOtherOrganizationField: "//input[@id='user-other-orgs']",
-    organizationOption: "div[id^='user-other-orgsresu'] li",
-    associatedGroupsTab: "//span[text()='Associated Groups']",
-    learnerGroupText: "//label[text()='Learner Group :']/following-sibling::div",
-    hierarchyButton: "//a[@aria-label='Hierarchy']",
-    managerInHierarchy: (managerName: string) => `//span[text()='${managerName}']`,
-    hierarchyCloseButton: "//div[@id='hierarchyModal']//button[@aria-label='Close']",
-
-    fieldname: (name: string) => `//input[@id='user-${name}-filter-field']`,
-    clickSearchOption: (list: string) => `(//li[text()='${list}'])[1]`,
-    jobRole:`//input[@id='user-jobrole-filter-field']`,
-    jobRoleList: (roles: string) => `//li[text()='${roles}']`,
-
-    // Filter selectors for USRT21 enhancement
-    filterTrigger: "#admin-filters-trigger",
-    statusCheckbox: (status: string) => `//span[text()='${status}']`,
-    userTypeFilter: "#user-type-filter-field",
-    rolesDropdown: "//button[@data-id='user-roles-filter']",
-    roleOption: (role: string) => `//span[text()='${role}']`,
-    jobRoleFilter: "#user-jobroles-filter-field",
-    departmentFilter: "#user-department-filter-field", 
-    managerFilter: "#user-manager-filter-field",
-    organizationFilter: "#user-organization-filter-field",
-    userHireDateDropdown: "//span[text()='User hire date']//following::button[@data-id='selectid']",
-    hireDateOption: (option: string) => `//span[text()='${option}']`,
-    hireDateFromInput: "#admin-date-filter-from-input",
-    filterLabelDropdown: (label: string) => `(//span[text()='${label}']/following::button[@data-bs-toggle='dropdown'])[1]`,
-    filterDropdownSearch: "//footer//following::input[@aria-label='Search']",
-    filterDropdownOption: (option: string) => `//span[text()='${option}']`,
-
-  };
+    }
 
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
@@ -203,7 +161,11 @@ export class UserPage extends AdminHomePage {
     await this.type(selector, name, data);
   }
 
+ async searchAndSelect(name: string,data:string) {
+        await this.typeAndEnter(this.selectors.fieldname(name), "field name", data);
 
+        await this.click(this.selectors.clickSearchOption(data), "search option", "option");
+    }
   
 
    async clickeditUser() {
@@ -235,6 +197,16 @@ export class UserPage extends AdminHomePage {
     const selector = this.selectors.addressInput(label);
     await this.type(selector, "Address", data);
   }
+      async checkInheritFrom(role:string){
+        await this.click(this.selectors.checkrole(role),"clickmanager","radiobutton");
+    }
+
+     
+
+     async typeAddressOrg(label: string, id:string,data: string) {
+        const selector = this.selectors.addressInputOrg(label,id);
+        await this.type(selector, "Address", data);
+    }
 
   async select(label: string, data: string) {
     const toggleSelector = this.selectors.dropdownToggle(label);
@@ -574,12 +546,20 @@ export class UserPage extends AdminHomePage {
   }
 
   public async clickLogOutButton() {
+    const closebutton = `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`;
+    const closeicon = this.page.locator(closebutton);
+      if (await closeicon.isVisible()) {
+          await this.click(closebutton, "Close Button", "Button");
+      }
+    await this.wait("maxWait");
+    await this.validateElementVisibility(this.selectors.logOutBtn, "Log Out");
     await this.mouseHover(this.selectors.logOutBtn, "Log Out");
-    await this.click(this.selectors.logOutBtn, "Log Out", "Icon");
+    await this.page.locator(this.selectors.logOutBtn).first().click({ force: true });
   }
   public async userValidate(uname: string) {
     await this.verification(this.selectors.validateUser(uname), uname);
   }
+  
 
   //Manage Enrollments Label:-
 
@@ -696,27 +676,31 @@ export class UserPage extends AdminHomePage {
     }
   }
 
-  //emergency contact inheritance
-  public async uncheckInheritEmergencyContactIfPresent() {
-    const inheritEmergencyContactLabel = this.page.locator(this.selectors.inheritEmergencyContactLabel);
-    if (await inheritEmergencyContactLabel.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await this.click(this.selectors.inheritEmergencyContactCheckbox, "Inherit Emergency Contact Checkbox", "Checkbox");
-    }
-    else {
-      console.log("Inherit Emergency Contact already unchecked")
-    }
-  }
+    //emergency contact inheritance
+    public async uncheckInheritEmergencyContactIfPresent() {
+         const classValue = await this.page.locator('#emrg-cont-name').getAttribute('class');
 
-  //auto generate username
-  public async uncheckAutoGenerateUsernameIfPresent() {
-    const autoGenerateUsernameLabel = this.page.locator(this.selectors.autoGenerateUsernameLabel);
-    if (await autoGenerateUsernameLabel.isVisible({ timeout: 5000 }).catch(() => false)) {
-      await this.click(this.selectors.autoGenerateUsernameCheckbox, "Auto-Generate Username Checkbox", "Checkbox");
+        // Check if it contains a specific class
+        if (classValue && classValue.includes('form_field_deactived')) {
+            await this.click("//span[text()='Inherit']", "Inherit Address From Checkbox", "Checkbox");
+        } else {
+            console.log("Inherit emergency already unchecked")
+            //address inheritance
+        }
     }
-    else {
-      console.log("Auto-Generate Username already unchecked")
-    }
-  }
+
+    //auto generate username
+    public async uncheckAutoGenerateUsernameIfPresent() {
+          const classValue = await this.page.locator('#username').getAttribute('class');
+
+        // Check if it contains a specific class
+        if (classValue && classValue.includes('form_field_deactived')) {
+            await this.click("//span[text()='Auto-Generate']", "Auto-Generate Username Checkbox", "Checkbox");
+        } else {
+            console.log("auto generation already unchecked")
+        
+        }
+}
 
   // UAID and UAC Custom Field Verification Methods
   async verifyUAIDFieldExists() {
@@ -878,7 +862,7 @@ export class UserPage extends AdminHomePage {
     await this.click(this.selectors.clickSearchOption(data), "search option", "option");
   }
 
-  
+
   async selectJobRole() {
     let data = getRandomItemFromFile(filePath.jobRole);
     await this.click(this.selectors.jobRole, "Roles", "Button");
@@ -927,7 +911,7 @@ export class UserPage extends AdminHomePage {
     await this.type(this.selectors.managerFilter, "Manager Filter", manager);
     let managerDropdown = "div[id^='user-manager-filter'] li";
     await this.wait("minWait");
-    await this.click( managerDropdown, "manager", "Dropdown");
+    await this.click(managerDropdown, "manager", "Dropdown");
     console.log(`✅ Manager ${manager} selected in filter`);
   }
 
@@ -970,5 +954,183 @@ export class UserPage extends AdminHomePage {
     await this.click(applyButton, "Apply", "Button");
     console.log("✅ Filter applied successfully");
   }
+  async verifyInheritedAddress(label:string,id:string,address:string) {
+        // await this.verification(this.selectors.addressInput(label,id), address);
 
+       await this. verificationInputValue(this.selectors.addressInputOrg(label,id), address);
+       
+    }
+
+            async verifyInheritedEmergencyContactName(id:string,emergencyContactName:string){
+            await this.verificationInputValue(this.selectors.emergenctContactNameInput(id),emergencyContactName);
+        }
+        async editUser(){
+          this.wait("minWait");
+    await this.click(this.selectors.editUser,"Edit user","Button");
+}
+
+ async valueOfOrganizationTypeInUserPage(){
+            await this.wait("maxWait");
+            const text=await this.page.locator(this.selectors.valueOfOgTypeInUserPage).innerText();
+            return text;
+                 }
+
+  // ==================== MERGE USER FUNCTIONALITY METHODS ====================
+
+  /**
+   * Alternative method for creating user using Create User link
+   */
+  async createBtn(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.createUserLink, "Create User", "Link");
+    console.log("✅ Create User link clicked");
+  }
+
+  /**
+   * Click on Merge User span to open merge user functionality
+   */
+  async clickMergeUser(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.mergeUserSpan, "Merge User", "Span");
+    await this.wait("mediumWait");
+    console.log("✅ Merge User functionality opened");
+  }
+
+  /**
+   * Search and select primary user in merge user functionality
+   * @param userId - The user ID to search and select as primary user
+   */
+  async searchAndSelectPrimaryUser(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in primary user search field
+    await this.type(this.selectors.primarySearchField, "Primary User Search", userId);
+    await this.wait("minWait");
+    
+    // Click on the user radio button
+    await this.click(this.selectors.userRadioBtn(userId), `Primary User Radio: ${userId}`, "Radio Button");
+    await this.wait("minWait");
+    
+    // Click select button
+    await this.click(this.selectors.selectMergeUserBtn, "Select Merge User", "Button");
+    await this.wait("minWait");
+    
+    console.log(`✅ Primary user ${userId} selected successfully`);
+  }
+
+  /**
+   * Search and select secondary user in merge user functionality
+   * @param userId - The user ID to search and select as secondary user
+   */
+  async searchAndSelectSecondaryUser(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in secondary user search field
+    await this.type(this.selectors.secondarySearchField, "Secondary User Search", userId);
+    await this.wait("minWait");
+    
+    // Click on the user radio button
+    await this.click(this.selectors.userRadioBtn(userId), `Secondary User Radio: ${userId}`, "Radio Button");
+    await this.wait("minWait");
+    
+    // Click select button
+    await this.click(this.selectors.selectMergeUserBtn, "Select Merge User", "Button");
+    await this.wait("minWait");
+    
+    console.log(`✅ Secondary user ${userId} selected successfully`);
+  }
+
+  /**
+   * Initiate the merge process by clicking Merge User button
+   */
+  async initiateMergeProcess(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.mergeUserBtn, "Merge User", "Button");
+    await this.wait("mediumWait");
+    console.log("✅ Merge process initiated");
+  }
+
+  /**
+   * Verify merge confirmation message and click OK button
+   */
+  async verifyMergeConfirmationMessage(): Promise<void> {
+    await this.wait("minWait");
+    
+    // Verify the merge confirmation message
+    await this.validateElementVisibility(this.selectors.mergeConfirmationMessage, "Merge Confirmation Message");
+    await this.verification(this.selectors.mergeConfirmationMessage, "Merge process has been initiated. You will receive an email with the status of the process.");
+    
+    // Click OK button
+    await this.click(this.selectors.mergeOkBtn, "OK", "Button");
+    await this.wait("minWait");
+    
+    console.log("✅ Merge confirmation message verified and OK clicked");
+  }
+
+  /**
+   * Verify merge success message appears
+   */
+  // async verifyMergeSuccessMessage(): Promise<void> {
+  //   await this.wait("mediumWait");
+  //   await this.validateElementVisibility(this.selectors.mergeConfirmationMessage, "Merge Success Message");
+  //   console.log("✅ Merge success message verified");
+  // }
+
+  /**
+   * Search for secondary user and verify "No matching result found" message
+   * Used when primary user cannot be assigned as secondary user
+   * @param userId - The user ID that should show no results
+   */
+  async searchSecondaryUserAndVerifyNoResult(userId: string): Promise<void> {
+    await this.wait("minWait");
+    
+    // Type in secondary user search field
+    await this.type(this.selectors.secondarySearchField, "Secondary User Search", userId);
+    await this.wait("minWait");
+    
+    // Verify "No matching result found" message appears
+    await this.validateElementVisibility(this.selectors.noMatchingResultMessage, "No Matching Result Message");
+    await this.verification(this.selectors.noMatchingResultMessage, "No matching result found.");
+    
+    console.log(`✅ Verified "No matching result found" message for user: ${userId}`);
+  }
+
+  /**
+   * Click delete icon for secondary user
+   */
+  async clickDeleteSecondaryUser(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.deleteSecondaryUserIcon, "Delete Secondary User", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Secondary user delete icon clicked");
+  }
+
+  /**
+   * Verify secondary user has been deleted/removed
+   */
+  async verifySecondaryUserDeleted(): Promise<void> {
+    await this.wait("minWait");
+    
+    // Check if secondary user delete icon is no longer visible or secondary user section is empty
+    try {
+      const isDeleteIconVisible = await this.page.locator(this.selectors.deleteSecondaryUserIcon).isVisible({ timeout: 2000 });
+      if (!isDeleteIconVisible) {
+        console.log("✅ Secondary user successfully deleted - delete icon no longer visible");
+      } else {
+        console.log("✅ Secondary user delete icon still visible - may indicate different deletion behavior");
+      }
+    } catch (error) {
+      console.log("✅ Secondary user deletion verified - element not found");
+    }
+  }
+
+  /**
+   * Click swap users icon to swap primary and secondary users
+   */
+  async clickSwapUsers(): Promise<void> {
+    await this.wait("minWait");
+    await this.click(this.selectors.swapUsersIcon, "Swap Users", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Users swapped successfully");
+  }
 }

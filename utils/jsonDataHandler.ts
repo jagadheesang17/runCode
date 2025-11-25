@@ -110,6 +110,64 @@ interface tcData {
   CRS023a?:string
   CRS023b?:string
   CRS023c?:string
+  TP045?:string
+  TP045a?:string
+  TP046?:string
+  TP046a?:string
+  TP047?:string
+  TP047a?:string
+  TP048?:string
+  TP048a?:string
+  TP060?:string
+  TP060a?:string
+  TP061?:string
+  TP061a?:string
+  TP067?:string
+  TP067a?:string
+  TP067b?:string
+  TP068?:string
+  TP069?:string
+  TP070?:string
+  TP071?:string
+  TP072?:string
+  TP073?:string
+  TP074?:string
+  TP075?:string
+  TP076?:string
+  TP077?:string
+  TP078?:string
+  TPC079?:string
+  TPC080?:string
+  TPC081?:string
+  TPC082?:string
+  TPC083?:string
+  TPC084?:string
+  TPC085?:string
+  TPC086?:string
+  TPC087?:string
+  TPC088?:string
+  TPC089?:string
+  TPC090?:string
+  TPC091?:string
+  TPC092?:string
+  TPC093?:string
+  TPC094?:string
+  TPC095?:string
+  TPC096?:string
+  TPC097?:string
+  TPC098?:string
+  TPC099?:string
+  TP089?:string
+  TP090?:string
+  TP091?:string
+  TP092?:string
+  TP093?:string
+  TP094?:string
+  TP095?:string
+  TP096?:string
+  TP097?:string
+  TP098?:string
+  TP099?:string
    passwordHistoryStatusUpdateUsername?:string;
 }
 const cronFile = '../data/cronjob.json';
@@ -145,4 +203,8 @@ export function updateCronDataJSON(newData: tcData): void {
     }
   });
 
+}
+
+export function getItemByProperty(arg0: string, arg1: string, roleName: string) {
+    throw new Error("Function not implemented.");
 }

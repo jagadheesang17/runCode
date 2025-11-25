@@ -28,8 +28,10 @@ export class AdminHomePage extends AdminLogin {
         locationLink: "//a[text()='Location']",
         commerceMenu: `//span[text()='Commerce']`,
         learningPathLink: "//a[text()='Learning Path']",
+        //learningPathLink:"//a[text()='Learning Path']",
         certificationLink: "//a[text()='Certification']",
         completionCertificationLink: "//a[text()='Completion Certificate']",
+        //learningPathLink:"//a[text()='Learning Path']",       
         communicationLink: "//span[text()='Communication']",
         bannerMenu: `//a[text()='Banner']`,
         createBannerbutton: `//button[text()='CREATE BANNER']`,
@@ -37,11 +39,15 @@ export class AdminHomePage extends AdminLogin {
         createAnnouncementbutton: `//button[text()='CREATE ANNOUNCEMENT']`,
         contentMenu: `//a[text()='Content']`,
         surveyQuestionsLink: "//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Questions']",
+        //surveyLink:"//span[text()='Survey']//parent::div/following-sibling::ul//a[text()='Survey']",
         assessmentMenu: `//span[text()='Assessment']`,
         assessmentQuestionLink: `//span[text()='Assessment']//parent::div/following-sibling::ul//a[text()='Questions']`,
         assessmentLink: "//a[text()='Assessment']",
         enrollMenu: `//span[text()='Enrollments']`,
-        enrollLink: `(//a[text()='Enroll'])[1]`,
+        enrollLink: `//a[text()='Enroll']`,
+        manageEnrollmentLink: `//a[text()='Manage Enrollments' or text()='View/Modify Enrollment' or text()='Manage Enrollment']`,
+        viewUpdateEnrollmentLink: `//a[text()='View/Modify Enrollment']`,
+
         quickAccessIcon: `#dd-icon-wrapper i`,
         quickAccessDD: `button div:text-is('Select Quick Access Buttons To Add Below')`,
         quickAccessValue: `//div[@class='dropdown-menu show'] //a`,
@@ -50,17 +56,34 @@ export class AdminHomePage extends AdminLogin {
         yesBtn: `//button[text()='Yes']`,
         quickAccessModules: `//div[contains(@class,'mandatory')]/following-sibling::div`,
         adminRolemenu: `//a[text()='Admin Role']`,
-        siteAdminMenu:`//span[text()='Site Admin']`,
-        learnerConfigLink:`//a[text()='Learner Configuration']`,
-        siteSettingsLink:`//a[text()='Site Settings']`,
-        adminConfigLink:`//a[text()='Admin Configuration']`,
+        siteAdminMenu: `//span[text()='Site Admin']`,
+        learnerConfigLink: `//a[text()='Learner Configuration']`,
+        siteSettingsLink: `//a[text()='Site Settings']`,
+        adminConfigLink: `//a[text()='Admin Configuration']`,
+        enrollmentsLink: `//i[@data-bs-target="#Enrollments-content"]`,
+        // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
-        directContent:`//a[text()='Direct Content Launch']`,
-           //meta data library option
-        metaLibOption: (data: string) => `//a[text()='${data}']`,
-        dynamicShareableLinks:`text=Dynamic Shareable Links`
-    };
+        clickBack: `//i[@id='dismissSidebar']`,
+        quickAccessCreate: (menu: string) => `//div[text()='${menu}']//ancestor::div[@class='item-draggable']//div[text()='Create']`,
 
+        //for Direct Content Launch
+        directContent: `//a[text()='Direct Content Launch']`,
+
+        hoverOrgFromQuickAccess: (module: string) => `//div[text()='${module}']`,
+       
+
+        adminhome: `//span[text()='Admin Home']`,
+        clickEditOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Edit'])[1]`,
+        clickEditIconOfCreatedOrganization: (orgName: string) => `(//div[text()='${orgName}']/following::a[@aria-label='Edit'])[1]`,
+
+        clickCreateOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Create'])[1]`,
+
+        
+        //meta data library option
+        metaLibOption: (data: string) => `//a[text()='${data}']`,
+        dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
+    
+    }
     public async clickLearnerGroupLink() {
         try {
             await this.validateElementVisibility(this.selectors.learnerGrouplink, "Learner Group");
@@ -70,13 +93,19 @@ export class AdminHomePage extends AdminLogin {
             throw error;
         }
     }
+    async editModuleFromQuickAccess(module: string, createmodule: string) {
+        await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+        await this.wait("minWait");
+        await this.click(this.selectors.clickEditOrganization(createmodule), "Create module", "Button");
+ 
+    }
 
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
         //this.common(page, context).catch(err => console.error("Error in common setup:", err));
         // this.setupPageListeners();
     }
-//To navigate from Enroll option to view/update status course tp:-
+    //To navigate from Enroll option to view/update status course tp:-
     public async clickviewUpdateStatusCourseTp() {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
     }
@@ -85,24 +114,36 @@ export class AdminHomePage extends AdminLogin {
         await this.click("//a[text()='View/update Status - Learner']", "Update Enrollment", "Link")
     }
 
-    public async loadAndLogin(role: string) {
-        console.log("Loading admin home page...")
-        await this.page.goto(AdminLogin.pageUrl);
-        await this.adminLogin(role);
-        await this.wait("minWait");
-        let pageTitle = await this.getTitle();
-        console.log("Page Title:", pageTitle);
-        if (pageTitle.toLowerCase().includes("signin")) {
-            console.log("Sign-in page detected. Performing login...");
-            await this.adminLogin(role);
-            await this.wait('mediumWait');
-            pageTitle = await this.getTitle();
-            console.log("Page Title after login:", pageTitle);
-        }
-    } catch(Error: any) {
-        console.error("Error during common setup:", Error);
-        throw Error;
+    public async clickviewUpdateEnrollmentBtn() {
+        await this.click(this.selectors.viewUpdateEnrollmentLink, "View/Modify Enrollment", "Link");
+    }
 
+
+    public async createModuleFromQuickAccess(module: string, createmodule: string) {
+        await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
+        await this.wait("minWait");
+        await this.click(this.selectors.clickCreateOrganization(createmodule), "Create module", "Button");
+
+    }
+    public async loadAndLogin(role: string) {
+        try {
+            console.log("Loading admin home page...")
+            await this.page.goto(AdminLogin.pageUrl);
+            await this.adminLogin(role);
+            await this.wait("minWait");
+            let pageTitle = await this.getTitle();
+            console.log("Page Title:", pageTitle);
+            if (pageTitle.toLowerCase().includes("signin")) {
+                console.log("Sign-in page detected. Performing login...");
+                await this.adminLogin(role);
+                await this.wait('mediumWait');
+                pageTitle = await this.getTitle();
+                console.log("Page Title after login:", pageTitle);
+            }
+        } catch(Error: any) {
+            console.error("Error during common setup:", Error);
+            throw Error;
+        }
     }
 
     public async singleUserLogin(username: string) {
@@ -121,6 +162,9 @@ export class AdminHomePage extends AdminLogin {
         }
     }
 
+    async clickAdminHome() {
+        await this.click(this.selectors.adminhome, "Admin Home", "Link");
+    }
     public async isSignOut() {
         await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out");
         await this.page.waitForLoadState('load');
@@ -261,6 +305,11 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.createCourseBtn, "Course", "Button");
     }
 
+    public async clickCreate(module: string) {
+        await this.validateElementVisibility(this.selectors.quickAccessCreate(module), `Create ${module}`);
+        await this.click(this.selectors.quickAccessCreate(module), `Create ${module}`, "Button");
+    }
+
     public async user() {
         await this.validateElementVisibility(this.selectors.userMenu, "User");
         await this.click(this.selectors.userMenu, "USER", "Button");
@@ -371,9 +420,15 @@ export class AdminHomePage extends AdminLogin {
     }
 
     public async clickEnroll() {
-    await this.wait("minWait");
+        await this.wait("minWait");
         await this.click(this.selectors.enrollLink, "Enrollment", "Link")
-                await this.wait("minWait");
+        await this.wait("minWait");
+    }
+
+    public async clickManageEnrollment() {
+        await this.wait("minWait");
+        await this.click(this.selectors.manageEnrollmentLink, "Manage Enrollment", "Link")
+        await this.wait("minWait");
     }
 
     
@@ -390,66 +445,94 @@ export class AdminHomePage extends AdminLogin {
 
     }
 
-        ///Site Admin////
-        public async siteAdmin() {
-            await this.wait("minWait");
-            await this.page.locator(this.selectors.siteAdminMenu).scrollIntoViewIfNeeded();
-            await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
-            await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
-        }
-        public async siteAdmin_learnerconfig() {
-            await this.validateElementVisibility(this.selectors.learnerConfigLink, "Learner Configuration");
-            await this.mouseHover(this.selectors.learnerConfigLink, "Learner Configuration");
-            await this.click(this.selectors.learnerConfigLink, "Learner Configuration", "Button");
-            await this.spinnerDisappear();
-        }
-        public async siteSettings() {
-            await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Settings");
-            await this.mouseHover(this.selectors.siteSettingsLink, "Site Settings");
-            await this.click(this.selectors.siteSettingsLink, "Site Settings", "Button");
-            await this.spinnerDisappear();
-        }
-        public async siteAdmin_Adminconfig() {
-            await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
-            await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
-            await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
-            await this.spinnerDisappear();
-        }
+    ///Site Admin////
+    public async siteAdmin() {
+        await this.wait("minWait");
+        await this.page.locator(this.selectors.siteAdminMenu).scrollIntoViewIfNeeded();
+        await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
+        await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
+    }
+    
+    public async siteAdmin_learnerconfig() {
+        await this.validateElementVisibility(this.selectors.learnerConfigLink, "Learner Configuration");
+        await this.mouseHover(this.selectors.learnerConfigLink, "Learner Configuration");
+        await this.click(this.selectors.learnerConfigLink, "Learner Configuration", "Button");
+        await this.spinnerDisappear();
+    }
+    
+    public async siteSettings() {
+        await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Settings");
+        await this.mouseHover(this.selectors.siteSettingsLink, "Site Settings");
+        await this.click(this.selectors.siteSettingsLink, "Site Settings", "Button");
+        await this.spinnerDisappear();
+    }
+    
+    public async siteAdmin_Adminconfig() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
+        await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
+        await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
+        await this.spinnerDisappear();
+    }
 
-        async clearBrowserCache(url: string) {
-            const baseUrl = await this.getBaseUrl(url)
-            await this.page.context().clearCookies();
-            await this.page.context().clearPermissions();
-            await this.page.goto(`${baseUrl}clearcache`);
-            await this.wait('minWait');
-            await this.page.goto(`${baseUrl}clearallcache`);
-        }
+    public async siteAdmin_Enrollments() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.enrollmentsLink, "Enrollments");
+        await this.mouseHover(this.selectors.enrollmentsLink, "Enrollments");
+        await this.click(this.selectors.enrollmentsLink, "Enrollments", "Button");
+        await this.spinnerDisappear();
+    }
 
-        //For Direct Content Launch
-        public async clickDirectContentLaunchLink() {
-            await this.validateElementVisibility(this.selectors.directContent, "DirectContentLaunch");
-            await this.click(this.selectors.directContent, "DirectContentLaunch", "Button");
-            await this.page.waitForLoadState('load');
-        }
+    async clearBrowserCache(url: string) {
+        const baseUrl = await this.getBaseUrl(url)
+        await this.page.context().clearCookies();
+        await this.page.context().clearPermissions();
+        await this.page.goto(`${baseUrl}clearcache`);
+        await this.wait('minWait');
+        await this.page.goto(`${baseUrl}clearallcache`);
+    }
 
-        //Navigate learner side from admin page
-        public async navigateToLearner() {
-            await this.wait("minWait");
-            await this.page.locator(`#exp_logo`).click();
-            await this.page.waitForLoadState('load');
-            await this.spinnerDisappear();
-        }
+    //For Direct Content Launch
+    public async clickDirectContentLaunchLink() {
+        await this.validateElementVisibility(this.selectors.directContent, "DirectContentLaunch");
+        await this.click(this.selectors.directContent, "DirectContentLaunch", "Button");
+        await this.page.waitForLoadState('load');
+    }
 
-        public async metaDataLibraryOption(data: string) {
+    //Navigate learner side from admin page
+    public async navigateToLearner() {
+        await this.wait("minWait");
+        await this.page.locator(`#exp_logo`).click();
+        await this.page.waitForLoadState('load');
+        await this.spinnerDisappear();
+    }
+
+    public async metaDataLibraryOption(data: string) {
         await this.wait("minWait")
         await this.validateElementVisibility(this.selectors.metaLibOption(data), "Meta Data Library");
         await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
-
-    public async dynamicShareableLinks() { 
+    
+    public async dynamicShareableLinks() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
+        await this.mouseHover(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
         await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
+        await this.spinnerDisappear();
+    }
+
+    public async verifyDynamicShareableLinks(expectedState: "Enabled" | "Disabled") {
+        await this.wait("mediumWait");
+        const isVisible = await this.page.locator(this.selectors.dynamicShareableLinks).isVisible();
+        if (expectedState === "Enabled") {
+            expect(isVisible).toBeTruthy();
+            console.log("✅ Verified: Dynamic Shareable Links is displayed in the menu (Enabled)");
+        } else if (expectedState === "Disabled") {
+            expect(isVisible).toBeFalsy();
+            console.log("✅ Verified: Dynamic Shareable Links is NOT displayed in the menu (Disabled)");
+        }
     }
 
     // Method to set allow_excel configuration to 0
@@ -468,7 +551,6 @@ export class AdminHomePage extends AdminLogin {
         await this.wait("mediumWait");
         console.log("✅ allow_excel configuration set to 0");
     }
-
 }
 
 

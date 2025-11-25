@@ -13,7 +13,7 @@ test.describe(`Verify whether the Export Functionality is working correctly`, as
     
     test.beforeAll(async () => {
         groupData = await AdminGroupManager.getGroupDataByType("basic");
-        roleData = await AdminRoleManager.getRoleDataByRoleName("QA_Basic_Admin_Role");
+        roleData = await AdminRoleManager.getRoleDataByRoleName("QA_Basic_Admin_Role", "CustomAdminRoles");
         console.log(`Using admin group: ${groupData.groupTitle}`);
         console.log(`Using admin role: ${roleData.roleName}`);
     });
@@ -103,12 +103,9 @@ test.describe(`Verify whether the Export Functionality is working correctly`, as
         const uiUsers = await adminGroup.getAddedUsers();
         console.log(`Successfully extracted ${uiUsers.length} users from UI`);
 
-        // Export Excel file
         await exportPage.clickExportAs("Excel");
         
-        // Validate the exported file matches UI data
-        await exportPage.validateExported("Excel");
-
+        await exportPage.validateExported("Excel", "addedUsers");
 
         
     });

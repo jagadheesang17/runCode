@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture"
 
 test.describe('DSL001 - Verify Dynamic Shareable Links page elements', () => {
-   const remainingElementsToVerify = [
+   const elementsToVerify = [
         'Search By',
         'Search',
         'Category',
@@ -39,8 +39,9 @@ test("DSL001 - Verify all fields are displayed in Dynamic Share Link page", asyn
         await adminHome.clickLearningMenu();
         await adminHome.dynamicShareableLinks();
         await dynamicShareableLinks.verifyElements(['Domain']);
-        await dynamicShareableLinks.selectDomainOption("qaautomation");
-        await dynamicShareableLinks.verifyElements(remainingElementsToVerify);
+        await dynamicShareableLinks.verifyNoDomainSelectedByDefault();
+        await dynamicShareableLinks.selectDomainOption("newprod");
+        await dynamicShareableLinks.verifyElements(elementsToVerify);
         console.log('*** DSL001: All elements verified successfully');
     });
 

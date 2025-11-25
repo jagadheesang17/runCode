@@ -31,7 +31,7 @@ export abstract class PlaywrightWrapper {
    * @param {string} name - The name of the textbox element.
    * @param {string} data - The data to be typed into the textbox.
    */
-    async type(locator: string, name: string, data: string, p0?: { delay: number; }) {
+    async type(locator: string, name: string, data: string) {
         await test.step(`Textbox ${name} filled with data: ${data}`, async () => {
             await this.page.locator(locator).clear();
             await this.page.locator(locator).fill(data);
@@ -78,7 +78,7 @@ export abstract class PlaywrightWrapper {
     async typeAndEnter(locator: string, name: string, data: string) {
         await test.step(`Textbox ${name} filled with data: ${data}`, async () => {
             await this.page.locator(locator).clear();
-            await this.page.keyboard.type(data, { delay: 50 });
+            await this.page.keyboard.type(data, { delay: 400 });
             await this.page.keyboard.press("Enter");
         });
     }
@@ -506,20 +506,20 @@ export abstract class PlaywrightWrapper {
 
     }
 
-    async getBaseUrl(url: string): Promise<string>  {
+    async getBaseUrl(url: string): Promise<string>  
+    {
         const parsedUrl = new URL(url);
         return `${parsedUrl.protocol}//${parsedUrl.host}/`;
     }
-    async verificationInputValue(locator: string, expectedTextSubstring: string) {
+    async verificationInputValue(locator: string, expectedTextSubstring: string)
+    {
         const element = this.page.locator(locator).nth(0);
-        await this.wait("minWait");
+        await this.wait("minWait"); 
         const text = await element.inputValue();
         console.log(text);
         const lowerCaseText = text.toLowerCase();
         const lowerCaseExpected = expectedTextSubstring.toLowerCase();
         expect(lowerCaseText).toContain(lowerCaseExpected);
     }
-
-
 
 }

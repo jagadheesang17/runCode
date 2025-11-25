@@ -1,8 +1,10 @@
-import { Page, BrowserContext, Download } from "@playwright/test";
+import { Page, BrowserContext, Download, expect } from "@playwright/test";
 import { URLConstants } from "../constants/urlConstants";
 import { PlaywrightWrapper } from "../utils/playwright";
 import { ExportValidator } from "../utils/exportValidator";
 import { ExportPage } from "./ExportPage";
+import { getItemByProperty } from "../utils/jsonDataHandler";
+import { getFutureDate } from "../utils/fakerUtils";
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -12,9 +14,10 @@ export class AdminGroupPage extends PlaywrightWrapper {
     static pageUrl = URLConstants.adminURL;
     private exportPage: ExportPage;
 
-    public selectors = {
+     public selectors = {
         clickAdminGroup: (user: string) => `//div[text()='${user}']`,
         searchUser: "#includeLearner-filter-field",
+
         userSearchDropdown: `//button[@data-id='includeLearner'][@data-bs-toggle='dropdown']`,
         userSearchDropdownMain: `(//h6[text()='Select User']//following::div[@class='filter-option-inner'])[1]`,
         userSearchDropdownOption: (option: string) => ` //a[contains(@class,'dropdown-item')]//following::span[text()='${option}']`,
@@ -33,23 +36,47 @@ export class AdminGroupPage extends PlaywrightWrapper {
         selectRole: (roleName: string) => `//a[@class='dropdown-item']//span[text()='${roleName}']`,
         saveAdminGroup: `#lrnSaveUpdate`,
         proceedButton: `//button[contains(text(),'Yes, Proceed')]`,
-        yesButton: `//button[text()='Yes']`,
+
         clickActivateBtn:`//span[text()='Activate']`,
+        adminGroupValue: `//label[text()='Learner Group']//preceding::label[@class='form-label d-block my-0 me-1 text-break']`,
+        adminGroupValueInUser: `//label[text()='Admin Group']//following::label[@class='form-label d-block my-0 me-1 text-break']`,
+        selectOrganization:`//i[@class='fa fa-duotone fa-arrow-up-right-from-square icon_14_1']`,
+        searchOrganization:`//input[contains(@id,'org-exp-search')]`,
+        checkOrganization:`//i[@class='fa-duotone fa-square icon_14_1 me-1']`,
+        SaveOk:`//button[text()='OK']`,
+        clickYes:`//button[text()='Yes']`,
+
+        // Group creation popup selectors
+        groupCreationPopupMessage: `//div[text()='Do you still want to go ahead and create a new group?']`,
+        groupCreationPopupYesButton: `//button[text()='Yes']`,
+
+        yesButton: `//button[text()='Yes']`,
         activateGroupBtn: `//a[@data-bs-toggle='tooltip'][@aria-label='Activate']`,
         suspendBtn: `[name="suspend-btn"]`,
         suspendIconBtn: `//a[@data-bs-toggle='tooltip'][@aria-label='Suspend']`,
         accessButton: `//span[@class='icontxt pointer' and text()='Access']`,
         deleteButton: `//span[@class='ms-2 field_title_1 deactivate_color' and text()='Delete Group']`,
         validTillInput: `//input[@id="admn_valid_till-input"]`,
-        adminGroupValue: `//label[text()='Learner Group']//preceding::label[@class='form-label d-block my-0 me-1 text-break']`,
-        adminGroupValueInUser: `//label[text()='Admin Group']//following::label[@class='form-label d-block my-0 me-1 text-break']`,
+   
         noMatchingResultMessage: `//div[@id='includeuserslist']/div`,
         groupNameAlreadyExistsError: `//*[contains(text(),'Group Name already exists')]`,
         errorMessageGeneral: `//div[contains(text(),'Group Name already exists')] | //*[contains(@class,'alert-danger')] | //*[contains(@class,'error')] | //*[contains(@class,'text-danger')][contains(text(),'Group Name already exists')]`,
         exportIcon:`(//button[contains(@class,'export')]/i)[1]`,
         exportAs:(filetype: string)=>  `(//span[text()='Export as ${filetype}'])[1]`,
         addedUsers:`//h6[text()='ADDED USERS']/following-sibling::div[@class='slimScrollDiv']//span`,
-        editGroupButton: (groupName: string) => `(//div[text()='${groupName}']/following::a[@aria-label='Edit'])[1]`
+        editGroupButton: (groupName: string) => `(//div[text()='${groupName}']/following::a[@aria-label='Edit'])[1]`,
+        captureRole: `//button[@data-id="admin_roles"]`,
+        moduleCheck: (moduleName: string) => `//span[text()='${moduleName}']`,
+        subModule: (ModuleName: string, submoduleName: string) => `//span[text()='${ModuleName}']/following::a[text()='${submoduleName}'][1]`,
+        editGroupBtn: `//a[text()='Edit Admin Group']`,
+        discardBtn: `//button[text()='Discard']`,
+        clickSaveBtn: `//button[text()='Save']`,
+        AdminCode: `//input[@id="admin_group_code"]`,
+        accessbtn: `//span[@class='icontxt crsMapIcon' and text()='Access']`,
+        groupName: `//label[@class="form-label d-block my-0 me-1 text-break"]`,
+        userdltOnGrp: (userName: string) => `(//span[text()='${userName}']/following::i[@aria-label="Delete"])[1]`,
+        validityTillDate: `//input[@placeholder="MM/DD/YYYY"]`,
+        editbtn:`//a[@aria-label="Edit"]`,
 
     }
 
@@ -154,6 +181,27 @@ export class AdminGroupPage extends PlaywrightWrapper {
 
     public async clickSave() {
         await this.click(this.selectors.saveAdminGroup, "Custom Group Save ", "button")
+    }
+
+    public async handleGroupCreationPopup() {
+        try {
+            const popupLocator = this.page.locator(this.selectors.groupCreationPopupMessage);
+            if (await popupLocator.isVisible({ timeout: 3000 })) {
+                console.log("✅ Group creation popup detected: 'Do you still want to go ahead and create a new group?' - Clicking Yes");
+                await this.click(this.selectors.groupCreationPopupYesButton, "Group Creation Popup Yes", "Button");
+                await this.wait("minWait");
+                return true; // Popup was present and handled
+            }
+        } catch (error) {
+            console.log("ℹ️ No group creation popup appeared - continuing normally");
+        }
+        return false; // No popup was present
+    }
+
+    public async clickSaveWithPopupHandling() {
+        await this.clickSave();
+        await this.wait("minWait");
+        return await this.handleGroupCreationPopup();
     }
 
     public async clickProceed() {
@@ -383,8 +431,8 @@ export class AdminGroupPage extends PlaywrightWrapper {
     }
 
     // Delegate to ExportPage for JSON-based validation
-    public async validateExported(filetype: string): Promise<void> {
-        return await this.exportPage.validateExported(filetype);
+    public async validateExported(filetype: string, jsonFileName: string): Promise<void> {
+        return await this.exportPage.validateExported(filetype, jsonFileName);
     }
 
     // Delegate to ExportPage for username validation
@@ -539,6 +587,129 @@ export class AdminGroupPage extends PlaywrightWrapper {
     async editAdminGroup(groupName: string) {
         await this.wait('minWait');
         await this.click(this.selectors.editGroupButton(groupName), "Edit Group Button", "Button");
+    }
+    public async assignOrganization(data:string) {
+        await this.click(this.selectors.selectOrganization, "Assign Organization", "Button");
+        await this.typeAndEnter(this.selectors.searchOrganization, "Search Organization", data);
+        await this.click(this.selectors.checkOrganization,"Organization","Checkbox");
+        await this.click(this.selectors.SaveOk,"OK Button","Button");
+    }
+
+    public async enterValidityDate(date: string) {
+        await this.type(this.selectors.validTillInput, "Validity Date", date);
+    }
+
+    async captureRole() {
+        let role = await this.page.locator(this.selectors.captureRole).innerText();
+        return role;
+    }
+
+    /**
+     * Retrieves the predefined role data by role name
+     * @param roleName - Name of the role to retrieve
+     */
+    public async getRoleDataByRoleName(roleName: string): Promise<any> {
+        const role = getItemByProperty("./data/MetadataLibraryData/QA/defaultAdminGroupsWithPrivileges.json", "roleName", roleName);
+
+        if (role === null || role === undefined) {
+            throw new Error(`No predefined role found for role name: ${roleName}`);
+        }
+
+        return role;
+    }
+
+    public async getPrivilegesByRoleName(roleName: string) {
+        const role = await this.getRoleDataByRoleName(roleName);
+
+        console.log(`✅ Checking privileges for role: ${role.roleName}`);
+
+        const modulePrivileges = role.modulePrivileges;
+
+        for (const [mainModule, privilegeList] of Object.entries(modulePrivileges)) {
+            console.log(`\n📂 Main Module: ${mainModule}`);
+
+            // Click the main module if visible
+            const mainModuleSelector = await this.page.locator(this.selectors.moduleCheck(mainModule));
+            if (await mainModuleSelector.isVisible()) {
+                if ((await mainModuleSelector.innerText()).trim() !== "INSTRUCTOR") {
+                    await mainModuleSelector.click();
+                    console.log(`   ✔ Clicked main module: ${mainModule}`);
+                } else {
+                    console.log(`⚠ Skipping click for module: ${mainModule}`);
+                }
+            } else {
+                console.warn(`   ⚠ Main module not visible: ${mainModule}`);
+                continue;
+            }
+
+            for (const module of privilegeList as any[]) {
+                const privileges = module.privilege;
+                console.log(`   🔑 Checking privileges under submodule: ${privileges}`);
+
+                for (const subModule of privileges) {
+                    const subModuleSelector = await this.page.locator(this.selectors.subModule(mainModule, subModule));
+
+                    if (await subModuleSelector.isVisible()) {
+                        console.log(`      ✅ Submodule visible: ${subModule}`);
+                    } else {
+                        console.warn(`      ❌ Submodule not visible: ${subModule}`);
+                    }
+                }
+            }
+        }
+    }
+
+    async clickEditGroup() {
+        await this.validateElementVisibility(this.selectors.editGroupBtn, "Edit Group");
+        await this.click(this.selectors.editGroupBtn, "Edit Group", "Link");
+    }
+
+    async clickDiscard() {
+        await this.validateElementVisibility(this.selectors.discardBtn, "Discard");
+        await this.click(this.selectors.discardBtn, "Discard", "Button");
+    }
+
+    async validateAdminGroupListing() {
+        const isGroupVisible = await this.page.locator(this.selectors.createGroupButton).isVisible();
+        if (isGroupVisible) {
+            console.log("Discard button navigates to admin group listing page");
+        } else {
+            throw new Error("Discard button does not navigate to admin group listing page");
+        }
+    }
+
+    async clickSaveBtn() {
+        await this.validateElementVisibility(this.selectors.clickSaveBtn, "Save");
+        await this.click(this.selectors.clickSaveBtn, "Save", "Button");
+    }
+
+    async getAdminGroupCode() {
+        let adminCode = await this.page.locator(this.selectors.AdminCode).inputValue();
+        console.log("Code is succcessfully created:", adminCode);
+    }
+
+    async verifyAccess(str: string) {
+        const groupName = await this.page.locator(this.selectors.groupName).innerText();
+        console.log("Group Name:", groupName);
+        expect(groupName).toContain(str);
+    }
+
+    async deleteUserFromGroup(userName: string) {
+        await this.wait("minWait");
+        await this.click(this.selectors.userdltOnGrp(userName), "Delete User from Group", "Icon");
+        await this.wait("minWait");
+    }
+
+    async clickEditbtn() {
+        await this.validateElementVisibility(this.selectors.editbtn, "Edit");
+        await this.click(this.selectors.editbtn, "Edit", "Button");
+    }
+
+    async disableActivateBtn() {
+        const disableBtn = await this.page.locator("//button[@class='disable-items btn button_positive_1_active rounded-0']");
+        if (await disableBtn.isVisible()) {
+            console.log("Activate button is disabled as expected");
+        }
     }
 
 }

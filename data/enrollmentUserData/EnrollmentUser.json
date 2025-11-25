@@ -1,0 +1,29 @@
+[
+  {
+    "firstname": "Larry",
+    "lastname": "Littel",
+    "username": "Kristian_Cummerata49@hotmail.com",
+    "password": "Welcome1@",
+    "userId": "3c33b584-09fa-40e5-9b36-b006f3dd4efe",
+    "email": "Kristian_Cummerata49@hotmail.com",
+    "createdDate": "2025-11-23T08:41:16.002Z"
+  },
+  {
+    "firstname": "Gabriella",
+    "lastname": "Stark",
+    "username": "Graham.Zieme26@gmail.com",
+    "password": "Welcome1@",
+    "userId": "05d20807-72ea-4d1d-b667-4eec40239d50",
+    "email": "Graham.Zieme26@gmail.com",
+    "createdDate": "2025-11-23T08:41:19.028Z"
+  },
+  {
+    "firstname": "Devin",
+    "lastname": "Konopelski",
+    "username": "Clifton.Schuppe36@gmail.com",
+    "password": "Welcome1@",
+    "userId": "fd51f7f9-b617-4d8c-8e10-6eb5c61a227e",
+    "email": "Clifton.Schuppe36@gmail.com",
+    "createdDate": "2025-11-23T08:41:22.189Z"
+  }
+]

@@ -15,7 +15,7 @@ export class InstructorPage extends EnrollmentPage {
         deliveryTypeOption: `//span[text()='Delivery Type']/following::div[@class='dropdown-menu show']//a`,
         statusDropdown: `//span[text()='Status']/following::div[@id='wrapper-search_course_status']`,
         statusOption: `//span[text()='Status']/following::div[@class='dropdown-menu show']//a`,
-        enrollmentIcon: (course: string) => `//span[text()='${course}']/following::div[@aria-label="Enrollments"]//i`,
+        enrollmentIcon: (course: string) => `(//div[text()='${course}']/following::div[@aria-label="Enrollments"]//i)[1]`,
         apply: `//button[text()='Apply']`,
         searchField: "//input[@id='exp-search-field']",
         searchResult: `//div[@id='exp-search-lms-scroll-results']//li`,
@@ -26,6 +26,8 @@ export class InstructorPage extends EnrollmentPage {
         filterScheduled: `//span[text()='scheduled']`,
         launchMeetingButton: (courseName: string) => `//div[text()='${courseName}']/following::button[contains(text(),'Launch Meeting')]`,
         launchMeetingIcon: (courseName: string) => `//div[text()='${courseName}']/following::i[contains(@class,'fa-video')]`,
+        classlist:`//button[text()='Classes List']`,
+        applyButton: `//button[text()='Apply']`,
 
     };
 
@@ -144,6 +146,14 @@ export class InstructorPage extends EnrollmentPage {
 
     async clickEnrollmentIcon(data: string) {
         await this.click(this.selectors.enrollmentIcon(data), "Enrollments", "Icon")
+    }
+      async clickClassList() {
+        await this.wait("minWait");
+        await this.click(this.selectors.classlist, "Instructor Filter", "Field");
+    }
+    async clickApplyButton() {
+        await this.click(this.selectors.applyButton, "Apply", "Button");
+        await this.wait('minWait');
     }
 
     async clickClassesList() {

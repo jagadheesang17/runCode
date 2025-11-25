@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-
 let jiraIssueKeys: string[] = [];
 const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
@@ -13,11 +12,11 @@ export default defineConfig({
   
  
   testDir: './tests',
-  // globalSetup: require.resolve('utils/jiraReport.ts'),
+ // globalSetup: require.resolve('./global-setup.ts'),
 
   fullyParallel: false,
   retries: 0,
-  workers: 2,
+  workers: 1,
   repeatEach: 0,
 
   reporter: [['html', { outputFolder: reportDir, open: 'always' }], ['line'], ["allure-playwright"]],
@@ -34,12 +33,12 @@ export default defineConfig({
 
   // testMatch: [
   //   '*/tests/admin/adminGroups_CustomerAdminGroupUserCreation/**/*.spec.ts',
+  //   '*/tests/admin/adminGroups_addinguserstodefaultAdminGroups/**/*.spec.ts',
   //   '*/tests/admin/adminGroups2/**/*.spec.ts',
   //  '*/tests/admin/customrolecreation/**/*.spec.ts',
   //   // '*/tests/admin/metadataLibrary/**/*.spec.ts',
   //   '*/tests/admin/location/**/*.spec.ts',
   // '*/tests/admin/admin_Enrollments/**/*.spec.ts',
-  // '*/tests/admin/enrollment/**/*.spec.ts',
   //   '*/tests/admin/completionCertificate/**/*.spec.ts',
   //   '*/tests/admin/assessment/**/*.spec.ts',
   //   '*/tests/admin/survey/**/*.spec.ts',
@@ -51,17 +50,23 @@ export default defineConfig({
   //   '*/tests/admin/learnerGroup/**/*.spec.ts',
   // '*/tests/admin/announcement/**/*.spec.ts',
   // '*/tests/admin/course/**/*.spec.ts',
+  // '*/tests/admin/banner/**/*.spec.ts',
+  // '*/tests/admin/dynamic_Shareable_Links/**/*.spec.ts',
   // '*/tests/admin/trainingPlan/**/*.spec.ts',
   //   '*/tests/admin/managerApproval/**/*.spec.ts',
+  //   '*/tests/admin/dedicatedToTP/**/*.spec.ts',
   //     '*/tests/Collaboration-Hub/**/*.spec.ts',
   //     '*/tests/LearnerSide/**/*.spec.ts',
   //     '*/tests/Instructor/**/*.spec.ts',
   //     '*/tests/LearnerProfile/**/*.spec.ts',
   //    '*/tests/ReEnroll/**/*.spec.ts',
-  //     '*/tests/EnrollmentByManager/**/*.spec.ts',
+  //   '*/tests/EnrollmentByManager/**/*.spec.ts',
+  //    '*/tests/dynamic_Shareable_Links/**/*.spec.ts', 
   //   // '*/tests/Terms_and_Conditions/**/*.spec.ts',  
   //   // '*/tests/SSO/**/*.spec.ts',
   //   '*/api/apiTestIntegration/**/*.spec.ts',
+  //   '*/tests/organization/**/*.spec.ts',
+  //   '*/tests/admin/address_inheritance/**/*.spec.ts',
 
   // ],
 

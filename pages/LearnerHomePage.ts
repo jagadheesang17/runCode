@@ -57,9 +57,12 @@ export class LearnerHomePage extends LearnerLogin {
         qrImagePath:'data/finalimage.png',
         userEmail:'//div[text()="Email :"]/following-sibling::div[1]',
         userphone:'//div[text()="Phone :"]/following-sibling::div[1]',
+        selectAdmin:`//span[text()='Admin']`,
 
+        organizationInProfile:(orgname:string)=>`//h4[text()='${orgname} ']`,
 
         instrctor: `//a/span[text()='Instructor']`,
+
 
     };
 
@@ -252,6 +255,12 @@ export class LearnerHomePage extends LearnerLogin {
         await this.click(this.selectors.collaborationHub, "CH", "Option");
         await this.spinnerDisappear();
     }
+     async selectAdmin() {
+        await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
+        await this.validateElementVisibility(this.selectors.selectAdmin, "Admin")
+        await this.click(this.selectors.selectAdmin, "Admin", "Option");
+        await this.spinnerDisappear();
+    }
 
 
     async clickApprove(courseName: string) {
@@ -419,6 +428,8 @@ public async clickmyprofile()
     }
 
 
-
+async verifyMappedOrganization(orgname:string,expectedOrgname:string){
+    await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
+}
 
 }

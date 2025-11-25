@@ -1,0 +1,490 @@
+[
+    {
+        "roleName": "Super admin",
+        "description": "Default super admin role with full system privileges",
+        "modulePrivileges": {
+            "Learning": [
+                {
+                    "privilege": [
+                        "Course",
+                        "Certification",
+                        "Learning Path",
+                        "Completion Certificate",
+                        "Content",
+                        "Direct Content Launch",
+                        "Dynamic Shareable Links"
+                    ]
+                }
+            ],
+            "Enrollments": [
+                {
+                    "privilege": [
+                        "Enroll",
+                        "View/update Status - Course/TP",
+                        "View Status/Enroll Learner to TP Courses",
+                        "View/update Status - Learner",
+                        "Bulk Upload",
+                        "Create Order",
+                        "Transfer Enrollment - Course",
+                        "Transfer Enrollment - Training Plan"
+                    ]
+                }
+            ],
+            "People": [
+                {
+                    "privilege": [
+                        "User",
+                        "Organization",
+                        "Admin Role",
+                        "Admin Group",
+                        "Learner Group"
+                    ]
+                }
+            ],
+            "Survey": [
+                {
+                    "privilege": [
+                        "Survey",
+                        "Questions"
+                    ]
+                }
+            ],
+            "Assessment": [
+                {
+                    "privilege": [
+                        "Assessment",
+                        "Questions"
+                    ]
+                }
+            ],
+            "Communication": [
+                {
+                    "privilege": [
+                        "Banner",
+                        "Announcement",
+                        "Notification"
+                    ]
+                }
+            ],
+            "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ],
+            "Commerce": [
+                {
+                    "privilege": [
+                        "Order",
+                        "Discount",
+                        "Manage Tax"
+                    ]
+                }
+            ],
+            "Site Admin": [
+                {
+                    "privilege": [
+                        "Admin Branding",
+                        "Admin Configuration",
+                        "Learner Branding",
+                        "Learner Configuration",
+                        "Learner Page Builder"
+                    ]
+                }
+            ],
+            "metadata library": [
+                {
+                    "privilege": [
+                        "Learning",
+                        "People",
+                        "E-Commerce",
+                        "General",
+                        "Custom Field"
+                    ]
+                }
+            ],
+            "Maintenance": [
+                {
+                    "privilege": [
+                        "Cron Management",
+                        "Debugging Logs",
+                        "Notification Log",
+                        "Query Execution",
+                        "API Visibility",
+                        "Language"
+                    ]
+                }
+            ]  
+        },
+        "testType": "super_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "Learning admin",
+        "description": "Default course creator admin role for course management",
+        "modulePrivileges": {
+           "Learning": [
+                {
+                    "privilege": [
+                        "Course",
+                        "Certification",
+                        "Learning Path",
+                        "Completion Certificate",
+                        "Content",
+                        "Direct Content Launch",
+                        "Dynamic Shareable Links"
+                    ]
+                }
+            ],
+           "Enrollments": [
+                {
+                    "privilege": [
+                        "Enroll",
+                        "View/update Status - Course/TP",
+                        "View Status/Enroll Learner to TP Courses",
+                        "View/update Status - Learner",
+                        "Bulk Upload",
+                        "Create Order",
+                        "Transfer Enrollment - Course",
+                        "Transfer Enrollment - Training Plan"
+                    ]
+                }
+            ],
+            "Survey": [
+                {
+                    "privilege": [
+                        "Survey",
+                        "Questions"
+                    ]
+                }
+            ],
+            "Assessment": [
+                {
+                    "privilege": [
+                        "Assessment",
+                        "Questions"
+                    ]
+                }
+            ]
+        },
+        "testType": "learning_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "Enrollment admin",
+        "description": "Default Enrollment admin role for enrollments",
+        "modulePrivileges": {
+            "Enrollments": [
+                {
+                    "privilege": [
+                        "Enroll",
+                        "View/update Status - Course/TP",
+                        "View Status/Enroll Learner to TP Courses",
+                        "View/update Status - Learner",
+                        "Bulk Upload",
+                        "Create Order",
+                        "Transfer Enrollment - Course",
+                        "Transfer Enrollment - Training Plan"
+                    ]
+                }
+            ]
+        },
+        "testType": "enrollment_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "People admin",
+        "description": "Default People admin role for user management",
+        "modulePrivileges": {
+            "People": [
+                {
+                    "privilege": [
+                        "User",
+                        "Organization",
+                        "Admin Role",
+                        "Admin Group",
+                        "Learner Group"
+                    ]
+                }
+            ]
+        },
+        "testType": "people_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "People admin - 2",
+        "description": "Default People admin - 2 role for learning user management",
+        "modulePrivileges": {
+             "People": [
+                {
+                    "privilege": [
+                        "User",
+                        "Organization",
+                        "Learner Group"
+                    ]
+                }
+            ]
+        },
+        "testType": "people admin - 2",
+        "isActive": true
+    },
+    {
+        "roleName": "Report admin",
+        "description": "Default report admin role for report management",
+        "modulePrivileges": {
+            "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ]
+            
+        },
+        "testType": "report_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "Manager",
+        "description": "Default manager role for team management",
+        "modulePrivileges": {
+           "Enrollments": [
+                {
+                    "privilege": [
+                        "Enroll",
+                        "View/update Status - Course/TP",
+                        "View Status/Enroll Learner to TP Courses",
+                        "View/update Status - Learner",
+                        "Create Order",
+                        "Transfer Enrollment - Course",
+                        "Transfer Enrollment - Training Plan"
+                    ]
+                }
+            ],
+             "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ]
+        },
+        "testType": "manager",
+        "isActive": true
+    },
+    {
+        "roleName": "Instructor",
+        "description": "Default instructor role for teaching and training",
+        "modulePrivileges": {
+           "Instructor":[
+           ],
+           "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ]
+        },
+        "testType": "instructor",
+        "isActive": true
+    },
+    {
+        "roleName": "Commerce admin",
+        "description": "Default commerce admin role for managing commerce-related activities",
+        "modulePrivileges": {
+            "Enrollments": [
+                {
+                    "privilege": [
+                        "Create Order"
+                    ]
+                }
+            ],
+            "Commerce": [
+                {
+                    "privilege": [
+                        "Order",
+                        "Discount",
+                        "Manage Tax"
+                    ]
+                }
+            ]
+        },
+        "testType": "commerce_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "Talent admin",
+        "description": "Default talent admin role for managing talent-related activities",
+        "modulePrivileges": {
+            "Skills": [
+                {
+                    "privilege": [
+                        "Skills Library",
+                        "Skills - Job Role Mapping",
+                        "Skill Group",
+                        "Skills - Training mapping"
+                    ]
+                }
+            ]
+        },
+        "testType": "talent_admin",
+        "isActive": true
+    },
+    {
+     "roleName": "System admin",
+        "description": "Default system admin role with full system privileges",
+        "modulePrivileges": {
+            "Learning": [
+                {
+                    "privilege": [
+                       "Course",
+                        "Certification",
+                        "Learning Path",
+                        "Completion Certificate",
+                        "Content",
+                        "Direct Content Launch",
+                        "Dynamic Shareable Links"
+                    ]
+                }
+            ],
+            "Enrollments": [
+                {
+                    "privilege": [
+                        "Enroll",
+                        "View/update Status - Course/TP",
+                        "View Status/Enroll Learner to TP Courses",
+                        "View/update Status - Learner",
+                        "Bulk Upload",
+                        "Create Order",
+                        "Transfer Enrollment - Course",
+                        "Transfer Enrollment - Training Plan"
+                    ]
+                }
+            ],
+            "People": [
+                {
+                    "privilege": [
+                        "User",
+                        "Organization",
+                        "Admin Role",
+                        "Admin Group",
+                        "Learner Group"
+                    ]
+                }
+            ],
+            "Survey": [
+                {
+                    "privilege": [
+                        "Survey",
+                        "Questions"
+                    ]
+                }
+            ],
+            "Assessment": [
+                {
+                    "privilege": [
+                        "Assessment",
+                        "Questions"
+                    ]
+                }
+            ],
+            "Communication": [
+                {
+                    "privilege": [
+                        "Banner",
+                        "Announcement",
+                        "Notification"
+                    ]
+                }
+            ],
+            "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ],
+            "Commerce": [
+                {
+                    "privilege": [
+                        "Order",
+                        "Discount",
+                        "Manage Tax"
+                    ]
+                }
+            ],
+            "Site Admin": [
+                {
+                    "privilege": [
+                        "Site Settings",
+                        "Admin Branding",
+                        "Admin Configuration",
+                        "Learner Branding",
+                        "Learner Configuration",
+                        "Learner Page Builder"
+                    ]
+                }
+            ],
+            "metadata library": [
+                {
+                    "privilege": [
+                        "Learning",
+                        "People",
+                        "E-Commerce",
+                        "General",
+                        "Custom Field"
+                    ]
+                }
+            ],
+            "Maintenance": [
+                {
+                    "privilege": [
+                        "Cron Management",
+                        "Debugging Logs",
+                        "Notification Log",
+                        "Query Execution",
+                        "API Visibility",
+                        "Language",
+                        "Customer Config"
+                    ]
+                }
+            ],
+            "Skills": [
+                {
+                    "privilege": [
+                        "Skills Library",
+                        "Skills - Job Role Mapping",
+                        "Skill Group",
+                        "Skills - Training mapping"
+                    ]
+                }
+            ]
+        },
+        "testType": "system_admin",
+        "isActive": true
+    },
+    {
+        "roleName": "registrar",
+        "description": "Default registrar role for managing course registrations",
+        "modulePrivileges": {
+            "Reports": [
+                {
+                    "privilege": [
+                        "Report Dashboard",
+                        "Reports"
+                    ]
+                }
+            ]
+            
+        },
+        "testType": "registrar",
+        "isActive": true
+    }
+]

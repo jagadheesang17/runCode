@@ -211,10 +211,13 @@ export class ManagerPage extends PlaywrightWrapper {
 
   async clickGuideTeamIcon(data: string) {
     await this.wait("mediumWait");
+    await this.page.mouse.wheel(0, 400);
     await this.validateElementVisibility(
       this.selectors.guideTeam(data),
       "Guide Team"
     );
+    //await this.page.locator(this.selectors.guideTeam(data)).scrollIntoViewIfNeeded();
+    await this.page.mouse.wheel(0, 500);
     await this.mouseHover(this.selectors.guideTeam(data), "Guide Team");
     await this.page
       .locator(this.selectors.guideTeam(data))

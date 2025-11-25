@@ -73,6 +73,7 @@ export class MetaLibraryPage extends AdminHomePage {
         newOfTag: (data: string) =>`//div[@id='tag']//div[contains(@class, 'lms-cate-data')]//span[text()='${data}']`,
         newofCEUType: (data: string) =>`//div[@id='ceu-type']//div[contains(@class,'content-start')]//span[text()='${data}']`,
         newofCEUProvider:(data: string) =>`//div[@id='ceu-provider']//div[contains(@class, 'content-start')]//span[text()='${data}']`,
+        newofProvider:(data: string) =>`//div[@id='provider']//div[contains(@class, 'content-start')]//span[text()='${data}']`,
         newOfPeopleDepartment:(data: string) =>`//div[@id='department']//div[contains(@class, 'content-start')]//span[text()='${data}']`,
         newOfPeopleEmployment:(data: string) => `//div[@id='employment']//div[contains(@class, 'content-start')]//span[text()='${data}']`,
         newOfPeopleUsertypes: (data: string) => `//div[@id='usertypes']//div[contains(@class, 'content-start')]//span[text()='${data}']`,
@@ -179,6 +180,8 @@ export class MetaLibraryPage extends AdminHomePage {
     }
 
     async providerSearchField(data: string) {
+        await this.wait("minWait");
+        await this.retrieveData(this.selectors.newofProvider(data), filePath.provider);
         await this.type(this.selectors.providerSearchField, "Search Field", data);
         await this.keyboardAction(this.selectors.providerSearchField, "Enter", "Search Field", data);
     }

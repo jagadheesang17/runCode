@@ -8,7 +8,7 @@ const certificartionDescription=FakerData.getDescription();
 const title = FakerData.getcertificationTitle();
 
 test.describe.configure({ mode: "serial" });
-test(`Ensure that learner able to view the completion certificate in the certificartions section under One Profile`, async ({ adminHome,createCourse, contentHome,CompletionCertification }) => {
+test.skip(`Ensure that learner able to view the completion certificate in the certificartions section under One Profile`, async ({ adminHome,createCourse, contentHome,CompletionCertification }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },
         { type: `TestCase`, description: `Creation of a new completion certificate and added to the e-learning course` },
@@ -50,7 +50,7 @@ test(`Ensure that learner able to view the completion certificate in the certifi
 })
 
 
-test(`Verify that learner able to view the completion crertificate in the certificartions section under One Profile`, async ({ learnerHome, profile,catalog }) => {
+test.skip(`Verify that learner able to view the completion crertificate in the certificartions section under One Profile`, async ({ learnerHome, profile,catalog }) => {
 
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },

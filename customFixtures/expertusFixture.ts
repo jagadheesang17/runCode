@@ -10,7 +10,6 @@ import { MetaLibraryPage } from '../pages/MetaLibraryPage'
 import { EditCoursePage } from '../pages/EditCoursePage'
 import { AdminGroupPage } from '../pages/AdminGroupPage'
 import { ExportPage } from '../pages/ExportPage';
-
 import { OrganizationPage } from '../pages/OrganizationPage'
 import { LocationPage } from '../pages/LocationPage'
 import { CommerceHomePage } from '../pages/CommerceHomePage'
@@ -42,6 +41,8 @@ import { DirectContentLaunch } from '../pages/DirectContentLaunch'
 import {LearningAssignmentPage} from '../pages/LearningAssignmentPage'
 import { CustomFieldPage } from '../pages/CustomFieldPage'
 import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
+import { TransferEnrollmentPage } from '../pages/TransferEnrollmentPage'
+import { setupCourseCreation } from '../utils/cookieSetup'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -84,6 +85,7 @@ type expertusFixture = {
     customFieldHome: CustomFieldPage
     exportPage: ExportPage
     dynamicShareableLinks: DynamicShareableLinksPage
+    transferEnrollment: TransferEnrollmentPage
 }
 
 export const test = baseTest.extend<expertusFixture>({
@@ -254,6 +256,11 @@ export const test = baseTest.extend<expertusFixture>({
     dynamicShareableLinks: async ({ page, context }, use) => {
         const dynamicShareableLinks = new DynamicShareableLinksPage(page, context);
         await use(dynamicShareableLinks);
+    },
+
+    transferEnrollment: async ({ page, context }, use) => {
+        const transferEnrollment = new TransferEnrollmentPage(page, context);
+        await use(transferEnrollment);
     }
 
 })

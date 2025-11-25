@@ -294,7 +294,7 @@ test.describe(`AG011 - Comprehensive User Management & Admin Group Assignment`, 
             { type: `Author`, description: `Kathir A` },
             { type: `TestCase`, description: `AG011_Step7_Deleted_Users_Complete_Exclusion` },
             { type: `Test Description`, description: `Delete non-suspended user and verify they do not appear in both Added Users section and Select Users search of admin groups` }
-        );
+        );  
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         // Delete only the non-suspended user (testUsers[1]) - suspended users cannot be deleted

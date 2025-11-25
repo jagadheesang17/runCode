@@ -103,7 +103,7 @@ test.describe(`Verify_that_the_learner_is_able_to_launch_and_complete_a_certific
      await dashboard.clickCertificationLink();
      await dashboard.searchCertification(title);
      await dashboard.verifyTheEnrolledCertification(title);
-              await catalog.clickMoreonCourse(title);
+      await catalog.clickMoreonCourse(title);
 
      await catalog.clickLaunchButton();
      await catalog.saveLearningStatus();

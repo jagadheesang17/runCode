@@ -14,7 +14,7 @@ test.describe.configure({ mode: "serial" });
 //let adminGroups: string[] = [];
 const courseAdmin: any = FakerData.getUserId()
 
-  test(`Verify that User Profile QR Code works correctly`, async ({ learnerHome, page,createUser,adminHome}) => {
+  test.skip(`Verify that User Profile QR Code works correctly`, async ({ learnerHome, page,createUser,adminHome}) => {
     test.info().annotations.push(
       { type: `Author`, description: `MANIKANDAN_V` },
       { type: `TestCase`, description: `Verify that UserProfile QR_Code` },

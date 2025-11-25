@@ -15,7 +15,6 @@ test.describe(`Verify_Learning_Path__single_instance_with_survey_and_assessment_
             { type: `TestCase`, description: `Creatation of Pre-Assessment` },
             { type: `Test Description`, description: `Creatation of Pre-Assessment` }
         );
-
         await adminHome.loadAndLogin("CUSTOMERADMIN")
         await adminHome.isSignOut();
         await adminHome.menuButton();
