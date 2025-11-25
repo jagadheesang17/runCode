@@ -64,6 +64,11 @@ export class OrganizationPage extends AdminHomePage {
                 orgType:(data:string)=>`//span[text()='${data}']`,
         results:`//div[@id='ParentOrg-filter-lms-scroll-results']`,
 
+        // Transfer Enrollment filters
+        filterDropdown: (field: string) => `(//span[text()='${field}']//following::div)[1]`,
+        filterSearchInput: (field: string) => `(//span[text()='${field}']//following::input[@placeholder='Search'])[1]`,
+        filterOption: (value: string) => `//li[text()='${value}']`,
+
         disabledDeleteIcon:`//i[@class='fa-duotone fa-trash-can icon_14_6 deactivate_color']`,
 
         threeDot:`//i[@class='fa fa-duotone fa-ellipsis icon_14_1 pointer']`,
@@ -447,5 +452,24 @@ export class OrganizationPage extends AdminHomePage {
         } else {
             console.log("No users are mapped to this organization");
         }
+    }
+
+    // Transfer Enrollment filter methods
+    public async selectFilterDropdown(field: string) {
+        await this.wait("minWait");
+        await this.click(this.selectors.filterDropdown(field), `${field} Filter`, "Dropdown");
+    }
+
+    public async searchAndSelectFilterValue(field: string, value: string) {
+        await this.wait("minWait");
+        await this.type(this.selectors.filterSearchInput(field), `${field} Search`, value);
+        await this.wait("minWait");
+        await this.click(this.selectors.filterOption(value), `${value}`, "Option");
+    }
+
+    public async clickApplyFilter() {
+             await this.wait("minWait");
+        await this.click(this.selectors.apply, "Apply Filter", "Button");
+          await this.wait("mediumWait");
     }
 }

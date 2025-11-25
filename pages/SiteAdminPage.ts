@@ -62,6 +62,11 @@ export class SiteAdminPage extends AdminHomePage {
         mergeUserToggle: `(//*[@class="col Merge users"]/div/label/i)[1]`,
         okButton: `//button[text()='OK']`,
 
+        //Transfer Enrollment - Training Plan
+        clickEditEnrollments: `//i[@data-bs-target='#Enrollments-content']`,
+        transferEnrollmentTPEnabled: `//span[text()='Transfer Enrollment - Training Plan']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
+        transferEnrollmentTPUnchecked: `//span[text()='Transfer Enrollment - Training Plan']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -294,6 +299,59 @@ export class SiteAdminPage extends AdminHomePage {
             console.log("ℹ️ Dynamic Shareable Links is already enabled");
         }
 
+    }
+
+    //Transfer Enrollment - Training Plan
+    async clickEditEnrollments() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.clickEditEnrollments, "Edit Enrollments");
+        await this.click(this.selectors.clickEditEnrollments, "Edit Enrollments", "Button");
+    }
+
+    async enableTransferEnrollmentTP() {
+        await this.wait("mediumWait");
+        const uncheckedElement = this.page.locator(this.selectors.transferEnrollmentTPUnchecked);
+        const isUnchecked = await uncheckedElement.isVisible();
+        
+        if (isUnchecked) {
+            await this.click(this.selectors.transferEnrollmentTPUnchecked, "Enable Transfer Enrollment - Training Plan", "Checkbox");
+            await this.click(this.selectors.save, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Enabled: Transfer Enrollment - Training Plan checkbox is now checked");
+        } else {
+            console.log("ℹ️ Transfer Enrollment - Training Plan is already enabled");
+        }
+    }
+
+    async disableTransferEnrollmentTP() {
+        await this.wait("mediumWait");
+        const checkedElement = this.page.locator(this.selectors.transferEnrollmentTPEnabled);
+        const isChecked = await checkedElement.isVisible();
+        
+        if (isChecked) {
+            await this.click(this.selectors.transferEnrollmentTPEnabled, "Disable Transfer Enrollment - Training Plan", "Checkbox");
+            await this.click(this.selectors.save, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Disabled: Transfer Enrollment - Training Plan checkbox is now unchecked");
+        } else {
+            console.log("ℹ️ Transfer Enrollment - Training Plan is already disabled");
+        }
+    }
+
+    async verifyTransferEnrollmentTPEnabled() {
+        await this.wait("mediumWait");
+        const checkedElement = this.page.locator(this.selectors.transferEnrollmentTPEnabled);
+        const isChecked = await checkedElement.isVisible();
+        expect(isChecked).toBeTruthy();
+        console.log("✅ Verified: Transfer Enrollment - Training Plan is enabled");
+    }
+
+    async verifyTransferEnrollmentTPDisabled() {
+        await this.wait("mediumWait");
+        const uncheckedElement = this.page.locator(this.selectors.transferEnrollmentTPUnchecked);
+        const isUnchecked = await uncheckedElement.isVisible();
+        expect(isUnchecked).toBeTruthy();
+        console.log("✅ Verified: Transfer Enrollment - Training Plan is disabled");
     }
 
 }

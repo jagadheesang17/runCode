@@ -463,20 +463,14 @@ export class CoursePage extends AdminHomePage {
     suspendedGrp:(groupName:string) => `(//li[text()='${groupName}'])`,
 
     // Dedicated to TP - Enrollment and Instance selectors
-<<<<<<< Updated upstream
     completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
     completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
     completeByOption: (option: string) => `//span[text()='${option}']`,
-=======
     enrollmentsIcon: `//i[@aria-label='Enrollments']`,
     enrollmentTable: `//table[contains(@class,'table')]`,
     enrollmentRow: `//table//tbody//tr`,
     enrollmentSourceColumn: (rowIndex: number) => `(//table//tbody//tr)[${rowIndex}]//td[contains(text(),'Learning Path') or contains(text(),'Direct')]`,
-    completeByRequiredPopup: `//ul[contains(text(),'is required.')]`,
-    completeByDropdown: "(//label[text()='Complete by']//following::button[contains(@data-id,'complete-by')])[1]",
-    completeByOption: (option: string) => `//span[text()='${option}']`,
 
->>>>>>> Stashed changes
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -2457,20 +2451,25 @@ export class CoursePage extends AdminHomePage {
     return categoryName;
   }
 
-  async providerDropdown() {
+  async providerDropdown(): Promise<string> {
+    const provider = getRandomItemFromFile(filePath.provider);
+    const providerName = provider;
     await this.click(this.selectors.providerDropdown, "dropdown", "button");
+    await this.wait("mediumWait");
     const providerElements = this.page.locator(
       this.selectors.providerDropdownValue
     );
-    //  const randomIndex = Math.floor(Math.random() * await providerElements.count());
-    const randomIndex =
-      Math.floor(Math.random() * ((await providerElements.count()) - 1)) + 1;
-    // await this.click(this.selectors.providerDropdown, "dropdown", "button")
     await this.click(
-      this.selectors.providerIndexBase(randomIndex),
+      this.selectors.providerOption(providerName),
       "option",
       "button"
     );
+    return providerName;
+  }
+
+  async getSelectedProvider(): Promise<string> {
+    const selectedText = await this.page.locator(this.selectors.providerDropdown + "//div[@class='filter-option-inner-inner']").textContent();
+    return selectedText?.trim() || "";
   }
 
   async getCourse() {
