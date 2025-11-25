@@ -398,6 +398,54 @@ async verifyLandingPage(page:string) {
     await this.verification(pageName(page), page);
 }
 
+/**
+ * Custom login method that accepts username, password, and url for bulk enrollment testing
+ */
+public async customLogin(username: string, url: string, password: string = "Welcome1@") {
+    const signIn = async () => {
+        try {
+            await this.waitSelector(signInLocator);
+            await this.wait('mediumWait');
+            await this.click(signInLocator, "Sign In button", "Button");
+        } catch (error) {
+            console.error(`Error during sign-in process: ${error}`);
+            throw error;
+        }
+    };
+
+    try {
+        switch (url) {
+            case "Portal1": {
+                await this.loadApp(URLConstants.learnerportal);
+                break;
+            }
+            case "Portal2": {
+                await this.loadApp(URLConstants.learnerportal2);
+                break;
+            }
+            default:
+                await this.loadApp(URLConstants.leanerURL);
+                break;
+        }
+        await signIn();
+        await this.type(usernameSelector, "Username", username);
+        await this.type(passwordSelector, "Password", password);
+        await this.wait('minWait');
+        await this.click(signInButtonLocator, "Sign In button", "Button");
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.waitSelector(logoutButtonLocator);
+        const logoutButton = this.page.locator(logoutButtonLocator);
+        await expect(logoutButton).toBeVisible({ timeout: 20000 });
+        console.log(`Custom login successful for user: ${username}`);
+        await this.wait('minWait')
+        console.log(await this.page.title());
+        await this.page.reload({ waitUntil: 'commit' });
+        await this.wait('mediumWait');
+    } catch (error) {
+        console.error(`Custom login attempt failed: ${error}`);
+        throw error;
+    }
+}
 
 
 }

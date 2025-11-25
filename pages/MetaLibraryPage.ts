@@ -265,6 +265,7 @@ export class MetaLibraryPage extends AdminHomePage {
     }
 
     async employmentTypeExpandButton() {
+        await this.wait("maxWait");
         await this.mouseHover(this.selectors.employmentTypeExpandBtn, "Employment Type");
         await this.click(this.selectors.employmentTypeExpandBtn, "Employment Type", "Button");
     }

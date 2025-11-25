@@ -296,6 +296,34 @@ export function getFutureDate(): string {
     return `${month}/${day}/${year}`;
 }
 
+/**
+ * Get current time rounded up to nearest 15-minute interval
+ * Examples: 6:37 → 6:45, 7:03 → 7:15, 8:50 → 9:00
+ */
+export function getCurrentTimeRoundedTo15(): string {
+    const now = new Date();
+    const minutes = now.getMinutes();
+    const hours = now.getHours();
+    
+    // Round up to nearest 15 minutes
+    const roundedMinutes = Math.ceil(minutes / 15) * 15;
+    
+    // Handle hour overflow when minutes round to 60
+    let finalHours = hours;
+    let finalMinutes = roundedMinutes;
+    
+    if (roundedMinutes === 60) {
+        finalHours = (hours + 1) % 24;
+        finalMinutes = 0;
+    }
+    
+    // Convert to 12-hour format
+    const ampm = finalHours >= 12 ? "PM" : "AM";
+    const displayHours = finalHours % 12 || 12;
+    
+    return `${displayHours.toString().padStart(2, '0')}:${finalMinutes.toString().padStart(2, '0')} ${ampm}`;
+}
+
 
 
 export function getFutureyear(): string {

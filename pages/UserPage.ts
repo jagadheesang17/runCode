@@ -209,10 +209,10 @@ export class UserPage extends AdminHomePage {
    async clickeditUser() {
     await this.wait("minWait");
     await this.validateElementVisibility(
-      this.selectors.EditUser(),
+      this.selectors.editIcon,
       "Edit User"
     );
-    const selector = this.selectors.EditUser();
+    const selector = this.selectors.editIcon;
     await this.click(selector, "Edit User", "Button");
 
   }

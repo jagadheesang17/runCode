@@ -1,6 +1,7 @@
 
 import { expect } from "playwright/test";
 import { LearnerHomePage } from "./LearnerHomePage";
+import { min } from "date-fns";
 
 export class UniversalSearchPage extends LearnerHomePage {
 
@@ -19,6 +20,7 @@ export class UniversalSearchPage extends LearnerHomePage {
     }
 
     async univSearch(searchData: string) {
+        await this.wait("minWait")
         await this.type(this.selectors.univ_SearchBox, "Universal Search Field", searchData)
         await this.click(this.selectors.univ_SeachClick, "Search icon", "search icon")
     }

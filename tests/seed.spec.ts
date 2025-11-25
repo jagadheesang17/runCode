@@ -1,8 +1,7 @@
-import { test } from "../customFixtures/expertusFixture"
+import { test, expect } from '@playwright/test';
 
-test('Navigate to learner groups', async ({ adminHome }) => {
-  await adminHome.loadAndLogin("CUSTOMERADMIN");
-  await adminHome.menuButton();
-  await adminHome.people();
-  await adminHome.clickLearnerGroupLink();
+test.describe('Test group', () => {
+  test('seed', async ({ page }) => {
+    // generate code here.
+  });
 });

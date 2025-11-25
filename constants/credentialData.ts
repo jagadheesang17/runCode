@@ -23,6 +23,10 @@ switch (environmentSetup) {
         username: "arivazhaganp",
         password: "Welcome1@",
       },
+        INSTRUCTOR2: {
+        username: "divya",
+        password: "Welcome1@",
+      },
       MANAGERNAME: {
         username: "managerUser",
         password: "Welcome1@",
@@ -98,6 +102,10 @@ switch (environmentSetup) {
       },
       INSTRUCTORNAME: {
         username: "henry",
+        password: "Welcome1@",
+      },
+      INSTRUCTOR2: {
+        username: "divya",
         password: "Welcome1@",
       },
       MANAGERNAME: {
@@ -193,6 +201,10 @@ switch (environmentSetup) {
         username: "autoins",
         password: "Welcome1@",
       },
+      INSTRUCTOR2: {
+        username: "divya",
+        password: "Welcome1@",
+      },
       MANAGERNAME: {
         username: "automnr",
         password: "Welcome1@",
@@ -286,6 +298,10 @@ switch (environmentSetup) {
       },
       INSTRUCTORNAME: {
         username: "instructorone",
+        password: "Welcome1@",
+      },
+      INSTRUCTOR2: {
+        username: "divya",
         password: "Welcome1@",
       },
       MANAGERNAME: {

@@ -65,49 +65,163 @@ export async function courseAutoRegister() {
 
 async function certificationExpiry_CronJob() {
     try {
-
+        console.log("🔄 Starting certificationExpiry_CronJob execution...");
 
         const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
         const currentTimeString = currentTimeResult[0]['NOW()'];
 
+        // Create separate date objects to avoid mutation issues
         const currentTime = new Date(currentTimeString);
-        const pastDate = currentTime.setDate(currentTime.getDate() - 2);
+        const pastDate = new Date(currentTimeString); // Create new date object
+        pastDate.setDate(pastDate.getDate() - 2); // Set to 2 days ago for completion_date
         const formattedPreviousDate = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
+
+        console.log(`📅 Current Database Time: ${format(currentTime, 'yyyy-MM-dd HH:mm:ss')}`);
+        console.log(`📅 Setting completion_date to: ${formattedPreviousDate}`);
 
         //Query to retrive the data
         const programEnrollment = await dataBase.executeQuery(`SELECT * FROM program_enrollment ORDER BY id DESC LIMIT 1;`)
-        console.log(programEnrollment);
+        console.log("📊 Latest program enrollment:", programEnrollment);
 
         const idString = String(programEnrollment[0].id);
-        console.log("Retrived Id = " + idString);
+        console.log("Retrived Program Enrollment Id = " + idString);
 
         //Query to UPDATE the ProgramEnrollment 
-
         const formattedCurrentTime = format(currentTime, 'yyyy-MM-dd HH:mm:ss');
-        console.log('Formatted Current Time:', formattedCurrentTime);
-        currentTime.setDate(currentTime.getDate() + 2)
-        const newTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
-        const formattedNewTime = format(newTime, 'yyyy-MM-dd HH:mm:ss');
-        console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
+        console.log('📅 Formatted Current Time:', formattedCurrentTime);
+        
+        // Create separate date object for expired_on calculation - set to 1 day ago
+        const expiredOnTime = new Date(currentTimeString);
+        expiredOnTime.setDate(expiredOnTime.getDate() - 1); // Set to 1 day ago (yesterday)
+        const formattedNewTime = format(expiredOnTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('📅 Setting expired_on to (1 day ago):', formattedNewTime);
         const updateProgramEnrollment = await dataBase.executeQuery(`UPDATE program_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
-        console.log(updateProgramEnrollment);
+        console.log("💾 Program enrollment update result:", updateProgramEnrollment);
 
         await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'AND name='Expire Certification';`)
+        console.log("⚙️ Updated cron_master: Expire Certification");
+        
         const verification = await dataBase.executeQuery(`SELECT * FROM program_enrollment WHERE id=${idString} ;`)
         const completionDate = verification[0].completion_date
-        console.log("The Updated Completion date = " + completionDate);
+        const expiredOn = verification[0].expired_on
+        console.log("✅ Verification - Updated Completion date: " + completionDate);
+        console.log("✅ Verification - Updated Expired on: " + expiredOn);
 
+        // Create separate date object for cron scheduling
+        const cronScheduleTime = new Date(currentTimeString);
+        cronScheduleTime.setTime(cronScheduleTime.getTime() - 15 * 60 * 1000); // 15 minutes ago
+        const cronFormattedTime = format(cronScheduleTime, 'yyyy-MM-dd HH:mm:ss');
 
-  
-
-        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${formattedNewTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certification' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
-        console.log(cronJob);
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${cronFormattedTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certification' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        console.log("⚙️ Updated cron_details: Expire Certification");
+        console.log("📅 Cron next_run set to:", cronFormattedTime);
+        
+        console.log("🎉 certificationExpiry_CronJob completed successfully!");
+        console.log("📋 Summary:");
+        console.log(`   • Program Enrollment ID: ${idString}`);
+        console.log(`   • Completion Date: ${formattedPreviousDate} (2 days ago)`);
+        console.log(`   • Expired On: ${formattedNewTime} (1 day ago)`);
+        console.log(`   • Cron Status: Enabled and scheduled`);
 
     } catch (error) {
-        console.log("Not executed " + error);
+        console.log("❌ Certification expiry cron job failed: " + error);
+        throw error;
     }
 
 }
+
+async function courseExpiry_CronJob() {
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+        try {
+            console.log(`🔄 Starting courseExpiry_CronJob execution... (Attempt ${retryCount + 1}/${maxRetries})`);
+
+            // Test database connection first
+            console.log("🔍 Testing database connection...");
+            const connectionTest = await dataBase.executeQuery("SELECT 1 as test");
+            console.log("✅ Database connection successful");
+
+            const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+            const currentTimeString = currentTimeResult[0]['NOW()'];
+
+        // Create separate date objects to avoid mutation issues
+        const currentTime = new Date(currentTimeString);
+        const pastDate = new Date(currentTimeString); // Create new date object
+        pastDate.setDate(pastDate.getDate() - 2); // Set to 2 days ago for completion_date
+        const formattedPreviousDate = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
+
+        console.log(`📅 Current Database Time: ${format(currentTime, 'yyyy-MM-dd HH:mm:ss')}`);
+        console.log(`📅 Setting completion_date to: ${formattedPreviousDate}`);
+
+        //Query to retrieve the data
+        const courseEnrollment = await dataBase.executeQuery(`SELECT * FROM course_enrollment ORDER BY id DESC LIMIT 1;`)
+        console.log("📊 Latest course enrollment:", courseEnrollment);
+
+        const idString = String(courseEnrollment[0].id);
+        console.log("Retrieved Course Enrollment Id = " + idString);
+
+        //Query to UPDATE the CourseEnrollment 
+        const formattedCurrentTime = format(currentTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('📅 Formatted Current Time:', formattedCurrentTime);
+        
+        // Create another separate date object for expired_on calculation - set to 1 day ago
+        const expiredOnTime = new Date(currentTimeString);
+        expiredOnTime.setDate(expiredOnTime.getDate() - 1); // Set to 1 day ago (yesterday)
+        const formattedNewTime = format(expiredOnTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('📅 Setting expired_on to (1 day ago):', formattedNewTime);
+        
+        const updateCourseEnrollment = await dataBase.executeQuery(`UPDATE course_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        console.log("💾 Course enrollment update result:", updateCourseEnrollment);
+
+        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Expired notification to end users';`)
+        console.log("⚙️ Updated cron_master: Expired notification to end users");
+        
+        const verification = await dataBase.executeQuery(`SELECT * FROM course_enrollment WHERE id=${idString} ;`)
+        const completionDate = verification[0].completion_date
+        const expiredOn = verification[0].expired_on
+        console.log("✅ Verification - Updated Course Completion date: " + completionDate);
+        console.log("✅ Verification - Updated Course Expired on: " + expiredOn);
+
+        // Create another separate date object for cron scheduling
+        const cronScheduleTime = new Date(currentTimeString);
+        cronScheduleTime.setTime(cronScheduleTime.getTime() - 15 * 60 * 1000); // 15 minutes ago
+        const cronFormattedTime = format(cronScheduleTime, 'yyyy-MM-dd HH:mm:ss');
+        
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${cronFormattedTime}',current_status='waiting', previous_status=''  WHERE name='Expire Courses with Past Validity' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        console.log("⚙️ Updated cron_details: Expire Courses with Past Validity");
+        console.log("📅 Cron next_run set to:", cronFormattedTime);
+        
+        console.log("🎉 courseExpiry_CronJob completed successfully!");
+        console.log("📋 Summary:");
+        console.log(`   • Course Enrollment ID: ${idString}`);
+        console.log(`   • Completion Date: ${formattedPreviousDate} (2 days ago)`);
+        console.log(`   • Expired On: ${formattedNewTime} (1 day ago)`);
+        console.log(`   • Cron Status: Enabled and scheduled`);
+
+            // If we reach here, the function completed successfully
+            console.log("🎉 courseExpiry_CronJob completed successfully!");
+            return; // Exit the retry loop
+            
+        } catch (error) {
+            retryCount++;
+            console.log(`❌ Course expiry cron job failed (Attempt ${retryCount}/${maxRetries}): ${error}`);
+            
+            if (retryCount >= maxRetries) {
+                console.log("❌ Maximum retries exceeded. Course expiry cron job failed permanently.");
+                throw error;
+            }
+            
+            // Wait before retrying
+            const waitTime = retryCount * 2000; // 2, 4, 6 seconds
+            console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+            await new Promise(resolve => setTimeout(resolve, waitTime));
+        }
+    }
+
+}
+
 async function updatecronForBanner() {
     try {
         const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
@@ -287,4 +401,4 @@ async function verifyUserGuidInDatabase(userId: string, expectedGuid: string) {
     }
 }
 
-export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase}
+export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, courseExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase}

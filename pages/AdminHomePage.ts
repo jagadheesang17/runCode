@@ -81,6 +81,10 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
     }
 
+      public async clickviewUpdateStatusLearner() {
+        await this.click("//a[text()='View/update Status - Learner']", "Update Enrollment", "Link")
+    }
+
     public async loadAndLogin(role: string) {
         console.log("Loading admin home page...")
         await this.page.goto(AdminLogin.pageUrl);
@@ -264,6 +268,8 @@ export class AdminHomePage extends AdminLogin {
 
     public async metadataLibrary() {
         await this.validateElementVisibility(this.selectors.metadataLibraryMenu, "Metadata Library");
+        await this.page.locator(this.selectors.metadataLibraryMenu).scrollIntoViewIfNeeded();
+        await this.mouseHover(this.selectors.metadataLibraryMenu, "Metadata Library");
         await this.click(this.selectors.metadataLibraryMenu, "Metadata Library", "Button");
     }
 
@@ -359,13 +365,24 @@ export class AdminHomePage extends AdminLogin {
 
     public async clickEnrollmentMenu() {
         await this.wait("minWait");
-        await this.click(this.selectors.enrollMenu, "Enrollment", "Link")
+        // Use more specific selector to avoid strict mode violation
+        const enrollmentSelector = "//span[text()='Enrollments']";
+        await this.click(enrollmentSelector, "Enrollment", "Link")
     }
 
     public async clickEnroll() {
     await this.wait("minWait");
         await this.click(this.selectors.enrollLink, "Enrollment", "Link")
                 await this.wait("minWait");
+    }
+
+    
+    public async clickBulkUpload(options: string) {
+    await this.wait("minWait");
+        await this.click("//a[text()='Bulk Upload']", "Bulk Upload", "Link")
+                await this.wait("minWait");
+        await this.click(`//span[text()='${options}']`, "options", "checkbox")
+        
     }
 
     public async clickAdminRole() {
@@ -375,6 +392,8 @@ export class AdminHomePage extends AdminLogin {
 
         ///Site Admin////
         public async siteAdmin() {
+            await this.wait("minWait");
+            await this.page.locator(this.selectors.siteAdminMenu).scrollIntoViewIfNeeded();
             await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
             await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
         }
@@ -431,6 +450,23 @@ export class AdminHomePage extends AdminLogin {
 
     public async dynamicShareableLinks() { 
         await this.click(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links", "Button");
+    }
+
+    // Method to set allow_excel configuration to 0
+    public async setAllowExcelConfig() {
+        await this.wait("minWait");
+        await this.click("//div[text()='Menu']", "Menu", "Button");
+        await this.page.locator("//span[text()='Maintenance']").scrollIntoViewIfNeeded();
+        await this.mouseHover("//span[text()='Maintenance']", "Maintenance");
+        await this.click("//span[text()='Maintenance']", "Maintenance", "Menu");
+        await this.click("//a[text()='Customer Config']", "Customer Config", "Link");
+       await this.wait("mediumWait");
+       await this.page.locator("//input[@name='dataload[allow_excel]']").scrollIntoViewIfNeeded();
+        await this.page.locator("//input[@name='dataload[allow_excel]']").fill("0");
+        await this.page.locator("//input[@id='edit_submit']").scrollIntoViewIfNeeded();
+        await this.click("//input[@id='edit_submit']", "Submit", "Button");
+        await this.wait("mediumWait");
+        console.log("✅ allow_excel configuration set to 0");
     }
 
 }

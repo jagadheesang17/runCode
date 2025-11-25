@@ -36,6 +36,15 @@ export class SurveyAssessmentPage extends AdminHomePage {
     addSelectedQuestionBtn: "//button[text()='Add Selected Questions']",
     importQuestionBtn: "//button[text()='Import Questions']",
     publishBtn: "//button[text()='Publish']",
+    unpublishBtn: "//button[text()='Unpublish']",
+    unpublishedTab: "//button[text()='Unpublished']",
+    searchFieldUnpublished: "//input[@id='exp-search-field']",
+    deleteIcon: "(//a[@aria-label='Delete'])[1]",
+    removeBtn: "//button[text()='Remove']",
+    cloneIcon: "//a[@aria-label='Clone']",
+    cloneIconForSurvey: (surveyTitle: string) => `//div[contains(text(),'${surveyTitle}')]//following::a[@aria-label='Clone'][1]`,
+    associationWarningMsg: "//span[contains(text(),'Please remove the associations before')]",
+    okBtn: "//button[text()='OK']",
     successfullMessage: "//div[@id='lms-overall-container']//h3",
     createAssessment: `//button[text()='CREATE ASSESSMENT']`,
     assessmentTitle: `//label[text()='Assessment Title']//following-sibling::input`,
@@ -80,7 +89,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
   }
 
   async enterQuestions() {
-    await this.page.keyboard.press('PageUp')
+    
+    // await this.page.keyboard.press('PageUp')
+    await this.wait('minWait');
     await this.validateElementVisibility(this.selectors.questionsInput, "Input");
     await this.page.waitForTimeout(1000)
     await this.type(this.selectors.questionsInput, "Input", FakerData.generateQuestion());
@@ -102,16 +113,65 @@ export class SurveyAssessmentPage extends AdminHomePage {
     | "Checkbox" | "Dropdown"
     | "Radio button" | "Grid/Matrix - Checkbox" | "Paragraph"
     | "Short answer" | "Like/Dislike" | "Overall rating", attachvideo?: true | false) {
-    await this.click(this.selectors.typeBtn, "Type", "Button")
-    if (value !== undefined) {
-      await this.page.click(`//span[text()='${value}']`);
-    } else {
-      const itemXpath = this.selectors.typeItem;
-      const count = await this.page.locator(itemXpath).count();
-      const randomIndex = Math.floor(Math.random() * count) + 1;
-      await this.click(`(${itemXpath})[${randomIndex}]`, "List", "List")
-
+      await this.wait('minWait');
+      await this.wait('maxWait')
+      await this.page.locator(this.selectors.typeBtn).scrollIntoViewIfNeeded();
+    
+    // Retry mechanism for type selection
+    let typeSelectionSuccess = false;
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (!typeSelectionSuccess && retryCount < maxRetries) {
+      try {
+        console.log(`Attempting to select type, attempt ${retryCount + 1}`);
+        
+        // Click type dropdown button
+        await this.click(this.selectors.typeBtn, "Type", "Button");
+        await this.wait('minWait');
+        
+        if (value !== undefined) {
+          // Wait for dropdown to be visible and click specific value
+          await this.page.waitForSelector(`//span[text()='${value}']`, { timeout: 5000 });
+          await this.page.click(`//span[text()='${value}']`);
+        } else {
+          // Select random type
+          const itemXpath = this.selectors.typeItem;
+          await this.page.waitForSelector(itemXpath, { timeout: 5000 });
+          const count = await this.page.locator(itemXpath).count();
+          const randomIndex = Math.floor(Math.random() * count) + 1;
+          await this.click(`(${itemXpath})[${randomIndex}]`, "List", "List");
+        }
+        
+        // Verify selection was successful by checking if dropdown closed
+        await this.wait('minWait');
+        const dropdownStillOpen = await this.page.locator("//div[@class='dropdown-menu show']").isVisible({ timeout: 2000 });
+        
+        if (!dropdownStillOpen) {
+          typeSelectionSuccess = true;
+          console.log(`✓ Type selection successful on attempt ${retryCount + 1}`);
+        } else {
+          throw new Error("Dropdown still open - selection may have failed");
+        }
+        
+      } catch (error) {
+        console.log(`⚠ Type selection attempt ${retryCount + 1} failed: ${error.message}`);
+        retryCount++;
+        
+        if (retryCount < maxRetries) {
+          console.log("Retrying type selection...");
+          await this.wait('minWait');
+          
+          // Try to close any open dropdowns before retry
+          await this.page.keyboard.press('Escape');
+          await this.wait('minWait');
+        } else {
+          console.log("❌ All type selection attempts failed");
+          throw new Error(`Failed to select type after ${maxRetries} attempts: ${error.message}`);
+        }
+      }
     }
+    
     let typeValue: any;
     if (value !== undefined) {
       typeValue = value;
@@ -242,6 +302,7 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
   
   async clickOnPlusIcon() {
+    await this.page.waitForTimeout(2000);
     await this.mouseHover(this.selectors.plusIcon, "Plus Icon");
     await this.wait('minWait');
     await this.click(this.selectors.plusIcon, "Plus Icon", "Icon");
@@ -283,6 +344,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
   async displayOption() {
     if (await this.page.isVisible(this.selectors.displayOptionBtn)) {
+
+      await this.wait('minWait');
+      await this.page.keyboard.press('PageUp')
       await this.page.locator(this.selectors.displayOptionBtn).scrollIntoViewIfNeeded();
       await this.click(this.selectors.displayOptionBtn, "Display Option", "Button");
       const dropdownList = this.selectors.displayOptionList
@@ -373,6 +437,58 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
     
     //await this.click(this.selectors.publishBtn, "Publish", "Button");
+  }
+
+  async clickUnpublish() {
+    await this.page.locator(this.selectors.unpublishBtn).waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.locator(this.selectors.unpublishBtn).scrollIntoViewIfNeeded({ timeout: 5000 });
+    await this.click(this.selectors.unpublishBtn, "Unpublish", "Button");
+  }
+
+  async verifySurveyAssociationWarning() {
+    await this.validateElementVisibility(this.selectors.associationWarningMsg, "Association Warning Message");
+    await this.verification(this.selectors.associationWarningMsg, "Please remove the associations before");
+    await this.click(this.selectors.okBtn, "OK", "Button");
+  }
+
+  async clickCloneSurvey(surveyTitle: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.cloneIconForSurvey(surveyTitle), `Clone icon for survey: ${surveyTitle}`);
+    await this.click(this.selectors.cloneIconForSurvey(surveyTitle), `Clone ${surveyTitle}`, "Icon");
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
+  }
+
+  async clickUnpublishedTab() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.unpublishedTab, "Unpublished Tab");
+    await this.click(this.selectors.unpublishedTab, "Unpublished", "Tab");
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
+  }
+
+  async searchUnpublishedSurvey(surveyTitle: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.searchFieldUnpublished, "Search Field");
+    await this.type(this.selectors.searchFieldUnpublished, "Search", surveyTitle);
+    await this.page.keyboard.press('Enter');
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
+  }
+
+  async clickDeleteSurvey() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.deleteIcon, "Delete Icon");
+    await this.click(this.selectors.deleteIcon, "Delete", "Icon");
+    await this.wait("minWait");
+  }
+
+  async clickRemove() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.removeBtn, "Remove Button");
+    await this.click(this.selectors.removeBtn, "Remove", "Button");
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
   }
 
   async clickSaveDraft() {

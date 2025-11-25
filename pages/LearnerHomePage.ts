@@ -76,6 +76,21 @@ export class LearnerHomePage extends LearnerLogin {
         await this.page.waitForLoadState('load');
         await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out");
     }
+
+    public async signOut() {
+        try {
+            await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out Link");
+            await this.click(this.selectors.signOutLink, "Sign Out", "Link");
+            await this.page.waitForLoadState('load');
+            console.log("✅ Successfully signed out");
+        } catch (error) {
+            console.error("Error during sign out:", error);
+            // Fallback: try to clear cookies and navigate to login page
+            await this.context.clearCookies();
+            await this.page.goto(URLConstants.leanerURL);
+            console.log("⚠️ Fallback signout performed");
+        }
+    }
     public async clickCatalog() {
         await this.page.waitForLoadState('load');
         await this.validateElementVisibility(this.selectors.catalogLink, "Catalog");
