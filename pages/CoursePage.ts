@@ -5368,9 +5368,6 @@ export class CoursePage extends AdminHomePage {
     await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
     await this.wait("minWait");
   }
-}
-
-
 
   // Navigate to listing, search for course, and click on the course
   async navigateToListingAndSearchCourse(courseName: string) {
