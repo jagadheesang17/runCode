@@ -28,7 +28,7 @@ export class SiteAdminPage extends AdminHomePage {
         uspsAPIURL: `//label[text()='USPS API URL']//following-sibling::input`,
         easyPostAPIKey: `//label[text()='EasyPost API Key']//following-sibling::input`,
         addressVerificationToggle: `(//*[@class="col Address Verification"]/div/label/i)[1]`,
-        saveBtn: `//button[text()='save']`,
+        saveBtn: `(//button[text()='SAVE'])[1]`,
         // saveBtn: `//button[text()='save' or text()='SAVE']`,
         //addressKey:(data: string)=>`//label[text()='${data}']//following-sibling::input`,
 
@@ -65,7 +65,12 @@ export class SiteAdminPage extends AdminHomePage {
         //Transfer Enrollment - Training Plan
         clickEditEnrollments: `//i[@data-bs-target='#Enrollments-content']`,
         transferEnrollmentTPEnabled: `//span[text()='Transfer Enrollment - Training Plan']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
-        transferEnrollmentTPUnchecked: `//span[text()='Transfer Enrollment - Training Plan']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        transferEnrollmentTPUnchecked: `//span[text()='Transfer Enrollment - Training Plan']//preceding-sibling::i[contains(@class,'fa-square icon')]`,        okBtn:`//button[text()='OK']`,
+        
+        //Transfer Enrollment
+        transferEnrollmentCheckbox: `(//label[contains(@for,'submod_admn_tfr_enroll_input')]//i)[1]`,
+        transferEnrollmentCheckboxToCheck: `//label[contains(@for,'submod_admn_tfr_enroll_input')]//i[contains(@class,'fa-square icon')]`,
+      
 
     };
 
@@ -226,11 +231,11 @@ export class SiteAdminPage extends AdminHomePage {
 
     public async autoCodeConventionTurnON() {
 
-        const button = this.page.locator(this.selectors.autoCodeConvention).isChecked();
+        const button = this.page.locator(this.selectors.autoCodeConventionOn).isChecked();
         await this.wait("mediumWait")
         //const isToggleEnabled=await button.isChecked();
-        if (!button) {
-            await this.click(this.selectors.autoCodeConvention, "enable", "toggle");
+        if(!button){
+            await this.click(this.selectors.autoCodeConventionOn,"enable","toggle");
             this.clickOkBtn();
             this.page.reload();
         }
@@ -263,6 +268,38 @@ export class SiteAdminPage extends AdminHomePage {
             //await this.page.reload();
         }
 
+        // TECRS01 - Transfer Enrollment methods
+        async enableTransferEnrollment() {
+            await this.wait("mediumWait");
+            const button = this.page.locator(this.selectors.transferEnrollmentCheckbox);
+            const isChecked = await button.isChecked();
+            
+            if (!isChecked) {
+                await this.click(this.selectors.transferEnrollmentCheckboxToCheck, "Enable Transfer Enrollment", "Check box");
+                await this.wait("minWait");
+                await this.click(this.selectors.saveBtn, "SAVE", "button");
+                await this.wait("mediumWait");
+                console.log("✅ Transfer Enrollment enabled");
+            } else {
+                console.log("Transfer Enrollment is already enabled");
+            }
+        }
+
+        async disableTransferEnrollment() {
+            await this.wait("mediumWait");
+            const button = this.page.locator(this.selectors.transferEnrollmentCheckbox);
+            const isChecked = await button.isChecked();
+            
+            if (isChecked) {
+                await this.click(this.selectors.transferEnrollmentCheckbox, "Disable Transfer Enrollment", "Check box");
+                await this.click(this.selectors.saveBtn, "SAVE", "button");
+                await this.wait("mediumWait");
+                console.log("✅ Transfer Enrollment disabled");
+            } else {
+                console.log("Transfer Enrollment is already disabled");
+            }
+        }
+ 
            //For Merge User Enable
     async mergeUserVerification() {
         await this.wait("mediumWait")

@@ -13,6 +13,7 @@ import {
   getRandomSeat,
   gettomorrowDateFormatted,
   score,
+  getRandomPastDate,
 } from "../utils/fakerUtils";
 import { getRandomItemFromFile } from "../utils/jsonDataHandler";
 import { vi } from "date-fns/locale/vi";
@@ -274,7 +275,7 @@ export class CoursePage extends AdminHomePage {
 
     //Course/TP Search:-
     crs_TPCode: "(//span[text()='CODE:']/following-sibling::span)[1]",
-    crs_TPSearchField: "//input[@id='exp-search-field']",
+    crs_TPSearchField: "(//input[@id='exp-search-field'])[1]",
 
     //Assessment Attach:-
     searchAssessmentField: "[id$='search-assessment-field']",
@@ -454,7 +455,7 @@ export class CoursePage extends AdminHomePage {
     editSession: `//span[@title='Edit']/child::i`,
     updateSession: `//span[@title='Update']`,
 
-    editCourseFromListingPage: `//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen']`,
+    editCourseFromListingPage: `(//i[@class='position-absolute top-0 end-0 fa-duotone icon_14_1 p-2 pointer mt-1 me-1 background_3 fa-pen'])[1]`,
     checkContactSupport: `//input[@id='course-contact-support']`,
     adminGroupSelect:`(//div[contains(text(),'items selected')])[1]`, 
     searchBoxAdminGrpAccess:`((//div[contains(text(),'items selected')])[1]/following::input[contains(@aria-label,"Search")])[4]`,
@@ -710,9 +711,53 @@ export class CoursePage extends AdminHomePage {
       "Button"
     );
   }
+  async captureDropdownValuesOfLocationCopy(str: string,): Promise<void> {
+        await this.wait("minWait")
+        //  1. Click on the textbox to open the dropdown
+        await this.page.locator(str).click();
+        await this.wait("mediumWait")
+        // 2. Capture all dropdown option texts easily
+        const dropdownValues: string[] = await this.page.locator(`//input[@id='location_instance_0-filter-field']/following::li[contains(@id,'list_')]`).allInnerTexts();
+        console.log('Captured Dropdown Values:', dropdownValues);
+        // // 3. Save the captured values into a JSON file
+        const filePath = path.join(__dirname, '../data/captureLocation.json'); // Save into /data folder
+        fs.writeFileSync(filePath, JSON.stringify(dropdownValues));
+        const locationFromJson = getallRandomLocation();
+        const locationName = locationFromJson.replace(/\s*\([^)]*\)/g, "");
+        console.log(locationName);
+        await this.wait("mediumWait")
+        await this.page.locator(this.selectors.locationDropdown_bulk).focus(),
+            await this.page.keyboard.type(locationName, { delay: 600 })
+        await this.page.keyboard.press('Enter');
+        //await this.keyboardType(this.selectors.instructorInput_bulk(i), instructorName);
+        await this.mouseHover(this.selectors.locationOption_Copy(locationName), "Instructor Name");
+        await this.click(this.selectors.locationOption_Copy(locationName), "Instructor Name", "Button")
+    }
+    async captureDropdownValuesOfLocation(i: any, str: string,): Promise<void> {
+        await this.wait("minWait")
+        //  1. Click on the textbox to open the dropdown
+        await this.page.locator(str).click();
+        await this.wait("mediumWait")
+        // 2. Capture all dropdown option texts easily
+        const dropdownValues: string[] = await this.page.locator(`//input[@id='location_instance_${i}-filter-field']/following::li[contains(@id,'list_')]`).allInnerTexts();
+        console.log('Captured Dropdown Values:', dropdownValues);
+        // // 3. Save the captured values into a JSON file
+        const filePath = path.join(__dirname, '../data/captureLocation.json'); // Save into /data folder
+        fs.writeFileSync(filePath, JSON.stringify(dropdownValues));
+        const locationFromJson = getallRandomLocation();
+        const locationName = locationFromJson.replace(/\s*\([^)]*\)/g, "");
+        console.log(locationName);
+        await this.wait("mediumWait")
+        await this.page.locator(this.selectors.locationDropdown_Copy).focus(),
+            await this.page.keyboard.type(locationName, { delay: 600 })
+        await this.page.keyboard.press('Enter');
+        //await this.keyboardType(this.selectors.instructorInput_bulk(i), instructorName);
+        await this.mouseHover(this.selectors.locationOption_bulk(locationName, i), "Instructor Name");
+        await this.click(this.selectors.locationOption_bulk(locationName, i), "Instructor Name", "Button")
+    }
 
   //Bulk class creation
-  async bulkClassCreation(classNos: any, mode: "manual" | "copy/paste", title: string) {
+  async bulkClassCreations(classNos: any, mode: "manual" | "copy/paste", title: string) {
     await this.click(this.selectors.NoOfClass, "TextBox", "click");
     await this.keyboardType(this.selectors.NoOfClass, classNos);
     await this.clickCreateInstance();
@@ -781,6 +826,51 @@ export class CoursePage extends AdminHomePage {
     let Nos = classNos;
     await this.verifyCreatedBulkClasses(Nos);
   }
+  async bulkClassCreation(classNos: any, mode: "manual" | "copy/paste",title:string) {
+        await this.click(this.selectors.NoOfClass, "TextBox", "click");
+        await this.keyboardType(this.selectors.NoOfClass, classNos)
+        await this.clickCreateInstance();
+        switch (mode) {
+            case "manual":
+                // const totalClasses = parseInt(classNos);
+                for (let i = 0; i < classNos; i++) {
+                    await this.enterSessionName_bulk(title+"_"+FakerData.getSession(), i);
+                    await this.captureDropdownValues(i, this.selectors.instructorDropdown_bulk(i));
+                    await this.captureDropdownValuesOfLocation(i,this.selectors.locationSelection_bulk(i));
+                    await this.enterRandomDate_bulk(i)
+                    await this.startandEndTime_bulkClass(i);
+                    await this.setMaxSeat_bulk(i);
+                    await this.waitList_bulk(i);
+                }
+                await this.checkConflict();
+                //console.log("next");
+                break;
+            case "copy/paste":
+                await this.enterSessionName_copy(FakerData.getSession());
+                await this.selectInstructor_Copy(credentials.INSTRUCTORNAME.username)
+                await this.captureDropdownValuesOfLocationCopy(this.selectors.locationSelection_Copy);
+                await this.enterRandomDate_Copy();
+                await this.startandEndTime();
+                await this.setMaxSeat_Copy();
+                await this.waitList_Copy();
+                //Copy Classes
+                await this.click(this.selectors.copyClass, "Copy", "Created ClassRooms")
+                for (let j = 0; j < classNos - 1; j++) {
+                    //Paste Classes
+                    await this.click(this.selectors.pasteClass(j), "Paste", "bulk Classes")
+                }
+                for (let i = 1; i <= classNos - 1; i++) {
+                    await this.enterRandomDate_bulk(i);
+                }
+                await this.checkConflict();
+                break;
+            default:
+                console.warn("Invalid mode selected:", mode);
+            //case "copy/paste" :
+        }
+        let Nos = classNos;
+        await this.verifyCreatedBulkClasses(Nos);
+    }
 
   async waitList_bulk(i: any) {
     await this.type(this.selectors.waitlistInput_bulk(i), "WaitList", "4");
@@ -870,6 +960,7 @@ export class CoursePage extends AdminHomePage {
           `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])[${i + 1
           }]`
         )
+        .first()
         .click();
     }
     await selectNextAvailableTime.call(this);
@@ -933,6 +1024,8 @@ export class CoursePage extends AdminHomePage {
       "Complete"
     );
     await this.click(this.selectors.classComplete, "Complete", "radio button");
+    await this.wait("minWait");
+    await this.click(this.selectors.updateBtn, "update", "field");
   }
   //admin mark class complete
   async verifyClassCompleteDisable() {
@@ -1452,12 +1545,12 @@ export class CoursePage extends AdminHomePage {
       "No, Modify The Access",
       "Button"
     );
-    await this.spinnerDisappear();
-    const closeButton = this.page.locator(this.selectors.closeBtn);
-    await this.wait("mediumWait");
-    if (await closeButton.isVisible()) {
-      await closeButton.click({ force: true });
-    }
+    // await this.spinnerDisappear();
+    // const closeButton = this.page.locator(this.selectors.closeBtn);
+    // await this.wait("mediumWait");
+    // if (await closeButton.isVisible()) {
+    //   await closeButton.click({ force: true });
+    // }
   }
   async clickCancel() {
     await this.click(this.selectors.cancelBtn, "Cancel", "image");
@@ -1852,12 +1945,12 @@ export class CoursePage extends AdminHomePage {
   }
 
   async enterDateValue() {
-    const date = gettomorrowDateFormatted();
+    const date = getRandomFutureDate();
     await this.keyboardType(this.selectors.Date, date);
   }
 
   async enterpastDateValue() {
-    const date = getPastDate();
+    const date = getRandomPastDate();
     await this.keyboardType(this.selectors.Date, date);
   }
   async enterfutureDateValue() {
@@ -1914,8 +2007,9 @@ export class CoursePage extends AdminHomePage {
       return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
     }
     async function selectNextAvailableTime() {
+      // Target only the visible time picker using :visible or style check
       const list = await this.page
-        .locator("(//div[contains(@class,'timepicker')]//li)")
+        .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
         .allTextContents();
       console.log(list);
       const timeToSelect = getCurrentTimePlusTwoHours();
@@ -1947,7 +2041,7 @@ export class CoursePage extends AdminHomePage {
       /* for (const time of list) {
                 if (time >= timeToSelect) {
                     console.log('Selecting time:', time);
-                    await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).click();
+                    await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
                     break;
                 }
             } */
@@ -2084,6 +2178,7 @@ export class CoursePage extends AdminHomePage {
     );
     await this.mouseHover(this.selectors.clickContentLibrary, "Content");
     await this.click(this.selectors.clickContentLibrary, "Content", "button");
+    await this.wait("minWait");
     await this.waitForElementHidden(
       "//span[text()='Counting backwards from Infinity']",
       "string"
@@ -2962,7 +3057,7 @@ export class CoursePage extends AdminHomePage {
     await this.wait("mediumWait");
     await this.mouseHover(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group");
     await this.click(this.selectors.removeAddedAdminGroup(data), "Remove Admin Group", "Icon");
-  }
+    }
 
   async addMultipleLearnerGroups(users: string[]) {
     await this.wait("mediumWait");
@@ -3549,6 +3644,102 @@ export class CoursePage extends AdminHomePage {
       "button"
     );
   }
+  async verifyPublishedContentInContentLibrary(data: string, data1: string) {
+    await this.page.mouse.wheel(0, 200);
+    await this.spinnerDisappear();
+    await this.validateElementVisibility(
+      this.selectors.clickContentLibrary,
+      "Content"
+    );
+    await this.mouseHover(this.selectors.clickContentLibrary, "Content");
+    await this.click(this.selectors.clickContentLibrary, "Content", "button");
+    await this.waitForElementHidden(
+      "//span[text()='Counting backwards from Infinity']",
+      "string"
+    );
+    await this.spinnerDisappear();
+    await this.typeAndEnter(
+      "#exp-content-search-field",
+      "Content Search Field",
+      data
+    );
+    if (data1 === "Published")
+       {
+      let contentTitle = await this.page.locator(`//div[text()='${data}']`).textContent();
+      if (contentTitle === data) {
+        console.log("Published Content is present in content library");
+      }
+    }
+      else {
+        await this.wait("mediumWait");
+        const draftedContent = await this.page.locator("//div[text()='No matching result found.']").isVisible();
+        await this.wait("minWait");
+        if (draftedContent) {
+          console.log("drafted Content is not present in content library as expected");
+        }
+      }
+    
+  }
+
+  // CNT073 - Verify action options for attached content in create course page
+  public async attachContentToCourse(): Promise<void> {
+    const attachContentButton = this.page.locator(`//button[contains(text(),'Attach Content') or contains(text(),'Add Content')]`);
+    await expect(attachContentButton).toBeVisible();
+    await attachContentButton.click();
+    await this.wait("minWait");
+    
+    // Select first available content
+    const firstContent = this.page.locator(`(//input[@type='checkbox'])[1]`);
+    await firstContent.click();
+    await this.wait("minWait");
+    
+    const addButton = this.page.locator(`//button[contains(text(),'Add')]`);
+    await addButton.click();
+    await this.wait("mediumWait");
+    console.log(`✅ Content attached to course`);
+  }
+
+  public async verifyEditContentOptionVisible(): Promise<void> {
+    const editIcon = this.page.locator(`//a[contains(@id,"edit_content")]`).first();
+    await expect(editIcon).toBeVisible();
+    console.log(`✅ Edit content option is visible`);
+  }
+
+  public async verifyPreviewContentOptionVisible(): Promise<void> {
+    const previewIcon = this.page.locator(`//a[@aria-label="Preview"]`).first();
+    await expect(previewIcon).toBeVisible();
+    console.log(`✅ Preview content option is visible`);
+  }
+
+  public async verifyHideUnhideOptionVisible(): Promise<void> {
+    const hideUnhideIcon = this.page.locator(`//a[@aria-label="Hide"]`).first();
+    await expect(hideUnhideIcon).toBeVisible();
+    console.log(`✅ Hide/Unhide content option is visible`);
+  }
+
+  public async verifyReorderOptionVisible(): Promise<void> {
+    const reorderIcon = this.page.locator(`//a[@aria-label="Drag and Drop"]`).first();
+    await expect(reorderIcon).toBeVisible();
+    console.log(`✅ Re-order content option is visible`);
+  }
+
+  public async verifyDeleteContentOptionVisible(): Promise<void> {
+    const deleteIcon = this.page.locator(`//a[@aria-label="Delete"]`).first();
+    await expect(deleteIcon).toBeVisible();
+    console.log(`✅ Delete content option is visible`);
+  }
+
+  public async clickhere(){
+
+    await this.page.mouse.wheel(0, 100);
+    await this.click(this.selectors.clickContentLibrary, "Content", "button");
+  }
+  public async clicLickToSwitchCrsPage(){
+    await this.page.locator(`//a[contains(@aria-label,"Instance/Class of:")]`).click();
+    await this.wait("mediumWait");
+  }
+
+
 
   async clickInstancesIcon() {
     await this.wait('minWait');

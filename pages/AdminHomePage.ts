@@ -45,6 +45,7 @@ export class AdminHomePage extends AdminLogin {
         assessmentLink: "//a[text()='Assessment']",
         enrollMenu: `//span[text()='Enrollments']`,
         enrollLink: `//a[text()='Enroll']`,
+        manageEnrollmentLink: `//a[text()='Manage Enrollments' or text()='View/Modify Enrollment' or text()='Manage Enrollment']`,
         viewUpdateEnrollmentLink: `//a[text()='View/Modify Enrollment']`,
 
         quickAccessIcon: `#dd-icon-wrapper i`,
@@ -59,6 +60,7 @@ export class AdminHomePage extends AdminLogin {
         learnerConfigLink: `//a[text()='Learner Configuration']`,
         siteSettingsLink: `//a[text()='Site Settings']`,
         adminConfigLink: `//a[text()='Admin Configuration']`,
+        enrollmentsLink: `//i[@data-bs-target="#Enrollments-content"]`,
         // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
         clickBack: `//i[@id='dismissSidebar']`,
@@ -298,6 +300,11 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.createCourseBtn, "Course", "Button");
     }
 
+    public async clickCreate(module: string) {
+        await this.validateElementVisibility(this.selectors.quickAccessCreate(module), `Create ${module}`);
+        await this.click(this.selectors.quickAccessCreate(module), `Create ${module}`, "Button");
+    }
+
     public async user() {
         await this.validateElementVisibility(this.selectors.userMenu, "User");
         await this.click(this.selectors.userMenu, "USER", "Button");
@@ -409,6 +416,12 @@ export class AdminHomePage extends AdminLogin {
         await this.wait("minWait");
     }
 
+    public async clickManageEnrollment() {
+        await this.wait("minWait");
+        await this.click(this.selectors.manageEnrollmentLink, "Manage Enrollment", "Link")
+        await this.wait("minWait");
+    }
+
     public async clickAdminRole() {
         await this.click(this.selectors.adminRolemenu, "AdminRole", "Link")
 
@@ -436,6 +449,14 @@ export class AdminHomePage extends AdminLogin {
         await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
         await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
         await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
+        await this.spinnerDisappear();
+    }
+
+    public async siteAdmin_Enrollments() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.enrollmentsLink, "Enrollments");
+        await this.mouseHover(this.selectors.enrollmentsLink, "Enrollments");
+        await this.click(this.selectors.enrollmentsLink, "Enrollments", "Button");
         await this.spinnerDisappear();
     }
 

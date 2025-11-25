@@ -204,7 +204,7 @@ export class CatalogPage extends LearnerHomePage {
         enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
         enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
 
-    };
+              };
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
   }
@@ -289,11 +289,11 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   //Verifying attached content progress value in course details page
-  async verifyContentProgressValue(contentName: string) {
+  async verifyContentProgressValue(contentName: string, progress: string) {
     await this.wait("minWait");
     await this.verification(
       this.selectors.contentProgressValue(contentName),
-      "100%"
+      progress
     );
   }
 
@@ -821,6 +821,27 @@ export class CatalogPage extends LearnerHomePage {
     await this.page.click(playButton, { force: true });
     await this.page.waitForTimeout(20000);
   }
+async inProgress() {
+  await this.page.waitForLoadState("load");
+  await this.spinnerDisappear();
+
+  let content = this.page.locator(this.selectors.contentLabel);
+  if (await content.isVisible({ timeout: 20000 })) {
+    await content.scrollIntoViewIfNeeded();
+  }
+
+  const playButton = this.page.locator("//button[@title='Play Video']");
+  await playButton.waitFor({ state: "visible", timeout: 20000 });
+
+  // FIRST attempt – normal click
+  await playButton.click({ force: true });
+  await this.page.waitForTimeout(5000);
+
+  await this.page.locator(this.selectors.saveLearningStatus).click();
+  await this.wait("mediumWait");
+
+}
+
 
   async clickSecondaryCourse(course: string, text?: string) {
     await this.validateElementVisibility(
@@ -916,6 +937,7 @@ export class CatalogPage extends LearnerHomePage {
   async clickCompletedButton() {
     await this.wait("mediumWait");
     const name = "Completed Button";
+    await this.page.mouse.wheel(0, -300);
     const completedButtonSelector = this.selectors.completedButton;
     await this.mouseHover(completedButtonSelector, name);
     await this.validateElementVisibility(completedButtonSelector, name);
@@ -1805,25 +1827,6 @@ async verifyAddedToWishlist(courseName: string) {
       throw new Error(`Expected dedicated to TP message but found: ${message}`);
     }
   }
-
-  async inProgress() {
-  await this.page.waitForLoadState("load");
-  await this.spinnerDisappear();
-  let content = this.page.locator(this.selectors.contentLabel);
-  if (await content.isVisible({ timeout: 20000 })) {
-    await content.scrollIntoViewIfNeeded();
-  }
-  const playButton = this.page.locator("//button[@title='Play Video']");
-  await playButton.waitFor({ state: "visible", timeout: 20000 });
-  // FIRST attempt – normal click
-  await playButton.click({ force: true });
-  await this.page.waitForTimeout(5000);
-  await this.page.locator(this.selectors.saveLearningStatus).click();
-  await this.page.waitForTimeout(10000);
-  await this.page.locator(this.selectors.saveLearningStatus).click();
-  await this.wait("mediumWait");
-}
-
 
 }
 

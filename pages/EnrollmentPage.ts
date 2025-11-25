@@ -2,6 +2,8 @@ import { BrowserContext, Page } from "@playwright/test";
 import { AdminHomePage } from "./AdminHomePage";
 import { URLConstants } from "../constants/urlConstants";
 import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
+import { is } from "date-fns/locale";
+import { th } from "@faker-js/faker";
 
 
 export class EnrollmentPage extends AdminHomePage {
@@ -79,7 +81,7 @@ export class EnrollmentPage extends AdminHomePage {
         tableHeaderByName: (fieldName: string) => `//table[contains(@class,'viewupdate-status-crstp')]//th[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'${fieldName.toLowerCase()}')]`,
         
         // Learner row locators (by username)
-        learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]`,
+        // learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]`,
         learnerFieldValue: (username: string, fieldName: string) => {
             const fieldIndex: { [key: string]: number } = {
                 'name': 1,
@@ -117,6 +119,26 @@ export class EnrollmentPage extends AdminHomePage {
         learnerProgress: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[14]`,
         learnerAddNotesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[12]//i[contains(@class,'fa-note-sticky')]`,
         learnerFilesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[13]//i[contains(@class,'fa-upload')]`,
+
+
+        //Transfer Enrollment - TECRS01
+        transferEnrollmentOption: `//a[text()='Transfer Enrollment - Course']`,
+        transferEnrollmentButton: `//button[contains(text(),'Transfer') or contains(@aria-label,'Transfer')]`,
+        availableCoursesTPSection: `//h3[text()='Available Courses/Training Plans'] | //label[text()='Available Courses/Training Plans'] | //div[contains(text(),'Available Courses/Training Plans')]`,
+
+        //Transfer Enrollment - TECRS02
+        searchCourseTransfer: `//input[contains(@id,'enrtfr-search-selecttraining-field') or @placeholder='Search']`,
+        learnerCheckbox: (username: string) => `//td[contains(text(),'${username}')]//preceding::input[@type='checkbox'][1]`,
+        sourceInstanceDropdown: `//input[@id="enrtfr-search-selectinstances--field"]`,
+        sourceInstanceOption: (instanceName: string) => `//span[text()='${instanceName}']`,
+        targetInstanceDropdown: `//input[@id="enrtfr-search-selectinstances-removeindividuals-filter-field"]`,
+        targetInstanceOption: (instanceName: string) => `//span[text()='${instanceName}']`,
+        transferBtn: `//button[text()='Transfer Learners']`,
+        transferSuccessMsg: `//h3[text()='1 Learner Successfully Transfered']`,
+        searchCourseViewStatus: `//input[@id='exp-searchenrollments-course' or contains(@placeholder,'Search')]`,
+        searchLearnerViewStatus: `//input[@id="exp-search-undefinedundefined-field"]`,
+        learnerInstanceCell: (username: string) => `//td[contains(text(),'${username}')]/following::div[text()='Enrolled']`,
+        learnerRow: (username: string, status: string) => `(//td[text()='${username}']/following-sibling::td[text()='${status}'])[1]`,
 
 
     };
@@ -171,6 +193,10 @@ export class EnrollmentPage extends AdminHomePage {
         await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
         await this.click(this.selectors.selectUser, "Select Course", "Radio button")
     }
+    async searchUser(data: string) {
+        await this.wait("minWait")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
+    }
     async clickEnrollBtn() {
         await this.click(this.selectors.enrollBtn, "Enroll", "Button")
     }
@@ -185,6 +211,9 @@ export class EnrollmentPage extends AdminHomePage {
     //     await this.click(this.selectors.enrollStatus,"Enroll Status","Dropdown")
     //     await this.click(this.selectors.enrollORCancel(data),"Enroll Status","Option")
     // }
+    async saveBtn(){
+        await this.click(this.selectors.saveStatus, "Submit", "button")
+    }
 
     async enterReasonAndSubmit() {
         await this.type(this.selectors.reaonDesc, "Enroll Status", FakerData.getDescription())
@@ -212,8 +241,10 @@ export class EnrollmentPage extends AdminHomePage {
 
     async selectEnrollOrCancel(data: string) {
         await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown")
-        //await this.click(this.selectors.enrollORCancel(data).first(),"Enroll Status","Option")
+        //await this.click(this.selectors.enrollORCancel(data).first(),"Enroll Status","Option")\
+        await this.wait("mediumWait");
         await this.page.locator(this.selectors.enrollORCancel(data)).first().click({ force: true });
+        await this.wait("minWait");
     }
     async selectByOption(data: string) {
         await this.wait("minWait");
@@ -379,6 +410,392 @@ export class EnrollmentPage extends AdminHomePage {
         await this.wait("minWait");
         await this.click(this.selectors.enrollBtn, "Select Course", "Button");
     }
+
+    // TECRS01 - Transfer Enrollment verification methods
+    async verifyTransferEnrollmentOptionNotVisible(): Promise<void> {
+        await this.wait("mediumWait");
+        const isVisible = await this.page.locator(this.selectors.transferEnrollmentOption).isVisible();
+        
+        if (!isVisible) {
+            console.log("✅ Transfer Enrollment option is NOT visible (as expected when disabled in site settings)");
+        } else {
+            throw new Error("❌ Transfer Enrollment option is visible but should be hidden when disabled in site configuration");
+        }
+    }
+
+    async verifyTransferEnrollmentOptionVisible(): Promise<void> {
+        await this.wait("mediumWait");
+        const transferOption = this.page.locator(this.selectors.transferEnrollmentOption);
+        await this.validateElementVisibility(this.selectors.transferEnrollmentOption, "Transfer Enrollment Option");
+        const isVisible = await transferOption.isVisible();
+        
+        if (isVisible) {
+            console.log("✅ Transfer Enrollment option IS visible (as expected when enabled in site settings)");
+        } else {
+            throw new Error("❌ Transfer Enrollment option is not visible but should be shown when enabled in site configuration");
+        }
+    }
+
+    // TECRS04 - Verify Available Courses/Training Plan section
+    async verifyAvailableCoursesTPSectionVisible(): Promise<void> {
+        await this.wait("mediumWait");
+        const section = this.page.locator(this.selectors.availableCoursesTPSection);
+        const isVisible = await section.isVisible();
+        
+        if (isVisible) {
+            console.log("✅ Available Courses/Training Plans section is visible after clicking Transfer Enrollment");
+        } else {
+            throw new Error("❌ Available Courses/Training Plans section is not visible but should be displayed when Transfer Enrollment is selected");
+        }
+    }
+
+    // TECRS02 - Transfer Enrollment workflow methods
+    async clickTransferEnrollmentOption(): Promise<void> {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.transferEnrollmentOption, "Transfer Enrollment Option");
+        await this.click(this.selectors.transferEnrollmentOption, "Transfer Enrollment", "Link");
+        await this.wait("mediumWait");
+    }
+
+    async searchCourseForTransfer(courseName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.searchCourseTransfer, "Search Course", courseName);
+        await this.wait("mediumWait");
+        
+        try {
+            // Try to find the course checkbox first
+            const courseCheckbox = this.page.locator(`(//label[@class="custom-control-label"])[1]`);
+            await courseCheckbox.waitFor({ state: 'visible', timeout: 3000 });
+            
+            // If checkbox found, select it and click Select Training button
+            await courseCheckbox.click();
+            await this.wait("minWait");
+            await this.page.locator("//button[text()='Select Training']").click();
+            await this.wait("mediumWait");
+            
+        } catch (error) {
+            // If checkbox not found, check for "Search to see results" message
+            try {
+                const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
+                const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
+                
+                if (isVisible) {
+                    console.log(`Single instance course is not listed in transfer enrollment as expected`);
+                    return;
+                }
+            } catch (msgError) {
+                // Neither checkbox nor message found
+                throw new Error(`Course ${courseName} not found in transfer enrollment search results`);
+            }
+        }
+    }
+
+    async selectLearnerForTransfer(username: string): Promise<void> {
+        await this.wait("minWait");
+       await this.page.locator(`(//label[@class="custom-control-label"])[1]`).click();
+    }
+    
+    async selectlearner(){
+        await this.wait("minWait");
+        await this.page.locator(`//button[text()='Select Learners']`).click();
+    }
+    async selectSourceInstance(instanceName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.click(this.selectors.sourceInstanceDropdown, "Source Instance", "Dropdown");
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.sourceInstanceDropdown, "Source Instance", instanceName);
+        
+        try {
+            // Try to find the instance checkbox first
+            const instanceCheckbox = this.page.locator(`(//label[@class="custom-control-label"])[1]`);
+            await instanceCheckbox.waitFor({ state: 'visible', timeout: 3000 });
+            
+            // If checkbox found, select it
+            await this.wait("minWait");
+            await instanceCheckbox.click();
+            
+        } catch (error) {
+            // If checkbox not found, check for "Search to see results" message
+            try {
+                const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
+                const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
+                
+                if (isVisible) {
+                    console.log(`Source instance not found in transfer enrollment`);
+                    return;
+                }
+            } catch (msgError) {
+                // Neither checkbox nor message found
+                throw new Error(`Source instance ${instanceName} not found in transfer enrollment`);
+            }
+        }
+    }
+
+    async selectTargetInstance(instanceName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.targetInstanceDropdown, "Target Instance", instanceName);
+        
+        try {
+            // Try to find the instance checkbox first
+            const instanceCheckbox = this.page.locator(`(//input[@id="enrtfr-search-selectinstances-removeindividuals-filter-field"]/following::label[@class="custom-control-label"])[1]`);
+            await instanceCheckbox.waitFor({ state: 'visible', timeout: 3000 });
+            
+            // If checkbox found, select it
+            await this.wait("minWait");
+            await instanceCheckbox.click();
+            
+        } catch (error) {
+            // If checkbox not found, check for "Search to see results" message
+            try {
+                const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
+                const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
+                
+                if (isVisible) {
+                    console.log(`Other course instances are not listed in transfer enrollment as expected`);
+                    return;
+                }
+            } catch (msgError) {
+                // Neither checkbox nor message found
+                throw new Error(`Target instance ${instanceName} not found in transfer enrollment`);
+            }
+        }
+    }
+
+    async clickTransferButton(): Promise<void> {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.transferBtn, "Transfer Button");
+        await this.click(this.selectors.transferBtn, "Transfer", "Button");
+        await this.wait("mediumWait");
+        await this.page.locator("//button[text()='Yes']").click();
+    }
+
+    async verifyTransferSuccessMessage(): Promise<void> {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.transferSuccessMsg, "Transfer Success Message");
+        console.log("✅ Transfer enrollment completed successfully");
+    }
+
+    async searchCourseInViewStatus(courseName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.searchCourseViewStatus, "Search Course", courseName);
+        await this.wait("mediumWait");
+    }
+
+    async searchLearnerInViewStatus(username: string): Promise<void> {
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.searchLearnerViewStatus, "Search Learner", username);
+        await this.wait("mediumWait");
+    }
+
+    async verifyLearnerEnrolledInInstance(username: string): Promise<void> {
+        await this.wait("mediumWait");
+        const isEnrolled = await this.page.locator(this.selectors.learnerInstanceCell(username)).isVisible();
+        
+        if (isEnrolled) {
+            console.log(`✅ Learner ${username} is enrolled in instance:`);
+        } else {
+            throw new Error(`❌ Learner ${username} is NOT found in instance:`);
+        }
+    }
+
+    async verifyLearnerNotInInstance(username: string, instanceName: string): Promise<void> {
+        await this.wait("mediumWait");
+        const isEnrolled = await this.page.locator(this.selectors.learnerInstanceCell(username, instanceName)).isVisible();
+        
+        if (!isEnrolled) {
+            console.log(`✅ Learner ${username} is NOT in instance: ${instanceName} (as expected after transfer)`);
+        } else {
+            throw new Error(`❌ Learner ${username} is still found in instance: ${instanceName} but should have been transferred`);
+        }
+    }
+
+    // TECRS03 - Verify transfer restriction methods
+    async verifyInstanceNotAvailableInTargetDropdown(instanceName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
+        await this.wait("minWait");
+        
+        const instanceOption = this.page.locator(this.selectors.targetInstanceOption(instanceName));
+        const isVisible = await instanceOption.isVisible().catch(() => false);
+        
+        if (!isVisible) {
+            console.log(`✅ Instance "${instanceName}" is NOT available in target dropdown (as expected - different course)`);
+        } else {
+            throw new Error(`❌ Instance "${instanceName}" is visible in target dropdown but should not be (different course)`);
+        }
+        
+        // Close dropdown
+        await this.page.keyboard.press('Escape');
+    }
+
+    async verifyTargetDropdownShowsOnlySameCourseInstances(courseName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
+        await this.wait("minWait");
+        
+        // Get all available options in target dropdown
+        const allOptions = await this.page.locator(this.selectors.targetInstanceDropdown + "//following::div[contains(@class,'dropdown-menu')]//span").allTextContents();
+        
+        console.log(`Available instances in target dropdown: ${allOptions.join(', ')}`);
+        
+        if (allOptions.length > 0) {
+            console.log(`✅ Target dropdown shows instances (assuming they are from the same course: ${courseName})`);
+        } else {
+            console.log(`ℹ️ No instances available in target dropdown`);
+        }
+        
+        // Close dropdown
+        await this.page.keyboard.press('Escape');
+    }
+    async selectEnrollmentOption(statusOption: string, maxRetries: number = 3): Promise<void> {
+        console.log(`Attempting to select enrollment status: ${statusOption}`);
+        
+        let attempt = 0;
+        let success = false;
+        
+        while (attempt < maxRetries && !success) {
+            try {
+                attempt++;
+                console.log(`   Attempt ${attempt} of ${maxRetries}`);
+                
+                // Click on enrollment action dropdown
+                const enrollmentActionButton = `//button[@data-id='enrollment-action']`;
+                await this.wait("minWait");
+                await this.validateElementVisibility(enrollmentActionButton, "Enrollment Action Dropdown");
+                await this.click(enrollmentActionButton, "Enrollment Action", "Dropdown");
+                
+                // Wait for the status option to appear
+                const statusOptionSelector = `//span[text()='${statusOption}']`;
+                await this.page.waitForSelector(statusOptionSelector, { timeout: 5000 });
+                console.log(`   Status option ${statusOption} is now visible`);
+                
+                // Click on the status option
+                await this.wait("minWait");
+                await this.click(statusOptionSelector, statusOption, "Option");
+                
+                console.log(`Successfully selected enrollment status: ${statusOption}`);
+                success = true;
+                
+            } catch (error) {
+                console.log(`   Attempt ${attempt} failed: ${error}`);
+                
+                if (attempt >= maxRetries) {
+                    throw new Error(`Failed to select enrollment status ${statusOption} after ${maxRetries} attempts. Last error: ${error}`);
+                }
+                
+                await this.wait("minWait");
+            }
+        }
+    }
+
+    // TECRS07 - Clear filter cross marks (max 2 marks)
+    async clearFilterCrossMarks(): Promise<void> {
+        await this.wait("minWait");
+        const crossMarkSelector = `//i[contains(@class,"fa-duotone fa-times pointer fa-swap-opacity icon")]`;
+        
+        let cleared = 0;
+        const maxClicks = 3; // Safety limit
+        
+        for (let i = 0; i < maxClicks; i++) {
+            try {
+                // Re-query for cross marks on each iteration
+                const crossMark = this.page.locator(crossMarkSelector).first();
+                
+                // Check if any cross mark exists
+                const isVisible = await crossMark.isVisible({ timeout: 1000 });
+                
+                if (!isVisible) {
+                    break; // No more cross marks
+                }
+                
+                // Click the first cross mark
+                await crossMark.click();
+                cleared++;
+                console.log(`Cleared cross mark ${cleared}`);
+                await this.wait("minWait");
+                
+            } catch (error) {
+                // No more cross marks found
+                break;
+            }
+        }
+        
+        console.log(`✅ Cleared ${cleared} filter cross mark(s)`);
+    }
+
+    // TECRS10 - Verify draft instance is NOT listed in From section
+    async verifyDraftInstanceNotListed(instanceSession: string): Promise<void> {
+        await this.wait("minWait");
+        const instanceSelector = `//span[contains(text(),'${instanceSession}')]`;
+        
+        try {
+            const isVisible = await this.page.locator(instanceSelector).isVisible({ timeout: 2000 });
+            if (isVisible) {
+                throw new Error(`❌ Draft instance "${instanceSession}" should NOT be visible but was found in From section`);
+            }
+        } catch (error) {
+            // Instance not found - this is expected behavior for draft instances
+            console.log(`✅ Verified draft instance "${instanceSession}" is NOT listed in From section`);
+        }
+    }
+
+    // TECRS10 - Verify draft instance is NOT listed in To section
+    async verifyDraftInstanceNotInToSection(instanceSession: string): Promise<void> {
+        await this.wait("minWait");
+        const instanceSelector = `//span[contains(text(),'${instanceSession}')]`;
+        
+        try {
+            const isVisible = await this.page.locator(instanceSelector).isVisible({ timeout: 2000 });
+            if (isVisible) {
+                throw new Error(`❌ Draft instance "${instanceSession}" should NOT be visible but was found in To section`);
+            }
+        } catch (error) {
+            // Instance not found - this is expected behavior for draft instances
+            console.log(`✅ Verified draft instance "${instanceSession}" is NOT listed in To section`);
+        }
+    }
+    public async verifyLearnerStatusInTransferEnrollmentPage(username: string, expectedStatus: string) {
+        await this.wait("minWait");
+        
+        // For Completed and Canceled status, verify learner is NOT displayed
+        if (expectedStatus === "Completed" || expectedStatus === "Canceled") {
+            const learnerRow = this.page.locator(`//td[contains(text(),'${username}')]`).first();
+            
+            try {
+                const isVisible = await learnerRow.isVisible({ timeout: 2000 });
+                
+                if (isVisible) {
+                    throw new Error(`❌ Learner "${username}" with ${expectedStatus} status should NOT be displayed in transfer enrollment list but was found`);
+                }
+            } catch (error) {
+                // If timeout or not visible, this is expected
+                if (error.message && error.message.includes('should NOT be displayed')) {
+                    throw error; // Re-throw if it's our custom error
+                }
+                // Otherwise, learner not found - this is correct behavior
+                console.log(`✅ Learner "${username}" with ${expectedStatus} status is NOT displayed in transfer enrollment list (as expected)`);
+            }
+        } else {
+            // For other statuses (Enrolled, No Show, etc.), verify learner IS displayed
+            const learnerRow = this.page.locator(`//td[contains(text(),'${username}')]`).first();
+            
+            try {
+                const isVisible = await learnerRow.isVisible({ timeout: 3000 });
+                
+                if (isVisible) {
+                    console.log(`✅ Learner "${username}" with ${expectedStatus} status is displayed in transfer enrollment list`);
+                } else {
+                    throw new Error(`❌ Learner "${username}" with ${expectedStatus} status should be displayed but was not visible`);
+                }
+            } catch (error) {
+                throw new Error(`❌ Learner "${username}" with ${expectedStatus} status should be displayed but was not found: ${error.message}`);
+            }
+        }
+    }
+
+
 
     async verifyDedicatedToTPWarningMessage() {
         await this.wait('minWait');

@@ -219,7 +219,7 @@ async function courseEnrollmentCron() {
     const cronRunTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
     const subTime = format(cronRunTime, 'yyyy-MM-dd HH:mm:ss');
     console.log('Formatted New Time (15 mins subtracted):', subTime);
-    let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Course Enrollment Update';`);
+    let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Mark Course Enrollment Overdue/Incomplete';`);
     console.log(cronDetails);
 }
 
@@ -308,5 +308,38 @@ async function adminGroupDateValidity(groupTitle: string) {
 	let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Usergroup Status Updation';`);
     console.log(cronDetails);
 }
-
-export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity}
+async function contentTransfer() {
+    const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+    const currentTimeString = currentTimeResult[0]['NOW()'];
+    const currentTime = new Date(currentTimeString);
+    console.log("Current Time : " + currentTime);
+    const newTime = (subDays(currentTime, 1));
+    const previousDate = format(newTime, 'yyyy-MM-dd');
+    console.log("Previous Date :" + previousDate);
+    
+    await dataBase.executeQuery(`UPDATE cron_master SET  status  = '1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='BackendJobs';`);
+    const cronRunTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
+    const subTime = format(cronRunTime, 'yyyy-MM-dd HH:mm:ss');
+    console.log('Formatted New Time (15 mins subtracted):', subTime);
+   // let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', //previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Course Enrollment Update';`);
+	let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Learner Transfer to Versioned Content';`);
+    console.log(cronDetails);
+}
+async function contentVersionStatistics() {
+    const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+    const currentTimeString = currentTimeResult[0]['NOW()'];
+    const currentTime = new Date(currentTimeString);
+    console.log("Current Time : " + currentTime);
+    const newTime = (subDays(currentTime, 1));
+    const previousDate = format(newTime, 'yyyy-MM-dd');
+    console.log("Previous Date :" + previousDate);
+    
+    await dataBase.executeQuery(`UPDATE cron_master SET  status  = '1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Admin Dashboard';`);
+    const cronRunTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
+    const subTime = format(cronRunTime, 'yyyy-MM-dd HH:mm:ss');
+    console.log('Formatted New Time (15 mins subtracted):', subTime);
+   // let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', //previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Course Enrollment Update';`);
+	let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Content Version Statistics Updation';`);
+    console.log(cronDetails);
+}
+export { courseEnrollmentCron,programEnrollmentCron, certificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,contentTransfer,contentVersionStatistics};

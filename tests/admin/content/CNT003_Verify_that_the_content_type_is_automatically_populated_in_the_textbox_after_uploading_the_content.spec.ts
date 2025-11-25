@@ -16,8 +16,7 @@ test(`Verify that the content type is automatically populated in the textbox aft
     await contentHome.clickCreateContent();
     await contentHome.enter("content-title",title)
     await contentHome.enterDescription("Content for " +title);
-   await contentHome.uploadContent("SamplePPTX.pptx");
-    //await contentHome.uploadContentBasedOnType(".pptx");
+    await contentHome.uploadContent("SamplePPTX.pptx");
     await contentHome.verifyContentFileType();
 
   

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FakerData } from '../../../utils/fakerUtils';
+import { FakerData, getRandomFutureDate, getRandomPastDate } from '../../../utils/fakerUtils';
 import fs from 'fs';
 import path from 'path';
 import { URLConstants } from '../../../constants/urlConstants';
@@ -188,18 +188,8 @@ function getRandomLocation(): { id: number; name: string; capacity: number } {
   return CLASSROOM_LOCATIONS[randomIndex];
 }
 
-/**
- * Generate future date from today
- * @param daysFromNow - Number of days from today
- */
-function getFutureDate(daysFromNow: number): string {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromNow);
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
-}
+ 
+
 
 /**
  * Generate random time in AM/PM format
@@ -498,15 +488,17 @@ async function addClassroomInstances(
   course_id: number,
   courseName: string,
   instanceCount: number,
-  status: string
+  status: string,
+  dateType: string = "future"
 ): Promise<void> {
   // Generate instance data
   const initSessions = [];
   const sessionList = [];
   
   for (let i = 0; i < instanceCount; i++) {
-    const daysFromNow = (i + 1) * 7; // Each instance 1 week apart
-    const startDate = getFutureDate(daysFromNow);
+    const startDate = dateType.toLowerCase() === "pastclass" 
+      ? getRandomPastDate() 
+      : getRandomFutureDate();
     const startTime = getRandomTime();
     const endTime = getEndTime(startTime);
     const location = getRandomLocation();
@@ -532,7 +524,7 @@ async function addClassroomInstances(
     sessionList.push({
       Id: 0,
       code: "",
-      name: `Instance ${i + 1}`,
+      name: `${courseName} instance ${i + 1}`,
       start_date: startDate,
       end_date: "",
       days: [],
@@ -628,19 +620,22 @@ export async function createCourseAPI(
  * @param courseName - Name of the classroom course
  * @param status - Course status (default: "published")
  * @param instanceCount - Number of instances to create (default: 2)
+ * @param dateType - Date type for instances: "future" (default) or "pastclass" for past dates
  * @param price - Optional price for the course
  * @param currency - Optional currency (required if price is provided)
- * @returns Course name
+ * @returns Array of instance names
  */
 export async function createILTMultiInstance(
   courseName: string,
   status = "published",
   instanceCount = 2,
+  dateType: string = "future",
   price?: string,
   currency?: string
-): Promise<string> {
+): Promise<string[]> {
   console.log(`\n🎓 Creating Classroom Multi-Instance Course: ${courseName}`);
-  console.log(`📊 Instance Count: ${instanceCount}\n`);
+  console.log(`📊 Instance Count: ${instanceCount}`);
+  console.log(`📅 Date Type: ${dateType}\n`);
   
   const uniqueId = Date.now().toString();
   
@@ -655,12 +650,21 @@ export async function createILTMultiInstance(
   
   await createAccessGroupMapping(course_id, catalog_id, status);
   
-  await addClassroomInstances(course_id, courseName, instanceCount, status);
+  await addClassroomInstances(course_id, courseName, instanceCount, status, dateType);
+  
+  // Generate instance names array
+  const instanceNames: string[] = [];
+  for (let i = 0; i < instanceCount; i++) {
+    instanceNames.push(`${courseName} instance ${i + 1}`);
+  }
   
   console.log(`\n✅ Successfully created Classroom Multi-Instance Course: ${courseName}`);
   console.log(`   Course ID: ${course_id}`);
   console.log(`   Catalog ID: ${catalog_id}`);
-  console.log(`   Instances Created: ${instanceCount}\n`);
+  console.log(`   Instances Created: ${instanceCount}`);
+  console.log(`   Date Type: ${dateType}`);
+  console.log(`   Instance Names:`, instanceNames);
+  console.log();
   
-  return courseName;
+  return instanceNames;
 }
