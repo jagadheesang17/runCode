@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { programEnrollmentCron } from "../DB/DBJobs";
+import {programEnrollmentOverdueCron } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -118,7 +118,7 @@ test.describe(`TP045_Verify_lp_status_is_changed_to_overdue_with_days_from_enrol
         );
 
         console.log(`🔄 Executing CRON job to change LP status to overdue`);
-        await programEnrollmentCron();
+        await programEnrollmentOverdueCron()
         console.log(`✅ CRON job executed successfully`);
     })
 

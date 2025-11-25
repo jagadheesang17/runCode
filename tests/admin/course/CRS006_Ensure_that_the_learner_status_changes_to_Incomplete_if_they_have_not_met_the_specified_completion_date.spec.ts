@@ -2,7 +2,7 @@ import { credentialConstants } from "../../../constants/credentialConstants";
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { courseEnrollmentCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
+import { courseEnrollmentIncompleteCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
 
 
 
@@ -79,7 +79,7 @@ test.describe(`Verify that able to create a E-learning course with Complete by r
             { type: `TestCase`, description: `Test to execute CRON JOB` },
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
-        await courseEnrollmentCron();
+        await courseEnrollmentIncompleteCron();
 
     })
 

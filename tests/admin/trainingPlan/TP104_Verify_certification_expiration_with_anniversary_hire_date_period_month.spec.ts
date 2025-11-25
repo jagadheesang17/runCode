@@ -2,7 +2,7 @@ import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
 import { URLConstants } from "../../../constants/urlConstants";
-import { certificationExpiry_CronJob } from "../DB/DBJobs";
+import { nonComplianceCertificationExpiry_CronJob } from "../DB/DBJobs";
 
 const courseName = FakerData.getCourseName();
 const recertificationCourseName = FakerData.getCourseName();
@@ -156,7 +156,7 @@ test.describe(`TP072_Verify_certification_expiration_with_anniversary_hire_date_
             { type: `Test Description`, description: `Execute certification expiry cron job` }
         );
 
-        await certificationExpiry_CronJob();
+        await nonComplianceCertificationExpiry_CronJob();
         console.log(`✅ Certification expiry cron job executed successfully`);
     });
 

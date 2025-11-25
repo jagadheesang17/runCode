@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { programEnrollmentCron } from "../DB/DBJobs";
+import { programEnrollmentIncompleteCron } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -118,7 +118,7 @@ test.describe(`TP048_Verify_lp_status_is_changed_to_incomplete_with_days_from_hi
         );
 
         console.log(`🔄 Executing CRON job to change LP status to incomplete`);
-        await programEnrollmentCron();
+        await programEnrollmentIncompleteCron();
         console.log(`✅ CRON job executed successfully`);
     })
 

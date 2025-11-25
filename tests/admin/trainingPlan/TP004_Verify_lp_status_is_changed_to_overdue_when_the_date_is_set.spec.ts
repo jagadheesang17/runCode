@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { programEnrollmentCron } from "../DB/DBJobs";
+import { programEnrollmentOverdueCron } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -97,7 +97,7 @@ test.describe(`Verify_certification_status_is_changed_to_overdue_when_the_date_i
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
 
-        await programEnrollmentCron();
+        await programEnrollmentOverdueCron();
 
     })
 })

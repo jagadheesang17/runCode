@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { programEnrollmentCron } from "../DB/DBJobs";
+import { programEnrollmentOverdueCron } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -108,7 +108,7 @@ test.describe(`TP061_Verify_cert_status_is_changed_to_overdue_with_days_from_hir
         );
 
         console.log(`🔄 Running program enrollment cron job...`);
-        await programEnrollmentCron();
+        await programEnrollmentOverdueCron()
         console.log(`✅ Cron job executed successfully`);
     })
 

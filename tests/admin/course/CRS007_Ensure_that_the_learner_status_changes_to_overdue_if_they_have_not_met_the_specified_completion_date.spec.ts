@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { courseEnrollmentCron,programEnrollmentCron } from "../DB/DBJobs";
+import { courseEnrollmentOverdueCron } from "../DB/DBJobs";
 
 
 const courseName = ("Cron" + FakerData.getCourseName());
@@ -68,8 +68,7 @@ test.describe(`Verify_that_for_the_compliance_course_when _the_complete_by_rule_
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
 
-         await courseEnrollmentCron();
-         //await programEnrollmentCron();
+         await courseEnrollmentOverdueCron();
 
     })
 

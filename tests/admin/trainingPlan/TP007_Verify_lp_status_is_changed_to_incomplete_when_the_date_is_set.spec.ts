@@ -1,7 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { programEnrollmentCron } from "../DB/DBJobs";
+import { programEnrollmentIncompleteCron } from "../DB/DBJobs";
 
 let courseName = FakerData.getCourseName();
 let description = FakerData.getDescription();
@@ -113,7 +113,7 @@ test.describe(`Verify_lp_status_is_changed_to_incomplete_when_the_date_is_set.sp
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
 
-        await programEnrollmentCron();
+        await programEnrollmentIncompleteCron();
 
     })
 
