@@ -1819,6 +1819,8 @@ async verifyAddedToWishlist(courseName: string) {
   await playButton.click({ force: true });
   await this.page.waitForTimeout(5000);
   await this.page.locator(this.selectors.saveLearningStatus).click();
+  await this.page.waitForTimeout(10000);
+  await this.page.locator(this.selectors.saveLearningStatus).click();
   await this.wait("mediumWait");
 }
 

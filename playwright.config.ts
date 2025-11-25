@@ -20,7 +20,7 @@ export default defineConfig({
 
   fullyParallel: false,
   retries: 0,
-  workers: 2,
+  workers: 1,
   repeatEach: 0,
 
   reporter: [['html', { outputFolder: reportDir, open: 'always' }], ['line'], ["allure-playwright"]],

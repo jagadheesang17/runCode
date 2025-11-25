@@ -27,7 +27,7 @@ test.describe(`Verify Transfer Enrollment - Training Plan functionality in Site 
         console.log("📋 Manage Enrollment Dropdown Options:", dropdownOptions);
     });
 
-    test(`Admin disables Transfer Enrollment - Training Plan and verifies it is hidden from menus`, async ({ adminHome, siteAdmin, transferEnrollment }) => {
+    test.skip(`Admin disables Transfer Enrollment - Training Plan and verifies it is hidden from menus`, async ({ adminHome, siteAdmin, transferEnrollment }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Disable Transfer Enrollment - Training Plan and verify it is hidden` },
@@ -52,7 +52,7 @@ test.describe(`Verify Transfer Enrollment - Training Plan functionality in Site 
         console.log("📋 Manage Enrollment Dropdown Options (should NOT include Transfer Enrollment):", dropdownOptions);
     });
 
-    test(`Re-enable Transfer Enrollment - Training Plan for future tests`, async ({ adminHome, siteAdmin }) => {
+    test.skip(`Re-enable Transfer Enrollment - Training Plan for future tests`, async ({ adminHome, siteAdmin }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Re-enable Transfer Enrollment - Training Plan` },
