@@ -5,7 +5,7 @@ import path from 'path';
 import { URLConstants } from '../../../constants/urlConstants';
 
 const BASE_URL = URLConstants.adminURL.replace('/backdoor', '');
-const SESSION_COOKIE = fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8');
+const SESSION_COOKIE = fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8').trim();
 
 const CURRENCY_MAP: { [key: string]: string } = {
   'us dollar': 'currency_001',

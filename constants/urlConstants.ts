@@ -2,7 +2,7 @@ import { environmentSetup } from "../playwright.config";
 export let URLConstants: any
 //export let URLConstants
 switch (environmentSetup) {
-    case "automationtenant":
+    case "qaProduction":
       URLConstants = {
             adminURL: "https://automationtenant.expertusoneqa.in/backdoor",
             leanerURL: "https://automationtenant.expertusoneqa.in/learner/automationtenant/",
@@ -60,26 +60,6 @@ switch (environmentSetup) {
             USPS_Client_Secret:"AG0WP7HYj4a00VXh",
             USPS_API_URL:"https://api-cat.usps.com/",
             EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg",
-        }
-        break;
-    case "qaProduction":
-        URLConstants = {
-            adminURL: "https://newprod.expertusoneqa.in/backdoor",
-            leanerURL: "https://newprod.expertusoneqa.in/learner/newprod/",
-            learnerportal: "https://newprod.expertusoneqa.in/learner/learnerportal/",
-            learnerportal2: "https://newprod.expertusoneqa.in/learner/autoportal1/",
-            portal1: "newprod",
-            portal2: "portal1",
-            portal3: "portal2",
-            LearnerGroup1: "LG1",
-            LearnerGroup2: "AutoLG2(Do not Use)",
-            creditCardNumber: "4111111111111111",
-            cardExpiryDate: "10/27",
-            cVV: "111",
-            USPS_Client_Id:"ScI6WsAHlUa6YC27zLRbQ0otldGLFdGG",
-            USPS_Client_Secret:"AG0WP7HYj4a00VXh",
-            USPS_API_URL:"https://api-cat.usps.com/",
-            EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg"
         }
         break;
         case "dev":

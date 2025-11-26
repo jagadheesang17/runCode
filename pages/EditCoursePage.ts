@@ -163,7 +163,7 @@ export class EditCoursePage extends AdminHomePage {
         await this.click(this.selectors.indianTimezone, "Indian Timezone", "Selected")
     }
     async clickBusinessRule() {
-        await this.wait('mediumWait')
+        await this.wait('maxWait')
         await this.click(this.selectors.businessRule, "Business Rule", "sub-Menu")
     }
     async clickUncheckSingReg() {

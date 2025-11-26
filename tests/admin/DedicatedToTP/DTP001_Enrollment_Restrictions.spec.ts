@@ -64,7 +64,6 @@ test.describe.serial('DTP001 - Enrollment Restrictions for Dedicated to TP Cours
         await universalSearch.verifyDedicatedTPCourseNotDisplayed();
 
 
-
     });
 
 });
