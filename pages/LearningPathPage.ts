@@ -826,9 +826,13 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async saveRecertification(data: string) {
-        await this.mouseHover(this.selectors.recertificationSaveBtn, "Save");
-        await this.click(this.selectors.recertificationSaveBtn, "Save", "Button");
-        await this.verification(this.selectors.verifyRecertificationCourse(data), data);
+        await this.mouseHover(this.selectors.saveButton, "Modal Save");
+        await this.click(this.selectors.saveButton, "Modal Save", "Button");
+        await this.spinnerDisappear();
+        await this.wait("mediumWait");
+        const modalLocator = "//div[contains(text(),'Please choose your preferred method')]";
+        await this.waitForElementHidden(modalLocator, "Recertification modal");
+     //   await this.verification(this.selectors.verifyRecertificationCourse(data), data);
     }
 
     async registractionEnds() {

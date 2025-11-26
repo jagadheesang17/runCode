@@ -241,10 +241,10 @@ export class CoursePage extends AdminHomePage {
     loadMoreBtn:
       "//div[contains(@id,'scroll-certificat')]//button[text()='Load More']",
     certificateCheckboxCount:
-      "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')]",
+      "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone') and contains(@class,'icon')]",
     certificateCheckbox: (index: string) =>
-      `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')])[${index}]`,
-    addBtn: "//button[text()='Add']",
+      `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone') and contains(@class,'icon')])[${index}]`,
+    addBtn: "//div[contains(@id,'scroll-certificat')]//button[text()='Add']",
     certificationVerifyMessage:
       "//span[text()='Completion Certificate has been created successfully.']",
     accessBtn: "//span[text()='Access']//parent::button", //span[text()='Access'] -->lot of text has been created(12/8/2024)
@@ -4082,10 +4082,15 @@ export class CoursePage extends AdminHomePage {
   }
 
   async clickAdd() {
-    await this.validateElementVisibility(this.selectors.addBtn, "Add");
     await this.wait("mediumWait");
     await this.page.keyboard.press("PageUp");
-    await this.click(this.selectors.addBtn, "Add", "Button");
+    try {
+      await this.validateElementVisibility(this.selectors.addBtn, "Add");
+      await this.click(this.selectors.addBtn, "Add", "Button");
+    } catch (error) {
+      console.log("Primary Add button not found, trying fallback...");
+      await this.click("//button[text()='Add']", "Add", "Button");
+    }
     await this.wait("minWait");
     await this.verification(
       this.selectors.certificationVerifyMessage,
