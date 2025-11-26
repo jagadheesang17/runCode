@@ -1,6 +1,21 @@
 import { environmentSetup } from "../../playwright.config";
 export let filePath: any;
 switch (environmentSetup) {
+    case "automationtenant":
+        filePath = {
+            tags: "../data/MetadataLibraryData/AutomationTenant/tags.json",
+            ceuData: "../data/MetadataLibraryData/AutomationTenant/ceuData.json",
+            ceuProvider : "../data/MetadataLibraryData/AutomationTenant/ceuProvider.json",
+            provider : "../data/MetadataLibraryData/AutomationTenant/provider.json",
+            department : "../data/MetadataLibraryData/AutomationTenant/department.json",
+            empType : "../data/MetadataLibraryData/AutomationTenant/empType.json",
+            jobRole : "../data/MetadataLibraryData/AutomationTenant/jobRole.json",
+            jobTitle : "../data/MetadataLibraryData/AutomationTenant/jobTitle.json",
+            userType : "../data/MetadataLibraryData/AutomationTenant/userType.json",
+            catagory: "../data/MetadataLibraryData/AutomationTenant/catagory.json",
+            location: "../data/MetadataLibraryData/AutomationTenant/location.json",
+        }
+        break;
     case "qa":
         filePath = {
             tags: "../data/MetadataLibraryData/QA/tags.json",

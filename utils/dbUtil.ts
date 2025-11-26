@@ -5,6 +5,9 @@ import data from "../data/dbData/dbCredentials.json"
 import { environmentSetup } from '../playwright.config';
 let dbName: string;
 switch (environmentSetup) {
+    case "automationtenant":
+        dbName = "qa_auto_database_config";
+        break;
     case "qa":
         dbName = "qa_features_database_config";
         break;

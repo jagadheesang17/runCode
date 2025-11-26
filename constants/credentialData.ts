@@ -9,6 +9,99 @@ const teamUser2: any = data.teamUser2;
 export let credentials: any;
 
 switch (environmentSetup) {
+  case "automationtenant":
+        credentials = {
+		 CUSTOMERADMIN: {
+                username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        CUSTOMERADMIN1: {
+            username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        LEARNERADMIN: {
+           username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        INSTRUCTORNAME: {
+            username: "instructor1",
+            password: "Welcome1@"
+        },
+        MANAGERNAME: {
+            username: "manager1",
+            password: "Welcome1@"
+        },
+        LEARNERUSERNAME: {
+             username:"learner1",
+            password: "Welcome1@"
+        },
+        COMMERCEADMIN: {
+         username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        SUPERADMIN: {
+            username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        PEOPLEADMIN: {
+            username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        LEARNERPORTAL_User: {
+            username: "learner6",
+            password: "Welcome1@"
+        },
+        LEARNERPORTAL_2User: {
+            username: "learner7",
+            password: "Welcome1@",
+        },
+        COMMONUSER: {
+            username: "learner5",
+            password: "Welcome1@",
+        },
+        ENROLLADMIN: {
+            username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        NEWCUSTOMERADMIN: {
+               username: "automationtenant@nomail.com",
+            password: "Welcome1@"
+        },
+        INTERNALUSER: {
+            username: "learner1",
+            password: "Welcome1@"
+        },
+        EXTERNALUSER: {
+            username: "learner2",
+            password: "Welcome1@"
+        },
+        TEAMUSER1:{
+             username:"learner3",
+            password: "Welcome1@"
+        }, 
+        TEAMUSER2:{
+             username:"learner4",
+            password: "Welcome1@"
+        },
+        SSOUSER: {
+            username: "learner1",
+            password: "Welcome1@"
+    
+        },
+        SSOUSEREMAIL: {
+            username1: "learner1@automationtenant.com",
+            password1: "Welcome1@"
+        },
+        LearnerGroup1user: {
+            username: "learner1",
+            password: "Welcome1@"
+        },
+        LearnerGroup2user: {
+            username: "learner2",
+            password: "Welcome1@"
+			}   
+        }
+        break;
   case "automation":
         credentials = {
 		 CUSTOMERADMIN: {

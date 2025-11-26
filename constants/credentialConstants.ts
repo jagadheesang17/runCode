@@ -2,7 +2,7 @@ import data from "../data/adminGroupsData.json"
 
 const MANAGERNAME: any = data.managerName.toString();
 export enum credentialConstants {
-   USERNAME = "admin",
+   USERNAME = "automationtenant@nomail.com",
    PASSWORD = "Welcome1@",
    CUSTOMERADMIN = "customadmin",
    LEARNERADMIN = "robretcollin@people.co",
