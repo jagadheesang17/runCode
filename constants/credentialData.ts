@@ -9,7 +9,7 @@ const teamUser2: any = data.teamUser2;
 export let credentials: any;
 
 switch (environmentSetup) {
-  case "automationtenant":
+  case "QA_P":
         credentials = {
 		 CUSTOMERADMIN: {
                 username: "automationtenant@nomail.com",
@@ -293,26 +293,22 @@ switch (environmentSetup) {
     };
     break;
 
-  case "qaProduction":
+ case "qaProduction":
     credentials = {
       CUSTOMERADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       CUSTOMERADMIN1: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       LEARNERADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       INSTRUCTORNAME: {
         username: "autoins",
-        password: "Welcome1@",
-      },
-      INSTRUCTOR2: {
-        username: "divya",
         password: "Welcome1@",
       },
       MANAGERNAME: {
@@ -320,19 +316,19 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "kathir7695",
+        username: "arjun",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       SUPERADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       PEOPLEADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       LEARNERPORTAL_User: {
@@ -350,7 +346,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       ENROLLADMIN: {
-        username: "qanewprod@nomail.com",
+        username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
       NEWCUSTOMERADMIN: {
@@ -382,8 +378,8 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "kathir7695",
-        password: "Welcome1@",
+        username: "arjun1",
+        password: "Welcome6@",
       },
       LearnerGroup2user: {
         username: "arjun2",
