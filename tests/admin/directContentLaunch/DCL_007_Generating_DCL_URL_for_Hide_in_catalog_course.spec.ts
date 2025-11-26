@@ -11,11 +11,11 @@ let URL:any
 let createdCode: any
 
     test.describe.configure({ mode: "serial" });
-    test(`Creation of Single Instance Elearning with Youtube content`, async ({contentHome, adminHome, createCourse, directContent,enrollHome }) => {
+    test(`creation of course in Hide in catalog and generate Direct content url`, async ({contentHome, adminHome, createCourse, directContent,enrollHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Nithya` },
-            { type: `TestCase`, description: `Creation of Single Instance Elearning with Youtube content` },
-            { type: `Test Description`, description: `Creation of Single Instance Elearning with Youtube content` }
+            { type: `TestCase`, description: `creation of course in Hide in catalog and generate Direct content url` },
+            { type: `Test Description`, description: `creation of course in Hide in catalog and generate Direct content url` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
@@ -28,7 +28,7 @@ let createdCode: any
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a new course by name :" + description);
         await createCourse.contentLibrary();//Youtube content is attached here
-        await createCourse.clickCatalog();
+        await createCourse.clickHideinCatalog();
         await createCourse.clickSave();
         await createCourse.clickProceed();
 

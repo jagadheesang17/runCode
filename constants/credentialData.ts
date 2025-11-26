@@ -207,6 +207,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       CUSTOMERADMIN1: {
+     
         username: "automationtenant@nomail.com",
         password: "Welcome1@",
       },
@@ -223,7 +224,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "arjun",
+        username: "arjun1",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {

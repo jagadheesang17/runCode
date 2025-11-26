@@ -1046,7 +1046,7 @@ async inProgress() {
         this.selectors.contentLabel,
         "Content"
       );
-      if (await content.isVisible({ timeout: 20000 })) {
+      if (await content.isVisible({ timeout: 60000 })) {
         await content.scrollIntoViewIfNeeded();
       }
 

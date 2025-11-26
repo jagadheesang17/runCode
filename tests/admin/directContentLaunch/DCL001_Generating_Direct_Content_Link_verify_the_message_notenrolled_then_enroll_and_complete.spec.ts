@@ -33,7 +33,7 @@ let URL:any
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.clickDirectContentLaunchLink();
-        await directContent.clickdomaindropdown("ExpertusONE");
+        await directContent.clickdomaindropdown("newprod");
         await directContent.searchfield(courseName);
         await directContent.generateURL();
         URL=await directContent.copyURL();
