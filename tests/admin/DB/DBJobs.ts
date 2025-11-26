@@ -480,4 +480,44 @@ async function adminGroupDateValidity(groupTitle: string) {
     console.log(cronDetails);
 }
 
-export { courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity}
+async function dataloadCron() {
+    try {
+        console.log("🔄 Starting Dataload Cron Job...");
+        
+        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+        const currentTimeString = currentTimeResult[0]['NOW()'];
+        const currentTime = new Date(currentTimeString);
+        console.log("Current Time : " + currentTime);
+        
+        // Update cron_master for Dataload
+        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id='${portal_ID}' AND name='Dataload'`);
+        console.log("⚙️ Updated cron_master: Dataload");
+        
+        // Calculate next_run time (15 minutes ago from current time)
+        const cronRunTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
+        const subTime = format(cronRunTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('Formatted New Time (15 mins subtracted):', subTime);
+        
+        // Update all dataload-related cron_details
+        const cronNames = [
+            'Dataload Job Creation',
+            'Dataload Job Split into Batches',
+            'Dataload Job - Data Validation',
+            'Dataload Job Execution'
+        ];
+        
+        for (const cronName of cronNames) {
+            let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}', current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='${cronName}';`);
+            console.log(`✅ Updated cron_details: ${cronName}`);
+            console.log(cronDetails);
+        }
+        
+        console.log("🎉 Dataload Cron Job completed successfully!");
+        
+    } catch (error) {
+        console.error(`❌ Dataload cron job failed: ${error}`);
+        throw error;
+    }
+}
+
+export { courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,dataloadCron}

@@ -140,7 +140,7 @@ export class LearningPathPage extends AdminHomePage {
         addVersionBtn: `//button[text()='Add Version']`,
         unselectAllCheckbox: `//span[text()='Unselect All']//preceding::i[contains(@class,'fa-square-check')]`,
         versionFormLabels: `//span[contains(@class,'form-label')]`,
-        versionCheckbox: (label: string) => `//span[contains(@class,'form-label') and contains(text(),'${label}')]//preceding::i[contains(@class,'fa-square icon')]`,
+        versionCheckbox: (label: string) => `//span[contains(@class,'form-label') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
         createVersionBtn: `//button[text()='Create']`,
         versionLabel: (versionNumber: string) => `//span[text()='Version: ${versionNumber}']`,
         yesBtn: `//button[text()='Yes']`,
@@ -152,7 +152,15 @@ export class LearningPathPage extends AdminHomePage {
         selectAllLearnersCheckbox: `//label[contains(@for,'selectalllearners')]`,
         transferLearnersBtn: `//button[text()='Transfer Learners']`,
         transferConfirmationMessage: `//span[text()='Transferring the learner to the new training will remove the enrollment of the existing training? Are you sure you want to transfer the selected learners?']`,
-        editIconTP:(title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Edit')])[1]`
+        editIconTP:(title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Edit')])[1]`,
+        
+        // Clone Learning Path selectors
+        cloneIcon: (title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Copy')])[1]`,
+        cloneFormLabels: `//span[@class='ms-1 rawtxt']`,
+        cloneUnselectAllCheckbox: `//span[text()='Unselect All']//preceding::i[contains(@class,'fa-square-check')]`,
+        clonePopupCheckbox: (label: string) => `//span[contains(@class,'ms-1 rawtxt') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        createCopyBtn: `//button[text()='Create Copy']`,
+    
     };
 
     //Adding course manually to the recertification module:-
@@ -1133,5 +1141,55 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.editIconTP(lpName), `Edit Icon for ${lpName}`, "Icon");
         await this.wait("minWait");
         console.log(`✅ Clicked edit icon for Learning Path: ${lpName}`);
+    }
+
+    // Clone Learning Path methods
+    async clickCloneIcon(lpTitle: string) {
+        await this.wait("minWait");
+        await this.click(this.selectors.cloneIcon(lpTitle), `Clone Icon for ${lpTitle}`, "Icon");
+        await this.wait("minWait");
+        console.log(`✅ Clicked clone icon for Learning Path: ${lpTitle}`);
+    }
+
+
+    async unselectAllCloneOptions() {
+        await this.click(this.selectors.cloneUnselectAllCheckbox, "Unselect All", "Checkbox");
+        await this.wait("minWait");
+        console.log("✅ Unselected all clone options");
+    }
+
+    async getCloneFormLabels(): Promise<string[]> {
+        const labels = await this.page.locator(this.selectors.cloneFormLabels).allTextContents();
+        console.log("📋 Available clone form labels:", labels);
+        return labels;
+    }
+
+    async selectCloneOption(label: string) {
+        await this.click(this.selectors.clonePopupCheckbox(label), label, "Checkbox");
+        await this.wait("minWait");
+        console.log(`✅ Selected clone option: ${label}`);
+    }
+
+    async clickCreateCopy() {
+        await this.click(this.selectors.createCopyBtn, "Create Copy", "Button");
+        await this.wait("maxWait");
+        await this.spinnerDisappear();
+        console.log("✅ Clicked Create Copy button");
+    }
+
+    async verifyClonedTitle(originalTitle: string) {
+        const expectedClonedTitle = `${originalTitle}_Copy`;
+        const titleLocator = `//input[@id='program-title']`;
+        await this.validateElementVisibility(titleLocator, "Title Input");
+        
+        // Get the actual value from the input field
+        const actualTitle = await this.page.locator(titleLocator).inputValue();
+        
+        if (actualTitle === expectedClonedTitle) {
+            console.log(`✅ Verified cloned title: ${expectedClonedTitle}`);
+        } else {
+            throw new Error(`❌ Title mismatch! Expected: "${expectedClonedTitle}", but got: "${actualTitle}"`);
+        }
+        return actualTitle;
     }
 }

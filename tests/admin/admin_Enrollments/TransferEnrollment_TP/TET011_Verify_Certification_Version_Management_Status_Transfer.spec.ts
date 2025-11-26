@@ -103,8 +103,12 @@ test.describe(`TE011 - Verify Certification version management with enrollment s
         // User 1: Complete course
         console.log(`🔄 User 1 (${users[0].username}) - Completing course...`);
         await learnerHome.basicLogin(users[0].username, "DefaultPortal");
-        await catalog.searchMyLearning(certTitle);
-        await catalog.clickCourseInMyLearning(certTitle);
+         await learnerHome.clickDashboardLink();
+        await dashboard.clickLearningPath_And_Certification();
+        await dashboard.clickCertificationLink();
+        await dashboard.searchCertification(certTitle);
+        await dashboard.verifyTheEnrolledCertification(certTitle);
+        await dashboard.clickTitle(certTitle);
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.saveLearningStatus();
