@@ -6,7 +6,7 @@ import { createILTMultiInstance } from '../../../api/apiTestIntegration/courseCr
 
 test.describe.serial('DTP003 - Verify Enable disable Course And Class Level', () => {
 
-    const courseName = "Haptic Driver Back up";//FakerData.getCourseName();
+    const courseName = FakerData.getCourseName();
     console.log("Course Name: " + courseName);
     
     test("DTP003a - Verify that dedicated to tp rule is greyed out and remain in checked state in the class level when it is applied at the course level", async ({ adminHome, createCourse, editCourse, learningPath, enrollHome }) => {
@@ -17,7 +17,7 @@ test.describe.serial('DTP003 - Verify Enable disable Course And Class Level', ()
             { type: 'Test Description', description: 'Verify that dedicated to tp rule when it is applied at the course & Test level' }
         );
 
-        // await createILTMultiInstance(courseName, 'published', 2);
+        await createILTMultiInstance(courseName, 'published', 2);
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();

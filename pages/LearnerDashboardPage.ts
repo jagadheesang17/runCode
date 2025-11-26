@@ -17,7 +17,7 @@ export class LearnerDashboardPage extends LearnerHomePage {
     pendingLabel: "//span[contains(text(),'Pending')]",
     verifyPendingCourse: (course: string) =>
       `//span[contains(text(),'Pending')]//following::div[contains(text(),'${course}')]`,
-    // mandatoryText: "//div[text()='Mandatory']",  //Not in use
+     mandatoryText: "//div[text()='Mandatory']",  //Not in use
     // complianceText: "//div[text()='Compliance']", //Not in use
     mdtryandcmplText: "//div[text()='Mandatory' or text()='Compliance']",
     verifyCertificate: (cerTitle: string) =>
@@ -319,12 +319,41 @@ export class LearnerDashboardPage extends LearnerHomePage {
   }
 
   async vaidatVisibleCourse_Program(data: string, status: string) {
-    await this.wait("mediumWait");
+    await this.wait("maxWait");
     await this.validateElementVisibility(
       this.selectors.courseStatus(data, status),
       "Course/Training Plan with Status"
     );
     await this.verification(this.selectors.courseStatus(data, status), status);
+  }
+
+  /**
+   * Verify enrollment type (Mandatory/Optional) in learner My Learning
+   * @param enrollmentType - "Mandatory" or "Optional"
+   * If "Mandatory": Verifies "Mandatory" text is visible
+   * If "Optional": Verifies "Mandatory" text is NOT visible
+   */
+  async verifyEnrollmentType(enrollmentType: string) {
+    await this.wait("minWait");
+    
+    if (enrollmentType.toLowerCase() === "mandatory") {
+      // Verify Mandatory text is visible
+      await this.validateElementVisibility(
+        this.selectors.mandatoryText,
+        "Mandatory Text"
+      );
+      await this.verification(this.selectors.mandatoryText, "Mandatory");
+      console.log(`✅ Mandatory text verified - Enrollment type is Mandatory`);
+    } else if (enrollmentType.toLowerCase() === "optional") {
+      // Verify Mandatory text is NOT visible
+      const isMandatoryVisible = await this.page.locator(this.selectors.mandatoryText).isVisible();
+      if (isMandatoryVisible) {
+        throw new Error(`Mandatory text is visible, but expected Optional enrollment type`);
+      }
+      console.log(`✅ Mandatory text not visible - Enrollment type is Optional`);
+    } else {
+      throw new Error(`Invalid enrollment type: ${enrollmentType}. Expected "Mandatory" or "Optional"`);
+    }
   }
 
 

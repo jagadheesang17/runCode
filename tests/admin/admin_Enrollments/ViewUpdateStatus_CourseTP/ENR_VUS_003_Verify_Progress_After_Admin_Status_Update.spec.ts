@@ -5,7 +5,7 @@ import enrollmentUsersData from '../../../../data/enrollmentUserData/EnrollmentU
 import { createCourseAPI } from "../../../../api/apiTestIntegration/courseCreation/createCourseAPI";
 import { expect } from "allure-playwright";
 
-const courseName = "Neural Microchip Generate"; //FakerData.getCourseName();
+const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const users: any[] = enrollmentUsersData;
 
@@ -66,7 +66,6 @@ test.describe(`Verify progress percentage reaches 100% after admin updates learn
             await catalog.searchMyLearning(courseName);
             await catalog.clickCourseInMyLearning(courseName);
             console.log(`✅ User ${i + 1} (${users[i].username}) - Course visible in My Learning`);
-            
             await createUser.clickLogOutButton();
             console.log(`✅ User ${i + 1} logged out`);
         }
