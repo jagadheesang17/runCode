@@ -2,7 +2,7 @@ import { credentialConstants } from "../../../constants/credentialConstants";
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { courseEnrollmentCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
+import { courseEnrollmentOverdueCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
 import { credentials } from "../../../constants/credentialData";
 import { ca } from "date-fns/locale";
 import { CatalogPage } from "../../../pages/CatalogPage";
@@ -94,7 +94,7 @@ test.describe(`Verify whether the learner with "Overdue" status is transfered to
             { type: `TestCase`, description: `Test to execute CRON JOB` },
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
-        await courseEnrollmentCron();
+        await courseEnrollmentOverdueCron();
 
     })
 

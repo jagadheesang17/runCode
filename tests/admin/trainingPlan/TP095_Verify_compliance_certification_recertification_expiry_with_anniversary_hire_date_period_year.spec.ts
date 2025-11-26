@@ -2,7 +2,7 @@ import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
 import { URLConstants } from "../../../constants/urlConstants";
-import { certificationExpiry_CronJob } from "../DB/DBJobs";
+import { complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob } from "../DB/DBJobs";
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -137,7 +137,7 @@ test.describe(`TPC095_Verify_compliance_certification_recertification_expiry_wit
             { type: `Test Description`, description: `Execute certification expiry cron job` }
         );
 
-        await certificationExpiry_CronJob();
+        await complianceCertificationExpiry_CronJob();
         console.log(`✅ Certification expiry cron job executed successfully`);
     });
 
@@ -166,7 +166,7 @@ test.describe(`TPC095_Verify_compliance_certification_recertification_expiry_wit
         await catalog.verifyStatus("Completed");
         console.log(`✅ Successfully completed recertification: ${titleAnniversaryDate}`);
         
-        await certificationExpiry_CronJob();
+        await nonComplianceCertificationExpiry_CronJob();
         console.log(`✅ Recertification expiry cron job executed successfully`);
         
         await learnerHome.clickDashboardLink();

@@ -2,7 +2,7 @@ import { credentialConstants } from "../../../constants/credentialConstants";
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
-import { courseEnrollmentCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
+import { courseEnrollmentIncompleteCron, updateSingleInstanceAutoRegister } from "../DB/DBJobs";
 import { credentials } from "../../../constants/credentialData";
 import { ca } from "date-fns/locale";
 import { CatalogPage } from "../../../pages/CatalogPage";
@@ -93,7 +93,7 @@ test.describe(`Verify whether the learner with "Incomplete" status is transfered
             { type: `TestCase`, description: `Test to execute CRON JOB` },
             { type: `Test Description`, description: `Verify the CRON Job` }
         );
-        await courseEnrollmentCron();
+        await courseEnrollmentIncompleteCron();
 
     })
 

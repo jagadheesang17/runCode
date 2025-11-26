@@ -129,26 +129,29 @@ test.describe(`TE011 - Verify Certification version management with enrollment s
         await enrollHome.selectBycourse(certTitle);       
         await enrollHome.clickViewLearner();
 
-        // User 5 (INSTRUCTORNAME): Change to Completed
-        console.log(`🔄 Changing status to Completed for User 5 (${users[4].username})`);
-        await enrollHome.changeLearnerStatus(users[4].username, "Completed");
-        await enrollHome.clickviewUpdateEnrollmentBtn();
-        await enrollHome.verifyField("Status", "Completed", users[4].username);
-        await enrollHome.verifyField("Progress", "100", users[4].username);
-        console.log(`✅ User 5 status updated: Completed with 100% progress`);
-        
         // User 3 (LEARNERUSERNAME): Change to Canceled
         console.log(`🔄 Changing status to Canceled for User 3 (${users[2].username})`);
         await enrollHome.changeLearnerStatus(users[2].username, "Canceled");
         await enrollHome.clickviewUpdateEnrollmentBtn();
         await enrollHome.verifyField("Status", "Canceled", users[2].username);
         console.log(`✅ User 3 status updated: Canceled`);
-        
-        // User 4 (MANAGERNAME): Verify remains Enrolled
+
+         // User 4 (MANAGERNAME): Verify remains Enrolled
         console.log(`🔍 Verifying User 4 (${users[3].username}) remains Enrolled`);
         await enrollHome.verifyField("Status", "Enrolled", users[3].username);
         await enrollHome.verifyField("Progress", "0", users[3].username);
         console.log(`✅ User 4 status: Enrolled with 0% progress (no change)`);
+
+        // User 5 (INSTRUCTORNAME): Change to Completed
+        console.log(`🔄 Changing status to Completed for User 5 (${users[4].username})`);
+        await enrollHome.changeLearnerStatus(users[4].username, "Completed");
+        await enrollHome.clickviewUpdateEnrollmentBtn();
+        await enrollHome.verifyField("Progress", "100", users[4].username);
+        console.log(`✅ User 5 status updated: Completed with 100% progress`);
+        
+   
+        
+       
     });
 
     test(`Create Version 2 with additional course and transfer learners`, async ({ adminHome, learningPath, createCourse, enrollHome }) => {

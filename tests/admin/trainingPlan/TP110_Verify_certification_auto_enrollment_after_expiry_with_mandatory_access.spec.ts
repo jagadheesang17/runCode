@@ -2,7 +2,7 @@ import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
 import { URLConstants } from "../../../constants/urlConstants";
-import { certificationExpiry_CronJob, updateCertificationComplianceFlow } from "../DB/DBJobs";
+import { nonComplianceCertificationExpiry_CronJob, updateCertificationComplianceFlow } from "../DB/DBJobs";
 import { readDataFromCSV } from "../../../utils/csvUtil";
 
 const courseName = FakerData.getCourseName();
@@ -235,7 +235,7 @@ test.describe(`TPT078_Verify_certification_auto_enrollment_after_expiry_with_man
         );
 
         console.log(`🔄 Executing certification expiry cron job...`);
-        await certificationExpiry_CronJob();
+        await nonComplianceCertificationExpiry_CronJob();
         console.log(`✅ Certification expiry cron job executed successfully`);
     });
 

@@ -3,7 +3,7 @@ import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { updateCronDataJSON } from "../../../utils/jsonDataHandler";
 import { URLConstants } from "../../../constants/urlConstants";
-import { certificationExpiry_CronJob } from "../DB/DBJobs";
+import { nonComplianceCertificationExpiry_CronJob } from "../DB/DBJobs";
 
 
 
@@ -121,7 +121,7 @@ test.describe(`Verify_certification_expiration_flow`, async () => {
       { type: `Test Description`, description: `Cron job to make certification expiry` }
     );
 
-    await certificationExpiry_CronJob();
+    await nonComplianceCertificationExpiry_CronJob();
   })
 
 
