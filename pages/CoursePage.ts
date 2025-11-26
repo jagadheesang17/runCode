@@ -3089,6 +3089,7 @@ export class CoursePage extends AdminHomePage {
       | "AutoVimeo"
       | "tin_can"
       | "AutoAudioFile"
+      | "clip-oceans"
       | any
   ) {
     await this.spinnerDisappear();

@@ -13,12 +13,25 @@ test.describe(`Generating direct content launch link`, async () => {
             { type: `TestCase`, description: `Generating direct content launch link and clear the fields` },
             { type: `Test Description`, description: `Generating direct content launch link` }
         );
-        let courseName="Open-source Hard drive Generate";
-            await adminHome.loadAndLogin("CUSTOMERADMIN")
+        // let courseName="Open-source Hard drive Generate";
+            await adminHome.loadAndLogin("CUSTOMERADMIN1")
+            await adminHome.menuButton();
+            await adminHome.clickLearningMenu();
+            await adminHome.clickCourseLink();
+            await createCourse.clickCreateCourse();
+            await createCourse.verifyCreateUserLabel("CREATE COURSE");
+            await createCourse.enter("course-title", courseName);
+            await createCourse.selectLanguage("English");
+            await createCourse.typeDescription("This is a new course by name :" + description);
+            await createCourse.contentLibrary("Passed-Failed-SCORM2004");// scorm 2004 content
+            await createCourse.clickCatalog();
+            await createCourse.clickSave();
+            await createCourse.clickProceed();
+            await createCourse.verifySuccessMessage();
             await adminHome.menuButton();
             await adminHome.clickLearningMenu();
             await adminHome.clickDirectContentLaunchLink();
-            await directContent.clickdomaindropdown("qa");
+            await directContent.clickdomaindropdown("newprod");
             await directContent.searchfield(courseName);
             await directContent.generateURL();
             await directContent.copyURL();

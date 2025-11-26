@@ -82,10 +82,28 @@ export class SiteAdminPage extends AdminHomePage {
         observationChecklistLabel: `//label[@for='mod_admn_quespro_input']`,
         observationChecklistToggleOn: `//label[@for='mod_admn_quespro_input']//i[contains(@class,'fa-toggle-on')]`,
         observationChecklistToggleOff: `//label[@for='mod_admn_quespro_input']//i[contains(@class,'fa-toggle-off')]`,
+ disabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+        enabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
 
+        checkInheritAddress:`(//span[text()='Inherit Address']/preceding-sibling::i)[2]`,
+        checkEmergencyContact:`(//span[text()='Emergency Contact']/preceding-sibling::i)[2]`,
+
+        // Direct Content Launch toggles
+        disabledDirectContentLaunch:`//span[text()='Direct Content Launch']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+        enabledDirectContentLaunch:`//span[text()='Direct Content Launch']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        
+        // Success message for settings save
+        settingsSuccessMessage:`//span[text()='Changes have been saved successfully. Please refresh the page to see the effects.']`,
+        SAVE:`//button[text()='OK']`,
+
+        clickEditAddressInheritance:`//i[@data-bs-target='#AddressInheritanceAndEmergencyContact-content']`
+        
 
     };
 
+
+         
+    
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
     }
@@ -426,203 +444,14 @@ export class SiteAdminPage extends AdminHomePage {
             // Scroll to the observation checklist element
             await this.page.locator(this.selectors.observationChecklistLabel).scrollIntoViewIfNeeded();
             await this.wait("minWait");
-            
-            // Click on the label to toggle OFF
-            await this.click(this.selectors.observationChecklistLabel, "Observation Checklist Toggle", "Toggle");
-            await this.wait("mediumWait");
-            
-            console.log("✅ Observation Checklist (QuestionPro) has been disabled");
-        } else {
-            console.log("✅ Observation Checklist already disabled - no action needed");
-        }
-    }
 
-    //Verify Observation Checklist option is visible in Admin Configuration
-    async verifyObservationChecklistInAdminConfig(): Promise<boolean> {
-        await this.wait("mediumWait");
+            await this.page.reload();
+        }
+    else{
+        console.log("Address Inheritance is already enabled");
         
-        try {
-            await this.wait("maxWait");
-            // First try to scroll to the element
-            await this.page.locator(this.selectors.observationChecklistSpan).scrollIntoViewIfNeeded({ timeout: 5000 });
-            await this.wait("minWait");
-            
-            const isVisible = await this.page.locator(this.selectors.observationChecklistSpan).isVisible();
-            
-            if (isVisible) {
-                console.log("✅ Observation Checklist (QuestionPro) option is visible in Admin Configuration");
-                return true;
-            } else {
-                console.log("❌ Observation Checklist (QuestionPro) option is NOT visible");
-                return false;
-            }
-        } catch (error) {
-            console.log("❌ Error verifying Observation Checklist visibility:", error);
-            console.log("💡 The Observation Checklist feature might not be enabled in this environment");
-            return false;
-        }
-    }
-
-    public async autoCodeConventionTurnON() {
-
-        const button = this.page.locator(this.selectors.autoCodeConventionOn).isChecked();
-        await this.wait("mediumWait")
-        //const isToggleEnabled=await button.isChecked();
-        if(!button){
-            await this.click(this.selectors.autoCodeConventionOn,"enable","toggle");
-            this.clickOkBtn();
-            this.page.reload();
-        }
-        else {
-            console.log("Auto code convention is already enabled");
-            this.page.reload();
-            await this.wait("mediumWait")
-        }
-    }
-    public async autoCodeConventionTurnOFF() {
-
-        const button = this.page.locator(this.selectors.autoCodeConventionOff).isChecked();
-        await this.wait("mediumWait")
-        //const isToggleEnabled=await button.isChecked();
-        if (button) {
-            await this.click(this.selectors.autoCodeConventionOff, "disable", "toggle");
-            this.clickOkBtn();
-            this.page.reload();
-        }
-        else {
-            console.log("Auto code convention is already disabled");
-            this.page.reload();
-            await this.wait("mediumWait")
-        }
-        }
-        async clickOkBtn(){
-            await this.wait("minWait")
-            await this.click(this.selectors.okBtn,"ok button","button");
-            await this.wait("minWait")
-            //await this.page.reload();
-        }
-
-        // TECRS01 - Transfer Enrollment methods
-        async enableTransferEnrollment() {
-            await this.wait("mediumWait");
-            const button = this.page.locator(this.selectors.transferEnrollmentCheckbox);
-            const isChecked = await button.isChecked();
-            
-            if (!isChecked) {
-                await this.click(this.selectors.transferEnrollmentCheckboxToCheck, "Enable Transfer Enrollment", "Check box");
-                await this.wait("minWait");
-                await this.click(this.selectors.saveBtn, "SAVE", "button");
-                await this.wait("mediumWait");
-                console.log("✅ Transfer Enrollment enabled");
-            } else {
-                console.log("Transfer Enrollment is already enabled");
-            }
-        }
-
-        async disableTransferEnrollment() {
-            await this.wait("mediumWait");
-            const button = this.page.locator(this.selectors.transferEnrollmentCheckbox);
-            const isChecked = await button.isChecked();
-            
-            if (isChecked) {
-                await this.click(this.selectors.transferEnrollmentCheckbox, "Disable Transfer Enrollment", "Check box");
-                await this.click(this.selectors.saveBtn, "SAVE", "button");
-                await this.wait("mediumWait");
-                console.log("✅ Transfer Enrollment disabled");
-            } else {
-                console.log("Transfer Enrollment is already disabled");
-            }
-        }
+    }}
  
-           //For Merge User Enable
-    async mergeUserVerification() {
-        await this.wait("mediumWait")
-        const button = this.page.locator(this.selectors.mergeUserToggle);
-        const isDisabled = await button.isDisabled();
-        if (isDisabled) {
-            await this.page.locator(this.selectors.mergeUserToggle).click();
-            await this.wait("minWait")
-            await this.click(this.selectors.okButton, "OK", "Button")
-        }
-        else {
-            console.log("Merge user already enabled");
-        }
-    }
-
-    async verifyDynamicShareableLinksInAdminConfig() {
-        await this.wait("mediumWait");
-        await this.validateElementVisibility(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
-        const isVisible = await this.page.locator(this.selectors.dynamicShareableLinks).isVisible();
-        expect(isVisible).toBeTruthy();
-        console.log("✅ Verified: Dynamic Shareable link is displayed in Admin Configuration");
-    }
-
-    async enableDynamicShareableLinks() {
-        await this.wait("mediumWait");
-        const toggleOffElement = this.page.locator(this.selectors.dynamicShareableLinksToggleOff);
-        const isToggledOff = await toggleOffElement.isVisible();
-        if (isToggledOff) {
-            await this.click(this.selectors.dynamicShareableLinksToggleOff, "Enable Dynamic Shareable Links", "Toggle");
-            await this.wait("mediumWait");
-            await this.clickOkBtn();
-           console.log("✅ Enabled: Dynamic Shareable Links toggle is now ON");
-        } else {
-            console.log("ℹ️ Dynamic Shareable Links is already enabled");
-        }
-
-    }
-
-    //Transfer Enrollment - Training Plan
-    async clickEditEnrollments() {
-        await this.wait("mediumWait");
-        await this.validateElementVisibility(this.selectors.clickEditEnrollments, "Edit Enrollments");
-        await this.click(this.selectors.clickEditEnrollments, "Edit Enrollments", "Button");
-    }
-
-    async enableTransferEnrollmentTP() {
-        await this.wait("mediumWait");
-        const uncheckedElement = this.page.locator(this.selectors.transferEnrollmentTPUnchecked);
-        const isUnchecked = await uncheckedElement.isVisible();
-        
-        if (isUnchecked) {
-            await this.click(this.selectors.transferEnrollmentTPUnchecked, "Enable Transfer Enrollment - Training Plan", "Checkbox");
-            await this.click(this.selectors.save, "Save", "Button");
-            await this.wait("mediumWait");
-            console.log("✅ Enabled: Transfer Enrollment - Training Plan checkbox is now checked");
-        } else {
-            console.log("ℹ️ Transfer Enrollment - Training Plan is already enabled");
-        }
-    }
-
-    async disableTransferEnrollmentTP() {
-        await this.wait("mediumWait");
-        const checkedElement = this.page.locator(this.selectors.transferEnrollmentTPEnabled);
-        const isChecked = await checkedElement.isVisible();
-        
-        if (isChecked) {
-            await this.click(this.selectors.transferEnrollmentTPEnabled, "Disable Transfer Enrollment - Training Plan", "Checkbox");
-            await this.click(this.selectors.save, "Save", "Button");
-            await this.wait("mediumWait");
-            console.log("✅ Disabled: Transfer Enrollment - Training Plan checkbox is now unchecked");
-        } else {
-            console.log("ℹ️ Transfer Enrollment - Training Plan is already disabled");
-        }
-    }
-
-    async verifyTransferEnrollmentTPEnabled() {
-        await this.wait("mediumWait");
-        const checkedElement = this.page.locator(this.selectors.transferEnrollmentTPEnabled);
-        const isChecked = await checkedElement.isVisible();
-        expect(isChecked).toBeTruthy();
-        console.log("✅ Verified: Transfer Enrollment - Training Plan is enabled");
-    }
-
-    async verifyTransferEnrollmentTPDisabled() {
-        await this.wait("mediumWait");
-        const uncheckedElement = this.page.locator(this.selectors.transferEnrollmentTPUnchecked);
-        const isUnchecked = await uncheckedElement.isVisible();
-        expect(isUnchecked).toBeTruthy();
-        console.log("✅ Verified: Transfer Enrollment - Training Plan is disabled");
-    }
-
 }
+
+

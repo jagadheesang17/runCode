@@ -11,11 +11,12 @@ let URL:any
 let createdCode: any
 
     test.describe.configure({ mode: "serial" });
-    test(`Creation of Single Instance Elearning with Youtube content`, async ({contentHome, adminHome, createCourse, directContent,enrollHome }) => {
+    test(`Genarating direct content launch link using course_code search`, async ({contentHome, adminHome, createCourse, directContent,enrollHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Nithya` },
-            { type: `TestCase`, description: `Creation of Single Instance Elearning with Youtube content` },
-            { type: `Test Description`, description: `Creation of Single Instance Elearning with Youtube content` }
+            { type: `TestCase`, description: `Creation of Single Instance Elearning with Youtube content and generating DCL using course code` },
+            { type: `Test Description`, description: `Creation of Single Instance Elearning with Youtube content and generating DCL using course code` },
+
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
@@ -33,10 +34,10 @@ let createdCode: any
         await createCourse.clickProceed();
 
         await createCourse.verifySuccessMessage();
-        //  await contentHome.gotoListing();
-        // await createCourse.catalogSearch(courseName)
-        // createdCode = await createCourse.retriveCode()
-        // console.log("Extracted Code is : " + createdCode);
+        await contentHome.gotoListing();
+        await createCourse.catalogSearch(courseName)
+        createdCode = await createCourse.retriveCode()
+        console.log("Extracted Code is : " + createdCode);
         await adminHome.menuButton()
         await adminHome.clickEnrollmentMenu();
         await adminHome.clickEnroll();
@@ -49,7 +50,7 @@ let createdCode: any
         await adminHome.clickLearningMenu();
         await adminHome.clickDirectContentLaunchLink();
         await directContent.clickdomaindropdown("newprod");
-        await directContent.searchfield(courseName);
+        await directContent.searchfield(createdCode);
         await directContent.generateURL();
         URL=await directContent.copyURL();
         await directContent.verifySuccessMessage();
@@ -74,8 +75,8 @@ let createdCode: any
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
         await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.searchMyLearning(createdCode);
+        await catalog.verifyCompletedCourse(createdCode);
     
     })
 
