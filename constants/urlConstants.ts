@@ -2,7 +2,7 @@ import { environmentSetup } from "../playwright.config";
 export let URLConstants: any
 //export let URLConstants
 switch (environmentSetup) {
-    case "automationtenant":
+    case "qaProduction":
       URLConstants = {
             adminURL: "https://automationtenant.expertusoneqa.in/backdoor",
             leanerURL: "https://automationtenant.expertusoneqa.in/learner/automationtenant/",
@@ -62,7 +62,7 @@ switch (environmentSetup) {
             EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg",
         }
         break;
-    case "qaProduction":
+    case "AQ_Prod":
         URLConstants = {
             adminURL: "https://newprod.expertusoneqa.in/backdoor",
             leanerURL: "https://newprod.expertusoneqa.in/learner/newprod/",
