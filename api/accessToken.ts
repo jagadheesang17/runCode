@@ -8,7 +8,7 @@ let endPointURL = URLConstants.adminEndPointUrl
 async function generateOauthToken() {
     try {
         const response = await postRequest(customAdminOuthData, endPointURL);        
-       // await assertResponse(response.status, 200);
+    //    await assertResponse(response.status, 200);
         if (response.data && response.data.access_token) {
             return "Bearer " + response.data.access_token
         } else {

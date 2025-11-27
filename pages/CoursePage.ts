@@ -5944,13 +5944,27 @@ export class CoursePage extends AdminHomePage {
    * Upload a file (sample video or any file)
    * @param filePath - Path to the file to upload (e.g., '../data/sample_video.mp4')
    */
-  async uploadFile(filePath: string) {
+  async uploadFileInstructor(filePath: string) {
     await this.wait("minWait");
     const fileInput = this.page.locator(this.selectors.fileUploadInput);
     await fileInput.setInputFiles(filePath);
     await this.wait("minWait");
     console.log(`📤 Uploaded file from: ${filePath}`);
   }
+
+  //Kathir-11-26-2025
+     async uploadFile(locator: string, Path: string,) {
+        const filePath = path.resolve(__dirname, Path);
+        const inputElementHandle = this.page.locator(locator);
+        if (inputElementHandle) {
+            await inputElementHandle.setInputFiles(filePath);
+        } else {
+            console.error('Input element not found');
+        }
+        await this.wait('maxWait');
+    }
+
+
 
   /**
    * Select Instructor/Evaluator visibility for the uploaded file
@@ -5987,7 +6001,7 @@ export class CoursePage extends AdminHomePage {
     console.log(`\n📁 Starting file upload process...`);
     await this.clickFilesTab();
     await this.enterFileName(fileName);
-    await this.uploadFile(filePath);
+    await this.uploadFileInstructor(filePath);
     await this.selectInstructorEvaluatorVisibility();
     await this.clickAddFileButton();
     console.log(`✅ File uploaded successfully with Instructor/Evaluator visibility`);

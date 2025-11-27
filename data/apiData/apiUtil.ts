@@ -10,8 +10,8 @@ switch (environmentSetup) {
         credentials = {
             data: {
                 id: "df407284-0880-400e-a474-b5706d357593",
-                client_id: "38f78440b5e4693f47361d3e5c0c80b9",
-                client_secret: "ec7905d0fc328980352675c79fceaa66"
+                client_id: "b95556970abc2813d73037992f33a068",
+                client_secret: "fafa29e2fdbf05f8e7d455732ffd761d"
             }
 
         }
