@@ -667,7 +667,7 @@ export async function createILTMultiInstance(
   
   await addClassroomInstances(course_id, courseName, instanceCount, status, dateType);
   
-  // Generate instance names array
+  // Generate instance names array - always includes "instance 1", "instance 2", etc.
   const instanceNames: string[] = [];
   for (let i = 0; i < instanceCount; i++) {
     instanceNames.push(`${courseName} instance ${i + 1}`);
@@ -1000,20 +1000,20 @@ async function updateVCInstance(
  * Create Virtual Classroom Multi-Instance Course
  * @param courseName - Name of the virtual classroom course
  * @param status - Course status (default: "published")
+ * @param instanceCount - Number of instances to create (default: 1)
  * @param dateType - Date type for instances: "future" (default) or "pastclass" for past dates
  * @param price - Optional price for the course
  * @param currency - Optional currency (required if price is provided)
- * @returns Instance name as string
+ * @returns Instance name as string if instanceCount is 1, array of instance names if instanceCount > 1
  */
 export async function createVCMultiInstance(
   courseName: string,
   status = "published",
+  instanceCount = 1,
   dateType: string = "future",
   price?: string,
   currency?: string
-): Promise<string> {
-  const instanceCount = 1; // VC courses always use 1 instance
-  
+): Promise<string | string[]> {
   console.log(`\n🎥 Creating Virtual Classroom Course: ${courseName}`);
   console.log(`📊 Instance Count: ${instanceCount}`);
   console.log(`📅 Date Type: ${dateType}\n`);
@@ -1035,28 +1035,34 @@ export async function createVCMultiInstance(
   // Step 3: Create Instances
   const instanceIds = await createVCInstance(course_id, courseName, instanceCount);
   
-  // Step 4: Update instance with session details
-  const sessionName = `${courseName} Session 1`;
-  const courseCode = `CLS-VC-${String(instanceIds[0]).padStart(5, '0')}`;
+  // Step 4: Update each instance with session details
+  const instanceNames: string[] = [];
   
-  await updateVCInstance(
-    instanceIds[0],
-    catalog_id,
-    courseName,
-    courseCode,
-    sessionName,
-    dateType
-  );
-  
-  const instanceName = `${courseName} instance 1`;
+  for (let i = 0; i < instanceIds.length; i++) {
+    const sessionName = `${courseName} Session ${i + 1}`;
+    const courseCode = `CLS-VC-${String(instanceIds[i]).padStart(5, '0')}`;
+    
+    await updateVCInstance(
+      instanceIds[i],
+      catalog_id,
+      courseName,
+      courseCode,
+      sessionName,
+      dateType
+    );
+    
+    // Always add "instance 1", "instance 2", etc. suffix
+    instanceNames.push(`${courseName} instance ${i + 1}`);
+  }
   
   console.log(`\n✅ Successfully created Virtual Classroom Course: ${courseName}`);
   console.log(`   Course ID: ${course_id}`);
   console.log(`   Catalog ID: ${catalog_id}`);
-  console.log(`   Instance ID: ${instanceIds[0]}`);
-  console.log(`   Instance Name: ${instanceName}`);
+  console.log(`   Instances Created: ${instanceCount}`);
+  console.log(`   Instance Names:`, instanceNames);
   console.log(`   Date Type: ${dateType}`);
   console.log();
   
-  return instanceName;
+  // Return string if single instance, array if multiple
+  return instanceCount === 1 ? instanceNames[0] : instanceNames;
 }
