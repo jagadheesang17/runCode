@@ -43,6 +43,8 @@ import { CustomFieldPage } from '../pages/CustomFieldPage'
 import { DynamicShareableLinksPage } from '../pages/DynamicShareableLinksPage'
 import { TransferEnrollmentPage } from '../pages/TransferEnrollmentPage'
 import { setupCourseCreation } from '../utils/cookieSetup'
+import { DiscountPage } from '../pages/DiscountPage'
+import { ReportPage } from '../pages/ReportPage'
 
 let jiraIssueKey: string | undefined;
 // import { LearnerCoursePage } from '../pages/LearnerCoursePage'
@@ -86,6 +88,8 @@ type expertusFixture = {
     exportPage: ExportPage
     dynamicShareableLinks: DynamicShareableLinksPage
     transferEnrollment: TransferEnrollmentPage
+    discount: DiscountPage
+    reportPage: ReportPage
 }
 
 export const test = baseTest.extend<expertusFixture>({

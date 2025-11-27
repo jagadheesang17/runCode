@@ -1133,4 +1133,18 @@ export class UserPage extends AdminHomePage {
     await this.wait("minWait");
     console.log("✅ Users swapped successfully");
   }
+
+     async enrterOrgName(orgNameData: string) {
+        await this.wait("minWait")
+        await this.typeAndEnter(this.selectors.orgName, "Organization Name", orgNameData);
+        await this.click(this.selectors.orgNameList(orgNameData), "Organization Name", "List")
+    }
+
+    async verifyUserSegmentation(user:string,otherUser:string) {
+            await this.verification(this.selectors.userNameOnListingPage(user),user); 
+            await this.typeAndEnter(this.selectors.searchField, "Search Field", otherUser);
+            const message = await this.getInnerText(this.selectors.userNotFoundMessage);
+            expect(message).toContain('There are no results that match your current filters');
+            console.log("User Segmentation is working correctly");
+    }
 }

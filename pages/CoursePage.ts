@@ -6006,4 +6006,36 @@ export class CoursePage extends AdminHomePage {
     await this.clickAddFileButton();
     console.log(`✅ File uploaded successfully with Instructor/Evaluator visibility`);
   }
+
+
+    //select location by input
+       async selectLocationByInput(locationName: string) {
+        await this.click(this.selectors.locationSelection,"Select location","Field")
+        await this.click(this.selectors.locationDropdown, "Select Location", "DropDown");
+        await this.type(this.selectors.locationDropdown, "Location", locationName);
+        await this.mouseHover(this.selectors.locationOption(locationName), "Location Option");
+        await this.click(this.selectors.locationOption(locationName), "Location Option","Selected");
+
+    }
+
+//for expiry remainder cron
+        async selectCompleteByTodayDate() {
+        // await this.click(this.selectors.CourseCalendaricon, "Date", "Field");
+        await this.validateElementVisibility(this.selectors.CourseCalendaricon, "Enter Course Date")
+        await this.keyboardType(this.selectors.CourseCalendaricon, getCurrentDateFormatted())
+        //await this.wait("minWait")
+        //await this.click(this.selectors.tomorrowdate, "Tomorrow", "Field")
+    }
+        async clickregistrationEndsByTodayDate() {
+        await this.validateElementVisibility(this.selectors.registrationEnd, "Enter Date")
+        await this.keyboardType(this.selectors.registrationEnd, getCurrentDateFormatted())
+    }
+
+    //verify title on listing page
+    async verifyTitle(title:string){
+        await this.wait("minWait");
+        await this.verification(this.selectors.courseTitle(title),title)
+    }
+    
+
 }

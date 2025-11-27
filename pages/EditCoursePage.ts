@@ -70,6 +70,15 @@ export class EditCoursePage extends AdminHomePage {
         enrollmentEntry:`(//table[contains(@class,'viewupdate-status')]//tr)[2]`,
         selectInstance:`//div[text()='Single Instance/Class']`,
         multiInstance :`//span[text()='Multi Instance/Class']`,
+
+          //For Discount
+        selectDiscountDropdown:`//input[@id='select_discount-filter-field']`,
+        enterDiscount:`//input[@id='select_discount']`,
+        discountValue:`(//input[@id='select_discount']//following::li)[1]`,
+        domainDropdown: (domainName: string) => `(//span[text()='${domainName}']//following::button[contains(@data-id,'domain')])[1]`,
+        domainDropdownValues: `//footer//following::li//span[@class='text']`,
+        selectDiscountOptionRadioBtn:(option: string) => `//span[text()='${option} of All']//preceding-sibling::i[contains(@class,'fa-circle')]`
+
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -437,5 +446,41 @@ export class EditCoursePage extends AdminHomePage {
     async selectMultiInstance() {
         await this.click(this.selectors.selectInstance, "instance", "Button")
         await this.click(this.selectors.multiInstance, "Multi instance", "Button")
+    }
+
+     //For Discount
+    async selectDiscountOption(option?: string) {
+        await this.validateElementVisibility(this.selectors.selectDiscountDropdown, "Discount Dropdown");
+       // await this.click(this.selectors.selectDiscountDropdown, "Discounts", "Dropdown");
+        // await this.typeAndEnter(this.selectors.enterDiscount, "Input Field", discount);
+        // await this.wait('minWait');
+        // await this.click(this.selectors.discountValue, "Discount", "Value");
+        await this.click(this.selectors.selectDiscountOptionRadioBtn(option), "Discount Option", "Value");
+        await this.click(this.selectors.saveButton, "Single registration", "Save Button")
+        await this.wait('minWait');
+
+    }
+    async verifyDiscountApplied(discountName: string, domainName: string) {
+        // Click the domain dropdown
+        await this.click(this.selectors.domainDropdown(domainName), `${domainName} Domain Dropdown`, "Dropdown");
+        // Wait for dropdown values to be visible
+        await this.page.waitForSelector(this.selectors.domainDropdownValues, { state: 'visible' });
+        // Get all discount names
+        const discountElements = await this.page.$$(this.selectors.domainDropdownValues);
+        const discountNames = [];
+        for (const element of discountElements) {
+            const text = await element.textContent();
+            if (text) {
+                discountNames.push(text.trim());
+            }
+        }
+        // Check if the created discount is present
+        const isDiscountApplied = discountNames.includes(discountName);
+        expect(isDiscountApplied).toBeTruthy();
+        if (isDiscountApplied) {
+            console.log(`Discount '${discountName}' is applied.`);
+        } else {
+            throw new Error(`Discount '${discountName}' is NOT applied.`);
+        }
     }
 }

@@ -12,6 +12,9 @@ export class CommerceHomePage extends AdminHomePage{
              yesBtn:`//button[text()='Yes']`,
              successMsg:"//span[text()='Payment of the order has been confirmed successfully']",
              okBtn:"//button[text()='OK']",
+
+                      //For runtime passing commerce options
+             commerceOptions:(option:string)=>`//a[text()='${option}']`,
              
         };
 
@@ -39,7 +42,10 @@ export class CommerceHomePage extends AdminHomePage{
     await this.click(this.selectors.okBtn,"OK","Button");
    }
 
-
+  //For runtime passing commerce options
+    async clickCommerceOption(data:string){
+        await this.click(this.selectors.commerceOptions(data),"Commerce Option","Link");
+    }
 
 
 

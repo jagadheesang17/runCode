@@ -80,6 +80,11 @@ export class EnrollmentPage extends AdminHomePage {
         //Mandatory checkbox
         mandatoryCheckbox: `(//input[@id='ismandatory']//following::label)[1]`,
 
+        //For multiple order creation
+        clickMultipleOrderRadioBtn: `//span[text()='Single Learner']//following::i[contains(@class,'fa-circle')]`,
+        selectCourseRdoBtn: `(//input[contains(@id,'training')]/following::i)[1]`,
+        selectUserForMultiOrderCreation: (data: string) => `(//td[contains(text(),'${data}')]//following::i)[2]`,
+
         //View/Update Status - Course/TP Table Fields
         viewUpdateStatusTable: `//table[contains(@class,'viewupdate-status-crstp')]`,
         tableHeaderByName: (fieldName: string) => `//table[contains(@class,'viewupdate-status-crstp')]//th[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'${fieldName.toLowerCase()}')]`,
@@ -1254,6 +1259,36 @@ export class EnrollmentPage extends AdminHomePage {
             return true;
         } else {
             throw new Error(`Expected score to contain "${expectedScore}" but got "${cleanScore}"`);
+        }
+    }
+
+     //for multiple order
+    async clickMultipleOrderRadioBtn() {
+        await this.wait("minWait")
+        await this.click(this.selectors.clickMultipleOrderRadioBtn, "Multiple Order", "Radio button")
+    }
+    async selectCourse_TPForMultiOrder(data: string) {
+        await this.wait("minWait")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
+        await this.click(this.selectors.selectCourseRdoBtn, "Select Course", "Radio button")
+    }
+    async enterSearchUserForMultiOrder(data: string) {
+        await this.type(this.selectors.searchcourseOrUser, "User Name", data)
+        const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
+        const randomIndex = Math.floor(Math.random() * index) + 1;
+        await this.click(this.selectors.userListOpt(randomIndex), "User", "Options")
+        await this.click(this.selectors.selectUserForMultiOrderCreation(data), "Select User", "Check Box")
+    }
+
+
+    //Enrollment segmentation
+    async verifyEnrollmentSegmentation(otherUser: string) {
+        await this.wait("minWait")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", otherUser)
+        const element = this.page.locator(this.selectors.selectUser(otherUser));
+        const count = await element.count();
+        if (count === 0) {
+            console.log("Enrollment Segmentation is working correctly");
         }
     }
 

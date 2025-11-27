@@ -40,7 +40,6 @@ export class SurveyAssessmentPage extends AdminHomePage {
     unpublishedTab: "//button[text()='Unpublished']",
     searchFieldUnpublished: "//input[@id='exp-search-field']",
     deleteIcon: "(//a[@aria-label='Delete'])[1]",
-    removeBtn: "//button[text()='Remove']",
     cloneIcon: "//a[@aria-label='Clone']",
     cloneIconForSurvey: (surveyTitle: string) => `//div[contains(text(),'${surveyTitle}')]//following::a[@aria-label='Clone'][1]`,
     associationWarningMsg: "//span[contains(text(),'Please remove the associations before')]",
@@ -56,16 +55,24 @@ export class SurveyAssessmentPage extends AdminHomePage {
     noBtn: `//span[text()='No']`,
     plusIcon: "#actiondiv_create_que",
     addQuestionBlankBtn: "(//div[@id='actiondiv']//parent::div)[1]",
+    noQuesErrorMsg: "//div[@class='align-items-center justify-content-center text-break information_text']//span",
 
     // Assessment video upload:-
-    assessment_video_upload: "#question_upload_file"
+    assessment_video_upload: "#question_upload_file",
 
-
-
-
-
-
-
+    
+    //assessment
+    clickAssessmentTab: (data: string) => `//button[text()='${data}']`,
+    publishIcon: (data: string) => `(//div[text()='${data}']//following::a[@aria-label='Publish'])[1]`,
+    editIcon: (data: string) => `(//div[text()='${data}']//following::*[@aria-label='Edit'])[1]`,
+    editAssessmentBtn: "//a[text()='Edit Assessment']",
+    unPublishbtn: "//button[text()='Unpublish']",
+    delete_Icon: (data: string) => `(//div[text()='${data}']//following::*[@aria-label='Delete'])[1]`,
+    searchlearningInput: `//input[@id="exp-search-field"]`,
+    editSurveyBtn: "//a[text()='Edit Survey']",
+    questionCheckbox: "(//div[contains(@id,'queslib-list')]//i[contains(@class,'fa-square icon')])[1]",
+    clone_Icon: (data: string) => `(//div[text()='${data}']//following::*[@aria-label='Clone'])[1]`,
+    removeBtn: "//button[text()='Remove']",
 
 
   }
@@ -485,7 +492,7 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
   async clickRemove() {
     await this.wait("minWait");
-    await this.validateElementVisibility(this.selectors.removeBtn, "Remove Button");
+    await this.validateElementVisibility(this.selectors.removeBtn, "Remove OK Button");
     await this.click(this.selectors.removeBtn, "Remove", "Button");
     await this.wait("mediumWait");
     await this.spinnerDisappear();
@@ -513,5 +520,93 @@ export class SurveyAssessmentPage extends AdminHomePage {
     await this.spinnerDisappear();
     await this.verification(this.selectors.successfullMessage, "successfully");
   }
+    async retriveCode() {
+    let value = await this.page.locator(this.selectors.assessmentCode).innerHTML();
+    return value;
+  }
+
+    ///assessment methods///
+  async assessmentTab(data: string) {
+    await this.click(this.selectors.clickAssessmentTab(data), "Assessment Tab", "Button");
+    await this.spinnerDisappear();
+  }
+  async clickPublishFromDraft(data: string) {
+    await this.click(this.selectors.publishIcon(data), "Publish From Draft", "Button");
+    await this.spinnerDisappear();
+  }
+  async verifyNoquestionMessage(data: string) {
+    await this.verification(this.selectors.noQuesErrorMsg, `This ${data} has no questions. Please add questions to the ${data} before you can publish it.`);
+    await this.click(this.selectors.okBtn, "OK", "Button");
+  }
+  async clickEditFromDraft(data: string) {
+    await this.click(this.selectors.editIcon(data), "Edit From Draft", "Button");
+    await this.spinnerDisappear();
+  }
+
+  async addQuestions() {
+    await this.page.keyboard.press('PageDown');
+    await this.spinnerDisappear();
+  }
+  async clickEditAssessment() {
+    await this.validateElementVisibility(this.selectors.editAssessmentBtn, "Edit Assessment");
+    await this.click(this.selectors.editAssessmentBtn, "Edit Assessment", "Button");
+  }
+  async click_Unpublish() {
+    await this.validateElementVisibility(this.selectors.unPublishbtn, "Unpublish");
+    await this.click(this.selectors.unPublishbtn, "Unpublish", "Button");
+    await this.spinnerDisappear();
+  }
+  async clickDelete(data: string) {
+    await this.validateElementVisibility(this.selectors.deleteIcon(data), "Delete");
+    await this.click(this.selectors.deleteIcon(data), "Delete", "Button");
+    await this.click(this.selectors.removeBtn, "Remove", "Button");
+    await this.spinnerDisappear();
+  }
+  async searchAssessment(searchText: string): Promise<boolean> {
+    await this.type(this.selectors.searchlearningInput, "Search Input", searchText);
+    await this.page.keyboard.press('Enter');
+    await this.wait('minWait');
+    const noResultsLocator = this.page.locator("//section[contains(@class,'lms-norecords-found')]//h3[contains(.,'There are no results that match your current filters')]");
+    if (await noResultsLocator.isVisible()) {
+      console.log('No search results found for:', searchText);
+      return false;
+    }
+  }
+
+  async clickEditSurvey() {
+    await this.validateElementVisibility(this.selectors.editSurveyBtn, "Edit Survey");
+    await this.click(this.selectors.editSurveyBtn, "Edit Survey", "Button");
+  }
+  async addCreatedQuestion(data: string) {
+     await this.wait('minWait');
+    await this.page.locator(this.selectors.importQuestionIcon).scrollIntoViewIfNeeded({ timeout: 5000 });
+    await this.click(this.selectors.importQuestionIcon, "Import", "Idiomatic Text");
+    await this.wait('minWait');
+    await this.typeAndEnter('#questions-library-search-field', "Question Search Field", data);
+    await this.wait('minWait');
+    await this.click(this.selectors.questionCheckbox, "Questions", "checkbox");
+  }
+
+  async enterQuestionTitle(data: string) {
+    await this.page.keyboard.press('PageUp')
+    await this.validateElementVisibility(this.selectors.questionsInput, "Input");
+    await this.page.waitForTimeout(1000)
+    await this.type(this.selectors.questionsInput, "Input", data);
+  }
+   async clickClone(data:string) {
+    await this.validateElementVisibility(this.selectors.clone_Icon(data), "Unpublish");
+    await this.click(this.selectors.clone_Icon(data), "Unpublish", "Button");
+    await this.spinnerDisappear();
+  }
+  async clickDeleteIcon(data: string) {
+    await this.validateElementVisibility(this.selectors.delete_Icon(data), "Delete");
+    await this.click(this.selectors.delete_Icon(data), "Delete", "Button")
+  }
+  async verifyDeleteNotPossibleMessage(data: string) {
+    await this.verification(this.selectors.noQuesErrorMsg, `This question has been included in one or more published ${data}. Please remove the question from them and then delete this question.`);
+    await this.click(this.selectors.okBtn, "OK", "Button");
+  }
+
+
 
 }

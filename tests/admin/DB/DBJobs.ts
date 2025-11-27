@@ -520,4 +520,72 @@ async function dataloadCron() {
     }
 }
 
-export { courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,dataloadCron}
+    async function notificationCron() {
+    const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+    const currentTimeString = currentTimeResult[0]['NOW()'];
+    const currentTime = new Date(currentTimeString);
+    console.log("Current Time : " + currentTime);
+    const newTime = (subDays(currentTime, 1));
+    const previousDate = format(newTime, 'yyyy-MM-dd');
+    console.log("Previous Date :" + previousDate);
+    let notification = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run  = '${previousDate}',current_status= 'waiting', previous_status = '' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Notification';`);
+    console.log(notification);
+}
+
+async function mailDispatcherCron(data?: string): Promise<[string, string]> {
+    let mailDispatcher_detail = await dataBase.executeQuery(`SELECT * FROM mail_dispatcher WHERE portal_id=${portal_ID} AND tenant_id=${tenant_ID}  ORDER BY id DESC LIMIT 2 ;`);
+    const mail_body = mailDispatcher_detail[0].email_body
+    const mailSubject = mailDispatcher_detail[0].email_subject
+    if (data == "TP") {
+        const tp_mail_body = mailDispatcher_detail[1].email_body
+        const tp_mailSubject = mailDispatcher_detail[1].email_subject
+        return [tp_mail_body, tp_mailSubject];
+    }
+    return [mail_body, mailSubject];
+}
+
+
+
+// expiryRemainder_cronjob for both course and certification
+// type: 'course' or 'certification'
+async function expiryRemainder_cronjob(type: 'course' | 'certification') {
+    try {
+        const tableName = type === 'course' ? 'course_enrollment' : 'program_enrollment';
+        const cronMasterName = type === 'course' ? 'Remainder' : 'Remainder';
+        const cronName = type === 'course' ? 'Course Expire Remainder' : 'Expired';
+        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+        const currentTimeString = currentTimeResult[0]['NOW()'];
+        const currentTime = new Date(currentTimeString);
+        console.log("Current Time : " + currentTime);
+        const newTime = (subDays(currentTime, 1));
+        const previousDate = format(newTime, 'yyyy-MM-dd');
+        console.log("Previous Date :" + previousDate);
+        // Update cron_master and cron_details
+        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='${cronMasterName}';`);
+        if(type==='course'){
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${previousDate}',current_status='waiting', previous_status='', last_run_status='' WHERE name='${cronName}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`);
+        console.log(cronJob);
+        }else{
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${previousDate}',current_status='waiting', previous_status='', last_run_status='' WHERE name='${cronName}' AND id='205'AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`);
+        console.log(cronJob);
+        }
+
+    } catch (error) {
+        console.log("Not executed " + error);
+    }
+}
+
+async function bulkMailDispatcherCron(data?: string): Promise<[string, string]> {
+    let mailDispatcher_detail = await dataBase.executeQuery(`SELECT * FROM bulk_mail_dispatcher WHERE portal_id=${portal_ID} AND tenant_id=${tenant_ID}  ORDER BY id DESC LIMIT 2 ;`);
+    const mail_body = mailDispatcher_detail[0].email_body
+    const mailSubject = mailDispatcher_detail[0].email_subject
+    if (data == "TP") {
+        const tp_mail_body = mailDispatcher_detail[1].email_body
+        const tp_mailSubject = mailDispatcher_detail[1].email_subject
+        return [tp_mail_body, tp_mailSubject];
+    }
+    return [mail_body, mailSubject];
+}
+
+
+export { expiryRemainder_cronjob, mailDispatcherCron, notificationCron, bulkMailDispatcherCron,courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,dataloadCron}

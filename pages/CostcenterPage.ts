@@ -2,6 +2,8 @@ import { time } from "console";
 import { FakerData, getcardExpiryDate, getCreditCardNumber, getCVV, getPonumber, getRandomLocation } from "../utils/fakerUtils";
 import { LearnerHomePage } from "./LearnerHomePage";
 import { URLConstants } from "../constants/urlConstants";
+import { expect } from "@playwright/test";
+
 
 export class CostcenterPage extends LearnerHomePage {
     public selectors = {
@@ -132,6 +134,25 @@ export class CostcenterPage extends LearnerHomePage {
         await this.type(this.selectors.cardNumber, "Card Number", URLConstants.creditCardNumber)
         await this.type(this.selectors.expiryDate, "Expiry Date", URLConstants.cardExpiryDate)
         await this.type(this.selectors.cvvNumber, "CVV number", URLConstants.cVV)
+    }
+
+      async verifyDiscountValue() {
+        await this.wait("minWait");
+        const discountText = await this.page.locator(this.selectors.discountValue).textContent();
+        if (!discountText) {
+            throw new Error("Discount value element not found or empty.");
+        }
+        const value = discountText.trim();
+        expect(value).not.toContain('0.00');
+        if (value.includes('0.00')) {
+            throw new Error(`Discount value is 0.00, which is not expected. Actual value: ${value}`);
+        } else {
+            console.log(`Discount value is valid: ${value}`);
+        }
+    }
+    async enterUserContactDetails(){
+        await this.type(this.selectors.firstName,"First Name", FakerData.getFirstName());
+        await this.type(this.selectors.lastName,"Last Name",FakerData.getLastName());
     }
 
 }

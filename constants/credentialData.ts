@@ -224,7 +224,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "arjun1",
+        username: "arjun",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {

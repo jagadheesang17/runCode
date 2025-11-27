@@ -422,3 +422,12 @@ export function getRandomIns(): insData | any {
         return null;
     }
 }
+export function percentage() {
+    const min = 10;
+    const max = 100;
+    const step = 5;
+    const range = Math.floor((max - min) / step) + 1;
+    const randomMultiple = Math.floor(Math.random() * range) * step + min;
+    return randomMultiple.toString();
+
+}

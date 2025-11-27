@@ -507,14 +507,6 @@ export class AdminHomePage extends AdminLogin {
         await this.spinnerDisappear();
     }
 
-    public async metaDataLibraryOption(data: string) {
-        await this.wait("minWait")
-        await this.validateElementVisibility(this.selectors.metaLibOption(data), "Meta Data Library");
-        await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
-        await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
-        await this.spinnerDisappear();
-    }
-    
     public async dynamicShareableLinks() {
         await this.wait("minWait");
         await this.validateElementVisibility(this.selectors.dynamicShareableLinks, "Dynamic Shareable Links");
@@ -550,6 +542,180 @@ export class AdminHomePage extends AdminLogin {
         await this.click("//input[@id='edit_submit']", "Submit", "Button");
         await this.wait("mediumWait");
         console.log("✅ allow_excel configuration set to 0");
+    }
+
+    
+
+    ///Mail verification
+    // async verifyEmails() {
+    //     //await this.page.waitForTimeout(300000)
+    //     // Navigate to Gmail login page
+    //     await this.page.goto('https://mail.google.com/');
+
+    //     // Log in to Gmail
+    //     await this.page.fill('input[type="email"]', 'tamilvanans@peopleone.co');
+    //     await this.page.click('#identifierNext');
+    //     await this.page.waitForSelector('input[type="password"]');
+    //     await this.page.fill('input[type="password"]', 'Sekar@17');
+    //     await this.page.click('#passwordNext');
+    //     await this.page.waitForSelector('.T-I.J-J5-Ji.T-I-KE.L3');
+    //     const firstEmailSelector = '.UI table tbody tr:nth-child(1) .xT';
+    //     const firstEmail = await this.page.locator(firstEmailSelector);
+    //     if (await firstEmail.count() > 0) {
+    //         console.log('First email found!');
+    //         const subject = await this.page.locator('.bog').first().innerText();
+    //         console.log(`Subject: ${subject}`);
+    //         const expectedSubject = "You have enrolled for a training";
+    //         if (subject.includes(expectedSubject)) {
+    //             console.log('The first email is the correct one!');
+    //         } else {
+    //             console.log('The first email is not the expected one.');
+    //         }
+    //     } else {
+    //         console.log('No emails found.');
+    //     }
+    // }
+    // ---- Notification and update methods restored below ----
+    mailSlurp: any;
+    inbox: any;
+
+    async createTemprorayInbox() {
+        this.mailSlurp = new (require('mailslurp-client')).MailSlurp({ apiKey: 'b5cc199e024fed2c2e2be4ec6347000f32fb2a573a13c017f3a04e4cc83017ed' });
+        this.inbox = await this.mailSlurp.createInbox();
+        console.log('Temporary email created:', this.inbox.emailAddress);
+        return this.inbox.emailAddress;
+    }
+
+    async verifyRegisterEmail() {
+        await this.page.waitForTimeout(30000);
+        const email = await this.mailSlurp.waitForNthEmail(this.inbox.id, 1, 30000);
+        if (email) {
+            console.log('Email received:', email);
+            if (email.subject.includes('You have enrolled')) {
+                console.log('The subject matches (partial): ', email.subject);
+                console.log(`Body: ${email.body}`);
+            } else {
+                console.log('The email subject does not match. Found: ', email.subject);
+            }
+        } else {
+            console.log('No email received within the given timeout');
+        }
+    }
+
+    async verifyCompletedEmail() {
+        await this.page.waitForTimeout(60000);
+        const email = await this.mailSlurp.waitForNthEmail(this.inbox.id, 2, 30000);
+        if (email) {
+            console.log('Email received:', email);
+            if (email.subject.includes('You have completed')) {
+                console.log('The subject matches (partial): ', email.subject);
+                console.log(`Body: ${email.body}`);
+            } else {
+                console.log('The email subject does not match. Found: ', email.subject);
+            }
+        } else {
+            console.log('No email received within the given timeout');
+        }
+    }
+
+    async verifyCanceledEmail() {
+        await this.page.waitForTimeout(60000);
+        const email = await this.mailSlurp.waitForNthEmail(this.inbox.id, 2, 30000);
+        if (email) {
+            console.log('Email received:', email);
+            if (email.subject.includes('Your enrollment to a training has been cancelled')) {
+                console.log('The subject matches (partial): ', email.subject);
+                console.log(`Body: ${email.body}`);
+            } else {
+                console.log('The email subject does not match. Found: ', email.subject);
+            }
+        } else {
+            console.log('No email received within the given timeout');
+        }
+    }
+
+    async deleteInbox() {
+        try {
+            await this.page.waitForTimeout(3000);
+            await this.mailSlurp.deleteInbox(this.inbox.id);
+            console.log('Inbox deleted successfully');
+        } catch (error) {
+            console.error('Error deleting inbox:', error);
+        }
+    }
+
+    async verifyMailBody(body: string, courseName: string) {
+        await this.page.waitForTimeout(1000);
+        await this.page.setContent(body);
+        const plainText = await this.page.$eval('body', (el: HTMLElement) => el.innerText);
+        const mailBody = plainText
+            .split('\n')
+            .map((line: string) => line.trim())
+            .filter((line: string) => line.length > 0)
+            .join('\n');
+        console.log(mailBody);
+        // Verification logic for courseName
+        if (courseName) {
+            await this.verificationByText(mailBody, courseName);
+            console.log(`Verified: mail body contains course name '${courseName}'`);
+        }
+    }
+
+    async verifyMailSubject(subject: string, status: string) {
+        await this.page.waitForTimeout(1000);
+        console.log(subject);
+        await this.verificationByText(subject, status);
+    
+    }
+
+    async verifyAdminEnrollmentMailBody(body: string, courseName: string) {
+        await this.page.waitForTimeout(1000);
+        await this.page.setContent(body);
+        const plainText = await this.page.$eval('body', (el: HTMLElement) => el.innerText);
+        const mailBody = plainText
+            .split('\n')
+            .map((line: string) => line.trim())
+            .filter((line: string) => line.length > 0)
+            .join('\n');
+        console.log(mailBody);
+        // Verification logic for courseName and notification text
+        if (courseName) {
+            await this.verificationByText(mailBody, courseName);
+            console.log(`Verified: admin enrollment mail body contains course name '${courseName}'`);
+        }
+        // Example: check for notification text
+        const notificationText = "notify that you have been automatically";
+        await this.verificationByText(mailBody, notificationText);
+        console.log(`Verified: admin enrollment mail body contains notification text '${notificationText}'`);
+    }
+
+    async verifyTPEnrollmentMailBody(body: string, courseName: string) {
+        await this.page.waitForTimeout(1000);
+        await this.page.setContent(body);
+        const plainText = await this.page.$eval('body', (el: HTMLElement) => el.innerText);
+        const mailBody = plainText
+            .split('\n')
+            .map((line: string) => line.trim())
+            .filter((line: string) => line.length > 0)
+            .join('\n');
+        console.log(mailBody);
+        // Verification logic for courseName and notification text (TrainPlan)
+        if (courseName) {
+            await this.verificationByText(mailBody, courseName);
+            console.log(`Verified: TP enrollment mail body contains course name '${courseName}'`);
+        }
+        // Example: check for TP notification text
+        const notificationText = "you have been enrolled to the";
+        await this.verificationByText(mailBody, notificationText);
+        console.log(`Verified: TP enrollment mail body contains notification text '${notificationText}'`);
+    }
+
+        public async metaDataLibraryOption(data: string) {
+        await this.wait("minWait")
+        await this.validateElementVisibility(this.selectors.metaLibOption(data), "Meta Data Library");
+        await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
+        await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
+        await this.spinnerDisappear();
     }
 }
 
