@@ -13,11 +13,11 @@ test.describe("Sample: Multi-Instance ILT Creation - Future and Past Dates", () 
         console.log("\n🎓 TEST 1: Creating Multi-Instance ILT Course with Past Dates");
         
         // Create course with 1 past instance
-        pastCourseName = `Past ILT ${Date.now()}`;
+        pastCourseName = `Past ILT single instance course`;
         pastInstanceNames = await createILTMultiInstance(
             pastCourseName,
             "published",
-            2,  // 1 instance
+            3,  // 3 instances
             "pastclass"  // Past dates
         );
         

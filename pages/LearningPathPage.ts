@@ -51,7 +51,7 @@ export class LearningPathPage extends AdminHomePage {
         recertCompleteByRuleBtn: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by-rule']",
         recertCompleteByRuleYesOption: "//label[contains(text(),'Recertification')]//following::span[text()='Yes']",
         recertCompleteByDropdown: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by']",
-        recertCompleteByDateOption: "//label[contains(text(),'Recertification')]//following::span[text()='Date']",
+        recertCompleteByDateOption: "(//label[contains(text(),'Recertification')]//following::span[text()='Date'])[2]",
         recertCompleteByDaysFromEnrollmentOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from enrollment']",
         recertCompleteByDaysFromHireOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from hire']",
         recertCompleteDaysInput: "//label[contains(text(),'Recertification')]//following::input[@id='program-recert-complete-days']",
@@ -160,6 +160,7 @@ export class LearningPathPage extends AdminHomePage {
         cloneUnselectAllCheckbox: `//span[text()='Unselect All']//preceding::i[contains(@class,'fa-square-check')]`,
         clonePopupCheckbox: (label: string) => `//span[contains(@class,'ms-1 rawtxt') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
         createCopyBtn: `//button[text()='Create Copy']`,
+        enrollments:`(//span[text()='Enrollments'])[2]`,
     
     };
 
@@ -1191,5 +1192,9 @@ export class LearningPathPage extends AdminHomePage {
             throw new Error(`❌ Title mismatch! Expected: "${expectedClonedTitle}", but got: "${actualTitle}"`);
         }
         return actualTitle;
+    }
+    public async clickEnrollmentsButton(){
+        await this.wait("minWait");
+        await this.click(this.selectors.enrollments, "Enrollments Button", "Button");
     }
 }

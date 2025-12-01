@@ -5,7 +5,7 @@ import { FakerData } from '../../../utils/fakerUtils';
 
 test('should create a published e-learning course via API', async () => {
 const content='content testing-001';
-const courseName =  FakerData.getCourseName();  
+const courseName =  "DEC "+FakerData.getCourseName();  
 
   const result = await createCourseAPI(
     content,
