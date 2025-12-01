@@ -17,7 +17,7 @@ const description = FakerData.getDescription();
 
 test.describe(`Verify_the_address_which_is_inherited_from_organization`, async () => {
     test.describe.configure({ mode: "serial" });
-    test(`Enable the Address inheritance from site settings`, async ({ siteAdmin, adminHome }) => {
+    test(`Enable the Certtificate Revaliadte`, async ({ siteAdmin, adminHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Balasundar` },
             { type: `TestCase`, description: `Enable company login alone in site settings` },
@@ -56,7 +56,7 @@ test.describe(`Verify_the_address_which_is_inherited_from_organization`, async (
     let title = FakerData.getCourseName();
     //let title="Primary Microchip Bypass";
 
-    test(`Creation of Certification and Enable Certification revalidate`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
+    test(`Creation of Certification with recertification path and Enable Certification revalidate`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Jagadish` },
             { type: `TestCase`, description: `Certification Creation with pre and post assessment attached` },

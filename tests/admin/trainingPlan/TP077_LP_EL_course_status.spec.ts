@@ -8,7 +8,7 @@ const description = FakerData.getDescription();
 
   test(`Verify_the_EL_course_status_when_those_are_attached_to_the_learning_path_and_when_the_admin_enrolls_the_learning_path`, async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Jagadish` },
+            { type: `Author`, description: `Balasundar` },
             { type: `TestCase`, description: `Creation of Elearning Course` },
             { type: `Test Description`, description: `Creation of Elearning Course` }
         );
@@ -42,12 +42,8 @@ const description = FakerData.getDescription();
     let title = FakerData.getCourseName();
     //let title="Primary Microchip Bypass";
 
-    test(`Creation of Certification and Enable Certification revalidate`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `Jagadish` },
-            { type: `TestCase`, description: `Certification Creation with pre and post assessment attached` },
-            { type: `Test Description`, description: `Certification Creation with pre and post assessment attached` }
-        )
+    test(`Creation of Certification with that created E-Learning course`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
+        
 
         await adminHome.loadAndLogin("CUSTOMERADMIN1")
         await adminHome.menuButton();
@@ -74,7 +70,7 @@ const description = FakerData.getDescription();
 
     })
 
-     test(`Re-validate the certification and complete it as a learner`, async ({ adminHome, enrollHome, catalog, editCourse, learnerHome }) => {
+     test(`Verify that E-Learning course and Enroll the required courses from Learning Path`, async ({ adminHome, enrollHome, catalog, editCourse, learnerHome }) => {
 
         await adminHome.loadAndLogin("CUSTOMERADMIN1")
         await adminHome.menuButton()
