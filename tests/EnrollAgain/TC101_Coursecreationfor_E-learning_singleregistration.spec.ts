@@ -5,13 +5,13 @@ import { FakerData } from "../../utils/fakerUtils";
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription()
-test.describe(`Verify_that_when_the_business_rule_is_unchecked_a_completed_course_allows_the_user_to_request_the_class.spec.ts`, async () => {
+test.describe(`TC101 Course creation for E-learning single registration`, async () => {
     test.describe.configure({ mode: 'serial' })
-    test(`Verify_that_when_the_business_rule_is_unchecked_a_completed_course_allows_the_user_to_request_the_class.spec.ts`, async ({ adminHome, createCourse, editCourse }) => {
+    test(`TC101_CreateCourseForElearning_Single_Registration`, async ({ adminHome, createCourse, editCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Vidya` },
-            { type: `TestCase`, description: `Verify_that_when_the_business_rule_is_unchecked_a_completed_course_allows_the_user_to_request_the_class.spec.ts` },
-            { type: `Test Description`, description: `Verify_that_when_the_business_rule_is_unchecked_a_completed_course_allows_the_user_to_request_the_class.spec.ts` }
+            { type: `TestCase`, description: `Create the course as Single Registration` },
+            { type: `Test Description`, description: `Verify that course should be created for Single Registration` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
@@ -28,14 +28,14 @@ test.describe(`Verify_that_when_the_business_rule_is_unchecked_a_completed_cours
         await createCourse.clickSave();
         await createCourse.clickProceed();
         await createCourse.verifySuccessMessage();
-        await createCourse.editcourse();
-        //await createCourse.clickEditCourseTabs();
+        await createCourse.clickEditCourseTabs();
         await editCourse.clickBusinessRule();
-        await editCourse.verifycheckAllowRecReg()
-        //await editCourse.clickcheckAllowRecReg()
+        await editCourse.verifySingRegchkbox()
+        //await editCourse.clickUncheckSingReg()
         await createCourse.typeDescription("Added Business Rule " + courseName)
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
+
 
     })
 
@@ -43,8 +43,8 @@ test.describe(`Verify_that_when_the_business_rule_is_unchecked_a_completed_cours
     test(`Verification from learner site`, async ({ learnerHome, learnerCourse, catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `vidya` },
-            { type: `TestCase`, description: `Learner Side Re-Enrollment` },
-            { type: `Test Description`, description: `Verify that learner can reenroll the course` }
+            { type: `TestCase`, description: `Learner Side - Enroll Again Verification` },
+            { type: `Test Description`, description: `Verify that learner cannot enroll again when the checkbox is unchecked - Request Class should be visible` }
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "Portal");
         await learnerHome.clickCatalog();

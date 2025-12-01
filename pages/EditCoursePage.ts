@@ -79,6 +79,10 @@ export class EditCoursePage extends AdminHomePage {
         domainDropdownValues: `//footer//following::li//span[@class='text']`,
         selectDiscountOptionRadioBtn:(option: string) => `//span[text()='${option} of All']//preceding-sibling::i[contains(@class,'fa-circle')]`,
 
+        //Allow learners to enroll again
+        allowLearnersEnrollAgainUnchecked: `//span[text()='Allow learners to enroll again']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        allowLearnersEnrollAgainChecked: `//span[text()='Allow learners to enroll again']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
+
         checkRevalidateInCertitfcation:`//span[text()='check to enable certification re-validation']/preceding::i[contains(@class,'square icon')]`
     };
 
@@ -493,4 +497,85 @@ export class EditCoursePage extends AdminHomePage {
     }
 
     
+    //Allow learners to enroll again - In Course Business Rules
+    async verifyAllowLearnersEnrollAgain(shouldBeUnchecked: boolean = true) {
+        await this.wait("mediumWait");
+        
+        try {
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+            
+            const isUnchecked = await this.page.locator(uncheckedSelector).isVisible();
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+            
+            if (shouldBeUnchecked) {
+                if (isUnchecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again' is UNCHECKED in Course Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again' to be UNCHECKED but it is CHECKED");
+                    return false;
+                }
+            } else {
+                if (isChecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again' is CHECKED in Course Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again' to be CHECKED but it is UNCHECKED");
+                    return false;
+                }
+            }
+        } catch (error) {
+            console.log("❌ Error verifying 'Allow learners to enroll again' checkbox:", error);
+            return false;
+        }
+    }
+
+    async checkAllowLearnersEnrollAgain() {
+        await this.wait("mediumWait");
+        
+        try {
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+            
+            const isUnchecked = await this.page.locator(uncheckedSelector).isVisible();
+            
+            if (isUnchecked) {
+                console.log("🔄 Checking 'Allow learners to enroll again' checkbox...");
+                await this.click(uncheckedSelector, "Allow learners to enroll again", "Checkbox");
+                await this.click(this.selectors.saveButton, "Save", "Button");
+                await this.wait("mediumWait");
+                await this.verification(this.selectors.verifyChanges, "successfully");
+                console.log("✅ 'Allow learners to enroll again' has been checked");
+            } else {
+                console.log("✅ 'Allow learners to enroll again' is already checked");
+            }
+        } catch (error) {
+            console.log("❌ Error checking 'Allow learners to enroll again':", error);
+        }
+    }
+
+    async uncheckAllowLearnersEnrollAgain() {
+        await this.wait("mediumWait");
+        
+        try {
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+            
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+            
+            if (isChecked) {
+                console.log("🔄 Unchecking 'Allow learners to enroll again' checkbox...");
+                await this.click(checkedSelector, "Allow learners to enroll again", "Checkbox");
+                await this.click(this.selectors.saveButton, "Save", "Button");
+                await this.wait("mediumWait");
+                await this.verification(this.selectors.verifyChanges, "successfully");
+                console.log("✅ 'Allow learners to enroll again' has been unchecked");
+            } else {
+                console.log("✅ 'Allow learners to enroll again' is already unchecked");
+            }
+        } catch (error) {
+            console.log("❌ Error unchecking 'Allow learners to enroll again':", error);
+        }
+    }
 }

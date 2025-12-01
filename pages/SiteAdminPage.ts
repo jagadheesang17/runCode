@@ -75,6 +75,10 @@ export class SiteAdminPage extends AdminHomePage {
         //Transfer Enrollment
         transferEnrollmentCheckbox: `(//label[contains(@for,'submod_admn_tfr_enroll_input')]//i)[1]`,
         transferEnrollmentCheckboxToCheck: `//label[contains(@for,'submod_admn_tfr_enroll_input')]//i[contains(@class,'fa-square icon')]`,
+
+        //Allow learners to enroll again (default)
+        allowLearnersEnrollAgainDefaultUnchecked: `//span[text()='Allow learners to enroll again (default)']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        allowLearnersEnrollAgainDefaultChecked: `//span[text()='Allow learners to enroll again (default)']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
               //Observation Checklist (QuestionPro)
         adminSiteConfigurationTab: `//div[text()='Admin site configuration']`,
         observationChecklistSpan: `//span[contains(@class,'text-capitalize') and contains(text(),'Observation Checklist')]`,
@@ -479,9 +483,87 @@ export class SiteAdminPage extends AdminHomePage {
         }
         else{
             console.log("Certification Revalidation is already checked");
+    }}
+
+    //Allow learners to enroll again (default) - In Site Admin Business Rules
+    async verifyAllowLearnersEnrollAgainDefault(shouldBeUnchecked: boolean = true) {
+        await this.wait("mediumWait");
+        
+        try {
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainDefaultUnchecked;
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainDefaultChecked;
+            
+            const isUnchecked = await this.page.locator(uncheckedSelector).isVisible();
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+            
+            if (shouldBeUnchecked) {
+                if (isUnchecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again (default)' is UNCHECKED in Site Admin Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again (default)' to be UNCHECKED but it is CHECKED");
+                    return false;
+                }
+            } else {
+                if (isChecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again (default)' is CHECKED in Site Admin Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again (default)' to be CHECKED but it is UNCHECKED");
+                    return false;
+                }
+            }
+        } catch (error) {
+            console.log("❌ Error verifying 'Allow learners to enroll again (default)' checkbox:", error);
+            return false;
+        }
+    }
+
+    async uncheckAllowLearnersEnrollAgainDefault() {
+        await this.wait("mediumWait");
+        
+        try {
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainDefaultChecked;
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainDefaultUnchecked;
+            
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+            
+            if (isChecked) {
+                console.log("🔄 Unchecking 'Allow learners to enroll again (default)' checkbox...");
+                await this.click(checkedSelector, "Allow learners to enroll again (default)", "Checkbox");
+                await this.click(this.selectors.businessRulesSaveBtn, "Save", "Button");
+                await this.wait("mediumWait");
+                console.log("✅ 'Allow learners to enroll again (default)' has been unchecked");
+            } else {
+                console.log("✅ 'Allow learners to enroll again (default)' is already unchecked");
+            }
+        } catch (error) {
+            console.log("❌ Error unchecking 'Allow learners to enroll again (default)':", error);
+        }
+    }
+
+    async checkAllowLearnersEnrollAgainDefault() {
+        await this.wait("mediumWait");
+        
+        try {
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainDefaultChecked;
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainDefaultUnchecked;
+            
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+            
+            if (isChecked) {
+                console.log("✅ 'Allow learners to enroll again (default)' is already checked - skipping");
+            } else {
+                console.log("🔄 Checking 'Allow learners to enroll again (default)' checkbox...");
+                await this.click(uncheckedSelector, "Allow learners to enroll again (default)", "Checkbox");
+                await this.click(this.selectors.businessRulesSaveBtn, "Save", "Button");
+                await this.wait("mediumWait");
+                console.log("✅ 'Allow learners to enroll again (default)' has been checked");
+            }
+        } catch (error) {
+            console.log("❌ Error checking 'Allow learners to enroll again (default)':", error);
         }
     }
  
 }
-
 

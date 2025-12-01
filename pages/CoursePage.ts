@@ -136,8 +136,10 @@ export class CoursePage extends AdminHomePage {
     instructorInputIndex: (index: number) => `(//input[contains(@id,'instructors') and (@placeholder='Search')])[${index}]`,
     //instance_Class: "//a[contains(@title,'Instance/Class')]", -->DOM Contented Changed 08-07-2024
     // instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class')]", --> update on 18/07/2024
-    instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class') or contains(@title,'Instance/Class')]",
     clickContentLibrary: "//span[text()='Add Content']//following::span[text()='Click here'][1]",
+   navigateToMainCoursePage:`//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class') or contains(@title,'Instance/Class')]`,
+    instance_Class:
+      "//button[text()='Add instance/Class']",
     allContents: "//i[@class='fa-duotone fa-square icon_16_1']",
     contentIndex: (index: number) => `(//i[contains(@class,'fa-duotone fa-square ico')])[${index}]`,
     addContentButton: "//button[text()='Add Content']",
@@ -2971,13 +2973,13 @@ export class CoursePage extends AdminHomePage {
     await this.page.waitForLoadState('load');
     await this.wait("minWait");
     
-    await this.page.waitForSelector(this.selectors.instance_Class, { timeout: 30000 });
+    await this.page.waitForSelector(this.selectors.navigateToMainCoursePage, { timeout: 30000 });
     
     // Scroll to ensure the tab is in view
-    await this.page.locator(this.selectors.instance_Class).scrollIntoViewIfNeeded();
+    await this.page.locator(this.selectors.navigateToMainCoursePage).scrollIntoViewIfNeeded();
     
     await this.click(
-      this.selectors.instance_Class,
+      this.selectors.navigateToMainCoursePage,
       "Edit Instance Class",
       "Button"
     );

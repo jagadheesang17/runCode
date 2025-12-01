@@ -122,7 +122,7 @@ async function nonComplianceCertificationExpiry_CronJob() {
         const formattedPreviousDate = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
 
         //Query to retrive the data
-        const programEnrollment = await dataBase.executeQuery(`SELECT * FROM course_enrollment ORDER BY id DESC LIMIT 1;`)
+        const programEnrollment = await dataBase.executeQuery(`SELECT * FROM program_enrollment ORDER BY id DESC LIMIT 1;`)
         console.log(programEnrollment);
 
         const idString = String(programEnrollment[0].id);
@@ -136,11 +136,11 @@ async function nonComplianceCertificationExpiry_CronJob() {
         const newTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
         const formattedNewTime = format(newTime, 'yyyy-MM-dd HH:mm:ss');
         console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
-        const updateProgramEnrollment = await dataBase.executeQuery(`UPDATE course_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        const updateProgramEnrollment = await dataBase.executeQuery(`UPDATE program_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
         console.log(updateProgramEnrollment);
 
-        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'AND name='Non Compliance Expire Certifications with Past Validity';`)
-        const verification = await dataBase.executeQuery(`SELECT * FROM course_enrollment WHERE id=${idString} ;`)
+        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'AND name='Expire Certification';`)
+        const verification = await dataBase.executeQuery(`SELECT * FROM program_enrollment WHERE id=${idString} ;`)
         const completionDate = verification[0].completion_date
         console.log("The Updated Completion date = " + completionDate);
 
@@ -528,7 +528,7 @@ async function dataloadCron() {
     const newTime = (subDays(currentTime, 1));
     const previousDate = format(newTime, 'yyyy-MM-dd');
     console.log("Previous Date :" + previousDate);
-    let notification = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run  = '${previousDate}',current_status= 'waiting', previous_status = '' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Notification';`);
+    let notification = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run  = '${previousDate}',current_status= 'waiting', previous_status = '' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Notification Dispatch to Users';`);
     console.log(notification);
 }
 
@@ -570,42 +570,6 @@ async function expiryRemainder_cronjob(type: 'course' | 'certification') {
         console.log(cronJob);
         }
 
-        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
-        const currentTimeString = currentTimeResult[0]['NOW()'];
-
-        const currentTime = new Date(currentTimeString);
-        const pastDate = currentTime.setDate(currentTime.getDate() - 2);
-        const formattedPreviousDate = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
-
-        //Query to retrive the data
-        const programEnrollment = await dataBase.executeQuery(`SELECT * FROM program_enrollment ORDER BY id DESC LIMIT 1;`)
-        console.log(programEnrollment);
-
-        const idString = String(programEnrollment[0].id);
-        console.log("Retrived Id = " + idString);
-
-        //Query to UPDATE the ProgramEnrollment 
-
-        const formattedCurrentTime = format(currentTime, 'yyyy-MM-dd HH:mm:ss');
-        console.log('Formatted Current Time:', formattedCurrentTime);
-        currentTime.setDate(currentTime.getDate() + 2)
-        const newTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
-        const formattedNewTime = format(newTime, 'yyyy-MM-dd HH:mm:ss');
-        console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
-        const updateProgramEnrollment = await dataBase.executeQuery(`UPDATE program_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
-        console.log(updateProgramEnrollment);
-
-        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'AND name='Expire Certifications with Past Validity';`)
-        const verification = await dataBase.executeQuery(`SELECT * FROM program_enrollment WHERE id=${idString} ;`)
-        const completionDate = verification[0].completion_date
-        console.log("The Updated Completion date = " + completionDate);
-
-
-  
-
-        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${formattedNewTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certifications with Past Validity' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
-        console.log(cronJob);
-
     } catch (error) {
         console.log("Not executed " + error);
     }
@@ -622,8 +586,38 @@ async function bulkMailDispatcherCron(data?: string): Promise<[string, string]> 
     }
     return [mail_body, mailSubject];
 }
+async function certificationExpiry_CronJob() {
+    try {
+        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+        const currentTimeString = currentTimeResult[0]['NOW()'];
+        const currentTime = new Date(currentTimeString);
+        const pastDate = currentTime.setDate(currentTime.getDate() - 2);
+        const formattedPreviousDate = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
+        //Query to retrive the data
+        const programEnrollment = await dataBase.executeQuery(`SELECT * FROM program_enrollment ORDER BY id DESC LIMIT 1;`)
+        console.log(programEnrollment);
+        const idString = String(programEnrollment[0].id);
+        console.log("Retrived Id = " + idString);
+        //Query to UPDATE the ProgramEnrollment 
+        const formattedCurrentTime = format(currentTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('Formatted Current Time:', formattedCurrentTime);
+        currentTime.setDate(currentTime.getDate() + 2)
+        const newTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
+        const formattedNewTime = format(newTime, 'yyyy-MM-dd HH:mm:ss');
+        console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
+        const updateProgramEnrollment = await dataBase.executeQuery(`UPDATE program_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        console.log(updateProgramEnrollment);
+        await dataBase.executeQuery(`UPDATE cron_master SET status='1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'AND name='Expire Certifications with Past Validity';`)
+        const verification = await dataBase.executeQuery(`SELECT * FROM program_enrollment WHERE id=${idString} ;`)
+        const completionDate = verification[0].completion_date
+        console.log("The Updated Completion date = " + completionDate);
+        const cronJob = await dataBase.executeQuery(`UPDATE cron_details SET next_run='${formattedNewTime}',current_status='waiting', previous_status=''  WHERE name='Expire Certifications with Past Validity' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
+        console.log(cronJob);
+    } catch (error) {
+        console.log("Not executed " + error);
+    }
+}
 
 
 
-
-export { courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity}
+export { expiryRemainder_cronjob,certificationExpiry_CronJob, mailDispatcherCron, notificationCron, bulkMailDispatcherCron,courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,dataloadCron}

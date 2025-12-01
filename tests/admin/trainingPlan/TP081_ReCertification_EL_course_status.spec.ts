@@ -1,7 +1,7 @@
   import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
 import { credentials } from "../../../constants/credentialData";
-import {nonComplianceCertificationExpiry_CronJob } from "../DB/DBJobs";
+import {certificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob } from "../DB/DBJobs";
 import { en } from "@faker-js/faker";
 let courseName1 = FakerData.getCourseName();
 let courseName2 = FakerData.getCourseName();

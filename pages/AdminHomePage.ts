@@ -482,10 +482,26 @@ export class AdminHomePage extends AdminLogin {
     
     public async siteAdmin_Adminconfig() {
         await this.wait("minWait");
+                
         await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
         await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
         await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
         await this.spinnerDisappear();
+        await this.wait("minWait");
+        
+        // Check if Admin Configuration section is collapsed and expand if needed
+        const expandIcon = `//button[@data-bs-target='#lms-adminconfiguration-collapse']/child::div//i[contains(@class,'fa-plus')]`;
+        try {
+            const isCollapsed = await this.page.locator(expandIcon).isVisible({ timeout: 2000 });
+            
+            if (isCollapsed) {
+                console.log("Admin Configuration section is collapsed, expanding it...");
+                await this.click(expandIcon, "Expand Admin Configuration", "Icon");
+                await this.wait("minWait");
+            }
+        } catch (error) {
+            console.log("Expand icon not found - Admin Configuration section is already expanded, skipping...");
+        }
     }
 
     public async siteAdmin_Enrollments() {
