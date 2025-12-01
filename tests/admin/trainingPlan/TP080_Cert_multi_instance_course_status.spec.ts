@@ -15,11 +15,11 @@ const elCourseName = ("Elearning" + " " + FakerData.getCourseName());
 let tag: any
 const instructorName = credentials.INSTRUCTORNAME.username
 
-test.describe(`Verify_the_Multi_Instance_coutrse_status_when_those_are_attached_to_the_learning_path_and_when_the_admin_enrolls_the_learning_path`, () => {
+test.describe(`Verify_the_Multi_Instance_coutrse_status_when_those_are_attached_to_the_certification_and_when_the_admin_enrolls_the_certification`, () => {
   test.describe.configure({ mode: "serial" });
   test(`Multiple Course Creation for Classroom`, async ({ adminHome, createCourse, editCourse, contentHome, catalog }) => {
     test.info().annotations.push(
-      { type: `Author`, description: `Arivazhagan P` },
+      { type: `Author`, description: `Balasundar` },
       { type: `TestCase`, description: `Create the course as multiple instance` },
       { type: `Test Description`, description: `Verify that course should be created as multiple instance when ILT or VC delivery type is chosen` }
     );
@@ -109,12 +109,8 @@ test.describe(`Verify_the_Multi_Instance_coutrse_status_when_those_are_attached_
   let title = FakerData.getCourseName();
   //let title="Primary Microchip Bypass";
 
-  test(`Creation of Certification and Enable Certification revalidate`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
-    test.info().annotations.push(
-      { type: `Author`, description: `Jagadish` },
-      { type: `TestCase`, description: `Certification Creation with pre and post assessment attached` },
-      { type: `Test Description`, description: `Certification Creation with pre and post assessment attached` }
-    )
+  test(`Creation of Certification and attach that created multi-instance courses`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
+    
 
     await adminHome.loadAndLogin("CUSTOMERADMIN1")
     await adminHome.menuButton();
@@ -138,7 +134,7 @@ test.describe(`Verify_the_Multi_Instance_coutrse_status_when_those_are_attached_
 
   })
 
-  test(`Re-validate the certification and complete it as a learner`, async ({ adminHome, enrollHome, catalog, editCourse, learnerHome }) => {
+  test(`Verify that multi instance course and Enroll the required instance from Certification path`, async ({ adminHome, enrollHome, catalog, editCourse, learnerHome }) => {
 
     await adminHome.loadAndLogin("CUSTOMERADMIN1")
     await adminHome.menuButton()

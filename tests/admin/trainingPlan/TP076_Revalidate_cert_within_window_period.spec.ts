@@ -23,11 +23,7 @@ test.describe(`Verify_the_address_which_is_inherited_from_organization`, async (
 
     })
     test(`Creation of Elearning Course`, async ({ adminHome, createCourse }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `Jagadish` },
-            { type: `TestCase`, description: `Creation of Elearning Course` },
-            { type: `Test Description`, description: `Creation of Elearning Course` }
-        );
+       
         await adminHome.loadAndLogin("CUSTOMERADMIN1")
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
@@ -48,12 +44,7 @@ test.describe(`Verify_the_address_which_is_inherited_from_organization`, async (
     //let title="Primary Microchip Bypass";
 
     test(`Creation of Certification and Enable Certification revalidate`, async ({ adminHome, learningPath, createCourse, editCourse }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `Jagadish` },
-            { type: `TestCase`, description: `Certification Creation with pre and post assessment attached` },
-            { type: `Test Description`, description: `Certification Creation with pre and post assessment attached` }
-        )
-
+        
         await adminHome.loadAndLogin("CUSTOMERADMIN1")
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
