@@ -315,7 +315,7 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   //Verifying attached content progress value in course details page
-  async verifyContentProgressValue(contentName: string, progress: string) {
+  async verifyContentProgressValue(contentName: string, progress?: string) {
     await this.wait("minWait");
     await this.verification(
       this.selectors.contentProgressValue(contentName),
@@ -2656,6 +2656,7 @@ async verifyStatusWhenConsiderForCompletionIsChecked(){
       throw new Error(`Expected dedicated to TP message but found: ${message}`);
     }
   }
+
 
 }
 
