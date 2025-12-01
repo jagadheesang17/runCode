@@ -59,7 +59,14 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
     // Assessment video upload:-
     assessment_video_upload: "#question_upload_file",
+    editAssessment: "//h1[text()='Edit Assessment']",
+    noOfQuestionsSelector:`//input[@id='minquestion']`,
+    checkRequired:(questionNumber:string)=>`//div[text()='question ${questionNumber}']/following::i[@class='fad fa-square icon_16_1']`,
 
+    minusIcon:`//i[@id='actiondiv_create_sec']`,
+    checkRequiredSectionLevel:(section:string,questionNumber:string)=>`//div[text()='Section ${section}']/following::div[text()='question ${questionNumber}']/following::i[@class='fad fa-square icon_16_1']`,
+    rightAnswerFeedbackInput:`//textarea[@id='rightdesc']`,
+    wrongAnswerFeedbackInput:`//textarea[@id='wrongdesc']`,
     
     //assessment
     clickAssessmentTab: (data: string) => `//button[text()='${data}']`,
@@ -102,6 +109,13 @@ export class SurveyAssessmentPage extends AdminHomePage {
     await this.validateElementVisibility(this.selectors.questionsInput, "Input");
     await this.page.waitForTimeout(1000)
     await this.type(this.selectors.questionsInput, "Input", FakerData.generateQuestion());
+  }
+
+  async  enterQuestionsDirectly(qns:string) {
+    await this.page.keyboard.press('PageUp')
+    await this.validateElementVisibility(this.selectors.questionsInput, "Input");
+    await this.page.waitForTimeout(1000)
+    await this.type(this.selectors.questionsInput, "Input", qns);
   }
 
 
@@ -187,6 +201,8 @@ export class SurveyAssessmentPage extends AdminHomePage {
       console.log("Select type is " + typeValue);
     }
     const scoreInput = this.page.locator(this.selectors.scoreInput);
+    
+    let assignedScore = 0; // Track the score assigned to this question
 
     switch (typeValue) {
 
@@ -195,7 +211,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
         await this.type(this.selectors.option1Input, "Input", FakerData.getRandomTitle());
         await this.type(this.selectors.option2Input, "Input", FakerData.getRandomTitle());
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", score())
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           const radioBtn = this.page.locator(`(${this.selectors.radioBtn})[${1}]`);
           await radioBtn.click();
         }
@@ -206,7 +224,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
         await this.type(this.selectors.option1Input, "Input", FakerData.getRandomTitle());
         await this.type(this.selectors.option2Input, "Input", FakerData.getRandomTitle());
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", score())
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           const radioBtn = this.page.locator(`(${this.selectors.radioBtn})[${1}]`);
           await radioBtn.click();
         }
@@ -218,7 +238,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
         await this.type(this.selectors.option2Input, "Input", FakerData.getRandomTitle());
 
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", score());
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           const checkBoxCount = await this.page.locator(this.selectors.checkBoxBtn).count();
           const checkBoxBtn = this.page.locator(`(${this.selectors.checkBoxBtn})[${1}]`);
           await checkBoxBtn.click();
@@ -231,7 +253,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
         await this.type(this.selectors.option2Input, "Input", FakerData.getRandomTitle());
 
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", score());
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           const radioCount = await this.page.locator(this.selectors.radioBtn).count();
           const radioBtn = this.page.locator(`(${this.selectors.radioBtn})[${1}]`);
           await radioBtn.click();
@@ -265,7 +289,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
       case "Image - Radio Button":
 
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", score());
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           //const radioCount = await this.page.locator(this.selectors.radioBtn).count();
           const radioBtn = this.page.locator(`(${this.selectors.radioBtn})[${1}]`);
           await this.page.locator(this.selectors.imageInput).scrollIntoViewIfNeeded();
@@ -283,7 +309,9 @@ export class SurveyAssessmentPage extends AdminHomePage {
       case "Image - Checkbox":
 
         if (await scoreInput.isVisible()) {
-          await this.type(this.selectors.scoreInput, "Score", await score());
+          const questionScore = score();
+          assignedScore = Number(questionScore);
+          await this.type(this.selectors.scoreInput, "Score", questionScore);
           // const checkBoxCount = await this.page.locator(this.selectors.checkBoxBtn).count();
           const checkBoxBtn = this.page.locator(`(${this.selectors.checkBoxBtn})[${1}]`);
           await checkBoxBtn.click();
@@ -305,14 +333,32 @@ export class SurveyAssessmentPage extends AdminHomePage {
       await this.uploadFile(this.selectors.assessment_video_upload, uploadAssessmentVideo);
     }
 
+    return assignedScore;
   }
 
   
   async clickOnPlusIcon() {
-    await this.page.waitForTimeout(2000);
+    await this.wait('minWait');
     await this.mouseHover(this.selectors.plusIcon, "Plus Icon");
     await this.wait('minWait');
     await this.click(this.selectors.plusIcon, "Plus Icon", "Icon");
+    await this.wait('minWait');
+    // await this.page.keyboard.press('PageDown')
+  }
+
+  async clickOnMinusIcon() {
+    await this.wait('minWait');
+    await this.mouseHover(this.selectors.minusIcon, "Minus Icon");
+    await this.wait('minWait');
+    await this.click(this.selectors.minusIcon, "Minus Icon", "Icon");
+    await this.wait('minWait');
+    // await this.page.keyboard.press('PageDown')
+  }
+
+  async clickEditAssessment() {
+    await this.mouseHover(this.selectors.editAssessment, "Edit Assessment");
+    await this.wait('minWait');
+    await this.click(this.selectors.editAssessment, "Edit Assessment", "heading");
     await this.wait('minWait');
     await this.page.keyboard.press('PageDown')
   }
@@ -343,10 +389,10 @@ export class SurveyAssessmentPage extends AdminHomePage {
   // }
 
   async clickBlankActionBtn() {
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(3000);
     await this.page.locator("//div[@id='actiondiv']/parent::div").hover({ force: true ,timeout:3000});
     await this.page.locator("//div[@id='actiondiv']/parent::div").click({ force: true ,delay:400});
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(3000);
   }
 
   async displayOption() {
@@ -547,10 +593,10 @@ export class SurveyAssessmentPage extends AdminHomePage {
     await this.page.keyboard.press('PageDown');
     await this.spinnerDisappear();
   }
-  async clickEditAssessment() {
-    await this.validateElementVisibility(this.selectors.editAssessmentBtn, "Edit Assessment");
-    await this.click(this.selectors.editAssessmentBtn, "Edit Assessment", "Button");
-  }
+  // async clickEditAssessment() {
+  //   await this.validateElementVisibility(this.selectors.editAssessmentBtn, "Edit Assessment");
+  //   await this.click(this.selectors.editAssessmentBtn, "Edit Assessment", "Button");
+  // }
   async click_Unpublish() {
     await this.validateElementVisibility(this.selectors.unPublishbtn, "Unpublish");
     await this.click(this.selectors.unPublishbtn, "Unpublish", "Button");
@@ -609,4 +655,23 @@ export class SurveyAssessmentPage extends AdminHomePage {
 
 
 
+  async enterNoOfQuestionsToDisplay(){
+    const noOfQuestions = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5
+    await this.type(this.selectors.noOfQuestionsSelector, "Number of Questions to Display", noOfQuestions.toString());
+  }
+
+  async checkRequired(questionNumber: string){
+    await this.click(this.selectors.checkRequired(questionNumber), "Check Required", "Checkbox");
+  }
+
+  async checkRequiredAtSectionLevel(section:string,questionNumber: string){
+    await this.click(this.selectors.checkRequiredSectionLevel(section,questionNumber), "Check Required", "Checkbox");
+  }
+
+  async enterRightAnswerFeedback(rightanswerFeedback:string){
+    await this.type(this.selectors.rightAnswerFeedbackInput, "Right Answer Feedback", rightanswerFeedback);
+  }
+  async enterWrongAnswerFeedback(wrongAnswerFeedback:string){
+    await this.type(this.selectors.wrongAnswerFeedbackInput, "Wrong Answer Feedback", wrongAnswerFeedback);
+  }
 }

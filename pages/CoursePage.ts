@@ -32,53 +32,40 @@ export class CoursePage extends AdminHomePage {
     uploadDiv: "//div[@id='upload-div']",
     uploadInput: "//div[@id='upload-div']//input[@id='content_upload_file']",
     clickHereuploadFile: `(//label[text()='Click here'])[1]`,
-    attachedContent: (fileName: string) =>
-      `//label[text()='Attached Content']/following::span/following-sibling::div[text()='${fileName}']`,
+    attachedContent: (fileName: string) => `//label[text()='Attached Content']/following::span/following-sibling::div[text()='${fileName}']`,
     showInCatalogBtn: "//span[text()='Show in Catalog']",
-    modifyTheAccessBtn:
-      "//footer/following::button[text()='No, modify the access']",
+    modifyTheAccessBtn: "//footer/following::button[text()='No, modify the access']",
     saveBtn: "//button[@id='course-btn-save' and text()='Save']",
     proceedBtn: "//footer//following::button[contains(text(),'Yes, Proceed')]",
     successMessage: "//div[@id='lms-overall-container']//h3",
     domainBtn: "//label[text()='Domain']/following::button[1]",
     //  domainOption: (domain_name: string) => `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
     closeBtn: "//button[text()='Close']",
-    courseLanguagesWrapper:
-      "//label[contains(text(),'Language')]/following::div[@id='wrapper-course-languages']",
+    courseLanguagesWrapper: "//label[contains(text(),'Language')]/following::div[@id='wrapper-course-languages']",
     courseLanguageInput: "//label[text()='Language']/following::input[1]",
-    courseLanguageLink: (language: string) =>
-      `(//label[text()='Language']//following::span[text()='${language}'])[1]`,
+    courseLanguageLink: (language: string) => `(//label[text()='Language']//following::span[text()='${language}'])[1]`,
     selectCategoryBtn: "//div[contains(@id,'categorys')]//div[text()='Select']",
     categoryOption: (category: string) => `//span[text()='${category}']`,
     addCategoryBtn: "//div[text()='Add Category']",
-    categoryInput:
-      "//label[text()='Category']/following::input[@id='course-categorys']",
+    categoryInput: "//label[text()='Category']/following::input[@id='course-categorys']",
     okButton: "//button[text()='OK']",
-    okBtn:
-      "//span[contains(text(),'created successfully')]/following::button[text()='OK']",
-    cancelBtn:
-      "//label[text()='Category']/following::span[contains(@class,'lms-cat-cancel')]",
+    okBtn: "//span[contains(text(),'created successfully')]/following::button[text()='OK']",
+    cancelBtn: "//label[text()='Category']/following::span[contains(@class,'lms-cat-cancel')]",
     providerDropdown: "//label[text()='Provider']//following-sibling::div",
-    providerDropdownValue:
-      "//label[text()='Provider']//following-sibling::div//div//a",
+    providerDropdownValue: "//label[text()='Provider']//following-sibling::div//div//a",
     providerOption: (provider: string) => `//a/span[text()='${provider}']`,
-    providerIndexBase: (index: string) =>
-      `(//label[text()='Provider']//following-sibling::div//a)[${index}]`,
-    totalDurationInput:
-      "(//label[text()='Total Duration']/following::input)[1]",
-    additionalInfoInput:
-      "//div[@id='additional_information_description_id']//p",
+    providerIndexBase: (index: string) => `(//label[text()='Provider']//following-sibling::div//a)[${index}]`,
+    totalDurationInput: "(//label[text()='Total Duration']/following::input)[1]",
+    additionalInfoInput: "//div[@id='additional_information_description_id']//p",
     showToLearnersCheckbox: "//span[text()='Show to Learners']",
     priceInput: "//label[text()='Price']/following::input[1]",
     coursePriceField: "#course-price", // User specified locator
     currencyDropdown: "//div[contains(@id,'currency')]",
     courseCurrencyDropdown: "//button[@data-id='course-currency']", // User specified locator
-    currencyOption:
-      "//label[text()='Currency']/following::a/span[text()='US Dollar']",
+    currencyOption: "//label[text()='Currency']/following::a/span[text()='US Dollar']",
     usDollarCurrencyOption: "//span[text()='US Dollar']", // User specified locator
     maxSeatsInput: "//label[text()='Seats-Max']/following::input[1]",
-    contactSupportInput:
-      "//label[text()='Contact Support']/following::input[1]",
+    contactSupportInput: "//label[text()='Contact Support']/following::input[1]",
     complianceField: "//div[@id='wrapper-course-compliance']",
     complianceOption: "//footer/following-sibling::div//span[text()='Yes']",
     validityField: "//div[@id='wrapper-course-compliance-validity']",
@@ -89,206 +76,139 @@ export class CoursePage extends AdminHomePage {
     completeByDateInput: "#complete_by_date-input",
     completeByDaysInput: "//input[@id='complete_days']",
     // completeByRule: `(//div[@id='wrapper-course-complete-by-rule']//button)[1]`,
-    completeByRule:
-      "(//div[@id='wrapper-course-complete-by-rule']//button | //div[@id='wrapper-program-complete-by-rule']//button)[1]",
+    completeByRule: "(//div[@id='wrapper-course-complete-by-rule']//button | //div[@id='wrapper-program-complete-by-rule']//button)[1]",
     completeByRuleOption: `//footer/following-sibling::div//span[text()='Yes']`,
     // postCompleteByStatusField: "//div[@id='wrapper-course-post-complete-by-status']",
-    postCompleteByStatusField:
-      "//div[@id='wrapper-course-post-complete-by-status'] | //div[@id='wrapper-program-post-complete-by-status']",
+    postCompleteByStatusField: "//div[@id='wrapper-course-post-complete-by-status'] | //div[@id='wrapper-program-post-complete-by-status']",
     postCompleteByOption: "//footer/following::a/span[text()='Overdue']",
     courseInstancesField: "//div[@id='wrapper-course-instances']",
     instanceTypeOption: "//span[text()='Multi Instance/Class']",
     hideInCatalogCheckbox: "//span[contains(text(),'Hide in Catalog')]",
     saveInDraftCheckbox: "//span[contains(text(),'Save as Draft')]",
     deliveryTypeDropdown: "//div[@id='wrapper-course-delivery-type']",
-    deliveryTypeOption: (deliveryType: string) =>
-      `//span[text()='${deliveryType}']`,
+    deliveryTypeOption: (deliveryType: string) => `//span[text()='${deliveryType}']`,
     editCourseTabLink: "//a[text()='Edit Course']",
     addInstancesBtn: "//button[@id='course-btn-add-instances']",
     instanceDeliveryTypeField: "//div[@id='wrapper-instanceDeliveryType']",
     instanceDeliveryTypeDropdown: "//div[@id='wrapper-instanceDeliveryType']//select",
-    instanceDeliveryTypeOption: (delivery: string) =>
-      `//footer/following::a/span[text()='${delivery}']`,
+    instanceDeliveryTypeOption: (delivery: string) => `//footer/following::a/span[text()='${delivery}']`,
     instanceCountInput: "//div[@id='exp-course-instances-options']//input",
     createInstanceBtn: "//button[@id='instance-add']",
     sessionNameInput: "//label[text()='Session Name']/following-sibling::input",
-    sessionNameIndex: (index: number) =>
-      `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
-
-    instructorDropdown:
-      "(//label[text()='Instructor']/following-sibling::div//input)[1]",
-    instructorDropdownIndex: (index: number) =>
-      `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
-    instructorOption: (instructorName: string) =>
-      `//li[contains(text(),'${instructorName}')]`,
-    instructorOptionIndex: (instructorName: string, index: number) =>
-      `(//li[contains(text(),'${instructorName}')])[${index}]`,
-    locationSelection:
-      "//label[text()='Select Location']/following-sibling::div//input[1]",
-    locationDropdown:
-      "//label[text()='Select Location']/following-sibling::div//input[@placeholder='Search']",
+    sessionNameIndex: (index: number) => `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
+    instructorDropdown: "//label[text()='Instructor']/following-sibling::div//input",
+    instructorDropdownIndex: (index: number) => `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
+    instructorOption: (instructorName: string) => `//li[contains(text(),'${instructorName}')]`,
+    instructorOptionIndex: (instructorName: string, index: number) => `(//li[contains(text(),'${instructorName}')])[${index}]`,
+    locationSelection: "//label[text()='Select Location']/following-sibling::div//input[1]",
+    locationDropdown: "//label[text()='Select Location']/following-sibling::div//input[@placeholder='Search']",
     locationOption: (locationName: string) => `//li[text()='${locationName}']`,
     CourseCalendaricon: "//div[@id='complete_by_date']/input",
     tomorrowdate: "//td[@class='today day']/following-sibling::td[1]",
     nextMonth: `//div[@class='datepicker-days']//th[@class='next']`,
-    calanderIcon:
-      "(//label[text()='Date']//following::button[contains(@class,'calendaricon')])[1]",
+    calanderIcon: "(//label[text()='Date']//following::button[contains(@class,'calendaricon')])[1]",
     registrationEnd: `//div[@id='registration-ends']/input`,
     todayDate: "td[class='today day']",
     randomDate: `(//td[@class='day']/following-sibling::td)[1]`,
     seatMaxInput: "//label[text()='Seats-Max']/following-sibling::input",
     timeInput: `//label[text()='Start Time']/following-sibling::input`,
-    chooseTimeOption: (randomIndex: string) =>
-      `(//div[contains(@class,'timepicker')]//li)[${randomIndex}]`,
-    chooseStartTimeIndex: (index: string, randomIndex: number) =>
-      `((//ul[@class='ui-timepicker-list'])[${index}]/li)[${randomIndex}]`,
+    chooseTimeOption: (randomIndex: string) => `(//div[contains(@class,'timepicker')]//li)[${randomIndex}]`,
+    chooseStartTimeIndex: (index: string, randomIndex: number) => `((//ul[@class='ui-timepicker-list'])[${index}]/li)[${randomIndex}]`,
     waitlistInput: "//label[text()='Waitlist']/following-sibling::input",
     updateBtn: "//button[text()='Update']",
     detailsbtn: "//button[text()='Details']",
     courseUpdateBtn: "//button[@id='course-btn-save']",
     surveyAndAssessmentLink: "//button[text()='Survey/Assessment']",
     //surveyCheckBox: "//div[@id='sur_ass-lms-scroll-survey-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
-    surveyCheckBox:
-      "//div[contains(@id,'scroll-survey-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
+    surveyCheckBox: "//div[contains(@id,'scroll-survey-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
     editCourseBtn: "//a[text()='Edit Course']",
     //assessmentCheckbox: "//div[@id='sur_ass-lms-scroll-assessment-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
-    assessmentCheckbox:
-      "//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
+    assessmentCheckbox: "//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
     addAssessmentBtn: "//button[text()='Add As Assessment']",
-    categoryDropdown:
-      "//div[@class='dropdown-menu show']//input[@type='search']",
+    categoryDropdown: "//div[@class='dropdown-menu show']//input[@type='search']",
     allCategoryOptions: "//select[@id='course-categorys-exp-select']/option",
     providerOptions: "//select[@id='course-providers']/option",
     provider: (Options: string) => `(//span[text()='${Options}'])[1]`,
     progress: "//progress[@id='progress-bar'and@value='0']",
     addSurveyBtn: "//button[text()='Add As Survey']",
-    surveyPreviewIcon: "//i[contains(@class,'fa-eye') or @aria-label='Preview' or @title='Preview']",
-    surveyPreviewBtn: "//button[contains(text(),'Preview') or @title='Preview Survey']",
-    surveyDeleteIcon: (surveyName: string) => `//div[text()='${surveyName}']/following::i[@aria-label='Delete']`,
-    removeSurveyIcon: "//i[@aria-label='Delete']",
-    confirmRemovalBtn: "//button[text()='Remove' or text()='Delete' or text()='Yes' or text()='Confirm']",
-    surveySaveBtn: "//button[text()='Save']",
-    surveyLinkIcon: "//i[@aria-label='Link']",
-    surveyLinkInput: "//input[contains(@id,'survey-popover')]",
-    surveyCopyBtn: "//div[@aria-label='Copy URL']",
-    considerForCompletionCheckbox: "(//label[contains(@for,'sur_ass-item-checked-survey-added')])[1]",
-    testOutCheckbox: "(//label[contains(@for,'sur_ass-item-checked-out-added')])[1]",
     deliveryLabel: "//label[text()='Delivery Type']",
-    instructorInput:
-      "//input[contains(@id,'instructors') and (@placeholder='Search')]",
-    instructorInputIndex: (index: number) =>
-      `(//input[contains(@id,'instructors') and (@placeholder='Search')])[${index}]`,
+    instructorInput: "//input[contains(@id,'instructors') and (@placeholder='Search')]",
+    instructorInputIndex: (index: number) => `(//input[contains(@id,'instructors') and (@placeholder='Search')])[${index}]`,
     //instance_Class: "//a[contains(@title,'Instance/Class')]", -->DOM Contented Changed 08-07-2024
     // instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class')]", --> update on 18/07/2024
-    instance_Class:
-      "//button[text()='Add instance/Class']",
-    clickContentLibrary:
-      "//span[text()='Add Content']//following::span[text()='Click here'][1]",
+    instance_Class: "//a[contains(@title,'Instance Class') or contains(@aria-label,'Instance/Class') or contains(@title,'Instance/Class')]",
+    clickContentLibrary: "//span[text()='Add Content']//following::span[text()='Click here'][1]",
     allContents: "//i[@class='fa-duotone fa-square icon_16_1']",
-    contentIndex: (index: number) =>
-      `(//i[contains(@class,'fa-duotone fa-square ico')])[${index}]`,
+    contentIndex: (index: number) => `(//i[contains(@class,'fa-duotone fa-square ico')])[${index}]`,
     addContentButton: "//button[text()='Add Content']",
     attachedContentLabel: "//label[text()='Attached Content']",
     getCourse: "//input[@id='course-title']",
     domainDropdown: "//a[@class='dropdown-item selected']",
-    domainDropdownValue:
-      "//label[text()='Domain']/following-sibling::div//div[contains(@class,'dropdown-menu')]//span[@class='text']",
+    domainDropdownValue: "//label[text()='Domain']/following-sibling::div//div[contains(@class,'dropdown-menu')]//span[@class='text']",
     //domainDropdownIndex: (domain_index: number) => `(//a[@class='dropdown-item selected'])[${domain_index}]`,
     domainSelectedText: "//div[contains(text(),'selected')]",
-    domainOption: (domain_name: string) =>
-      `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
+    domainOption: (domain_name: string) => `//div[@class='dropdown-menu show']//span[text()='${domain_name}']`,
     portalDropdown: `(//label[text()='Domain']/following::div)[1]`,
     allPortalOptions: `//label[text()='Domain']/following::div[@class='dropdown-menu show']//a`,
-    portalOption: (index: string) =>
-      `(//label[text()='Domain']/following::div[@class='dropdown-menu show']//a)[${index}]`,
-    domainNameOption: (portalName: string) =>
-      `//a[@class='dropdown-item']//span[text()='${portalName}']`,
+    portalOption: (index: string) => `(//label[text()='Domain']/following::div[@class='dropdown-menu show']//a)[${index}]`,
+    domainNameOption: (portalName: string) => `//a[@class='dropdown-item']//span[text()='${portalName}']`,
     portal: `(//label[text()='Domain']/following::div[@id='wrapper-user-portals']//button)[1]`,
     image: "(//div[@class='img-wrapper']/img)[1]",
     clickHere: "//div[@class='form-label']/span",
     httpsInput: "input[id=content_url]",
     addURLBtn: "button:text-is('Add URL')",
-    clickSaveasDraft:
-      "//input[@id='draftcatalog']/parent::div//i[contains(@class,'fa-dot-circle')]",
-    willResolveLaterBtn:
-      "//footer//following::button[text()='No, will resolve later']",
+    clickSaveasDraft: "//input[@id='draftcatalog']/parent::div//i[contains(@class,'fa-dot-circle')]",
+    willResolveLaterBtn: "//footer//following::button[text()='No, will resolve later']",
     selectType: `//label[text()='Session Type']/following-sibling::div`,
     sessionType: "(//label[text()='Session Type']/parent::div//button)[1]",
     otherMeeting: "//span[text()='other Meetings']",
-    sessionTypeIndex: (index: number) =>
-      `(//label[text()='Session Type']/following-sibling::div)[${index}]`,
-    attendeeUrlIndex: (index: number) =>
-      `(//label[text()='Attendee URL']/following-sibling::input)[${index}]`,
-    presenterUrlIndex: (index: number) =>
-      `(//label[text()='Presenter URL']/following-sibling::input)[${index}]`,
-    timeZoneIndex: (timeZone: number) =>
-      `(//label[text()='Time Zone']/following-sibling::div//input)[${timeZone}]`,
-    otherMeetingIndex: (othermeeting: number) =>
-      `(//label[text()='Session Type']/following::div//span[text()='other Meetings'])[${othermeeting}]`,
+    sessionTypeIndex: (index: number) => `(//label[text()='Session Type']/following-sibling::div)[${index}]`,
+    attendeeUrlIndex: (index: number) => `(//label[text()='Attendee URL']/following-sibling::input)[${index}]`,
+    presenterUrlIndex: (index: number) => `(//label[text()='Presenter URL']/following-sibling::input)[${index}]`,
+    timeZoneIndex: (timeZone: number) => `(//label[text()='Time Zone']/following-sibling::div//input)[${timeZone}]`,
+    otherMeetingIndex: (othermeeting: number) => `(//label[text()='Session Type']/following::div//span[text()='other Meetings'])[${othermeeting}]`,
     timeZoneOption: `(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[1]`,
     //  timeZoneOptionIndex:(timeOption:number) =>`(//label[text()='Time Zone']/following::div//input[@placeholder='Search'])[${timeOption}]`,
     // indianTimezoneIndex:(timezoneIndia:number)=> `(//li[contains(text(),'Indian Standard Time/Kolkata')])[${timezoneIndia}]`,
     indianTimezone: `//li[contains(text(),'Indian Standard Time/Kolkata')]`,
     Date: "(//label[contains(text(),'Date')]/following-sibling::div/input)[1]",
-    startDateInstanceIndex: (index: number) =>
-      `(//label[text()='Start Date']/following-sibling::div/input)[${index}]`,
-    timeInputIndex: (index: number) =>
-      `(//label[text()='Start Time']/following-sibling::input)[${index}]`,
+    startDateInstanceIndex: (index: number) => `(//label[text()='Start Date']/following-sibling::div/input)[${index}]`,
+    timeInputIndex: (index: number) => `(//label[text()='Start Time']/following-sibling::input)[${index}]`,
     addDeleteIcon: `//label[text()='session add/delete']/following::i[contains(@class,'fad fa-plus')]`,
-    domainInnerValue:
-      "//label[text()='Domain']/parent::div//div[@class='filter-option-inner']/div",
+    domainInnerValue: "//label[text()='Domain']/parent::div//div[@class='filter-option-inner']/div",
     completionCertificationlink: "//span[text()='Completion Certificate']",
-    loadMoreBtn:
-      "//div[contains(@id,'scroll-certificat')]//button[text()='Load More']",
-    certificateCheckboxCount:
-      "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')]",
-    certificateCheckbox: (index: string) =>
-      `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')])[${index}]`,
+    loadMoreBtn: "//div[contains(@id,'scroll-certificat')]//button[text()='Load More']",
+    certificateCheckboxCount: "//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')]",
+    certificateCheckbox: (index: string) => `(//div[contains(@id,'scroll-certificat')]//i[contains(@class,'fa-duotone fa-circle icon')])[${index}]`,
     addBtn: "//button[text()='Add']",
-    certificationVerifyMessage:
-      "//span[text()='Completion Certificate has been created successfully.']",
-    accessBtn: "//span[text()='Access']//parent::button", //span[text()='Access'] -->lot of text has been created(12/8/2024)
-    accessCloseIcon:
-      "//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i",
-    accessCloseIconAdmin:
-      "//label[text()='Admin Group']/parent::div//following-sibling::div[2]//div//i",
-    MultiaccessCloseIcon:
-      "(//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i)[2]",
-    MultiaccessCloseIconAdmin: (groupName: string, i: number) => `(//label[text()='Admin Group']/following::label[text()='${groupName}']/following::i)[${i}]`,
-    accessUserInput:
-      "//label[text()='User']/parent::div/following-sibling::div//input",
+    certificationVerifyMessage: "//span[text()='Completion Certificate has been created successfully.']",
+    accessBtn: "//span[text()='Access']//parent::button",//span[text()='Access'] -->lot of text has been created(12/8/2024)
+    accessCloseIcon: "//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i",
+    MultiaccessCloseIcon: "(//label[text()='Learner Group']/parent::div//following-sibling::div[2]//div//i)[2]",
+    accessUserInput: "//label[text()='User']/parent::div/following-sibling::div//input",
     saveAccessBtn: "//button[text()='Save Access']",
-    enforceSequencingCheckbox:
-      "//span[text()='Enforce Sequencing']/preceding-sibling::i[@class='fa-duotone fa-square']",
+    enforceSequencingCheckbox: "//span[text()='Enforce Sequencing']/preceding-sibling::i[@class='fa-duotone fa-square']",
     // category:(categoryOption:string)=>`//div[@id='new-course-categorys']//following::select[@name='course-categorys-exp-select']/option[text()='${categoryOption}']`,
     assessmentLabel: "//div[text()='Assessment']",
     enforceSequence: `//span[text()='enforce launch sequence']/preceding-sibling::i[contains(@class,'fad fa-square ')]`,
-    learnerGroup:
-      "div[id$='learner-group-list'] button div[class='filter-option-inner-inner']",
-    adminGroup: "div[id$='admin-group-list'] button div[class='filter-option-inner-inner']",
+    learnerGroup: "div[id$='learner-group-list'] button div[class='filter-option-inner-inner']",
     ceuLink: "//button[text()='CEU']",
-    ceuProviderName:
-      "(//label[text()='CEU Provider Name']/following-sibling::div//button)[1]",
-    ceuProviderInnerValue:
-      "div[id$='ceu-providers'] button div[class='filter-option-inner-inner']",
+    ceuLinkInRecertfication: "(//button[text()='CEU'])[2]",
+    ceuProviderName: "(//label[text()='CEU Provider Name']/following-sibling::div//button)[1]",
+    ceuProviderInnerValue: "div[id$='ceu-providers'] button div[class='filter-option-inner-inner']",
     ceuType: "(//label[text()='CEU type']/following-sibling::div//button)[1]",
-    ceuTypeOption: (data: string) =>
-      `//div[@id='wrapper-course-ceu-type']//span[text()='${data}']`,
-    ceuProviderOption: (data: string) =>
-      `//div[@id='wrapper-course-ceu-providers']//span[text()='${data}']`,
-    ceuTypeInnerValue:
-      "div[id$='ceu-type'] button div[class='filter-option-inner-inner']",
+    ceuTypeOption: (data: string) => `//div[@id='wrapper-course-ceu-type']//span[text()='${data}']`,
+    ceuProviderOption: (data: string) => `//div[@id='wrapper-course-ceu-providers']//span[text()='${data}']`,
+    ceuTypeInnerValue: "div[id$='ceu-type'] button div[class='filter-option-inner-inner']",
     unitInput: "//label[text()='Unit']/following-sibling::input",
     addCEUBtn: "//button[text()='Add CEU']",
     addedCEUData: "div[class='lms-ceu-wrapper'] div[class$='lms-scroll-pre']",
 
-    vcSessionTypeDropDown:
-      "//label[text()='Session Type']/following-sibling::div",
+    vcSessionTypeDropDown: "//label[text()='Session Type']/following-sibling::div",
     vcMeetingType: (meetType: string) => `(//span[text()='${meetType}'])`,
     vcselectTimezone: "//label[text()='Time Zone']/following-sibling::div",
     vcSelectTimezoneClickSearch: "//input[@id='timezone_0']",
     vcSelectTimeZone: "//li[contains(@class,'dropdown-item text-wrap')]",
-
 
     //Course/TP Search:-
     crs_TPCode: "//label[@for='code']/following::input[@id='code']",
@@ -297,18 +217,18 @@ export class CoursePage extends AdminHomePage {
     //Assessment Attach:-
     searchAssessmentField: "[id$='search-assessment-field']",
     surveySearchField: `[id$='ass-exp-search-field']`,
-
-    //LearnerGroup Access modify
+      //LearnerGroup Access modify
     learnerGroupbtn: `(//label[text()='Learner Group']//following::button)[1]`,
     allLearnerGroupOptions: `//select[@id='course-group-access-learner-group-list' or @id='program-group-access-learner-group-list']/option`,
-
+   
     //course-currency list
     currencyListInCourse: `//select[@id='course-currency']/option`,
+    //course-currency list
+
 
     //Instance Selection:-
     selectInstanceDropdown: `//button[@data-id='course-instances']`,
-    instanceSelection: (instanceType: string) =>
-      `//span[text()='${instanceType}']`,
+    instanceSelection: (instanceType: string) => `//span[text()='${instanceType}']`,
     //  Course Access Setting learner group:-
 
     crsAccessSettingLink: `//span[text()='Access Setting']`,
@@ -329,15 +249,13 @@ export class CoursePage extends AdminHomePage {
     preSearchField: `(//input[@id='exp-search-field'])[1]`,
 
     //Equivalence course
-    selectEquivalenceCourse: (course: string) =>
-      `(//div[text()='${course}']//following::i[contains(@class,'fa-duotone fa-circle')])[1]`,
+    selectEquivalenceCourse: (course: string) => `(//div[text()='${course}']//following::i[contains(@class,'fa-duotone fa-circle')])[1]`,
     addEquivalenceButton: `//button[text()='ADD AS Equivalence']`,
     saveEquivalenceButton: `(//button[text()='Save'])[1]`,
     equivalenceSuccessMessage: `//span[@class='rawtxt']//span[2]`,
 
     //To add a particular completion training to the Course/TP.
-    clickCreatedCertificateCheckbox: (data: string) =>
-      `(//div[text()='${data}']//following::i[contains(@class,'fa-duotone fa-circle icon')])[1]`,
+    clickCreatedCertificateCheckbox: (data: string) => `(//div[text()='${data}']//following::i[contains(@class,'fa-duotone fa-circle icon')])[1]`,
 
     //Course list page Filter
     filterInCourseList: `//h1[text()='Course']/following::div[text()='Filters']`,
@@ -369,17 +287,10 @@ export class CoursePage extends AdminHomePage {
     noButton: `//button[text()='NO']`,
     instanceClass: `//div[text()='Instance  / Class']`,
 
-    //edit instance
-    editInstance: `((//span[@title='Edit Instance/Class']) | (//i[contains(@class,'fa-pen')]))[1]`,
+    //edit instance 
+    editInstance: `//span[@title='Edit Instance/Class']`,
     //class cancel radio button
     classCancel: `//span[contains(text(),'Cancel')]`,
-    
-    //Course Cancellation
-    cancelCourseButton: `//span[text()='Cancel']`,
-    updateCancelButton: `//button[text()='Update']`,
-    cancellationReasonTextarea: `//textarea[@id='check_box_msgs']`,
-    confirmCancelButton: `//button[text()='Confirm']`,
-    cancelSuccessMessage: `//h3[contains(text(),'Canceled successfully.')]`,
 
     //Class enrollment ILT/VC
     classEnrollBtn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::i[@class='fa-duotone fa-money-check-pen icon_14_1']`,
@@ -441,33 +352,24 @@ export class CoursePage extends AdminHomePage {
     enrollElearn: `//a[@href="/admin/learning/enrollments/viewstatus"]//following::span[text()='Enrollments']`,
     //bulk class creation - manual
     NoOfClass: `//label[text()="Delivery Type"]/following::input[@type="text"]`,
-    sessionNameInput_bulk: (i) =>
-      `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${i + 1
-      }]`,
-    instructorDropdown_bulk: (i) =>
-      `//input[@id="instructors_intance_${i}-filter-field"]`,
-    instructorOption_bulk: (instructorName: string, i) =>
-      `//input[@id="instructors_intance_${i}"]/following::li[contains(text(),'${instructorName}')]`,
-    locationSelection_bulk: (i) =>
-      `//input[@id="location_instance_${i}-filter-field"]`,
+    sessionNameInput_bulk: (i) => `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[${i + 1}]`,
+    instructorDropdown_bulk: (i) => `//input[@id="instructors_intance_${i}-filter-field"]`,
+    instructorOption_bulk: (instructorName: string, i) => `//input[@id="instructors_intance_${i}"]/following::li[contains(text(),'${instructorName}')]`,
+    locationSelection_bulk: (i) => `//input[@id="location_instance_${i}-filter-field"]`,
     locationDropdown_bulk: (i) => `//input[@id="location_instance_${i}"]`,
-    locationOption_bulk: (locationName: string, i) =>
-      `//input[@id="location_instance_${i}"]/following::li[text()='${locationName}']`,
+    locationOption_bulk: (locationName: string, i) => `//input[@id="location_instance_${i}"]/following::li[text()='${locationName}']`,
     seatMaxInput_bulk: (i: any) => `//input[@id='instanceMaxSeats_${i}']`,
-    timeInput_bulk: (i: any) =>
-      `//input[@id="starttime_sesstime_instance_${i}"]`,
+    timeInput_bulk: (i: any) => `//input[@id="starttime_sesstime_instance_${i}"]`,
     instructorInput_bulk: (i: any) => `//input[@id="instructors_intance_${i}"]`,
     waitlistInput_bulk: (i: any) => `//input[@id='instanceWailtList_${i}']`,
     Date_bulk: (i) => `//input[@name="startdate_instance_${i}"]`,
     //bulk class creation - copy/paste
     sessionNameInput_Copy: `(//label[text()="Session Name"]/following::input[contains(@id,'instanceClassCode')])[1]`,
     instructorDropdown_Copy: `//input[@id="instructors_intance_0-filter-field"]`,
-    instructorOption_Copy: (instructorName: string) =>
-      `//input[@id="instructors_intance_0"]/following::li[contains(text(),'${instructorName}')]`,
+    instructorOption_Copy: (instructorName: string) => `//input[@id="instructors_intance_0"]/following::li[contains(text(),'${instructorName}')]`,
     locationSelection_Copy: `//input[@id="location_instance_0-filter-field"]`,
     locationDropdown_Copy: `//input[@id="location_instance_0"]`,
-    locationOption_Copy: (locationName: string) =>
-      `//input[@id='location_instance_0']/following::li[text()='${locationName}']`,
+    locationOption_Copy: (locationName: string) => `//input[@id='location_instance_0']/following::li[text()='${locationName}']`,
     seatMaxInput_Copy: `//input[@id='instanceMaxSeats_0']`,
     timeInput_Copy: `//input[@id="starttime_sesstime_instance_0"]`,
     instructorInput_Copy: `//input[@id="instructors_intance_0"]`,
@@ -494,8 +396,7 @@ export class CoursePage extends AdminHomePage {
     selectSessionType: `(//label[contains(@for,'is_recurring_multiple')]//i)[1]`,
     clickDaysDropdown: `//button[contains(@data-id,'days')]`,
     daysCount: `//select[contains(@name,'days')]//option`,
-    selectDays: (index: string) =>
-      `(//select[contains(@name,'days')]//option)[${index}]`,
+    selectDays: (index: string) => `(//select[contains(@name,'days')]//option)[${index}]`,
     daysOption: (days: string) => `//span[text()='${days}']`,
     endDate: `(//label[contains(text(),'End Date')]/following-sibling::div/input)[1]`,
     openCourseLink:".router-link-active",
@@ -515,11 +416,7 @@ export class CoursePage extends AdminHomePage {
     userAccessDropdown: `//button[contains(@data-id,'admin_user_head')]//div[text()='Set As']`,
     accessOption: (accessType: string) => `//div[@class='dropdown-menu show']//span[text()='${accessType}']`,
 
-
-    //edit instance from course listing page
-    instanceIcon: `//i[@aria-label='Instances']`,
-    editInstanceFromCrsList: `//i[@aria-label='Instances']//following::i[@aria-label='Edit Course']`,
-
+    
     //edit ILT/VC session
     editSession: `//span[@title='Edit']/child::i`,
     updateSession: `//span[@title='Update']`,
@@ -558,6 +455,8 @@ export class CoursePage extends AdminHomePage {
     visibleToDropdown: `//button[@data-id='visible_to']`,
     instructorEvaluatorOption: `//span[text()='Instructor/Evaluator']`,
     addFileButton: `//button[text()='Add']`,
+
+    createCourseButton:`//a[text()='Create Course']`
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -869,14 +768,17 @@ export class CoursePage extends AdminHomePage {
           fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
           for (const sessionName of allSessionNames) {
             console.log('Stored session name:', sessionName);
+            console.log('Stored session name:', sessionName);
           }
         }
         const filePath = path.join(__dirname, '../data/instanceNames.json');
+        fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
         fs.writeFileSync(filePath, JSON.stringify(allSessionNames, null, 2), 'utf-8');
 
         await this.checkConflict();
         //console.log("next");
         break;
+      case "copy/paste":
       case "copy/paste":
         await this.enterSessionName_copy(FakerData.getSession());
         await this.selectInstructor_Copy(credentials.INSTRUCTORNAME.username);
@@ -1875,6 +1777,7 @@ export class CoursePage extends AdminHomePage {
     await this.type(this.selectors.courseDescriptionInput, "Description", data);
   }
 
+
   async uploadvideo() {
     let videoContent = `testVideo1`;
     const path = `../data/${videoContent}.mp4`;
@@ -2076,6 +1979,21 @@ export class CoursePage extends AdminHomePage {
     await this.validateElementVisibility(this.selectors.ceuLink, "CEU");
     await this.wait("minWait");
     await this.click(this.selectors.ceuLink, "CEU", "Link");
+  }
+  async clickCEULinkInRecertification() {
+    // Wait for recertification section to be fully loaded after save
+    await this.page.waitForTimeout(2000);
+
+    // Explicitly wait for the CEU link in recertification to be available
+    await this.page.waitForSelector(this.selectors.ceuLinkInRecertfication, {
+      state: 'visible',
+      timeout: 10000
+    });
+
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.ceuLinkInRecertfication, "CEU");
+    await this.wait("minWait");
+    await this.click(this.selectors.ceuLinkInRecertfication, "CEU", "Link");
   }
 
   async fillCEUProviderType() {
@@ -2826,136 +2744,126 @@ export class CoursePage extends AdminHomePage {
     );
   }
 
-  public async startandEndTime() {
-    // Try multiple possible time input selectors
-    const timeInputSelectors = [
-      this.selectors.timeInput, // Generic selector
-      "//input[contains(@id,'starttime_sesstime_instance')]", // ID-based selector
-      "//input[contains(@placeholder,'Start Time')]", // Placeholder-based
-      "//label[text()='Start Time']//following::input[1]" // Alternative path
-    ];
+  // public async startandEndTime() {
+  //   // Try multiple possible time input selectors
+  //   const timeInputSelectors = [
+  //     this.selectors.timeInput, // Generic selector
+  //     "//input[contains(@id,'starttime_sesstime_instance')]", // ID-based selector
+  //     "//input[contains(@placeholder,'Start Time')]", // Placeholder-based
+  //     "//label[text()='Start Time']//following::input[1]" // Alternative path
+  //   ];
     
-    let timeInputFound = false;
-    let timeInputSelector = "";
+  //   let timeInputFound = false;
+  //   let timeInputSelector = "";
     
-    // Find the first working time input selector
-    for (const selector of timeInputSelectors) {
-      try {
-        const element = this.page.locator(selector);
-        const isVisible = await element.isVisible();
-        if (isVisible) {
-          timeInputSelector = selector;
-          timeInputFound = true;
-          console.log(`Time input found with selector: ${selector}`);
-          break;
-        }
-      } catch (error) {
-        console.log(`Selector ${selector} not found, trying next...`);
-      }
-    }
+  //   // Find the first working time input selector
+  //   for (const selector of timeInputSelectors) {
+  //     try {
+  //       const element = this.page.locator(selector);
+  //       const isVisible = await element.isVisible();
+  //       if (isVisible) {
+  //         timeInputSelector = selector;
+  //         timeInputFound = true;
+  //         console.log(`Time input found with selector: ${selector}`);
+  //         break;
+  //       }
+  //     } catch (error) {
+  //       console.log(`Selector ${selector} not found, trying next...`);
+  //     }
+  //   }
     
-    if (!timeInputFound) {
-      console.error("No time input field found!");
-      return;
-    }
+  //   if (!timeInputFound) {
+  //     console.error("No time input field found!");
+  //     return;
+  //   }
     
-    // Click on the time input field
-    await this.click(timeInputSelector, "Start Time Input", "Input");
-    await this.wait("mediumWait");
+  //   // Click on the time input field
+  //   await this.click(timeInputSelector, "Start Time Input", "Input");
+  //   await this.wait("mediumWait");
     
-    function getCurrentTimePlusTwoHours() {
-      const now = new Date();
-      now.setHours(now.getHours() + 2); // Add 2 hours
-      let hours = now.getHours();
-      const minutes = now.getMinutes();
-      const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12 || 12; // Convert to 12-hour format
-      const roundedMinutes = Math.ceil(minutes / 15) * 15;
-      const formattedMinutes =
-        roundedMinutes === 60
-          ? "00"
-          : roundedMinutes.toString().padStart(2, "0");
-      if (roundedMinutes === 60) {
-        hours = (hours % 12) + 1;
-      }
-      return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    }
-    async function selectNextAvailableTime() {
-      // Target only the visible time picker using :visible or style check
-      const list = await this.page
-        .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
-        .allTextContents();
-      console.log(list);
-      const timeToSelect = getCurrentTimePlusTwoHours();
-      console.log("Current Time + 2 hours:", timeToSelect);
+  //   function getCurrentTimePlusTwoHours() {
+  //     const now = new Date();
+  //     now.setHours(now.getHours() + 2); // Add 2 hours
+  //     let hours = now.getHours();
+  //     const minutes = now.getMinutes();
+  //     const ampm = hours >= 12 ? "PM" : "AM";
+  //     hours = hours % 12 || 12; // Convert to 12-hour format
+  //     const roundedMinutes = Math.ceil(minutes / 15) * 15;
+  //     const formattedMinutes =
+  //       roundedMinutes === 60
+  //         ? "00"
+  //         : roundedMinutes.toString().padStart(2, "0");
+  //     if (roundedMinutes === 60) {
+  //       hours = (hours % 12) + 1;
+  //     }
+  //     return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
+  //   }
+  //   async function selectNextAvailableTime() {
+  //     // Target only the visible time picker using :visible or style check
+  //     const list = await this.page
+  //       .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
+  //       .allTextContents();
+  //     console.log(list);
+  //     const timeToSelect = getCurrentTimePlusTwoHours();
+  //     console.log("Current Time + 2 hours:", timeToSelect);
 
-      // Use first() to avoid strict mode violation when multiple elements match
-      const timeLocator = this.page.locator(
-        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
-      );
+  //     // Use first() to avoid strict mode violation when multiple elements match
+  //     const timeLocator = this.page.locator(
+  //       `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
+  //     );
 
-      // Check if multiple elements exist and use first() to select the first match
-      const count = await timeLocator.count();
-      if (count > 1) {
-        console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
-        await timeLocator.first().click();
-      } else if (count === 1) {
-        await timeLocator.click();
-      } else {
-        console.log(`Time ${timeToSelect} not found, trying fallback approach`);
-        // Fallback: find the closest available time
-        for (const time of list) {
-          if (time >= timeToSelect) {
-            console.log('Selecting closest available time:', time);
-            await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
-            break;
-          }
-        }
-      }
-      /* for (const time of list) {
-                if (time >= timeToSelect) {
-                    console.log('Selecting time:', time);
-                    await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
-                    break;
-                }
-            } */
-    }
-    await selectNextAvailableTime.call(this);
+  //     // Check if multiple elements exist and use first() to select the first match
+  //     const count = await timeLocator.count();
+  //     if (count > 1) {
+  //       console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
+  //       await timeLocator.first().click();
+  //     } else if (count === 1) {
+  //       await timeLocator.click();
+  //     } else {
+  //       console.log(`Time ${timeToSelect} not found, trying fallback approach`);
+  //       // Fallback: find the closest available time
+  //       for (const time of list) {
+  //         if (time >= timeToSelect) {
+  //           console.log('Selecting closest available time:', time);
+  //           await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
+  //           break;
+  //         }
+  //       }
+  //     }
+  //     /* for (const time of list) {
+  //               if (time >= timeToSelect) {
+  //                   console.log('Selecting time:', time);
+  //                   await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
+  //                   break;
+  //               }
+  //           } */
+  //   }
+  //   await selectNextAvailableTime.call(this);
     
-    const timeToSet = getCurrentTimePlusTwoHours();
-    console.log("Setting time to:", timeToSet);
+  //   const timeToSet = getCurrentTimePlusTwoHours();
+  //   console.log("Setting time to:", timeToSet);
     
   
       
-      // Fallback: try to use timepicker if it exists
-      try {
-        await this.page.waitForSelector("//div[contains(@class,'timepicker')]//li", { timeout: 5000 });
-        const timeOptions = await this.page.locator("//div[contains(@class,'timepicker')]//li").all();
+  //     // Fallback: try to use timepicker if it exists
+  //     try {
+  //       await this.page.waitForSelector("//div[contains(@class,'timepicker')]//li", { timeout: 5000 });
+  //       const timeOptions = await this.page.locator("//div[contains(@class,'timepicker')]//li").all();
         
-        if (timeOptions.length > 0) {
-          // Select a time that's likely to be in the future (avoid first few options which might be past times)
-          const safeIndex = Math.max(5, Math.floor(timeOptions.length / 3));
-          await this.wait("minWait");
-          await timeOptions[safeIndex].click();
-          console.log("Selected time from timepicker at index:", safeIndex);
-        }
-      } catch (timepickerError) {
-        console.error("Timepicker fallback also failed:", timepickerError);
-        console.log("Continuing with default time value");
-      }
-    
+  //       if (timeOptions.length > 0) {
+  //         // Select a time that's likely to be in the future (avoid first few options which might be past times)
+  //         const safeIndex = Math.max(5, Math.floor(timeOptions.length / 3));
+  //         await this.wait("minWait");
+  //         await timeOptions[safeIndex].click();
+  //         console.log("Selected time from timepicker at index:", safeIndex);
+  //       }
+  //     } catch (timepickerError) {
+  //       console.error("Timepicker fallback also failed:", timepickerError);
+  //       console.log("Continuing with default time value");
+  //     }
+  //   }
+  
 
-    /* const pickRandomTime = async () => {
-            const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
-            console.log(timeElements);
-            const randomIndex = Math.floor(Math.random() * timeElements) + 1;
-            return randomIndex;
-        };
-        const randomIndex = await pickRandomTime();
-        console.log("Random Index:", randomIndex);
-        await this.click(this.selectors.timeInput, "Start Time", "Button");
-        await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
-  }
   async waitList() {
     await this.type(this.selectors.waitlistInput, "WaitList", "4");
   }
@@ -3536,119 +3444,59 @@ export class CoursePage extends AdminHomePage {
     await this.validateElementVisibility(this.selectors.image, "Loading");
     await this.click(this.selectors.image, "Gallery", "image");
   }
-
-  async selectMeetingType(
-    instructorName: string,
-    sessionName: string,
-    index: number
-  ) {
-    //  const sessiontype = this.page.locator(this.selectors.selectType);
-    // function getCurrentTimePlusTwoHours() {
-    //   const now = new Date();
-    //   now.setHours(now.getHours() + 2); // Add 2 hours
-    //   let hours = now.getHours();
-    //   const minutes = now.getMinutes();
-    //   const ampm = hours >= 12 ? "PM" : "AM";
-    //   hours = hours % 12 || 12; // Convert to 12-hour format
-    //   const roundedMinutes = Math.ceil(minutes / 15) * 15;
-    //   const formattedMinutes =
-    //     roundedMinutes === 60
-    //       ? "00"
-    //       : roundedMinutes.toString().padStart(2, "0");
-    //   if (roundedMinutes === 60) {
-    //     hours = (hours % 12) + 1;
-    //   }
-    //   return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    // }
-
-    // const targetTime = getCurrentTimePlusTwoHours();
-    // console.log("Current Time + 2 hours:", targetTime);
-
+async selectMeetingType(instructorName: string, sessionName: string, index: number) {
     const country = "kolkata";
     const meetingUrl = FakerData.getMeetingUrl();
-    await this.click(
-      this.selectors.sessionTypeIndex(index),
-      "Session Type",
-      "dropdown"
-    );
-    await this.click(
-      this.selectors.otherMeetingIndex(index),
-      "other Meeting",
-      "Option"
-    );
-    await this.validateElementVisibility(
-      this.selectors.sessionNameIndex(index),
-      "Session Name"
-    );
-    await this.mouseHover(
-      this.selectors.sessionNameIndex(index),
-      "Session Name"
-    );
-    await this.type(
-      this.selectors.sessionNameIndex(index),
-      "Session Name",
-      sessionName
-    );
-    await this.click(
-      this.selectors.timeZoneIndex(index),
-      "TimeZone",
-      "Text Field"
-    );
+    
+    // Select session type as "Other Meeting"
+    await this.click(this.selectors.sessionTypeIndex(index), "Session Type", "dropdown");
+    await this.click(this.selectors.otherMeetingIndex(index), "other Meeting", "Option");
+    
+    // Enter session name
+    await this.validateElementVisibility(this.selectors.sessionNameIndex(index), "Session Name");
+    await this.mouseHover(this.selectors.sessionNameIndex(index), "Session Name");
+    await this.type(this.selectors.sessionNameIndex(index), "Session Name", sessionName);
+    
+    // Select timezone
+    await this.click(this.selectors.timeZoneIndex(index), "TimeZone", "Text Field");
     await this.type(this.selectors.timeZoneOption, "Time Zone", country);
     await this.mouseHover(this.selectors.indianTimezone, "Indian Time zone");
-    await this.click(
-      this.selectors.indianTimezone,
-      "Indian Timezone",
-      "Selected"
-    );
-    await this.typeAndEnter(
-      this.selectors.startDateInstanceIndex(index),
-      "Start Date",
-      gettomorrowDateFormatted()
-    );
-    // await this.click(
-    //   this.selectors.timeInputIndex(index),
-    //   "Start Time",
-    //   "Selected"
-    // );
-    //  await this.startandEndTime();
-
+    await this.click(this.selectors.indianTimezone, "Indian Timezone", "Selected");
+    
+    // Set start date
+    await this.typeAndEnter(this.selectors.startDateInstanceIndex(index), "Start Date", gettomorrowDateFormatted());
+    
+    // Set start time - Primary time selection
     await this.click(this.selectors.timeInput, "Start Time Input", "Input");
     await this.wait("minWait");
-    /* const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
-        console.log(list); */
-    function getCurrentTimePlusTwoHours() {
+    
+    const getCurrentTimePlusTwoHours = () => {
       const now = new Date();
-      now.setHours(now.getHours() + 1); // Add 2 hours
+      now.setHours(now.getHours() + 1);
       let hours = now.getHours();
       const minutes = now.getMinutes();
       const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12 || 12; // Convert to 12-hour format
+      hours = hours % 12 || 12;
       const roundedMinutes = Math.ceil(minutes / 15) * 15;
-      const formattedMinutes =
-        roundedMinutes === 60
-          ? "00"
-          : roundedMinutes.toString().padStart(2, "0");
+      const formattedMinutes = roundedMinutes === 60 ? "00" : roundedMinutes.toString().padStart(2, "0");
+      
       if (roundedMinutes === 60) {
         hours = (hours % 12) + 1;
       }
+      
       return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    }
-    async function selectNextAvailableTime() {
-      const list = await this.page
-        .locator("(//div[contains(@class,'timepicker')]//li)")
-        .allTextContents();
+    };
+    
+    const selectNextAvailableTime = async () => {
+      const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
       console.log(list);
+      
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
-
-      // Use first() to avoid strict mode violation when multiple elements match
-      const timeLocator = this.page.locator(
-        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
-      );
-
-      // Check if multiple elements exist and use first() to select the first match
+      
+      const timeLocator = this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`);
       const count = await timeLocator.count();
+      
       if (count > 1) {
         console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
         await timeLocator.first().click();
@@ -3656,7 +3504,7 @@ export class CoursePage extends AdminHomePage {
         await timeLocator.click();
       } else {
         console.log(`Time ${timeToSelect} not found, trying fallback approach`);
-        // Fallback: find the closest available time
+        
         for (const time of list) {
           if (time >= timeToSelect) {
             console.log('Selecting closest available time:', time);
@@ -3665,66 +3513,37 @@ export class CoursePage extends AdminHomePage {
           }
         }
       }
-      /* for (const time of list) {
-                if (time >= timeToSelect) {
-                    console.log('Selecting time:', time);
-                    await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).click();
-                    break;
-                }
-            } */
-    }
-    await selectNextAvailableTime.call(this);
-
-    /* const pickRandomTime = async () => {
-            const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
-            console.log(timeElements);
-            const randomIndex = Math.floor(Math.random() * timeElements) + 1;
-            return randomIndex;
-        };
-        const randomIndex = await pickRandomTime();
-        console.log("Random Index:", randomIndex);
-        await this.click(this.selectors.timeInput, "Start Time", "Button");
-        await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
-
-
-    await this.click(
-      this.selectors.timeInputIndex(index),
-      "Start Time",
-      "Selected"
-    );
+    };
     
-    // FIXED: Use static index 2 time selection as specified
+    await selectNextAvailableTime();
+    
+    // Set end time - Secondary time selection (static index 2)
+    await this.click(this.selectors.timeInputIndex(index), "Start Time", "Selected");
+    
     try {
       console.log("Setting time using static index 2 approach...");
       
-      // Click on start time field to open dropdown
       const startTimeField = this.page.locator("//input[contains(@id,'starttime_pair_time')]");
       
       if (await startTimeField.isVisible()) {
         console.log("Clicking start time field to open dropdown...");
         await startTimeField.click();
-        await this.wait("mediumWait"); // Wait for dropdown to appear
+        await this.wait("mediumWait");
         
-        // Wait for time options to appear
         await this.page.waitForSelector("//ul/li[contains(text(), 'AM') or contains(text(), 'PM')]", { timeout: 5000 });
         const timeOptions = await this.page.locator("//ul/li[contains(text(), 'AM') or contains(text(), 'PM')]").all();
         
         if (timeOptions.length > 2) {
-          // Use STATIC index 2 as specified
           const selectedOption = timeOptions[2];
           const selectedTime = await selectedOption.textContent();
           
           console.log(`Selecting START time at index 2: ${selectedTime}`);
-          
-          // Click on the option at index 2
           await selectedOption.click();
           await this.wait("mediumWait");
-          
           console.log(`✅ START time selected in selectMeetingType: ${selectedTime} (index: 2)`);
         } else {
           console.log("Not enough time options available (need at least 3 for index 2)");
           
-          // Fallback to original logic if not enough options
           if (timeOptions.length > 0) {
             const fallbackOption = timeOptions[0];
             const fallbackTime = await fallbackOption.textContent();
@@ -3735,13 +3554,11 @@ export class CoursePage extends AdminHomePage {
       } else {
         console.log("Start time field not visible, trying alternative selectors...");
         
-        // Fallback to timeInputIndex selector
         const timeInput = this.page.locator(this.selectors.timeInputIndex(index));
         if (await timeInput.isVisible()) {
           await timeInput.click();
           await this.wait("mediumWait");
           
-          // Try to find timepicker options with alternative selector
           const altTimeOptions = await this.page.locator("//ul[@class='ui-timepicker-list']//li").all();
           if (altTimeOptions.length > 2) {
             const selectedOption = altTimeOptions[2];
@@ -3751,41 +3568,20 @@ export class CoursePage extends AdminHomePage {
           }
         }
       }
-      
     } catch (error) {
       console.error("Fixed time setting failed:", error.message);
       console.log("Continuing with default behavior...");
     }
     
-    await this.type(
-      this.selectors.attendeeUrlIndex(index),
-      "Attendee url",
-      meetingUrl
-    );
-    await this.type(
-      this.selectors.presenterUrlIndex(index),
-      "Presenter url",
-      meetingUrl
-    );
-    await this.click(
-      this.selectors.instructorDropdownIndex(index),
-      "Select Instructor",
-      "DropDown"
-    );
-    await this.type(
-      this.selectors.instructorInput,
-      "Instructor Name",
-      instructorName
-    );
-    await this.mouseHover(
-      this.selectors.instructorOption(instructorName),
-      "Instructor Name"
-    );
-    await this.click(
-      this.selectors.instructorOption(instructorName),
-      "Instructor Name",
-      "Button"
-    );
+    // Set attendee and presenter URLs
+    await this.type(this.selectors.attendeeUrlIndex(index), "Attendee url", meetingUrl);
+    await this.type(this.selectors.presenterUrlIndex(index), "Presenter url", meetingUrl);
+    
+    // Select instructor
+    await this.click(this.selectors.instructorDropdownIndex(index), "Select Instructor", "DropDown");
+    await this.type(this.selectors.instructorInput, "Instructor Name", instructorName);
+    await this.mouseHover(this.selectors.instructorOption(instructorName), "Instructor Name");
+    await this.click(this.selectors.instructorOption(instructorName), "Instructor Name", "Button");
   }
 
   /**
@@ -4254,6 +4050,39 @@ export class CoursePage extends AdminHomePage {
     await this.waitForElementHidden("div[class='text-center p-5']", "Spiner");
   }
 
+  async addSpecificSurveyCourseToRecertification(data: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.surveyAndAssessmentLinkInRecertification,
+      "Survey/Assessment"
+    );
+    await this.click(
+      this.selectors.surveyAndAssessmentLinkInRecertification,
+      "Survey/Assessment",
+      "Link"
+    );
+    await this.wait("mediumWait");
+    const popup = this.page.locator(
+      "(//span[text()='You have unsaved changes that will be lost if you wish to continue. Are you sure you want to continue?'])[1]"
+    );
+    if (await popup.isVisible({ timeout: 5000 })) {
+      await this.click("//button[text()='YES']", "yes", "button");
+    }
+    await this.typeAndEnter(
+      this.selectors.surveySearchField,
+      "Survey Search Field",
+      data
+    );
+    await this.spinnerDisappear();
+    await this.click(this.selectors.surveyCheckBox, "Survey", "Checkbox");
+    await (
+      await this.page.waitForSelector(this.selectors.addSurveyBtn)
+    ).isEnabled();
+    await this.click(this.selectors.addSurveyBtn, "Addsurvey", "button");
+    await this.waitForElementHidden("div[class='text-center p-5']", "Spiner");
+
+  }
+
   async enableConsiderForCompletion() {
     
     await this.wait("minWait");
@@ -4586,7 +4415,11 @@ export class CoursePage extends AdminHomePage {
                 return el.classList.contains('selected') ||
                   checkbox?.checked ||
                   el.getAttribute('aria-selected') === 'true';
+                return el.classList.contains('selected') ||
+                  checkbox?.checked ||
+                  el.getAttribute('aria-selected') === 'true';
               });
+
 
               if (isSelected) {
                 console.log(`${value} is already selected - skipping`);
@@ -4610,6 +4443,7 @@ export class CoursePage extends AdminHomePage {
             `//div[@class='dropdown-menu show']//span[@class='text' and text()='${value}']`
           ).first();
 
+
           if (await groupOptionLocator.isVisible({ timeout: 2000 })) {
             // Check if the option is currently selected by looking for selected class or checked state
             const parentElement = groupOptionLocator.locator('..');
@@ -4618,7 +4452,11 @@ export class CoursePage extends AdminHomePage {
               return el.classList.contains('selected') ||
                 checkbox?.checked ||
                 el.getAttribute('aria-selected') === 'true';
+              return el.classList.contains('selected') ||
+                checkbox?.checked ||
+                el.getAttribute('aria-selected') === 'true';
             });
+
 
             if (isSelected) {
               console.log(`Unselecting ${value}`);
@@ -4645,9 +4483,11 @@ export class CoursePage extends AdminHomePage {
         console.log(`Successfully selected learner groups: ${targetGroupsSelected.join(', ')}`);
       }
 
+
     } catch (error) {
       console.log(`Error in multiple learner group selection: ${error.message}`);
     }
+
 
     // Close the dropdown
     await this.click(this.selectors.learnerGroupbtn, "Learner Group", "dropdown");
@@ -5155,6 +4995,28 @@ export class CoursePage extends AdminHomePage {
       "button"
     );
   }
+
+  async checkReview(assessment: string) {
+    await this.validateElementVisibility(this.selectors.checkReview(assessment), "Review");
+    await this.click(this.selectors.checkReview(assessment), "Review", "button");
+  }
+
+  async okBtn() {
+    await this.click(this.selectors.okButton, "Ok", "Button");
+  }
+
+  async checkConsiderForCompletionCheckbox() {
+    await this.validateElementVisibility(this.selectors.considerForCompletionCheckbox, "Consider for completion");
+    await this.click(this.selectors.considerForCompletionCheckbox, "Consider for completion", "Checkbox");
+  }
+
+
+  async createCourseButton() {
+    await this.validateElementVisibility(this.selectors.createCourseButton, "Create Course Button");
+    await this.click(this.selectors.createCourseButton, "Create Course", "Button");
+  }
+    
+    
   async verifyPublishedContentInContentLibrary(data: string, data1: string) {
     await this.page.mouse.wheel(0, 200);
     await this.spinnerDisappear();
@@ -5940,7 +5802,7 @@ export class CoursePage extends AdminHomePage {
     console.log(`📝 Entered file name: ${fileName}`);
   }
 
-  /**
+/**
    * Upload a file (sample video or any file)
    * @param filePath - Path to the file to upload (e.g., '../data/sample_video.mp4')
    */
@@ -5949,8 +5811,19 @@ export class CoursePage extends AdminHomePage {
     const fileInput = this.page.locator(this.selectors.fileUploadInput);
     await fileInput.setInputFiles(filePath);
     await this.wait("minWait");
-    console.log(`📤 Uploaded file from: ${filePath}`);
+    console.log(`:outbox_tray: Uploaded file from: ${filePath}`);
   }
+  //Kathir-11-26-2025
+    //  async uploadFile(locator: string, Path: string,) {
+    //     const filePath = path.resolve(__dirname, Path);
+    //     const inputElementHandle = this.page.locator(locator);
+    //     if (inputElementHandle) {
+    //         await inputElementHandle.setInputFiles(filePath);
+    //     } else {
+    //         console.error('Input element not found');
+    //     }
+    //     await this.wait('maxWait');
+    // }
 
   //Kathir-11-26-2025
      async uploadFile(locator: string, Path: string,) {
@@ -6002,12 +5875,155 @@ export class CoursePage extends AdminHomePage {
     await this.clickFilesTab();
     await this.enterFileName(fileName);
     await this.uploadFileInstructor(filePath);
+    await this.uploadFileInstructor(filePath);
     await this.selectInstructorEvaluatorVisibility();
     await this.clickAddFileButton();
-    console.log(`✅ File uploaded successfully with Instructor/Evaluator visibility`);
-  }
+  console.log(`✅ File uploaded successfully with Instructor/Evaluator visibility`);
+}
 
+async startandEndTime() {
+    // Try multiple possible time input selectors
+    const timeInputSelectors = [
+      this.selectors.timeInput, // Generic selector
+      "//input[contains(@id,'starttime_sesstime_instance')]", // ID-based selector
+      "//input[contains(@placeholder,'Start Time')]", // Placeholder-based
+      "//label[text()='Start Time']//following::input[1]" // Alternative path
+    ];
+    
+    let timeInputFound = false;
+    let timeInputSelector = "";
+    
+    // Find the first working time input selector
+    for (const selector of timeInputSelectors) {
+      try {
+        const element = this.page.locator(selector);
+        const isVisible = await element.isVisible();
+        if (isVisible) {
+          timeInputSelector = selector;
+          timeInputFound = true;
+          console.log(`Time input found with selector: ${selector}`);
+          break;
+        }
+      } catch (error) {
+        console.log(`Selector ${selector} not found, trying next...`);
+      }
+    }
+    
+    if (!timeInputFound) {
+      console.error("No time input field found!");
+      return;
+    }
+    
+    // Click on the time input field
+    await this.click(timeInputSelector, "Start Time Input", "Input");
+    await this.wait("mediumWait");
+    
+    function getCurrentTimePlusTwoHours() {
+      const now = new Date();
+      now.setHours(now.getHours() + 2); // Add 2 hours
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12 || 12; // Convert to 12-hour format
+      const roundedMinutes = Math.ceil(minutes / 15) * 15;
+      const formattedMinutes =
+        roundedMinutes === 60
+          ? "00"
+          : roundedMinutes.toString().padStart(2, "0");
+      if (roundedMinutes === 60) {
+        hours = (hours % 12) + 1;
+      }
+      return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
+    }
+    async function selectNextAvailableTime() {
+      // Target only the visible time picker using :visible or style check
+      const list = await this.page
+        .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
+        .allTextContents();
+      console.log(list);
+      const timeToSelect = getCurrentTimePlusTwoHours();
+      console.log("Current Time + 2 hours:", timeToSelect);
 
+      // Use first() to avoid strict mode violation when multiple elements match
+      const timeLocator = this.page.locator(
+        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
+      );
+
+      // Check if multiple elements exist and use first() to select the first match
+      const count = await timeLocator.count();
+      if (count > 1) {
+        console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
+        await timeLocator.first().click();
+      } else if (count === 1) {
+        await timeLocator.click();
+      } else {
+        console.log(`Time ${timeToSelect} not found, trying fallback approach`);
+        // Fallback: find the closest available time
+        for (const time of list) {
+          if (time >= timeToSelect) {
+            console.log('Selecting closest available time:', time);
+            await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
+            break;
+          }
+        }
+      }
+      /* for (const time of list) {
+                if (time >= timeToSelect) {
+                    console.log('Selecting time:', time);
+                    await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
+                    break;
+                }
+            } */
+    }
+    await selectNextAvailableTime.call(this);
+    
+    const timeToSet = getCurrentTimePlusTwoHours();
+    console.log("Setting time to:", timeToSet);
+    
+  
+      
+      // Fallback: try to use timepicker if it exists
+      try {
+        await this.page.waitForSelector("//div[contains(@class,'timepicker')]//li", { timeout: 5000 });
+        const timeOptions = await this.page.locator("//div[contains(@class,'timepicker')]//li").all();
+        
+        if (timeOptions.length > 0) {
+          // Select a time that's likely to be in the future (avoid first few options which might be past times)
+          const safeIndex = Math.max(5, Math.floor(timeOptions.length / 3));
+          await this.wait("minWait");
+          await timeOptions[safeIndex].click();
+          console.log("Selected time from timepicker at index:", safeIndex);
+        }
+      } catch (timepickerError) {
+        console.error("Timepicker fallback also failed:", timepickerError);
+        console.log("Continuing with default time value");
+      }
+    
+
+          console.log("Continuing with default time value");
+        }
+      
+      
+  
+      /* const pickRandomTime = async () => {
+              const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
+              console.log(timeElements);
+              const randomIndex = Math.floor(Math.random() * timeElements) + 1;
+              return randomIndex;
+          };
+          const randomIndex = await pickRandomTime();
+          console.log("Random Index:", randomIndex);
+          await this.click(this.selectors.timeInput, "Start Time", "Button");
+          await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
+    
+  
+  
+//   async addSpecificSurveyCourseToRecertification(data: string, string: any) {
+//     throw new Error("Function not implemented.");
+//   }
+//     console.log(`✅ File uploaded successfully with Instructor/Evaluator visibility`);
+
+// }
     //select location by input
        async selectLocationByInput(locationName: string) {
         await this.click(this.selectors.locationSelection,"Select location","Field")
@@ -6037,5 +6053,5 @@ export class CoursePage extends AdminHomePage {
         await this.verification(this.selectors.courseTitle(title),title)
     }
     
-
 }
+

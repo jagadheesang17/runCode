@@ -1,4 +1,4 @@
-import { BrowserContext, Page } from "@playwright/test";
+import { BrowserContext, expect, Page } from "@playwright/test";
 import { AdminHomePage } from "./AdminHomePage";
 import { URLConstants } from "../constants/urlConstants";
 import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
@@ -7,6 +7,8 @@ import { th } from "@faker-js/faker";
 
 
 export class EnrollmentPage extends AdminHomePage {
+
+    private previousEntryIdentifier: string = "";
 
     public selectors = {
         ...this.selectors,
@@ -167,8 +169,50 @@ export class EnrollmentPage extends AdminHomePage {
         enrollmentMenu: `//a[contains(@href,'enrollment')] | //span[text()='Enrollment'] | //span[text()='Enrollments']`,
         bulkOperationsMenu: `//a[contains(text(),'Bulk')] | //span[contains(text(),'Bulk')]`,
 
+        clickEnrollBtnAfterEnrollment:`//a[text()='View/Modify Enrollment']/following-sibling::a[text()='Enroll']`,
+        clickCourseStatusInTpDropdown:`//input[@id='learning-path-selection-filter-field']`,
+        typeTpNameInsearchBar:`//input[@id='learning-path-selection']`,
+        selectTp:(tp:string) => `//span[text()='${tp}']`,
 
-    };
+        assessmentScorePreAndPost:(tpName:string,assessment:string)=> `(//div[text()='${tpName}']/following::div[text()='${assessment}']/following::input[@type='text'])[1]`,
+        clickMany:(tpName:string)=>`(//div[text()='${tpName}']/following::button[text()='Many'])[1]`,
+
+        // Get the row containing the second completed status (previous entry)
+        secondCompletedEntryRow: `(//span[text()='Completed'])[2]/ancestor::tr`,
+        // Get text from first column (enrollment code or identifier) of the second completed entry
+        secondCompletedEntryText: `(//span[text()='Completed'])[2]/ancestor::tr//td[1]`,
+        // Find status in a row containing specific text
+        statusInRowWithText: (text: string, status: string) => `//tr[contains(.,'${text}')]//span[text()='${status}']`,
+
+        certificationDropdown:(certificationType:string) => `//div[text()='${certificationType}']`,
+        recertificationOption:`//span[text()='Recertification']`,
+
+        revalidateSuccessMessage:(title:string) => `Re-Validate  to "${title}" has been done successfully for “1”  learner(s).`,
+
+enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
+    searchUserInput: `//input[@placeholder='Search']`,
+    searchUserCheckbox: (user:string) => `(//td[text()='${user}']/following::i)[1]`,
+    userSearchCheckbox: (username: string) => `//td[contains(text(),'${username}')]//following::td//label)[1]`,
+    selectLearnerBtn: `//button[text()='Select Learner']`,
+    tpSearchInput: `(//input[@placeholder='Search'])[2]`,
+    tpSearchResult: (tpName: string) => `//td[contains(text(),'${tpName}')]`,
+    selectTPRadio: `//input[@type='radio']`,
+    tpCourseSearchInput: `//input[@placeholder='Search Course']`,
+    tpCourseResult: (courseName: string) => `//td[contains(text(),'${courseName}')]`,
+    tpInstanceResult: (data:string) => `//li[text()='${data}']`,
+    enrollmentsTab: `//a[text()='Enrollments']`,
+
+    statusOfCourseInsideTP:(courseName:string) => `(//span[text()='${courseName}']/following::div[text()='0% [enrolled] '])[1]`,
+    
+    // TP Instance verification selectors
+    allTPInstances: `//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate']`,
+    instanceEnrollmentStatus: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::span[contains(text(),'enrolled') or contains(text(),'Not enrolled')]`,
+    instanceEnrollButton: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::button[contains(@class,'enroll') or text()='Enroll'][1]`,
+
+    recertificationCheckbox:`//span[text()='Recertification']/preceding-sibling::i[@class='fa-duotone fa-square icon_16_1 icon_16_1']`,
+
+    // 
+    }
 
 
     constructor(page: Page, context: BrowserContext) {
@@ -176,6 +220,9 @@ export class EnrollmentPage extends AdminHomePage {
     }
     async clickViewLearner() {
         await this.click(this.selectors.viewLearner, "View Learner", "Button")
+         await this.wait("maxWait");
+        
+
     }
     
      //Popup handling when an admin tries to enroll for cancelled/completed class
@@ -248,6 +295,7 @@ export class EnrollmentPage extends AdminHomePage {
     async enterReasonAndSubmit() {
         await this.type(this.selectors.reaonDesc, "Enroll Status", FakerData.getDescription())
         await this.click(this.selectors.submitReason, "Submit", "button")
+        await this.wait("minWait");
         await this.click(this.selectors.saveStatus, "Submit", "button")
     }
 
@@ -270,9 +318,12 @@ export class EnrollmentPage extends AdminHomePage {
     }
 
     async selectEnrollOrCancel(data: string) {
+        
         await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown")
         //await this.click(this.selectors.enrollORCancel(data).first(),"Enroll Status","Option")\
-        await this.wait("mediumWait");
+        await this.wait("minWait");
+       
+
         await this.page.locator(this.selectors.enrollORCancel(data)).first().click({ force: true });
         await this.wait("minWait");
     }
@@ -526,6 +577,145 @@ export class EnrollmentPage extends AdminHomePage {
         await this.click(this.selectors.saveSelectionBtn, "Search Button", "Button");
         await this.wait("minWait");
         await this.click(this.selectors.enrollBtn, "Select Course", "Button");
+    }
+
+
+    async clickEnrollButtonAfterEnrollment(){
+        await this.validateElementVisibility(this.selectors.clickEnrollBtnAfterEnrollment, "Enroll Button After Enrollment");
+        await this.click(this.selectors.clickEnrollBtnAfterEnrollment, "Enroll Button After Enrollment", "Button")
+    }
+
+
+    async verifyTpCompletionStatus(status:string){
+        await this.verification(this.selectors.enrollORCancel(status), "Completed")
+    }
+
+    async selectCourseOrInstanceFromTp(trainingPlan:string){
+        await this.click(this.selectors.clickCourseStatusInTpDropdown, "Course Status In Tp Dropdown", "Dropdown")
+        await this.type(this.selectors.typeTpNameInsearchBar, "Type Tp Name In search Bar", trainingPlan);
+        await this.click(this.selectors.selectTp, "SelectTp", "Option")
+    }
+
+    async clickManyButton(tpName:string){
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.clickMany(tpName), 'Many Button');
+        await this.click(this.selectors.clickMany(tpName), "Many", "Button")
+    }
+
+    async getDisplayedScoreInManageEnrollmentSide(tpName:string,assessment:string){
+        await this.wait("minWait");
+        const scoreInManageEnrollment=await this.page.locator(this.selectors.assessmentScorePreAndPost(tpName,assessment)).inputValue();
+       const convertedValue=Number(scoreInManageEnrollment.trim());
+
+
+        return convertedValue;
+    }
+
+
+    async verifyPreviousEntryAsCompleted(){
+        // Find the second completed entry (previous one)
+        const completedSelector = `(//span[text()='Completed'])[2]`;
+        await this.verification(completedSelector, "Completed");
+        
+        // Get unique text from the completed entry row (enrollment code or date)
+        try {
+            const entryTextElement = await this.page.locator(this.selectors.secondCompletedEntryText).first();
+            this.previousEntryIdentifier = await entryTextElement.innerText();
+            this.previousEntryIdentifier = this.previousEntryIdentifier.trim();
+            console.log(`✅ Verified: Previous enrollment entry status is 'Completed' (Entry ID: ${this.previousEntryIdentifier})`);
+        } catch (error) {
+            console.log("✅ Verified: Previous enrollment entry status is 'Completed'");
+        }
+    }
+
+    async verifyPreviousEntryAsExpired(){
+        // Verify that the SAME entry (identified by the stored text) now shows 'Expired'
+        if (this.previousEntryIdentifier) {
+            const expiredSelector = this.selectors.statusInRowWithText(this.previousEntryIdentifier, "Expired");
+            await this.verification(expiredSelector, "Expired");
+            console.log(`✅ Verified: The same enrollment entry (ID: ${this.previousEntryIdentifier}) status changed from 'Completed' to 'Expired'`);
+        } else {
+            // Fallback: Just check if there's an expired entry
+            const expiredSelector = `(//span[text()='Expired'])[1]`;
+            await this.verification(expiredSelector, "Expired");
+            console.log("✅ Verified: An enrollment entry status is 'Expired'");
+        }
+    }
+
+    async selectCertificationType(certificationType:string){
+        await this.validateElementVisibility(this.selectors.certificationDropdown(certificationType), "Certification Dropdown");
+        await this.click(this.selectors.certificationDropdown(certificationType), "Certification Dropdown", "Dropdown");
+
+        await this.click(this.selectors.recertificationOption, "Recertification option", "Dropdown");
+
+    }
+
+    async verifyStatusInManageEnrollment(status:string){
+        await this.verification(this.selectors.enrollStatus, status)
+    }
+
+   
+
+    async verifyRevalidatedSuccessMessage(title:string){
+        await this.wait("mediumWait")
+        await this.validateElementVisibility(this.selectors.revalidateSuccessMessage(title), "Revalidation Success Message");
+        console.log(`✅ Verified: Re-Validate to '${title}' has been done successfully for "1" learner(s).`);
+    }
+
+    async clickSelect(){
+        await this.validateElementVisibility(this.selectors.selectTeamUserBtn, "Select");
+        await this.click(this.selectors.selectTeamUserBtn, "Select", "Button")
+    }
+
+
+     public async clickSelectLearner() {
+  await this.wait("maxWait");
+
+  const selectUserLocator = this.page.getByRole('button', { name: 'Select' });
+  await selectUserLocator.scrollIntoViewIfNeeded();
+  await selectUserLocator.waitFor({ state: "visible" });
+  await expect(selectUserLocator).toBeEnabled();
+  await selectUserLocator.click();
+}
+ public async searchandSelectTP(TP:string) {
+        await this.wait("maxWait");
+     
+        await this.click("//div[@id='learning-path-selection-filter-icon']", "searchbar", "Button")
+        await this.type("//input[@id='learning-path-selection']", "SearchTp", TP)
+        await this.click(`//span[text()='${TP}']`, "SelectTp", "Link"
+        )
+    }
+  public async selectCls() {
+        await this.wait("maxWait");
+  const selectLocator =  this.page.locator("(//div[contains(@class,'field_title')]//preceding::i[contains(@class,'lms-chevron-up-down')][1])");
+  await selectLocator.scrollIntoViewIfNeeded();
+  await selectLocator.waitFor({ state: "visible" });
+  await expect(selectLocator).toBeEnabled();
+  await selectLocator.click();
+ 
+       
+
+    }
+
+    //  public async searchUser(user:string) {
+    //     await this.wait("maxWait");
+    //    await this.typeAndEnter("(//input[@placeholder='Search'])[1]", "User", user);
+    // } 
+    
+    public async clickSearchUserCheckbox(user:string) {
+        await this.waitSelector(this.selectors.searchUserCheckbox(user), "searchUserCheckbox" )
+        await this.click(this.selectors.searchUserCheckbox(user), "searchUser", "chkbox")
+    }
+
+    async verifyInstanceStatus(courseNames: string[], status: string){
+        console.log(`\n🔍 Verifying status for ${courseNames.length} course(s) inside the Training Plan...`);
+        
+        for (const courseName of courseNames) {
+            await this.verification(this.selectors.statusOfCourseInsideTP(courseName), status);
+            console.log(`✅ Verified: Course '${courseName}' has status '${status}'`);
+        }
+        
+        console.log(`✅ All ${courseNames.length} course(s) verified successfully with status '${status}'\n`);
     }
 
     // TECRS01 - Transfer Enrollment verification methods
@@ -1292,4 +1482,96 @@ export class EnrollmentPage extends AdminHomePage {
         }
     }
 
+    async enrollOneInstance(){
+    }
+
+    /**
+     * Get all course/instance names displayed inside TP after selectCls()
+     */
+    async getTPInstanceNames(): Promise<string[]> {
+        await this.wait("mediumWait");
+        const names = await this.page.locator(this.selectors.allTPInstances).allTextContents();
+        const trimmed = names.map(n => (n || "").trim()).filter(n => n.length > 0);
+        console.log(`TP instances found: ${trimmed.join(", ")}`);
+        return trimmed;
+    }
+
+    /**
+     * Verify that TP contains the expected course/instance names
+     */
+    async verifyTPHasCourses(expected: string[]): Promise<void> {
+        const actual = await this.getTPInstanceNames();
+        for (const e of expected) {
+            const ok = actual.some(a => a === e || a.includes(e) || e.includes(a));
+            if (!ok) {
+                throw new Error(`Expected course/instance "${e}" not found in TP. Actual: ${actual.join(", ")}`);
+            }
+            console.log(`✓ Verified in TP: ${e}`);
+        }
+    }
+
+    /**
+     * Enroll the specified course/instance by name inside the TP list
+     */
+    async enrollCourseByName(name: string): Promise<void> {
+        await this.wait("mediumWait");
+        // 1) Get all instances by provided XPath
+        const allInstances = await this.getTPInstanceNames();
+        // 2) Verify the requested EL exists in that list (allow partial match)
+        const target = allInstances.find(n => n === name || n.includes(name) || name.includes(n));
+        if (!target) {
+            throw new Error(`EL "${name}" not found in TP list. Available: ${allInstances.join(', ')}`);
+        }
+
+        // 3) Click the radio icon next to that EL name
+        let radio = this.page.locator(`(//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate' and normalize-space()="${target}"]/following::i[@class='fa-duotone fa-circle icon_16_1'])[1]`);
+        if (await radio.count() === 0) {
+            radio = this.page.locator(`(//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate' and contains(normalize-space(),"${target}")]/following::i[@class='fa-duotone fa-circle icon_16_1'])[1]`);
+        }
+        await radio.scrollIntoViewIfNeeded();
+        await radio.waitFor({ state: 'visible', timeout: 15000 });
+        await radio.click();
+
+        // 4) Click Enroll button
+        const enrollBtn = this.page.locator(`//button[text()='Enroll']`).first();
+        await enrollBtn.waitFor({ state: 'visible', timeout: 15000 });
+        await enrollBtn.click();
+
+        // 5) Click "View Status/Enroll Tp" from success popup
+        const viewStatus = this.page.locator(`//a[normalize-space(text())='View Status/Enroll Tp' or normalize-space(text())='View Status/Enroll TP']`).first();
+        try {
+            await viewStatus.waitFor({ state: 'visible', timeout: 10000 });
+            await viewStatus.click();
+        } catch {}
+
+        console.log(`Enrolled EL: ${target}`);
+
+    }
+
+    /**
+     * Verify a course/instance shows as enrolled in TP list
+     */
+    async verifyCourseEnrolledInTP(name: string): Promise<void> {
+        await this.wait("mediumWait");
+        // Ensure list is visible
+        await this.page.locator(this.selectors.allTPInstances).first().waitFor({ state: 'visible', timeout: 15000 });
+
+        // Locate the status element near the item name
+        let status = this.page.locator(`//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate' and normalize-space()="${name}"]/ancestor::div[contains(@class,'row')][1]//div[contains(text(),'enrolled')]`).first();
+        if (await status.count() === 0) {
+            status = this.page.locator(`//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate' and contains(normalize-space(),"${name}")]/ancestor::div[contains(@class,'row')][1]//div[contains(text(),'enrolled')]`).first();
+        }
+
+        const visible = await status.isVisible().catch(() => false);
+        if (!visible) {
+            throw new Error(`Expected "${name}" to show as enrolled in TP list, but status not found.`);
+        }
+        console.log(`✅ Verified enrolled in TP: ${name}`);
+    }
+
+    async checkRecertificationCheckbox(){
+        await this.validateElementVisibility(this.selectors.recertificationCheckbox, "Recertification Checkbox");
+        await this.click(this.selectors.recertificationCheckbox, "Recertification", "Checkbox");
+        await this.wait("minWait");
+    }
 }

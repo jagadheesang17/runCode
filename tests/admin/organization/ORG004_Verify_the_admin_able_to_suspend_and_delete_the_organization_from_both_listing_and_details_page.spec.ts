@@ -6,7 +6,7 @@ const OrgName = FakerData.getOrganizationName()+"Organization"+(Date.now());
 test(`Verify that an organization can be successfully suspend and activated from listingpage`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )
@@ -40,12 +40,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 test(`Verify that an organization can be successfully suspend and activated from detailspage`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
-
+  
   
 await adminHome.loadAndLogin("CUSTOMERADMIN");
 
@@ -85,11 +80,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 test(`Verify that an organization can be successfully delete from listingpage`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
+  
 
   
 await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -127,11 +118,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 test(`Verify that an organization can be successfully delete from detailspage`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
+  
 
   
 await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -169,11 +156,7 @@ await organization.deleteFromDetailsPage();
 
 test(`Verify the admin able to delete the child organization`, async ({ adminHome, organization, CompletionCertification,contentHome,createCourse }) => 
     {
-     test.info().annotations.push(
-           { type: `Author`, description: `Vidya` },
-           { type: `TestCase`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` },
-           { type: `Test Description`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` }
-       );           
+              
        await adminHome.loadAndLogin("CUSTOMERADMIN");
        await adminHome.menuButton();
        await adminHome.people();

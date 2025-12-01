@@ -28,7 +28,7 @@ let adminGroupsInAccess: string[] = [];
 
 test(`Creating user and admin role`, async ({ adminHome, editCourse, createUser, learnerHome, adminRoleHome, adminGroup, createCourse, contentHome, learnerGroup }) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Creating user with seperate groups` },
         { type: `Test Description`, description: `Creating user with seperate admin and learner groups` }
 
@@ -89,12 +89,7 @@ test(`Creating user and admin role`, async ({ adminHome, editCourse, createUser,
 
 
     test(`Creating seperate Admin group`, async ({ adminHome, editCourse, createUser, learnerHome, adminRoleHome, adminGroup, createCourse, contentHome, learnerGroup }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Creating user with seperate groups` },
-            { type: `Test Description`, description: `Creating user with seperate admin and learner groups` }
-    
-        );
+        
 
 
     //creating admin group
@@ -137,11 +132,7 @@ test(`Creating user and admin role`, async ({ adminHome, editCourse, createUser,
 
 
  test(`Creating the organization as that created user and verify the access`, async ({ adminHome, organization, CompletionCertification,createCourse ,adminGroup, learnerGroup,learnerHome}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
+   
 
   
     await learnerHome.basicLogin(courseAdmin, "portal1");

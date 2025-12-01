@@ -12,7 +12,7 @@ test.describe(`Verify_the_address_which_is_inherited_from_manager.spec`, async (
     test.describe.configure({ mode: "serial" });
 test(`Create a Manager with address`, async ({ adminHome, createUser, createCourse }) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` },
         { type: `Test Description`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` }
     );
@@ -54,11 +54,7 @@ await createUser.clickRolesButton("Manager");
 }})
 
 test(`Verify the manager's address inherited to the user after mapping on User creation page`, async ({ adminHome, createUser ,createCourse}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+     
   
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");

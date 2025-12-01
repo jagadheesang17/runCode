@@ -70,6 +70,8 @@ export class AdminHomePage extends AdminLogin {
         directContent: `//a[text()='Direct Content Launch']`,
 
         hoverOrgFromQuickAccess: (module: string) => `//div[text()='${module}']`,
+
+        courseStatusInsideTheTp:`//span[text()='View Status/Enroll Learner to TP Courses']`,    
        
 
         adminhome: `//span[text()='Admin Home']`,
@@ -82,6 +84,8 @@ export class AdminHomePage extends AdminLogin {
         //meta data library option
         metaLibOption: (data: string) => `//a[text()='${data}']`,
         dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
+
+        ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`
     
     }
     public async clickLearnerGroupLink() {
@@ -108,6 +112,15 @@ export class AdminHomePage extends AdminLogin {
     //To navigate from Enroll option to view/update status course tp:-
     public async clickviewUpdateStatusCourseTp() {
         await this.click(this.selectors.viewUpdateStatusCourseTpLink, "Update Enrollment", "Link")
+    }
+
+
+    async viewStatusOrEnrollLearnerToTPCourses(){
+        await this.click(this.selectors.courseStatusInsideTheTp,"Course Status Inside The Tp","Link");
+    }
+
+    async clickViewStatusOrEnrollLearnerToTPCourses() {
+        await this.click(this.selectors.ViewStatusOrEnrollLearnerToTPCourses,"Course Status Inside The Tp","Link");
     }
 
       public async clickviewUpdateStatusLearner() {

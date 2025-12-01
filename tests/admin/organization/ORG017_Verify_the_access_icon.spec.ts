@@ -13,7 +13,7 @@ const OrgName = FakerData.getOrganizationName()+"Organization1"+(Date.now());
 
 test(`Verify the access icon while createing and on both edit and listing page`, async ({ adminHome, organization, CompletionCertification,createCourse ,adminGroup, learnerGroup,learnerHome}) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )

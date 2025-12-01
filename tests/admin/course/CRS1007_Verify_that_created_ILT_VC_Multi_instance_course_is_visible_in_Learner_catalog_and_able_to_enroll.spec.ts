@@ -75,8 +75,7 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         console.log("Classroom (ILT) instance created successfully");
         
         // Add Virtual Class (VC) instance
-        await createCourse.editcourse();
-        await createCourse.clickinstanceClass();
+         await createCourse.navigateToListingAndSearchCourse(courseName);
         await createCourse.addInstances();
         await addinstance("Virtual Class");
         await createCourse.selectMeetingType(instructorName, courseName, 1);
@@ -89,8 +88,7 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         console.log("Virtual Class (VC) instance created successfully");
         
         // Add E-Learning instance for comparison
-        await createCourse.editcourse();
-        await createCourse.clickinstanceClass();
+        await createCourse.navigateToListingAndSearchCourse(courseName);
         await createCourse.addInstances();
         await addinstance("E-Learning");
         await createCourse.enter("course-title", elCourseName);

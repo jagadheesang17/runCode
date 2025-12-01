@@ -219,12 +219,16 @@ switch (environmentSetup) {
         username: "autoins",
         password: "Welcome1@",
       },
+      INSTRUCTOR2: {
+        username: "divya",
+        password: "Welcome1@",
+      },
       MANAGERNAME: {
         username: "automnr",
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "arjun",
+        username: "jeevan",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {
@@ -286,8 +290,8 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "arjun1",
-        password: "Welcome6@",
+        username: "kathir7695",
+        password: "Welcome1@",
       },
       LearnerGroup2user: {
         username: "arjun2",

@@ -16,7 +16,7 @@ const userName2 = FakerData.getUserId();
  test(`Creating the organization with cost center`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )
@@ -46,11 +46,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
  )
 
 test(`Create a Manager with address`, async ({ adminHome, createUser, createCourse }) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` },
-        { type: `Test Description`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` }
-    );
+    
 
  
       const csvFilePath = './data/US_address.csv';
@@ -87,11 +83,7 @@ await createUser.clickRolesButton("Manager");
 }})
 
  test(`Create user and mapping the created manager to this user`, async ({ adminHome, createUser ,createCourse}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+       
     const csvFilePath = './data/US_address.csv';
     const data = await readDataFromCSV(csvFilePath);
 
@@ -126,15 +118,9 @@ await createUser.clickRolesButton("Manager");
 } )
 
 
- test.describe(`Creating the course with manager approval enabled`, async () => {
-     test.describe.configure({ mode: 'serial' })
-     test(`Single Elearning instance with Manager Approval Enabled`, async ({ adminHome, createCourse, editCourse }) => {
-         test.info().annotations.push(
-             { type: `Author`, description: `Vidya` },
-             { type: `TestCase`, description: `Single Elearning instance with Manager Approval Enabled` },
-             { type: `Test Description`, description: `Single Elearning instance with Manager Approval Enabled` }
  
-         );
+     test(`Single Elearning instance with Manager Approval Enabled`, async ({ adminHome, createCourse, editCourse }) => {
+         
          await adminHome.loadAndLogin("LEARNERADMIN");
          await adminHome.menuButton();
          await adminHome.clickLearningMenu();
@@ -160,11 +146,7 @@ await createUser.clickRolesButton("Manager");
      })
  
      test(`Verifying the cost center value after enrolling the course from the manager approval popup`, async ({ learnerHome, catalog }) => {
-         test.info().annotations.push(
-             { type: `Author`, description: `Vidya` },
-             { type: `TestCase`, description: `Ensure that a learner is able to register for a course that requires manager approval` },
-             { type: `Test Description`, description: `Ensure that a learner is able to register for a course that requires manager approval` }
-         );
+        
         await learnerHome.basicLogin(userName2, "portal1");
          await learnerHome.clickCatalog();
          await catalog.mostRecent();
@@ -174,4 +156,4 @@ await createUser.clickRolesButton("Manager");
          await catalog.clickRequestapproval();
          await catalog.verifyCostCentrerInApprovalPopup(costcenterValue);
      })
-    })
+    

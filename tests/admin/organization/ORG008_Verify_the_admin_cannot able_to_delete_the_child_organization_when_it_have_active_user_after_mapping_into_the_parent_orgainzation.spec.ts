@@ -10,7 +10,7 @@ import { FakerData } from '../../../utils/fakerUtils';
 
 test(`Verify the admin cant able to delete the child organization which is mapped to the user and verify able to remove that from the parent organization`, async ({ adminHome,createCourse,contentHome,organization,CompletionCertification,createUser}) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` }
     );           

@@ -48,6 +48,12 @@ export class LearnerDashboardPage extends LearnerHomePage {
     clickMore: (data: string) =>
       `(//div[text()='${data}']//following::i[@aria-label='More'])[1]`,
     titleClick: (title: string) => `//div[contains(text(),'${title}')]`,
+
+    FilterInLearningHistory: `(//span[text()='Learning History']/following::div[text()='Filters'])[1]`,
+
+    searchResult: (title:string,status:string) => `(//h5[text()='${title}']/following::div[text()=' ${status}'])[1]`,
+
+    clickSearchedResult:(title:string,status:string) => `(//h5[text()='${title}']/following::div[text()=' ${status}'])[1]/preceding::h5[text()='${title}']`,
     myCertificateLink: `//div[text()='My Certificates']`,
     selectCertificationType: (cerTitle: string) => `//a[contains(text(),'${cerTitle}')]`,
     filterbtn: `//button[@id='undefined-filters-trigger']`,
@@ -279,6 +285,31 @@ export class LearnerDashboardPage extends LearnerHomePage {
     await this.wait("minWait");
     await this.mouseHover(this.selectors.titleClick(title), "Title");
     await this.click(this.selectors.titleClick(title), "Title", "");
+  }
+
+
+  async clickLearningHistory() {
+    await this.click(this.selectors.learningHistory, "Learning History", "Link");
+
+  }
+  async clickTabsInsideTheLearningHistory(tabName: String) {
+    await this.validateElementVisibility(this.selectors.inaTabs(tabName), "Tab");
+    await this.click(this.selectors.inaTabs(tabName), "Tab", "Tab");
+   
+  }
+
+  async verifyTheStatusInLearningHistory(name:string,status:string) {
+   await this.learningHistoryCourseSearch(name);
+  try{
+    if(await this.page.locator(this.selectors.searchResult(name,status)).isVisible()){
+    await this.click(this.selectors.clickSearchedResult(name,status), "Click More", "Link");
+   }
+  }catch{
+    throw new Error(`The status '${status}' for '${name}' not found in Learning History.`);
+  }
+
+
+
   }
 
   async selectCertificateType(cerTitle: string) {

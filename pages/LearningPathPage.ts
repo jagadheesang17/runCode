@@ -117,6 +117,7 @@ export class LearningPathPage extends AdminHomePage {
         moduleEditIcon: `//div[contains(text(),'module')]//preceding::i[@aria-label='Edit']`,
         moduleNameInput: `//input[contains(@id,'module_name_text')]`,
         moduleUpdateIcon: `//i[@aria-label='Update']`,
+        updateCEU:`//i[@class='fa-duotone fa-pen pointer icon_14_1']`,
 
         //Attaching the different course to the recertification module:-
         // Choose Course Manually:-
@@ -161,9 +162,21 @@ export class LearningPathPage extends AdminHomePage {
         clonePopupCheckbox: (label: string) => `//span[contains(@class,'ms-1 rawtxt') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
         createCopyBtn: `//button[text()='Create Copy']`,
         enrollments:`(//span[text()='Enrollments'])[2]`,
+                saveRevalidate:`(//button[text()='Save'])[1]`,
+
+                ceuCheckbox:`//i[@class='fa-duotone fa-square icon_16_1']`,
+                addedCEU:`(//div[text()='Select']/following::span[@data-bs-toggle='tooltip'])[1]`,
+
+                updateCEUUnit:`//input[@class='form-control form_field_active w-75']`,
+                clickTickIcon:`//i[@class='fa-duotone fa-check icon_14_1']`,
+                //Attaching the different course to the recertification module:-
+        // Choose Course Manually:-
+        checkRevalidateInCertification:`//span[text()='check to enable certification re-validation']/preceding::i[contains(@class,'square icon')]`,
+                saveButton2: `(//button[text()='Save'])[1]`,
     
     };
 
+	
     //Adding course manually to the recertification module:-
     async addCourseManually() {
         await this.validateElementVisibility(this.selectors.addCourseManually, "Add Course Manually");
@@ -840,6 +853,17 @@ export class LearningPathPage extends AdminHomePage {
         await this.verification(this.selectors.verifyRecertificationCourse(data), data);
     }
 
+    async saveRecertificationMultipleCourses(courses: string[]) {
+        await this.mouseHover(this.selectors.recertificationSaveBtn, "Save");
+        await this.click(this.selectors.recertificationSaveBtn, "Save", "Button");
+        
+        for (const course of courses) {
+            await this.verification(this.selectors.verifyRecertificationCourse(course), course);
+            console.log(`✅ Verified recertification course: ${course}`);
+        }
+        console.log(`✅ Successfully verified ${courses.length} recertification courses`);
+    }
+
     async registractionEnds() {
         await this.keyboardType(this.selectors.registractionEndsInput, gettomorrowDateFormatted());
     }
@@ -1195,6 +1219,16 @@ export class LearningPathPage extends AdminHomePage {
     }
     public async clickEnrollmentsButton(){
         await this.wait("minWait");
+
         await this.click(this.selectors.enrollments, "Enrollments Button", "Button");
+    }
+    async checkRevalidateInCertification(){
+        await this.validateElementVisibility(this.selectors.checkRevalidateInCertitfcation, "Re-validate in Certification")
+        await this.click(this.selectors.checkRevalidateInCertitfcation, "Re-validate in Certification", "Checkbox")
+        await this.wait('minWait');
+        await this.click(this.selectors.saveButton2, "Save", "Button")
+        await this.wait('minWait');
+
+
     }
 }

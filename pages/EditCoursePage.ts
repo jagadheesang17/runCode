@@ -77,8 +77,9 @@ export class EditCoursePage extends AdminHomePage {
         discountValue:`(//input[@id='select_discount']//following::li)[1]`,
         domainDropdown: (domainName: string) => `(//span[text()='${domainName}']//following::button[contains(@data-id,'domain')])[1]`,
         domainDropdownValues: `//footer//following::li//span[@class='text']`,
-        selectDiscountOptionRadioBtn:(option: string) => `//span[text()='${option} of All']//preceding-sibling::i[contains(@class,'fa-circle')]`
+        selectDiscountOptionRadioBtn:(option: string) => `//span[text()='${option} of All']//preceding-sibling::i[contains(@class,'fa-circle')]`,
 
+        checkRevalidateInCertitfcation:`//span[text()='check to enable certification re-validation']/preceding::i[contains(@class,'square icon')]`
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -261,6 +262,13 @@ export class EditCoursePage extends AdminHomePage {
         expect(booleanChk).toBeFalsy();
     }
 
+    async clickUpdate() {
+        await this.wait('mediumWait')
+        await this.click(this.selectors.updateBtn, "Update", "Button")
+        await this.wait('mediumWait')
+    }
+
+   
     // Dedicated to Training Plan Methods
     /**
      * Check Dedicated to Training Plan checkbox
@@ -483,4 +491,6 @@ export class EditCoursePage extends AdminHomePage {
             throw new Error(`Discount '${discountName}' is NOT applied.`);
         }
     }
+
+    
 }

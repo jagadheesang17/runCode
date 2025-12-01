@@ -44,6 +44,26 @@ const myProfileCloseBtn = `//div[contains(@class,'modal-header d-flex ')]//follo
 
 
 
+ const clickAlertIcon = `//i[@class='fa-duotone fa-exclamation-triangle']`;
+
+ const courseListing = (title: string) => `//span[text()='${title}']`;
+
+ const clickLaunchButton = `//div[text()='Alerts']/following::i[@aria-label='Click to play']`;
+
+ const clickINA=`//div[text()='Items Need Attention']`;
+
+ const clickLaunchTabInINA=`//a[contains(text(),'Launch')]`;
+
+ const verifyTextInLaunchTab=`//p[@class='my-2 h1_inactive fw-lighter']`;
+
+ const certificationInLaunchTab=`(//p[@class='h4_action_title_active mb-0'])[1]`;
+
+ const clickLaunchButtonInINA=(title:string)=>`(//p[text()='${title}']/following::span[text()='Launch'])[1]`;
+ 
+ const certificationRemovedFromLaunchTab=(title:string)=>`//p[text()='${title}']`;
+
+ const clickshowAll=`//button[text()='Show All']`;
+
 export class LearnerLogin extends PlaywrightWrapper {
 
 
@@ -406,7 +426,56 @@ async verifyLandingPage(page:string) {
     await this.verification(pageName(page), page);
 }
 
-/**
+async clickAlertIcon(){
+    await this.validateElementVisibility(clickAlertIcon,"Alert Icon");
+    await this.click(clickAlertIcon,"Alert Icon","Icon");
+
+}
+async verifyAndClickLaunchFromAlert(title:string){
+    await this.page.locator(courseListing(title)).scrollIntoViewIfNeeded();
+
+    await this.verification(courseListing(title),title);
+
+    await this.click(clickLaunchButton,"Launch Button","Button");
+}
+
+async clickINA(){
+    await this.validateElementVisibility(clickINA,"Items Need Attention");
+    await this.click(clickINA,"Items Need Attention","Link");
+
+}
+
+async clickLaunchTabInINA(title:string){
+    await this.validateElementVisibility(clickLaunchTabInINA,"Launch Tab");
+    await this.click(clickLaunchTabInINA,"Launch Tab","Tab");
+    await this.verification(verifyTextInLaunchTab,"Your certification requires Re-Validate. Please complete the certification.")
+
+    await this.verification(certificationInLaunchTab,title)
+    await this.click(clickLaunchButtonInINA(title),"Launch Button","Button");
+}
+
+async verifyTheCertificationRemovedAfterCompletion(title: string){
+    // Verify the certification is removed from the Launch tab in INA after completion
+    await this.validateElementVisibility(clickLaunchTabInINA,"Launch Tab");
+    await this.click(clickLaunchTabInINA,"Launch Tab","Tab");
+    
+    // Verify certification is NOT present
+    const certificationLocator = this.page.locator(certificationRemovedFromLaunchTab(title));
+    const isVisible = await certificationLocator.isVisible().catch(() => false);
+    
+    if(!isVisible){
+        console.log(`✅ Verified: Certification "${title}" is removed from Launch tab in INA after completion`);
+    } else {
+        throw new Error(`❌ FAIL: Certification "${title}" is still present in Launch tab in INA. Expected it to be removed after completion.`);
+    }
+}
+
+async clickShowAll(){
+
+    await this.validateElementVisibility(clickshowAll,"Show All Button");
+    await this.click(clickshowAll,"Show All Button","Button");
+
+}/**
  * Custom login method that accepts username, password, and url for bulk enrollment testing
  */
 public async customLogin(username: string, url: string, password: string = "Welcome1@") {

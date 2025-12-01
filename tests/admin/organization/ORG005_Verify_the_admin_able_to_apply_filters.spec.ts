@@ -5,7 +5,7 @@ const OrgName = FakerData.getOrganizationName()+(Date.now());
 test(`Verify that created organization and their organization type by applying filter`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )
@@ -39,11 +39,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 test(`Verify that suspended organization their organization type by applying filter`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
+   
 
   
 await adminHome.loadAndLogin("CUSTOMERADMIN");

@@ -96,9 +96,14 @@ export class SiteAdminPage extends AdminHomePage {
         settingsSuccessMessage:`//span[text()='Changes have been saved successfully. Please refresh the page to see the effects.']`,
         SAVE:`//button[text()='OK']`,
 
-        clickEditAddressInheritance:`//i[@data-bs-target='#AddressInheritanceAndEmergencyContact-content']`
-        
+        clickEditAddressInheritance:`//i[@data-bs-target='#AddressInheritanceAndEmergencyContact-content']`,
 
+        disabledBusinessRules:`//span[text()='Business Rules']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+
+        clickEditBusinessRules:`//i[@data-bs-target='#BusinessRules-content']`,
+
+        checkCertificationRevalidation:`(//span[text()='Certification re-validation']/preceding-sibling::i)[2]`
+        
     };
 
 
@@ -370,8 +375,6 @@ export class SiteAdminPage extends AdminHomePage {
             await this.click(this.selectors.save, "save", "button")
         }
     }
-
-    //Observation Checklist (QuestionPro) Methods
     
     //Click on Admin site configuration tab
     async clickAdminSiteConfiguration() {
@@ -388,23 +391,22 @@ export class SiteAdminPage extends AdminHomePage {
     }
 
     //Check if Observation Checklist is enabled
+//Check if Observation Checklist is enabled
     async isObservationChecklistEnabled(): Promise<boolean> {
         await this.wait("mediumWait");
-        
         try {
             const toggleOnVisible = await this.page.locator(this.selectors.observationChecklistToggleOn).isVisible();
             await this.page.locator(this.selectors.observationChecklistLabel).scrollIntoViewIfNeeded();
             await this.wait("minWait");
-            
             if (toggleOnVisible) {
-                console.log("✅ Observation Checklist (QuestionPro) is already ENABLED");
+                console.log(":white_check_mark: Observation Checklist (QuestionPro) is already ENABLED");
                 return true;
             } else {
-                console.log("⚠️ Observation Checklist (QuestionPro) is currently DISABLED");
+                console.log(":warning: Observation Checklist (QuestionPro) is currently DISABLED");
                 return false;
             }
         } catch (error) {
-            console.log("❌ Error checking Observation Checklist status:", error);
+            console.log(":x: Error checking Observation Checklist status:", error);
             return false;
         }
     }
@@ -444,13 +446,41 @@ export class SiteAdminPage extends AdminHomePage {
             // Scroll to the observation checklist element
             await this.page.locator(this.selectors.observationChecklistLabel).scrollIntoViewIfNeeded();
             await this.wait("minWait");
-
             await this.page.reload();
         }
-    else{
-        console.log("Address Inheritance is already enabled");
+        else{
+            console.log("Inherit Address and Emergency Contact are already checked");
+        }
+    }
+
+      public async enableBusinessRulesAndCheckCertificationRevalidation(){
+        const button = this.page.locator(this.selectors.disabledBusinessRules)
+        const isToggleEnabled = await button.isChecked();
+
+        if(!isToggleEnabled){
+            await this.wait("minWait");
+            await this.click(this.selectors.disabledBusinessRules,"enable","toggle");
+            await this.click(this.selectors.SAVE,"save","button");
+        }
+        else{
+            console.log("Business Rule is already enabled");
+        }
         
-    }}
+        // Always check the certification revalidation checkbox state
+        await this.click(this.selectors.clickEditBusinessRules,"edit","button");
+        const certRevalidationCheckbox = this.page.locator(this.selectors.checkCertificationRevalidation);
+        const isCertRevalidationChecked = await certRevalidationCheckbox.isChecked();
+        
+        if(!isCertRevalidationChecked){
+            await this.click(this.selectors.checkCertificationRevalidation,"check","checkbox");
+            await this.click(this.selectors.save,"save","button");
+            await this.wait("minWait");
+            await this.page.reload();
+        }
+        else{
+            console.log("Certification Revalidation is already checked");
+        }
+    }
  
 }
 

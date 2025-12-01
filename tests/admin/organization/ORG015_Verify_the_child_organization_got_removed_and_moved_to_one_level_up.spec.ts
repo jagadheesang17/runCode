@@ -6,7 +6,7 @@ const OrgName=FakerData.getOrganizationName()
 
 test(`Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected`, async ({ adminHome,createCourse,contentHome,organization,CompletionCertification}) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with a parent organization assigned and the count of organizations under the parent is accurately reflected` }
     );           

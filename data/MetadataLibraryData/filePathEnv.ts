@@ -76,6 +76,19 @@ switch (environmentSetup) {
             location: "../data/MetadataLibraryData/Production/location.json",
         }
         break;
+    case "automationtenant":
+        filePath = {
+           tags: "../data/MetadataLibraryData/QA/tags.json",
+            ceuData: "../data/MetadataLibraryData/QA/ceuData.json",
+            ceuProvider : "../data/MetadataLibraryData/QA/ceuProvider.json",
+            department : "../data/MetadataLibraryData/QA/department.json",
+            empType : "../data/MetadataLibraryData/QA/empType.json",
+            jobRole : "../data/MetadataLibraryData/QA/jobRole.json",
+            jobTitle : "../data/MetadataLibraryData/QA/jobTitle.json",
+            userType : "../data/MetadataLibraryData/QA/userType.json",
+            catagory: "../data/MetadataLibraryData/QA/catagory.json",
+            location: "../data/MetadataLibraryData/QA/location.json",      }
+        break;
     default:
         throw new Error(`Invalid environment setup: ${environmentSetup}`);
-}
+    }
