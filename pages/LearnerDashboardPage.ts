@@ -47,7 +47,7 @@ export class LearnerDashboardPage extends LearnerHomePage {
 
     clickMore: (data: string) =>
       `(//div[text()='${data}']//following::i[@aria-label='More'])[1]`,
-    titleClick: (title: string) => `//div[contains(text(),'${title}')]`,
+    titleClick: (title: string) => `(//div[contains(text(),'${title}')])[1]`,
 
     FilterInLearningHistory: `(//span[text()='Learning History']/following::div[text()='Filters'])[1]`,
 

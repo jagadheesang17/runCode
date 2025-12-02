@@ -5029,6 +5029,7 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
   }
 
   async verifyLPRestrictionPopup() {
+    await this.wait("minWait");
     await this.validateElementVisibility(
       this.selectors.lpRestrictionPopup,
       "LP Restriction Popup"
@@ -5037,6 +5038,7 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
   }
 
   async clickLPRestrictionOK() {
+    await this.wait("minWait");
     await this.click(
       this.selectors.lpRestrictionOKButton,
       "OK Button",

@@ -1399,6 +1399,13 @@ async inProgress() {
     await expect(this.page.locator(courseSelector)).not.toBeVisible();
   }
 
+  async verifyRecertifyButtonNotVisible() {
+    await this.wait("minWait");
+    const recertifyButton = this.page.locator(this.selectors.recertifyBtn);
+    await expect(recertifyButton).not.toBeVisible();
+    console.log("✅ Verified: Recertify button is not visible");
+  }
+
   async verifyExpiredContent() {
     await this.validateElementVisibility(
       this.selectors.expiredContent,

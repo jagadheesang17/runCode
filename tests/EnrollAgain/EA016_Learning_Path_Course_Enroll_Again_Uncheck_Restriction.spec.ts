@@ -88,7 +88,6 @@ test.describe(`EA016_Learning_Path_Course_Enroll_Again_Uncheck_Restriction`, asy
         await adminHome.clickCourseLink();
         await createCourse.searchCourse(courseName);
         await createCourse.clickEditIcon();
-        await createCourse.clickEditCourseTabs();
         await editCourse.clickBusinessRule();
         await editCourse.verifyAllowLearnersEnrollAgain(false); // Verify checked
         await editCourse.uncheckAllowLearnersEnrollAgain(); // Try to uncheck
@@ -113,6 +112,7 @@ test.describe(`EA016_Learning_Path_Course_Enroll_Again_Uncheck_Restriction`, asy
         
         // Complete the course in LP
         await catalog.clickLaunchButton();
+        await catalog.saveLearningStatus();
         await catalog.saveLearningStatus();
         
         // Click enroll again

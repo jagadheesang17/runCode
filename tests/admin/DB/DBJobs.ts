@@ -332,9 +332,6 @@ async function updateSingleInstanceAutoRegister() {
     console.log('Formatted New Time (15 mins subtracted):', formattedNewTime);
     let updateCourseAutoRegister = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run='${formattedNewTime}',current_status = 'waiting', previous_status ='' WHERE name='Course AutoRegister' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}'`)
     console.log(updateCourseAutoRegister);
-
-
-
 }
 async function contentTransfer() {
     const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");

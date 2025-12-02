@@ -153,6 +153,9 @@ export class LearningPathPage extends AdminHomePage {
         enrollAgainPopupMessage: "//div[text()='The following courses can't be added to the learning path since it doesn't allow Enroll Again.']",
         enrollAgainPopupCourseName: (courseName: string) => `//footer//following::div[text()='${courseName}']`,
         enrollAgainPopupOKButton: "//footer//following::button[text()='OK']",
+        
+        // Recertification Enroll Again popup selectors
+        recertEnrollAgainPopupMessage: "//div[text()='The following courses cannot be added to the re-certification because they do not support the enroll again functionality.']",
         versionEyeIcon: (title: string) => `//div[@title='${title}']//following::i[contains(@class,'fa-duotone pointer')]`,
         transferEnrollmentsBtn: `//button[text()='Transfer Enrollments']`,
         selectAllLearnersCheckbox: `//label[contains(@for,'selectalllearners')]`,
@@ -800,6 +803,7 @@ export class LearningPathPage extends AdminHomePage {
             const isVisible = await this.page.locator(this.selectors.copyFromCertificationPath).isVisible();
             if (isVisible) {
                 console.log(`✅ Copy from certification path is default, clicking Save`);
+                await this.wait("minWait");
                 await this.click(this.selectors.saveButton, "Save Button", "Button");
             }
         } else if (method === "Add Courses Manually") {
@@ -1239,6 +1243,7 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async verifyEnrollAgainPopupMessage() {
+        await this.wait("minWait");
         await this.validateElementVisibility(
             this.selectors.enrollAgainPopupMessage,
             "Enroll Again Popup Message"
@@ -1247,6 +1252,7 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async verifyEnrollAgainPopupCourseName(courseName: string) {
+        await this.wait("minWait");
         const courseNameLocator = this.selectors.enrollAgainPopupCourseName(courseName);
         await this.validateElementVisibility(
             courseNameLocator,
@@ -1256,6 +1262,7 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async clickEnrollAgainPopupOK() {
+        await this.wait("minWait");
         await this.click(
             this.selectors.enrollAgainPopupOKButton,
             "OK Button",
@@ -1263,5 +1270,32 @@ export class LearningPathPage extends AdminHomePage {
         );
         await this.wait("minWait");
         console.log("✅ Clicked OK button on enroll again popup");
+    }
+
+    async verifyRecertEnrollAgainPopupMessage() {
+        await this.validateElementVisibility(
+            this.selectors.recertEnrollAgainPopupMessage,
+            "Recertification Enroll Again Popup Message"
+        );
+        console.log("✅ Verified recertification enroll again popup message is visible");
+    }
+
+    async verifyRecertEnrollAgainPopupCourseName(courseName: string) {
+        const courseNameLocator = this.selectors.enrollAgainPopupCourseName(courseName);
+        await this.validateElementVisibility(
+            courseNameLocator,
+            `Course Name: ${courseName} in recert popup`
+        );
+        console.log(`✅ Verified course name '${courseName}' in recertification popup`);
+    }
+
+    async clickRecertEnrollAgainPopupOK() {
+        await this.click(
+            this.selectors.enrollAgainPopupOKButton,
+            "OK Button",
+            "Button"
+        );
+        await this.wait("minWait");
+        console.log("✅ Clicked OK button on recertification enroll again popup");
     }
 }

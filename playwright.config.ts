@@ -5,14 +5,14 @@ const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
 
 //If false qa will run,if its true automation environment will run
-export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction"  = 'qa';
+export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction"  = 'qaProduction';
 export default defineConfig({
  timeout: 700000,  
   expect: { timeout: 10000 }, // 10 sec for assertions
   
  
   testDir: './tests',
-   globalSetup: require.resolve('./global-setup.ts'),
+  //globalSetup: require.resolve('./global-setup.ts'),
 
 
 
