@@ -5,6 +5,7 @@ import { FakerData } from "../../utils/fakerUtils";
 
 const courseName = FakerData.getCourseName();
 const elCourseName = FakerData.getCourseName() + "E-learning";
+const vcCourseName = FakerData.getCourseName() + "VirtualClass";
 const description = FakerData.getDescription();
 const instructorName = credentials.INSTRUCTORNAME.username
 let tag: string;
@@ -28,8 +29,6 @@ test.describe(`TC106 Verify pastVC Elearning recurring Registration`, async () =
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription(description);
         await createCourse.selectdeliveryType("Classroom")
-        await createCourse.handleCategoryADropdown();
-        await createCourse.providerDropdown()
         await createCourse.selectTotalDuration();
         await createCourse.typeAdditionalInfo();
         await createCourse.clickCatalog();
@@ -40,16 +39,19 @@ test.describe(`TC106 Verify pastVC Elearning recurring Registration`, async () =
         tag = await editCourse.selectTags();
         console.log(tag);
         await editCourse.clickClose();
-        await createCourse.clickCatalog();
+        await createCourse.typeDescription(description);
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
         await createCourse.clickEditCourseTabs();
+         await editCourse.clickBusinessRule();
+        await editCourse.checkAllowLearnersEnrollAgain();
         await createCourse.addInstances();
         async function addinstance(deliveryType: string) {
             await createCourse.selectInstanceDeliveryType(deliveryType);
             await createCourse.clickCreateInstance();
         }
         await addinstance("Virtual Class");
+        await createCourse.enter("course-title", vcCourseName)
         await createCourse.selectMeetingTypeforPast(instructorName, courseName, 1);
         await createCourse.typeDescription("Added new istance for the course")
         await createCourse.setMaxSeat();
@@ -65,13 +67,6 @@ test.describe(`TC106 Verify pastVC Elearning recurring Registration`, async () =
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
-        await createCourse.clickEditCourseTabs();
-        await editCourse.clickBusinessRule();
-        await editCourse.verifySingRegchkbox()
-        await editCourse.clickUncheckSingReg()
-        await createCourse.typeDescription("Added Business Rule " + courseName)
-        await createCourse.clickUpdate();
-        await createCourse.verifySuccessMessage();
 
     })
 
@@ -82,14 +77,6 @@ test.describe(`TC106 Verify pastVC Elearning recurring Registration`, async () =
             { type: `Test Description`, description: `Verify that learner can see Enroll Again button for past VC with recurring registration` }
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "Portal");
-        // await learnerHome.clickCatalog();
-        // await catalog.mostRecent();
-        // await catalog.searchCatalog(courseName)
-        // // await catalog.clickFilter();
-        // // await catalog.enterSearchFilter(tag)
-        // await catalog.selectresultantTags(tag);
-        // await catalog.clickApply()
-        // await catalog.clickMoreonCourse(courseName);
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
         await catalog.searchCatalog(courseName);
@@ -99,12 +86,7 @@ test.describe(`TC106 Verify pastVC Elearning recurring Registration`, async () =
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await learnerCourse.clickReEnroll();
-        await catalog.clickSelectcourse(courseName);
-        await catalog.clickEnroll();
-        // Should display "session is ended" message when past ILT class is clicked to enroll again
-        await catalog.clickMyLearning();
-        await catalog.clickCompletedButton()
-        await catalog.verifyCompletedCourse(elCourseName)
+        await catalog.verifyCourseNotVisibleInCatalog(vcCourseName);
     })
 
 

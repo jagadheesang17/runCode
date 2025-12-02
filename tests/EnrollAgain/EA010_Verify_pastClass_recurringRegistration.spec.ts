@@ -1,17 +1,36 @@
 import { credentials } from "../../constants/credentialData";
 import { test } from "../../customFixtures/expertusFixture";
-import { FakerData } from "../../utils/fakerUtils";
+import { FakerData, getRandomSeat } from "../../utils/fakerUtils";
 
 
 const courseName = FakerData.getCourseName();
-const elCourseName = FakerData.getCourseName() + "E-learning";
+const elCourseName = FakerData.getCourseName() + " E-learning";
+const iltCourseName = FakerData.getCourseName() + " Classroom";
+const sessionName = FakerData.getSession();
 const description = FakerData.getDescription();
 const instructorName = credentials.INSTRUCTORNAME.username
-let tag: any
+let tag: string;
 
-test.describe(`TC105 Verify futureVC Elearning Recurring Registration`, async () => {
+test.describe(`TC104 Verify past Class recurring Registration`, async () => {
     test.describe.configure({ mode: 'serial' })
-    test(`TC105_Multiple Course Creation for Classroom`, async ({ createCourse, adminHome, editCourse }) => {
+
+    test(`Verify_Allow_Learners_To_Enroll_Again_Default_Unchecked_In_SiteAdmin`, async ({ adminHome, siteAdmin }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Vidya` },
+            { type: `TestCase`, description: `Verify Allow learners to enroll again (default) is unchecked in Site Admin` },
+            { type: `Test Description`, description: `Verify that 'Allow learners to enroll again (default)' checkbox is unchecked in Site Admin Business Rules` }
+        );
+        
+        await adminHome.loadAndLogin("CUSTOMERADMIN");
+        await adminHome.menuButton();
+        await adminHome.siteAdmin();
+        await adminHome.siteAdmin_Adminconfig();
+        await siteAdmin.clickBusinessRulesEditIcon();
+        await siteAdmin.verifyAllowLearnersEnrollAgainDefault(true);
+        await siteAdmin.uncheckAllowLearnersEnrollAgainDefault();
+    });
+
+    test(`TC104_Recurring Registration for past date`, async ({ createCourse, adminHome, editCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Vidya` },
             { type: `TestCase`, description: `Verify Multiple Course Creation for Classroom ` },
@@ -28,8 +47,6 @@ test.describe(`TC105 Verify futureVC Elearning Recurring Registration`, async ()
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription(description);
         await createCourse.selectdeliveryType("Classroom")
-        await createCourse.handleCategoryADropdown();
-        await createCourse.providerDropdown()
         await createCourse.selectTotalDuration();
         await createCourse.typeAdditionalInfo();
         await createCourse.clickCatalog();
@@ -40,21 +57,29 @@ test.describe(`TC105 Verify futureVC Elearning Recurring Registration`, async ()
         tag = await editCourse.selectTags();
         console.log(tag);
         await editCourse.clickClose();
-        await createCourse.clickCatalog();
+        await createCourse.typeDescription(description);
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
         await createCourse.clickEditCourseTabs();
+        await editCourse.clickBusinessRule();
+        await editCourse.verifyAllowLearnersEnrollAgain(true);
+        await editCourse.checkAllowLearnersEnrollAgain();
+        await editCourse.verifyAllowLearnersEnrollAgain(false);
         await createCourse.addInstances();
-
         async function addinstance(deliveryType: string) {
             await createCourse.selectInstanceDeliveryType(deliveryType);
             await createCourse.clickCreateInstance();
         }
-        await addinstance("Virtual Class");
-        await createCourse.selectMeetingType(instructorName, courseName, 1);
-        await createCourse.typeAdditionalInfo()
+        await addinstance("Classroom");
+        await createCourse.enter("course-title", iltCourseName + " Classroom");
+        await createCourse.enterSessionName(sessionName);
         await createCourse.setMaxSeat();
-        await createCourse.clickCatalog();
+        await createCourse.enterpastDateValue();
+        await createCourse.selectLocation();
+        await createCourse.startandEndTime();
+        await createCourse.selectInstructor(instructorName);
+        await createCourse.typeDescription("Added Elearning and Classroom instance")
+        await createCourse.clickHideinCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
         await createCourse.editcourse();
@@ -66,31 +91,15 @@ test.describe(`TC105 Verify futureVC Elearning Recurring Registration`, async ()
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
-        await createCourse.clickEditCourseTabs();
-        await editCourse.clickBusinessRule();
-        await editCourse.verifySingRegchkbox()
-        await editCourse.clickUncheckSingReg()
-        await createCourse.typeDescription("Added Business Rule " + courseName)
-        await createCourse.clickUpdate();
-        await createCourse.verifySuccessMessage();
-
     })
 
     test(`Verification from learner site`, async ({ learnerHome, learnerCourse, catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `vidya` },
             { type: `TestCase`, description: `Learner Side - Enroll Again Verification` },
-            { type: `Test Description`, description: `Verify that learner can see Enroll Again button for future VC with recurring registration` }
+            { type: `Test Description`, description: `Verify that learner can see Enroll Again button for past class with recurring registration` }
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "Portal");
-        // await learnerHome.clickCatalog();
-        // await catalog.mostRecent();
-        // // await catalog.searchCatalog(courseName)
-        // await catalog.clickFilter();
-        // //await catalog.enterSearchFilter(tag)
-        // await catalog.selectresultantTags(tag);
-        // await catalog.clickApply()
-        // await catalog.clickMoreonCourse(courseName);
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
         await catalog.searchCatalog(courseName);
@@ -100,10 +109,7 @@ test.describe(`TC105 Verify futureVC Elearning Recurring Registration`, async ()
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await learnerCourse.clickReEnroll();
-        await catalog.clickMyLearning();
-        await catalog.clickCompletedButton()
-        await catalog.verifyCompletedCourse(elCourseName)
+        await catalog.verifyCourseNotVisibleInCatalog(sessionName);
+   
     })
-
-
 })

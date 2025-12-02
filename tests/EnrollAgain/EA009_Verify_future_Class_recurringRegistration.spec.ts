@@ -15,6 +15,22 @@ let tag: any
 test.describe(`TC103 Verify future Class recurring Registration`, async () => {
     test.describe.configure({ mode: 'serial' })
 
+    test(`Verify_Allow_Learners_To_Enroll_Again_Default_Checked_In_SiteAdmin`, async ({ adminHome, siteAdmin }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Vidya` },
+            { type: `TestCase`, description: `Verify Allow learners to enroll again (default) is checked in Site Admin` },
+            { type: `Test Description`, description: `Verify that 'Allow learners to enroll again (default)' checkbox is checked in Site Admin Business Rules` }
+        );
+
+        await adminHome.loadAndLogin("CUSTOMERADMIN");
+        await adminHome.menuButton();
+        await adminHome.siteAdmin();
+        await adminHome.siteAdmin_Adminconfig();
+        await siteAdmin.clickBusinessRulesEditIcon();
+        await siteAdmin.checkAllowLearnersEnrollAgainDefault();
+        await siteAdmin.verifyAllowLearnersEnrollAgainDefault(false);
+    });
+
     test(`TC103_Multiple Course Recurring registration for Future date`, async ({ createCourse, adminHome, editCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Vidya` },
@@ -31,8 +47,6 @@ test.describe(`TC103 Verify future Class recurring Registration`, async () => {
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription(description);
         await createCourse.selectdeliveryType("Classroom")
-        await createCourse.handleCategoryADropdown();
-        await createCourse.providerDropdown()
         await createCourse.selectTotalDuration();
         await createCourse.typeAdditionalInfo();
         addInstancepre = await createCourse.visiblityOfaddInstance()
@@ -44,10 +58,12 @@ test.describe(`TC103 Verify future Class recurring Registration`, async () => {
         tag = await editCourse.selectTags();
         console.log(tag);
         await editCourse.clickClose();
-        await createCourse.clickCatalog();
+        await createCourse.typeDescription(description);
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
         await createCourse.clickEditCourseTabs();
+        await editCourse.clickBusinessRule();
+        await editCourse.verifyAllowLearnersEnrollAgain(false);
         addInstancepost = await createCourse.visiblityOfaddInstance()
         expect(addInstancepost).not.toBe(addInstancepre)
         await createCourse.addInstances();
@@ -73,13 +89,6 @@ test.describe(`TC103 Verify future Class recurring Registration`, async () => {
         await createCourse.enter("course-title", elCourseName)
         await createCourse.contentLibrary();
         await createCourse.clickCatalog();
-        await createCourse.clickUpdate();
-        await createCourse.verifySuccessMessage();
-        await createCourse.clickEditCourseTabs();
-        await editCourse.clickBusinessRule();
-        await editCourse.verifySingRegchkbox()
-        await editCourse.clickUncheckSingReg()
-        await createCourse.typeDescription("Added Business Rule " + courseName)
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
     })

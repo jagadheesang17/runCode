@@ -148,6 +148,11 @@ export class LearningPathPage extends AdminHomePage {
         publishConfirmationMessage: `//b[text()='This action cannot be reversed. Are you sure you want to publish this Training plan?']`,
         publishVersionMessage: `//span[contains(text(),'By publishing this new version of the training plan, the previous version will become inactive. New enrollments will be allowed only to the new version, however you can transfer the previous enrollments to the new version from enrollments page.')]`,
         versionHistoryTitle: (version: string, title: string) => `//div[text()='Version: ${version}']//preceding::div[@title='${title}']`,
+        
+        // Enroll Again popup selectors
+        enrollAgainPopupMessage: "//div[text()='The following courses can't be added to the learning path since it doesn't allow Enroll Again.']",
+        enrollAgainPopupCourseName: (courseName: string) => `//footer//following::div[text()='${courseName}']`,
+        enrollAgainPopupOKButton: "//footer//following::button[text()='OK']",
         versionEyeIcon: (title: string) => `//div[@title='${title}']//following::i[contains(@class,'fa-duotone pointer')]`,
         transferEnrollmentsBtn: `//button[text()='Transfer Enrollments']`,
         selectAllLearnersCheckbox: `//label[contains(@for,'selectalllearners')]`,
@@ -487,9 +492,10 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async searchAndClickCourseCheckBox(data: string) {
-        //await this.typeAndEnter(this.selectors.addCourseSearchInput, "Course Serach Input", data) --> changed in new update('16/07/2024')
+      //  await this.typeAndEnter(this.selectors.addCourseSearchInput, "Course Serach Input", data) --> changed in new update('16/07/2024')
         //"//input[contains(@id,'program-structure-title-search')]"
         const addCourseInput = this.page.locator(this.selectors.addCourseSearchInput).last();
+        await addCourseInput.fill(''); // Clear any existing text
         await addCourseInput.focus(),
             await this.page.keyboard.type(data, { delay: 800 })
         await this.page.keyboard.press('Enter');
@@ -1230,7 +1236,32 @@ export class LearningPathPage extends AdminHomePage {
         await this.wait('minWait');
         await this.click(this.selectors.saveButton2, "Save", "Button")
         await this.wait('minWait');
+    }
 
+    async verifyEnrollAgainPopupMessage() {
+        await this.validateElementVisibility(
+            this.selectors.enrollAgainPopupMessage,
+            "Enroll Again Popup Message"
+        );
+        console.log("✅ Verified enroll again popup message is visible");
+    }
 
+    async verifyEnrollAgainPopupCourseName(courseName: string) {
+        const courseNameLocator = this.selectors.enrollAgainPopupCourseName(courseName);
+        await this.validateElementVisibility(
+            courseNameLocator,
+            `Course Name: ${courseName} in popup`
+        );
+        console.log(`✅ Verified course name '${courseName}' in popup`);
+    }
+
+    async clickEnrollAgainPopupOK() {
+        await this.click(
+            this.selectors.enrollAgainPopupOKButton,
+            "OK Button",
+            "Button"
+        );
+        await this.wait("minWait");
+        console.log("✅ Clicked OK button on enroll again popup");
     }
 }

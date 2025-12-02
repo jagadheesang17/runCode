@@ -1394,6 +1394,11 @@ async inProgress() {
       await this.wait ("mediumWait");
      }
 
+  async verifyCourseNotVisibleInCatalog(courseName: string) {
+    const courseSelector = `(//div[@id='learner_catalog']//span[text()='${courseName}'])[1]`;
+    await expect(this.page.locator(courseSelector)).not.toBeVisible();
+  }
+
   async verifyExpiredContent() {
     await this.validateElementVisibility(
       this.selectors.expiredContent,

@@ -181,7 +181,7 @@ test.describe(`Learning_Path_reenroll_flow_with_survey_and_assessment_in_TPlevel
         await learningPath.clickAddCourse();
         await learningPath.searchAndClickCourseCheckBox(courseName);
         //await learningPath.searchAndClickCourseCheckBox("Redundant System Program");
-
+        
         await learningPath.clickAddSelectCourse();
         await learningPath.clickDetailTab();
         await learningPath.clickCatalogBtn();

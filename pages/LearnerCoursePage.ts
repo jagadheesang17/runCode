@@ -13,6 +13,7 @@ export class LearnerCoursePage extends CatalogPage {
         submitAnswers: `(//span[text()='Submit my Answers'])[2]`,
         contentProgressStatus: `//span[text()='100%']`,
         reEnrollBtn: `//button[text()='Enroll Again']`,
+        reEnrollBtnLP: `//span[text()='Enroll Again']`,
         reEnrollPopUp: `//span[text()='You are attempting to retake a class of the same course that you have already completed. Would you like to proceed?']`,
         reEnrollPopUpYesBtn: `//button[text()='Yes']`,
         requestClass: `//span[text()='REQUEST CLASS']`,
@@ -65,6 +66,11 @@ export class LearnerCoursePage extends CatalogPage {
     async clickReEnroll() {
         await this.wait("minWait")
         await this.click(this.selectors.reEnrollBtn, "ReEnroll", "Button");
+    }
+
+    async clickReEnrollLP() {
+        await this.wait("minWait")
+        await this.click(this.selectors.reEnrollBtnLP, "ReEnroll LP", "Button");
     }
 
     async verifyEnrollAgainNotVisible() {

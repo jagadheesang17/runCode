@@ -48,6 +48,7 @@ export class CoursePage extends AdminHomePage {
     categoryOption: (category: string) => `//span[text()='${category}']`,
     addCategoryBtn: "//div[text()='Add Category']",
     categoryInput: "//label[text()='Category']/following::input[@id='course-categorys']",
+    okBtnOnPopup: "//footer//following::button[text()='OK']",
     okButton: "//button[text()='OK']",
     okBtn: "//span[contains(text(),'created successfully')]/following::button[text()='OK']",
     cancelBtn: "//label[text()='Category']/following::span[contains(@class,'lms-cat-cancel')]",
@@ -68,6 +69,10 @@ export class CoursePage extends AdminHomePage {
     contactSupportInput: "//label[text()='Contact Support']/following::input[1]",
     complianceField: "//div[@id='wrapper-course-compliance']",
     complianceOption: "//footer/following-sibling::div//span[text()='Yes']",
+    //complianceEnrollAgainPopup: `//footer//following::span[text()='To publish this compliance course, please enable the "Allow learners to enroll again" option in the business rule.']`,
+    complianceEnrollAgainPopup: "//footer//following::span[text()='To publish this compliance course, please enable the \"Allow learners to enroll again\" option in the business rule.']",
+    lpRestrictionPopup: "//footer//following::span[text()='This action cannot be performed because this course is part of a Learning Path/Re-certification.']",
+    lpRestrictionOKButton: "//footer//following::button[text()='OK']",
     validityField: "//div[@id='wrapper-course-compliance-validity']",
     validityOption: "//footer/following::span[text()='Days']",
     validityDateInput: "input[@id='validity_date-input']",
@@ -283,7 +288,7 @@ export class CoursePage extends AdminHomePage {
     selectDuration: `(//span[text()=' h ']//following::input)[1]`,
 
     //click edit icon on course listing page
-    clickEdit: `//i[@aria-label='Edit Course']`,
+    clickEdit: `(//i[@aria-label='Edit Course'])[1]`,
     //change single instance to multi instance
     yesButton: `//button[text()='YES']`,
     noButton: `//button[text()='NO']`,
@@ -2310,6 +2315,10 @@ export class CoursePage extends AdminHomePage {
   async selectValidity() {
     await this.click(this.selectors.validityField, "Valitdity", "field");
     await this.click(this.selectors.validityOption, "Days", "Field");
+  }
+
+  async enterValidity() {
+    await this.type(this.selectors.validityDaysInput, "Days", "365");
   }
 
   async enterDate(date: string) {
@@ -5003,6 +5012,38 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
 
   async okBtn() {
     await this.click(this.selectors.okButton, "Ok", "Button");
+  }
+
+  async clickOKButton() {
+    await this.wait("minWait");
+    await this.click(this.selectors.okBtnOnPopup, "OK", "Button");
+  }
+
+  async verifyComplianceEnrollAgainPopup() {
+    await this.validateElementVisibility(
+      this.selectors.complianceEnrollAgainPopup,
+      "Compliance Enroll Again Popup"
+    );
+    await this.verification(
+      this.selectors.complianceEnrollAgainPopup,"")
+  }
+
+  async verifyLPRestrictionPopup() {
+    await this.validateElementVisibility(
+      this.selectors.lpRestrictionPopup,
+      "LP Restriction Popup"
+    );
+    console.log("✅ Verified LP restriction popup message is visible");
+  }
+
+  async clickLPRestrictionOK() {
+    await this.click(
+      this.selectors.lpRestrictionOKButton,
+      "OK Button",
+      "Button"
+    );
+    await this.wait("minWait");
+    console.log("✅ Clicked OK button on LP restriction popup");
   }
 
   async checkConsiderForCompletionCheckbox() {
