@@ -1388,6 +1388,11 @@ async inProgress() {
     const completedCourseSelector = this.selectors.completedCourse(name);
     await this.mouseHover(completedCourseSelector, "Text");
   }
+  async clickEnrollAgain(){
+      await this.wait ("minWait");
+      await this.page.locator("//button[text()='Enroll Again']").click();
+      await this.wait ("mediumWait");
+     }
 
   async verifyExpiredContent() {
     await this.validateElementVisibility(
@@ -2082,102 +2087,23 @@ async inProgress() {
     );
     await this.spinnerDisappear();
   }
-
-
-  async verifyExpiredCourse(coursename: string) {
-    await this.wait("minWait");
-    console.log(`🔍 Verifying expired status for course: ${coursename}`);
-    
-    // // First, navigate to the course details
-    // await this.click(
-    //   this.selectors.toCompleteORCompleteEnrolledCourse,
-    //   coursename,
-    //   "Link"
-    // );
-    // await this.spinnerDisappear();
-    
-    // Wait for page to load and verify expired status
-    // await this.wait("mediumWait");
-    
-    // Check for expired status indicator
-    const expiredSelector = `//span[text()='Expired']`;
-    
-    try {
-      await this.validateElementVisibility(expiredSelector, "Expired Status");
-      await this.verification(expiredSelector, "Expired");
-      console.log(`✅ Course "${coursename}" verified as Expired`);
-    } catch (error) {
-      console.log(`❌ Course "${coursename}" does not show Expired status`);
-      
-      // Additional check for overdue status as fallback
-      try {
-        await this.validateElementVisibility(this.selectors.overDueText, "Overdue Status");
-        await this.verification(this.selectors.overDueText, "Overdue");
-        console.log(`✅ Course "${coursename}" verified as Overdue (expired status)`);
-      } catch (overdueError) {
-        console.log(`❌ Course "${coursename}" shows neither Expired nor Overdue status`);
-        throw new Error(`Course "${coursename}" is not showing expired status. Expected "Expired" or "Overdue" but found neither.`);
-      }
-    }
-  }
-
-  // Alternative method to navigate directly to course details page
-  async navigateToCourseDetails(courseName: string) {
-    await this.wait("minWait");
-    await this.spinnerDisappear();
-    
-    // Multiple selectors to try for course title
-    const courseSelectors = [
-      `//span[text()='${courseName}']`,
-      `//div[text()='${courseName}']`,
-      `//h5[text()='${courseName}']`,
-      `//h4[text()='${courseName}']`,
-      `//*[contains(text(),'${courseName}')]`,
-      `//span[contains(text(),'${courseName}')]`
-    ];
-    
-    for (const selector of courseSelectors) {
-      try {
-        console.log(`Trying selector: ${selector}`);
-        await this.page.waitForSelector(selector, { timeout: 5000 });
-        await this.click(selector, "Course Title", "Link");
+async verifyCContentTitle(title: string) {
         await this.wait("mediumWait");
-        console.log(`Successfully navigated to course details for: ${courseName} using selector: ${selector}`);
-        return;
-      } catch (error) {
-        console.log(`Failed with selector ${selector}: ${error.message}`);
-        continue;
-      }
+        await this.page.mouse.wheel(0, 300);
+        console.log("Title:", title);
+        let titleText = await this.page.locator(`//div[text()='${title}']`).innerText();
+        title=title.toUpperCase();
+        console.log("Title:", title);
+        console.log("Title Text:", titleText);
+        expect(title).toContain(titleText);
     }
-    
-    // If all selectors fail, let's debug what's actually on the page
-    console.log("All selectors failed. Debugging available elements...");
-    
-    // Check what course elements are actually present
-    const debugSelectors = [
-      "//span[contains(@class, 'card-title') or contains(@class, 'title')]",
-      "//div[contains(@class, 'card-title') or contains(@class, 'title')]", 
-      "//h5[contains(@class, 'card-title')]",
-      "//*[contains(@class, 'course')]",
-      "//span[contains(text(), 'Feed') or contains(text(), 'Input') or contains(text(), 'Wireless')]"
-    ];
-    
-    for (const debugSelector of debugSelectors) {
-      try {
-        const elements = await this.page.locator(debugSelector).all();
-        console.log(`Found ${elements.length} elements with selector: ${debugSelector}`);
-        for (let i = 0; i < Math.min(elements.length, 3); i++) {
-          const text = await elements[i].textContent();
-          console.log(`  Element ${i}: "${text}"`);
-        }
-      } catch (error) {
-        console.log(`Debug selector failed: ${debugSelector}`);
-      }
-    }
-    
-    throw new Error(`Unable to navigate to course details for: ${courseName}. Course may not be visible in catalog.`);
-  }
+    async verifyContentVersion(version: any) { 
 
+        await this.wait("mediumWait");
+        const versionText = await this.page.locator(`//i[@aria-label='Version']/following::span[text()='${version}']`).innerText();
+        console.log("Version Text:", versionText);
+        expect(version).toContain(versionText);
+    }
   //DCL verification msg
 
   async dclmesageVerification() {

@@ -4,6 +4,7 @@ import { URLConstants } from "../constants/urlConstants";
 import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
 import { is } from "date-fns/locale";
 import { th } from "@faker-js/faker";
+import { addISOWeekYears } from "date-fns";
 
 
 export class EnrollmentPage extends AdminHomePage {
@@ -18,7 +19,7 @@ export class EnrollmentPage extends AdminHomePage {
         courseList: `//div[contains(@id,'exp-search-lms')]//li`,
         courseListOpt: (index: number) => `(//div[contains(@id,'exp-search-lms')]//li)[${index}]`,
         userList: `(//div[contains(@id,'lms-scroll-results')]//li)`,
-        userListOpt: (index: number) => `(//div[contains(@id,'lms-scroll-results')]//li)[${index}]`,
+        userListOpt: (data: string) => `(//td[text()='${data}']/following::i)[2]`,
         selectCourse: `(//input[contains(@id,'training')]/following::i)[1]`,
         selectedLearners: `//button[text()='Select Learner']`,
         selectUser: `(//input[contains(@id,'selectedlearners')]/following::i)[2]`,
@@ -264,11 +265,11 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("mediumWait")
         await this.wait("maxWait")
         await this.click(this.selectors.searchcourseOrUser, "Search User", "Input Field")
-        await this.type(this.selectors.searchcourseOrUser, "Course Name", data)
-        const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
-        const randomIndex = Math.floor(Math.random() * index) + 1;
-        await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
-        await this.click(this.selectors.selectUser, "Select Course", "Radio button")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
+        // const index = await this.page.locator(`//div[contains(@id,'lms-scroll-results')]//li[text()='${data}']`).count();
+        // const randomIndex = Math.floor(Math.random() * index) + 1;
+        await this.click(this.selectors.userListOpt(data), "Course", "Options")
+        //await this.click(this.selectors.selectUser, "Select Course", "Radio button")
     }
     async searchUser(data: string) {
         await this.wait("minWait")
@@ -295,8 +296,9 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async enterReasonAndSubmit() {
         await this.type(this.selectors.reaonDesc, "Enroll Status", FakerData.getDescription())
         await this.click(this.selectors.submitReason, "Submit", "button")
-        await this.wait("minWait");
+        await this.wait("minWait")
         await this.click(this.selectors.saveStatus, "Submit", "button")
+        await this.wait("mediumWait");
     }
 
     //Admin Enrollment
@@ -818,8 +820,9 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             await instanceCheckbox.waitFor({ state: 'visible', timeout: 3000 });
             
             // If checkbox found, select it
-            await this.wait("minWait");
+            await this.wait("maxWait");
             await instanceCheckbox.click();
+            console.log(`Source instance ${instanceName} available for transfer enrollment`);
             
         } catch (error) {
             // If checkbox not found, check for "Search to see results" message
@@ -852,6 +855,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             // If checkbox found, select it
             await this.wait("minWait");
             await instanceCheckbox.click();
+            console.log(`Target instance ${instanceName} available for transfer enrollment`);
             
         } catch (error) {
             // If checkbox not found, check for "Search to see results" message
@@ -1028,7 +1032,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         
         // For Completed and Canceled status, verify learner is NOT displayed
-        if (expectedStatus === "Completed" || expectedStatus === "Canceled") {
+        if (expectedStatus === "Completed" || expectedStatus === "Canceled" || expectedStatus === "Incomplete" || expectedStatus === "Suspended") {
             const learnerRow = this.page.locator(`//td[contains(text(),'${username}')]`).first();
             
             try {
@@ -1449,6 +1453,39 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             return true;
         } else {
             throw new Error(`Expected score to contain "${expectedScore}" but got "${cleanScore}"`);
+        }
+    }
+    public async verifyWarningMsgForTransferToSameInstance() {
+        await this.wait('minWait');
+        const messageText = await this.page.locator("//span[text()='The selected users are already enrolled to the training.']").textContent();
+        if(messageText?.trim() === "The selected users are already enrolled to the training."){
+            console.log(`✅ Verified - Warning Message: "${messageText}"`);
+        } else {
+            throw new Error(`Expected warning message not found. Got: "${messageText}"`);
+        }
+    }
+
+    async verifyLearnerVisibleInTransfer(username: string): Promise<void> {
+        await this.wait("minWait");
+        const learnerRow = this.page.locator(this.selectors.learnerRow(username));
+        const isVisible = await learnerRow.isVisible().catch(() => false);
+        
+        if (isVisible) {
+            console.log(`✅ Learner "${username}" IS visible in transfer learner list (as expected)`);
+        } else {
+            throw new Error(`❌ Learner "${username}" is NOT visible in transfer learner list but should be`);
+        }
+    }
+
+    async verifyLearnerNotVisibleInTransfer(username: string): Promise<void> {
+        await this.wait("minWait");
+        const learnerRow = this.page.locator(this.selectors.learnerRow(username));
+        const isVisible = await learnerRow.isVisible().catch(() => false);
+        
+        if (!isVisible) {
+            console.log(`✅ Learner "${username}" is NOT visible in transfer learner list (as expected - suspended user)`);
+        } else {
+            throw new Error(`❌ Learner "${username}" is visible in transfer learner list but should not be (suspended user)`);
         }
     }
 

@@ -216,7 +216,7 @@ test.describe.serial(`TECRS07 - Verify that courses with Hidden in Catalog statu
         await learnerHome.clickMyLearning();
         await catalog.searchMyLearning(instanceName2);
         await catalog.verifyEnrolledCourseByTitle(instanceName2);
-        
+        await catalog.verifyLabel("Enrolled");
         
     });
 

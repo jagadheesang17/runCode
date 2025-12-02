@@ -221,6 +221,8 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.daysLocator, "Day", "DD Value")
     }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/*******  86c2f0e0-0dd5-4aa4-bd32-4a295dec8349  *******/
     async clickReCertExpiresButton() {
         await this.wait("minWait");
         await this.page.locator(this.selectors.recertExpiresBtn).scrollIntoViewIfNeeded();

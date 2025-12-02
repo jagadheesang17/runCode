@@ -290,12 +290,12 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "kathir7695",
+        username: "arjun",
         password: "Welcome1@",
       },
       LearnerGroup2user: {
-        username: "arjun2",
-        password: "Welcome6@",
+        username: "arjun",
+        password: "Welcome1@",
       },
     };
     break;

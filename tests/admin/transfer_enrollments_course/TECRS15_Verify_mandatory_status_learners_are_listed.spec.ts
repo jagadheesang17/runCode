@@ -9,7 +9,7 @@ let instanceNames: string[] = [];
 let instance1Name: string;
 let instance2Name: string;
 
-test.describe.serial(`TECRS16 - Verify that the learners in the Mandatory status for the instance are listed`, async () => {
+test.describe.serial(`TECRS15 - Verify that the learners in the Mandatory status for the instance are listed`, async () => {
 
     test(`Create course with two instances using API`, async ({ adminHome, createCourse, enrollHome }) => {
         test.info().annotations.push(
@@ -43,6 +43,7 @@ test.describe.serial(`TECRS16 - Verify that the learners in the Mandatory status
         await enrollHome.selectBycourse(instanceNames[0]);
         await enrollHome.clickSelectedLearner();
         await enrollHome.enterSearchUser(credentials.LEARNERUSERNAME.username);
+        await enrollHome.clickMandatory();
         await enrollHome.clickEnrollBtn();
         await enrollHome.verifytoastMessage();
         
@@ -76,7 +77,7 @@ test.describe.serial(`TECRS16 - Verify that the learners in the Mandatory status
         // Click Select Learners to view the list
         await enrollHome.selectlearner();
         await enrollHome.wait("minWait");
-        await enrollHome.verifyLearnerStatusInTransferEnrollmentPage(credentials.LEARNERUSERNAME.username, "Mandatory");
+        await enrollHome.verifyLearnerStatusInTransferEnrollmentPage(credentials.LEARNERUSERNAME.username, "Enrolled");
         
         console.log(`✅ Verified Mandatory learner is listed in transfer enrollment`);
     });

@@ -2809,38 +2809,36 @@ export class CoursePage extends AdminHomePage {
   //     const timeToSelect = getCurrentTimePlusTwoHours();
   //     console.log("Current Time + 2 hours:", timeToSelect);
 
-  //     // Use first() to avoid strict mode violation when multiple elements match
-  //     const timeLocator = this.page.locator(
-  //       `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
-  //     );
+      // Use only VISIBLE timepicker elements
+      // const timeLocator = this.page.locator(
+      //   `//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${timeToSelect}']`
+      // );
 
-  //     // Check if multiple elements exist and use first() to select the first match
-  //     const count = await timeLocator.count();
-  //     if (count > 1) {
-  //       console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
-  //       await timeLocator.first().click();
-  //     } else if (count === 1) {
-  //       await timeLocator.click();
-  //     } else {
-  //       console.log(`Time ${timeToSelect} not found, trying fallback approach`);
-  //       // Fallback: find the closest available time
-  //       for (const time of list) {
-  //         if (time >= timeToSelect) {
-  //           console.log('Selecting closest available time:', time);
-  //           await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
-  //           break;
-  //         }
-  //       }
-  //     }
-  //     /* for (const time of list) {
-  //               if (time >= timeToSelect) {
-  //                   console.log('Selecting time:', time);
-  //                   await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
-  //                   break;
-  //               }
-  //           } */
-  //   }
-  //   await selectNextAvailableTime.call(this);
+      // // Check if the time exists in visible timepicker
+      // const count = await timeLocator.count();
+      // if (count > 0) {
+      //   console.log(`Found ${count} visible element(s) with time ${timeToSelect}`);
+      //   await timeLocator.first().click();
+      // } else {
+      //   console.log(`Time ${timeToSelect} not found, trying fallback approach`);
+      //   // Fallback: find the closest available time from visible list
+      //   for (const time of list) {
+      //     if (time >= timeToSelect) {
+      //       console.log('Selecting closest available time:', time);
+      //       await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
+      //       break;
+      //     }
+      //   }
+      // }
+      // /* for (const time of list) {
+      //           if (time >= timeToSelect) {
+      //               console.log('Selecting time:', time);
+      //               await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
+      //               break;
+      //           }
+      //       } */
+
+    // await selectNextAvailableTime.call(this);
     
   //   const timeToSet = getCurrentTimePlusTwoHours();
   //   console.log("Setting time to:", timeToSet);
