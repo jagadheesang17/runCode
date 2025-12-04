@@ -281,11 +281,11 @@ export class LearningPathPage extends AdminHomePage {
             // Select Specific Date option
             await this.click(this.selectors.specificDateLocator, "Specific Date", "Option");
             await this.wait("minWait");
-
             // Enter tomorrow's date
             const tomorrowDate = gettomorrowDateFormatted();
-            await this.type(this.selectors.validityDateInput, "Validity Date", tomorrowDate);
+            await this.typeAndEnter(this.selectors.validityDateInput, "Validity Date", tomorrowDate);
             console.log(`✅ Set Specific Date: ${tomorrowDate}`);
+             await this.wait("minWait");
 
         } else if (expiryType === "Anniversary Date") {
             // Select Anniversary Date option
@@ -514,8 +514,8 @@ export class LearningPathPage extends AdminHomePage {
         // await this.click(this.selectors.checkBox(randomNumber), "Add Course CheckBox", "ChexkBox");
     }
 
-    async enterPrice() {
-        await this.type(this.selectors.price, "price", FakerData.getPrice());
+    async enterPrice(priceValue: string = FakerData.getPrice()) {
+        await this.type(this.selectors.price, "price", priceValue);
     }
     async clickAddSelectCourse() {
         await this.click(this.selectors.addSelectedCourseBtn, "Add Select Course", "Button");
@@ -769,7 +769,7 @@ export class LearningPathPage extends AdminHomePage {
             await this.click(this.selectors.recertCompleteByDateOption, "Date", "Option");
             await this.wait("minWait");
             const tomorrowDate = gettomorrowDateFormatted();
-            await this.type(this.selectors.recertCompleteByDateInput, "Recertification Complete By Date", tomorrowDate);
+            await this.typeAndEnter(this.selectors.recertCompleteByDateInput, "Recertification Complete By Date", tomorrowDate);
             console.log(`✅ Set recertification complete by Date: ${tomorrowDate}`);
         } else if (completeByType === "Days from enrollment") {
             await this.click(this.selectors.recertCompleteByDaysFromEnrollmentOption, "Days from enrollment", "Option");

@@ -15,7 +15,8 @@ export class CommerceHomePage extends AdminHomePage{
 
                       //For runtime passing commerce options
              commerceOptions:(option:string)=>`//a[text()='${option}']`,
-             
+             invoiceBtn:(orderId:string)=>`(//div[text()='${orderId}']//following::i[contains(@class,'invoice')])[1]`,
+             courseName: (courseName:string) => `//th[text()='${courseName}']`,
         };
 
     
@@ -47,9 +48,20 @@ export class CommerceHomePage extends AdminHomePage{
         await this.click(this.selectors.commerceOptions(data),"Commerce Option","Link");
     }
 
+    public async clickInvoiceButton(orderId:number|string){
+        await this.validateElementVisibility(this.selectors.invoiceBtn(orderId),"Invoice Link");
+        await this.click(this.selectors.invoiceBtn(orderId),"Invoice Link","Icon");
+        await this.page.waitForLoadState('load');
+    }
 
-
-
+    public async validateInvoice(courseName:string){
+        try {
+            await this.validateElementVisibility(this.selectors.courseName(courseName),"Course Name in Invoice");
+            console.log("Course details available in the Invoice: " + courseName);
+        } catch (error) {
+            throw new Error(`Course details not available for: ${courseName}`);
+        }
+    }
 
 
 }

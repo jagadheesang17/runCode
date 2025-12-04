@@ -274,7 +274,7 @@ async function createCourse(
   formData.append("price", priceValue);
   formData.append("old_course_price", "");
   formData.append("currency_type", currencyCode);
-  formData.append("max_seat", "");
+  formData.append("max_seat", "50");
   formData.append("old_max_seat", "undefined");
   formData.append("contact_support", "Ashly58@gmail.com");
   formData.append("duration", "");

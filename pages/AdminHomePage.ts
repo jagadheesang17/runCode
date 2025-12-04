@@ -85,7 +85,10 @@ export class AdminHomePage extends AdminLogin {
         metaLibOption: (data: string) => `//a[text()='${data}']`,
         dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
 
-        ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`
+        ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`,
+        createOrder:`//a[text()='Create Order']`,
+        ordersLink:`//a[text()='Order']`,
+
     
     }
     public async clickLearnerGroupLink() {
@@ -746,6 +749,19 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
+
+    public async clickCreateOrder() {
+        await this.validateElementVisibility(this.selectors.createOrder, "Create Order");
+        await this.click(this.selectors.createOrder, "Create Order", "Link");
+        await this.page.waitForLoadState('load');
+    }
+
+    public async clickOrderLink(){
+        await this.validateElementVisibility(this.selectors.ordersLink, "Orders Link");
+        await this.click(this.selectors.ordersLink, "Orders Link", "Link");
+        await this.page.waitForLoadState('load');
+    }
+
 }
 
 

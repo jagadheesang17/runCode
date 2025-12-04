@@ -92,7 +92,6 @@ test.describe(`Verify admin can change enrollment status for Learning Path`, () 
             // await catalog.searchCatalog(learningPathName);
             // await catalog.clickCourseInMyLearning(learningPathName);
             // console.log(`✅ User ${i + 1} can see the Learning Path in My Learning`);
-            await learnerHome.clickDashboardLink();
             await dashboard.clickLearningPath_And_Certification();
             await dashboard.clickCertificationLink();
             await dashboard.searchCertification(learningPathName);
