@@ -2582,7 +2582,7 @@ await departmentField.click();
             await this.wait('minWait');
             const searchSelector = `//input[@id='includeLearner-filter-field']`;
             await this.page.waitForSelector(searchSelector, { timeout: 5000 });
-            await this.type(searchSelector, "Learner Search", searchTerm, { delay: 100 });
+            await this.type(searchSelector, "Learner Search", searchTerm);
             await this.page.keyboard.press("Enter");
             await this.wait('mediumWait');
             

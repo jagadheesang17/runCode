@@ -333,86 +333,90 @@ export const attachCourses = (crs_code: any, prgm_code: any) => ({
 })
 
 //for user creation mandatory and optional combination
-export let userCreationDataWithOptional = (username: string, role?: "manager" | "instructor", countryName?: string, stateName?: string, timeZone?: string, cityName?: string, zipCode?: string,) => {
-    if (countryName && stateName && timeZone && cityName && zipCode) {
-        return {
-            user_id: userId,
-            first_name: FakerData.getFirstName(),
-            last_name: FakerData.getLastName(),
-            username: username,
-            password: "Welcome1@",
-            email: FakerData.getEmail(),
-            addr1: FakerData.getAddress(),
-            addr2: FakerData.getAddress(),
-            role: role,
-            country: countryName,
-            state: stateName,
-            timezone: "tmz_0303",
-            phone_no: FakerData.getMobileNumber(),
-            mobile_no: FakerData.getMobileNumber(),
-            user_type: userType,
-            employment_type: empData,
-            department: department,
-            job_title: jobTitle,
-            JobRole: jobRole,
-            city: cityName,
-            zipcode: zipCode,
-            organization_type: organizationType,
-            api_name: apiName.createUser,
-            response_fields: ["result", "UserId"]
-        };
-    } else {
-        return {
-            user_id: userId,
-            first_name: FakerData.getFirstName(),
-            last_name: FakerData.getLastName(),
-            username: username,
-            password: "Welcome1@",
-            api_name: apiName.createUser,
-            response_fields: ["result", "UserId"]
-        };
+export let userCreationDataWithOptional = (username: string, role?: "manager" | "instructor", countryName?: string, stateName?: string, timeZone?: string, cityName?: string, zipCode?: string,manager?:string,otherManager?:string, orgType?: "Internal" | "External") => {
+    const userData: any = {
+        user_id: userId,
+        first_name: FakerData.getFirstName(),
+        last_name: FakerData.getLastName(),
+        username: username,
+        password: "Welcome1@",
+        api_name: apiName.createUser,
+        response_fields: ["result", "UserId"]
+    };
+
+    // Add optional fields only if they are provided
+    if (role) userData.role = role;
+    if (countryName) userData.country = countryName;
+    if (stateName) userData.state = stateName;
+    if (timeZone) userData.timezone = "tmz_0303";
+    if (cityName) userData.city = cityName;
+    if (zipCode) userData.zipcode = zipCode;
+    if (manager) userData.Manager = manager;
+    if (otherManager) userData.other_manager = otherManager;
+    if (orgType) userData.organization_type = orgType;
+
+    // Add these fields only if address-related fields are provided
+    if (countryName || stateName || cityName || zipCode) {
+        userData.email = FakerData.getEmail();
+        userData.addr1 = FakerData.getAddress();
+        userData.addr2 = FakerData.getAddress();
+        userData.phone_no = FakerData.getMobileNumber();
+        userData.mobile_no = FakerData.getMobileNumber();
+        userData.user_type = userType;
+        userData.employment_type = empData;
+        userData.department = department;
+        userData.job_title = jobTitle;
+        userData.JobRole = jobRole;
+        // Only set default organizationType if not already set by orgType parameter
+        if (!userData.organization_type) {
+            userData.organization_type = organizationType;
+        }
     }
+
+    return userData;
 };
 //for user updation mandatory and optional combination
-export let userUpdationDataWithOptional = (username: string, role?: "manager" | "instructor", countryName?: string, stateName?: string, timeZone?: string, cityName?: string, zipCode?: string) => {
-    if (countryName && stateName && timeZone && cityName && zipCode) {
-        return {
-            user_id: userId,
-            first_name: FakerData.getFirstName(),
-            last_name: FakerData.getLastName(),
-            username: username,
-            password: "Welcome1@",
-            email: FakerData.getEmail(),
-            addr1: FakerData.getAddress(),
-            addr2: FakerData.getAddress(),
-            role: role,
-            country: countryName,
-            state: stateName,
-            timezone: "tmz_0303",
-            phone_no: FakerData.getMobileNumber(),
-            mobile_no: FakerData.getMobileNumber(),
-            user_type: userType,
-            employment_type: empData,
-            department: department,
-            job_title: jobTitle,
-            JobRole: jobRole,
-            city: cityName,
-            zipcode: zipCode,
-            organization_type: organizationType,
-            api_name: apiName.updateUser,
-            response_fields: ["result", "UserId"]
-        };
-    } else {
-        return {
-            user_id: userId,
-            first_name: FakerData.getFirstName(),
-            last_name: FakerData.getLastName(),
-            username: username,
-            password: "Welcome1@",
-            api_name: apiName.updateUser,
-            response_fields: ["result", "UserId"]
-        };
+export let userUpdationDataWithOptional = (username: string, role?: "manager" | "instructor", countryName?: string, stateName?: string, timeZone?: string, cityName?: string, zipCode?: string, manager?: string, otherManager?: string, orgType?: "Internal" | "External") => {
+    const userData: any = {
+        user_id: userId,
+        first_name: FakerData.getFirstName(),
+        last_name: FakerData.getLastName(),
+        username: username,
+        password: "Welcome1@",
+        api_name: apiName.updateUser,
+        response_fields: ["result", "UserId"]
+    };
+
+    // Add optional fields only if they are provided
+    if (role) userData.role = role;
+    if (countryName) userData.country = countryName;
+    if (stateName) userData.state = stateName;
+    if (timeZone) userData.timezone = "tmz_0303";
+    if (cityName) userData.city = cityName;
+    if (zipCode) userData.zipcode = zipCode;
+    if (manager) userData.Manager = manager;
+    if (otherManager) userData.other_manager = otherManager;
+    if (orgType) userData.organization_type = orgType;
+
+    // Add these fields only if address-related fields are provided
+    if (countryName || stateName || cityName || zipCode) {
+        userData.email = FakerData.getEmail();
+        userData.addr1 = FakerData.getAddress();
+        userData.addr2 = FakerData.getAddress();
+        userData.phone_no = FakerData.getMobileNumber();
+        userData.mobile_no = FakerData.getMobileNumber();
+        userData.user_type = userType;
+        userData.employment_type = empData;
+        userData.department = department;
+        userData.job_title = jobTitle;
+        userData.JobRole = jobRole;
+        // Only set default organizationType if not already set by orgType parameter
+        if (!userData.organization_type) {
+            userData.organization_type = organizationType;
+        }
     }
+
+    return userData;
 }
 
 

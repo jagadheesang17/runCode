@@ -38,6 +38,16 @@ export class ManagerPage extends PlaywrightWrapper {
       `(//div[text()='${courseName}']/following::i[@aria-label='Guide Team'])[1]`,
     viewUpdateStatus: `(//i[@aria-label='View Update Status'])[1]`,
     searchTeamUser: `#exp-searchmyteam-lnrsearch-field`,
+    // Address fields
+    address1Input: "//label[text()='Address 1']/following-sibling::input",
+    // Country dropdown
+    Countrydropdown: "//label[text()='Country']/following::button[1]",
+    CountryInput: "//label[text()='Country']/following::input[1]",
+    CountryOption: (Option: string) => `//span[text()='${Option}']`,
+    // State dropdown
+    statedropdown: "//label[text()='State/Province']/following::button[1]",
+    stateInput: "//label[text()='State/Province']/following::input[1]",
+    stateOption: (Option: string) => `//span[text()='${Option}']`,
   };
 
   async enterSearchCourse(data: string) {
@@ -250,5 +260,40 @@ export class ManagerPage extends PlaywrightWrapper {
     );
     await this.wait("minWait");
     await this.page.mouse.wheel(0, 150);
+  }
+
+  /**
+   * Enter address in Address 1 field
+   * @param address - The address value to enter
+   */
+  public async enterAddress1(address: string) {
+    await this.wait("minWait");
+    await this.type(this.selectors.address1Input, "Address 1", address);
+  }
+
+  /**
+   * Select country from dropdown
+   * @param country - The country name to select
+   */
+  public async selectCountry(country: string) {
+    await this.wait("minWait");
+    await this.click(this.selectors.Countrydropdown, "Country", "Dropdown");
+    await this.type(this.selectors.CountryInput, "Country Input", country);
+    await this.wait("minWait");
+    await this.mouseHover(this.selectors.CountryOption(country), country);
+    await this.click(this.selectors.CountryOption(country), country, "Option");
+  }
+
+  /**
+   * Select state from dropdown
+   * @param state - The state/province name to select
+   */
+  public async selectState(state: string) {
+    await this.wait("minWait");
+    await this.click(this.selectors.statedropdown, "State/Province", "Dropdown");
+    await this.type(this.selectors.stateInput, "State Input", state);
+    await this.wait("minWait");
+    await this.mouseHover(this.selectors.stateOption(state), state);
+    await this.click(this.selectors.stateOption(state), state, "Option");
   }
 }

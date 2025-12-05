@@ -9,15 +9,16 @@ import { credentials } from "../../../constants/credentialData";
 
 const courseName = FakerData.getCourseName();
 const instructorName = credentials.INSTRUCTORNAME.username
-const price = FakerData.getPrice();
-test.describe(`Verify manager approved Elearning course is available on the learner side`, async () => {
+const managerName = credentials.MANAGERNAME.username;
+
+test.describe(`Verify manager approved Elearning course without price`, async () => {
     test.describe.configure({ mode: 'serial' })
+    
     test(`Single Elearning instance with Manager Approval Enabled`, async ({ adminHome, createCourse, editCourse }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Single Elearning instance with Manager Approval Enabled` },
             { type: `Test Description`, description: `Single Elearning instance with Manager Approval Enabled` }
-
         );
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();
@@ -28,16 +29,13 @@ test.describe(`Verify manager approved Elearning course is available on the lear
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a new course by name :" + courseName);
-        await createCourse.enterPrice(price);
-        await createCourse.selectCurrency();
-        await createCourse.contentLibrary(); //By default youtube content will be added here
+        await createCourse.contentLibrary("AICC File containing a PPT - Storyline 11");
         await createCourse.clickCatalog();
         await createCourse.clickSave();
         await createCourse.clickProceed();
         await createCourse.verifySuccessMessage();
         await createCourse.clickEditCourseTabs();
         await editCourse.clickManagerApproval();
-        // await editCourse.verifyInheritanceMessage();
         await editCourse.verifyapprovaluserType("Internal Users")
         await editCourse.verifyinternalManager("Direct Manager")
         await editCourse.verifyapprovaluserType("External Users")
@@ -60,17 +58,11 @@ test.describe(`Verify manager approved Elearning course is available on the lear
         await catalog.clickMoreonCourse(courseName);
         await catalog.clickSelectcourse(courseName);
         await catalog.clickRequestapproval();
-        await catalog.requstcostCenterdetails();
+        await catalog.selectManagerOnRequestApprovalPopup(managerName);
+        await catalog.submitRequestAndVerify();
     })
 
-
     test(`Ensure that the manager is able to successfully approve the given request`, async ({ managerHome, learnerHome, profile, createUser, editCourse, location }) => {
-        const csvFilePath = './data/User.csv';
-        const data = await readDataFromCSV(csvFilePath);
-        //let courseName = "Online Application Parse";
-
-        for (const row of data) {
-            const { country, state, timezone, currency, city, zipcode } = row;
             test.info().annotations.push(
                 { type: `Author`, description: `Tamilvanan` },
                 { type: `TestCase`, description: `Ensure that the manager is able to successfully approve the given request` },
@@ -79,19 +71,10 @@ test.describe(`Verify manager approved Elearning course is available on the lear
             await learnerHome.learnerLogin("MANAGERNAME", "DefaultPortal");
             await learnerHome.selectCollaborationHub();
             await learnerHome.clickApprove(courseName);
-            await createUser.enter("firstName", FakerData.getFirstName());
-            await createUser.enter("lastName", FakerData.getLastName());
-            await managerHome.enterAddress1(FakerData.getAddress());
-            await managerHome.selectCountry(country)
-            await managerHome.selectState(state)
-            await profile.city()
-            await location.enterZipcode(zipcode)
-            await learnerHome.proceedAndVerify();
-            await editCourse.clickClose()
-        }
+            await learnerHome.verifyApprovedSuccessfully();
     });
 
-    test(`Verify manager approved Elearning course is available on the learner side`, async ({ learnerHome, catalog }) => {
+    test(`Verify manager approved Elearning course is available on the learner side`, async ({ learnerHome, readContentHome,catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Verify manager approved Elearning course is available on the learner side` },
@@ -101,6 +84,12 @@ test.describe(`Verify manager approved Elearning course is available on the lear
         await learnerHome.clickMyLearning();
         await catalog.searchMyLearning(courseName);
         await catalog.verifyCompletedCourse(courseName);
+              await catalog.clickCourseInMyLearning(courseName);
+        await readContentHome.AICCFilecontainingaPPT_Storyline();
+        await readContentHome.saveLearningAICC();
+        await catalog.clickMyLearning();
+        await catalog.clickCompletedButton();
+        await catalog.searchMyLearning(courseName);
+        await catalog.verifyCompletedCourse(courseName);
     });
-
 })

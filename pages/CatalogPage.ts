@@ -9,27 +9,52 @@ import { th } from "@faker-js/faker";
 
 export class CatalogPage extends LearnerHomePage {
   public selectors = {
-    ...this.selectors,
-    searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
-    searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
-    mostRecentMenuItem: `//div[text()="Most Recent"]`,
-    createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
-    moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
-    enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
-    courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
-    selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
-    enrollButton: `//span[text()='Enroll']`,
-    requestApproval: `//span[text()='Request approval']`,
-    approvalcostcenter: `//input[@id='cc']`,
-    submitRequest: `//button[text()='Submit request']`,
-    closeBtn: `(//button[text()='Close'])[1]`,
-    //launchButton:`//button[text()="Launch Content"]`,
-    completedButton: `//a[contains(text(),"Completed")]`,
-    completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
-    filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
-    // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
-    searchButton: `//input[contains(@id,'catalog_search')]`,
-    // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
+        ...this.selectors,
+        searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+        searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+        mostRecentMenuItem: `//div[text()="Most Recent"]`,
+        createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+        moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+        enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+        courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+        selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+        enrollButton: `//span[text()='Enroll']`,
+        requestApproval: `//span[text()='Request approval']`,
+        approvalcostcenter: `//input[@id='cc']`,
+        submitRequest: `//button[text()='Submit request']`,
+        closeBtn: `(//button[text()='Close'])[1]`,
+        managerApprovalRequiredIcon: (courseName: string) => `(//div[text()='${courseName}']//following::i[@aria-label='Manager Approval Required'])[1]`,
+        selectManagerDropdown: `//label[@for='selectManager']//following::button[@data-id='selectManager']`,
+        selectManagerOption: (managerName: string) => `(//label[@for='selectManager']//following::span[contains(text(),'${managerName}')])[1]`,
+        requestSentPopup: `//span//b[text()='Your request has been sent! ']`,
+        approvedSuccessPopup: `//span//b[text()='Approved Successfully! ']`,
+        //launchButton:`//button[text()="Launch Content"]`,
+        completedButton: `//a[contains(text(),"Completed")]`,
+        completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+        filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+        // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+        searchButton:`//input[contains(@id,'catalog_search')]`,
+        // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
+    // searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+    // searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+    // mostRecentMenuItem: `//div[text()="Most Recent"]`,
+    // createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+    // moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+    // enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+    // courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+    // selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+    // enrollButton: `//span[text()='Enroll']`,
+    // requestApproval: `//span[text()='Request approval']`,
+    // approvalcostcenter: `//input[@id='cc']`,
+    // submitRequest: `//button[text()='Submit request']`,
+    // closeBtn: `(//button[text()='Close'])[1]`,
+    // //launchButton:`//button[text()="Launch Content"]`,
+    // completedButton: `//a[contains(text(),"Completed")]`,
+    // completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+    // filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+    // // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+    // searchButton: `//input[contains(@id,'catalog_search')]`,
+    // // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
 
     selectTagnames: `//input[@id='catalog_search_tags']`,
     // reultantTagname: (tagname: string) => `//a[contains(@class,'dropdown-item active')]//span[text()='${tagname}']`,
@@ -1009,6 +1034,66 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
       getCCnumber()
     ); //const center number of 10 digits
     await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
+
+  /**
+   * Click Manager Approval Required icon for a specific course
+   * @param courseName - The name of the course
+   */
+  async clickManagerApprovalRequiredIcon(courseName: string) {
+    await this.validateElementVisibility(
+      this.selectors.managerApprovalRequiredIcon(courseName),
+      "Manager Approval Required Icon"
+    );
+    await this.click(
+      this.selectors.managerApprovalRequiredIcon(courseName),
+      "Manager Approval Required",
+      "Icon"
+    );
+  }
+
+  /**
+   * Select manager on Request Approval popup
+   * @param managerName - The name of the manager to select
+   */
+  async selectManagerOnRequestApprovalPopup(managerName: string) {
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.selectManagerDropdown,
+      "Select Manager",
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.selectManagerOption(managerName),
+      managerName,
+      "Option"
+    );
+  }
+
+  /**
+   * Submit request and verify success popup
+   */
+  async submitRequestAndVerify() {
+    await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.wait("minWait");
+    await this.verification(
+      this.selectors.requestSentPopup,
+      "Your request has been sent!"
+    );
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
+
+  /**
+   * Verify approved successfully popup and close
+   */
+  async verifyApprovedSuccessfully() {
+    await this.wait("minWait");
+    await this.verification(
+      this.selectors.approvedSuccessPopup,
+      "Approved Successfully! "
+    );
     await this.click(this.selectors.closeBtn, "Close", "Button");
   }
 

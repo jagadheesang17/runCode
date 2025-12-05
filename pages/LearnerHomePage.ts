@@ -38,7 +38,7 @@ export class LearnerHomePage extends LearnerLogin {
 
         //CH:-
         sortBy: `//button[@data-id='exp-sortapproval-sort']`,
-        newlyListed: `//a[@id='bs-select-1-2']//span[text()='Newly Listed']`,
+        newlyListed: `(//footer//following::span[text()='Newly Listed'])[1]`,
         mapprovalSelectCountryInput: `(//div[@class='bs-searchbox']//input)[2]`,
         mapprovalSelectStateInput: `(//div[@class='bs-searchbox']//input)[3]`,
         dropdownOption: (data: string) => `//span[text()='${data}']`,
@@ -268,7 +268,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.wait("mediumWait")
         await this.click(this.selectors.sortBy, "My Approval Request Dropdown", "SortBy")
         await this.wait("minWait")
-        await this.mouseHoverandClick(this.selectors.newlyListed, this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
+        await this.click(this.selectors.newlyListed,"My Approval Request Dropdown", "Dropdown")
         //  await this.click(this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
         await this.click(this.selectors.approveTick(courseName), "Approve Course", "Icon")
     }
@@ -430,6 +430,20 @@ public async clickmyprofile()
 
 async verifyMappedOrganization(orgname:string,expectedOrgname:string){
     await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
+}
+
+/**
+ * Verify approved successfully popup and close
+ */
+async verifyApprovedSuccessfully() {
+    await this.wait("minWait");
+    const approvedSuccessPopup = `//span//b[text()='Approved Successfully! ']`;
+    const closeBtn = `(//button[text()='Close'])[1]`;
+    await this.verification(
+        approvedSuccessPopup,
+        "Approved Successfully!"
+    );
+    await this.click(closeBtn, "Close", "Button");
 }
 
 }

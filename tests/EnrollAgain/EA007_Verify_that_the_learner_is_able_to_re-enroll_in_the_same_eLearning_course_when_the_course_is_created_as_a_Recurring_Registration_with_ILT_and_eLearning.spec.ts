@@ -138,8 +138,11 @@ test.describe(`RE003 Verify learner can re-enroll in eLearning course with recur
         
         // Step 5: Click Enroll Again button
         await learnerCourse.clickReEnroll();
+        await catalog.clickSelectcourse(vcCourseName);
+        await catalog.clickEnroll();
          // Step 7: Verify and confirm enroll again popup
         await learnerCourse.reEnrollPopup();
+        
         
         await catalog.verifyStatus("Enrolled");
         

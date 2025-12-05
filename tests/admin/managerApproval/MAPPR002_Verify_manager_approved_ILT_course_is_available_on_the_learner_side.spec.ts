@@ -15,7 +15,7 @@ test.describe(`Verify manager approved ILT course is available on the learner si
     test.describe.configure({ mode: 'serial' })
     test(`Single ILT instance with Manager Approval Enabled`, async ({ adminHome, createCourse, editCourse }) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Vidya` },
+            { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Single ILT instance with Manager Approval Enabled` },
             { type: `Test Description`, description: `Single ILT instance with Manager Approval Enabled` }
 
@@ -68,30 +68,30 @@ test.describe(`Verify manager approved ILT course is available on the learner si
 
     test(`Ensure that a learner is able to register for a course that requires manager approval`, async ({ learnerHome, catalog }) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Vidya` },
+            { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Ensure that a learner is able to register for a course that requires manager approval` },
             { type: `Test Description`, description: `Ensure that a learner is able to register for a course that requires manager approval` }
         );
-        await learnerHome.learnerLogin("EXTERNALUSER", "Default portal");
+        await learnerHome.learnerLogin("TEAMUSER2", "DefaultPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
         await catalog.searchCatalog(courseName);
         await catalog.clickMoreonCourse(courseName);
         await catalog.clickSelectcourse(courseName);
-        // await catalog.clickRequestapproval();
-        await catalog.clickRequestClass();
+         await catalog.clickRequestapproval();
+       // await catalog.clickRequestClass();
         await catalog.requstcostCenterdetails();
     })
 
 
-    test(`Ensure that the manager is able to successfully approve the given request`, async ({ learnerHome, createUser, editCourse }) => {
+    test(`Ensure that the manager is able to successfully approve the given request`, async ({ managerHome,location,profile,learnerHome, createUser, editCourse }) => {
         const csvFilePath = './data/User.csv';
         const data = await readDataFromCSV(csvFilePath);
 
         for (const row of data) {
             const { country, state, timezone, currency, city, zipcode } = row;
             test.info().annotations.push(
-                { type: `Author`, description: `Vidya` },
+                { type: `Author`, description: `Tamilvanan` },
                 { type: `TestCase`, description: `Ensure that the manager is able to successfully approve the given request` },
                 { type: `Test Description`, description: `Ensure that the manager is able to successfully approve the given request` }
             );
@@ -99,13 +99,13 @@ test.describe(`Verify manager approved ILT course is available on the learner si
             await learnerHome.selectCollaborationHub();
             await learnerHome.searchApprovalCourse(courseName)
             await learnerHome.clickApprove(courseName);
-            await createUser.enter("firstName", FakerData.getFirstName());
+        await createUser.enter("firstName", FakerData.getFirstName());
             await createUser.enter("lastName", FakerData.getLastName());
-            await createUser.typeAddress("Address 1", FakerData.getAddress());
-            await createUser.select("Country", country);
-            await createUser.select("State/Province", state)
-            await createUser.enter("city", city);
-            await createUser.enter("zip", zipcode);
+                await managerHome.enterAddress1(FakerData.getAddress());
+       await managerHome.selectCountry(country)
+            await managerHome.selectState(state)
+            await profile.city()
+            await location.enterZipcode(zipcode)
             await learnerHome.proceedAndVerify();
             await editCourse.clickClose()
         }
@@ -113,11 +113,11 @@ test.describe(`Verify manager approved ILT course is available on the learner si
 
     test(`Verify manager approved ILT course is available on the learner side`, async ({ learnerHome, catalog }) => {
         test.info().annotations.push(
-            { type: `Author`, description: `Vidya` },
+            { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Verify manager approved ILT course is available on the learner side` },
             { type: `Test Description`, description: `Verify manager approved ILT course is available on the learner side` }
         );
-        await learnerHome.learnerLogin("EXTERNALUSER", "DefaultPortal");
+        await learnerHome.learnerLogin("TEAMUSER2", "DefaultPortal");
         await learnerHome.clickMyLearning();
         await catalog.searchMyLearning(courseName);
         await catalog.verifyCompletedCourse(courseName);
