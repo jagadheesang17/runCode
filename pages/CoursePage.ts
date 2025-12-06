@@ -2451,6 +2451,22 @@ export class CoursePage extends AdminHomePage {
   async clickEditCourseTabs() {
     await this.click(this.selectors.editCourseTabLink, "Edit Course", "Button");
   }
+
+  /**
+   * Verify if Manager Approval tab is visible
+   * @returns Promise<boolean> - true if visible, false if not visible
+   */
+  async managerApprovalVisible(): Promise<boolean> {
+    await this.wait("minWait");
+    try {
+      const isVisible = await this.page.locator("//span[text()='Manager Approval']").isVisible();
+      return isVisible;
+    } catch (error) {
+      console.log("Error checking Manager Approval tab visibility:", error);
+      return false;
+    }
+  }
+
   async typeCompleteByDate() {
     await this.typeAndEnter(
       this.selectors.completeByDateInput,

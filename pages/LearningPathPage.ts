@@ -740,6 +740,21 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.editLearningPathBtn, "Edit Learning Path", "Button");
     }
 
+    /**
+     * Verify if Manager Approval tab is visible
+     * @returns Promise<boolean> - true if visible, false if not visible
+     */
+    async managerApprovalVisible(): Promise<boolean> {
+        await this.wait("minWait");
+        try {
+            const isVisible = await this.page.locator("//span[text()='Manager Approval']").isVisible();
+            return isVisible;
+        } catch (error) {
+            console.log("Error checking Manager Approval tab visibility:", error);
+            return false;
+        }
+    }
+
     async clickAndSelectCompliance() {
         await this.mouseHover(this.selectors.complianceBtn, "Compliance");
         await this.click(this.selectors.complianceBtn, "Compliance", "Button");
