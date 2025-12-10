@@ -37,6 +37,7 @@ export class FakerData {
 
     static getPinCode() {
         return faker.location.zipCode('######');
+        
     }
 
     static addressName(): string {

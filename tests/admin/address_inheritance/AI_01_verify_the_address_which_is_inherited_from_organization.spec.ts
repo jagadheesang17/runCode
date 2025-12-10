@@ -9,7 +9,7 @@ const emergencyContactName=FakerData.getFirstName();
 
 test.describe(`Verify_the_address_which_is_inherited_from_organization`, async () => {
     test.describe.configure({ mode: "serial" });
-test.only(`Enable the Address inheritance from site settings`, async ({ siteAdmin,adminHome}) => {
+test(`Enable the Address inheritance from site settings`, async ({ siteAdmin,adminHome}) => {
     test.info().annotations.push(
         { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Enable company login alone in site settings` },

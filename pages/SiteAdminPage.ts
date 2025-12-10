@@ -75,6 +75,31 @@ export class SiteAdminPage extends AdminHomePage {
         //Transfer Enrollment
         transferEnrollmentCheckbox: `(//label[contains(@for,'submod_admn_tfr_enroll_input')]//i)[1]`,
         transferEnrollmentCheckboxToCheck: `//label[contains(@for,'submod_admn_tfr_enroll_input')]//i[contains(@class,'fa-square icon')]`,
+        
+        //Commerce - Learner Site Configuration
+        enabledCommerceInLearnerSiteConfig: `//span[text()='Commerce Settings']/following::span[text()='Commerce']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        disabledCommerceInLearnerSiteConfig: `//span[text()='Commerce Settings']/following::span[text()='Commerce']/preceding-sibling::i[contains(@class,'toggle-off')]`,
+        clickEditCommerce: `//div[text()='Learner Configuration']/following::span[text()='Commerce']/following::i[@data-bs-target='#Commerce-content'][1]`,
+        taxCheckboxChecked: `//span[text()='Tax']/preceding-sibling::i[@class='fa-duotone fa-square-check me-1 icon_14_1']`,
+        taxCheckboxUnchecked: `//span[text()='Tax']/preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        commerceSaveBtn: `//div[@id='Commerce-content']//button[text()='SAVE']`,
+
+        saveCommerceInLearnerSiteConfig:`//button[text()='save']`,
+        
+        //Cybersource - Commerce Settings
+        disabledCybersource: `//span[text()='Commerce Settings']/following::span[text()='Cybersource']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
+        enabledCybersource: `//span[text()='Commerce Settings']/following::span[text()='Cybersource']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+        clickEditCybersource: `//span[text()='Commerce Settings']/following::span[text()='Cybersource']/following::i[@data-bs-target='#Cybersource-content'][1]`,
+        paymentServerDropdown: `//label[text()='Payment Server']/following::div[@class='filter-option-inner-inner']`,
+        paymentServerOption: (option: string) => `//span[text()='${option}']`,
+        merchantIdInput: `//input[@id='merchant_id']`,
+        restAPIKeyInput: `//input[@id='cyb_rest_key']`,
+        restAPISecretKeyInput: `//input[@id='cyb_rest_secret']`,
+        securedAcceptenceProfileIdInput: `//input[@id='cyb_sec_pfid']`,
+        securedAcceptenceSecretKeyInput: `//input[@id='cyb_sec_secret']`,
+        securedAcceptenceAccessKeyInput: `//input[@id='cyb_sec_access']`,
+        cybersourceSaveBtn: `//div[@id='Cybersource-content']//button[text()='SAVE']`,
+        
 
         //Allow learners to enroll again (default)
         allowLearnersEnrollAgainDefaultUnchecked: `//span[text()='Allow learners to enroll again (default)']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
@@ -109,6 +134,15 @@ export class SiteAdminPage extends AdminHomePage {
         disabledBusinessRules:`//span[text()='Business Rules']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
 
         clickEditBusinessRules:`//i[@data-bs-target='#BusinessRules-content']`,
+
+
+        disabledCommerce:`(//span[text()='Add On Modules']/following::span[text()='Commerce']/preceding-sibling::i[contains(@class,'toggle-off')])[1]`,
+
+        enabledCommerceInAdminSiteConfig:`//div[text()='Admin site configuration']/following::span[text()='Add On Modules']/following::span[text()='Commerce']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_2']`,
+
+        saveCommerce:`//span[text()='Manage domain']/preceding::button[text()='Save']`,
+
+        clickTenant:(tenantName: string) => `//button[text()='${tenantName}']`,
 
         checkCertificationRevalidation:`(//span[text()='Certification re-validation']/preceding-sibling::i)[2]`,
 
@@ -280,25 +314,54 @@ export class SiteAdminPage extends AdminHomePage {
 
     //Address Inheritance - similar to Address Verification toggle pattern
     async enableAddressInheritance() {
-        await this.wait("mediumWait");
+      
+        const button = this.page.locator(this.selectors.disabledBusinessRules)
+        const isToggleEnabled = await button.isChecked();
+
+        if(!isToggleEnabled){
+            await this.wait("minWait");
+            await this.click(this.selectors.disabledBusinessRules,"enable","toggle");
+            await this.click(this.selectors.SAVE,"save","button");
+        }
+        else{
+            console.log("Business Rule is already enabled");
+        }
         
-        try {
-            const addressInheritanceToggleSelector = `(//*[@class="col Address Inheritance"]/div/label/i)[1]`;
-            
-            const button = this.page.locator(addressInheritanceToggleSelector);
-            const isDisabled = await button.isDisabled();
-            
-            if (isDisabled) {
-                // Address Inheritance is OFF (disabled), need to enable it
-                await this.page.locator(addressInheritanceToggleSelector).click();
-                await this.click(this.selectors.saveBtn, "Save", "Button");
-                await this.wait("mediumWait");
-                console.log("Address Inheritance has been enabled");
-            } else {
-                console.log("Address Inheritance already enabled");
-            }
-        } catch (error) {
-            console.log("Address Inheritance functionality may not be available in this environment:", error);
+        // Always check the certification revalidation checkbox state
+        await this.click(this.selectors.clickEditAddressInheritance,"edit","button");
+        const inheritAddressCheckbox = this.page.locator(this.selectors.checkInheritAddress);
+        const isInheritAddressChecked = await inheritAddressCheckbox.isChecked();
+
+        const inheritEmergencyContactCheckbox = this.page.locator(this.selectors.checkEmergencyContact);
+        const isInheritEmergencyContactChecked = await inheritEmergencyContactCheckbox.isChecked();
+        
+        let changesMade = false;
+        
+        // Check Inherit Address if not checked
+        if(!isInheritAddressChecked){
+            await this.click(this.selectors.checkInheritAddress,"check","checkbox");
+            console.log("✅ Checked Inherit Address");
+            changesMade = true;
+        } else {
+            console.log("Inherit Address is already checked");
+        }
+        
+        // Check Emergency Contact if not checked
+        if(!isInheritEmergencyContactChecked){
+            await this.click(this.selectors.checkEmergencyContact,"check","checkbox");
+            console.log("✅ Checked Emergency Contact");
+            changesMade = true;
+        } else {
+            console.log("Emergency Contact is already checked");
+        }
+        
+        // Save only if changes were made
+        if(changesMade){
+            await this.click(this.selectors.save,"save","button");
+            await this.wait("minWait");
+            await this.page.reload();
+        } else {
+            console.log("Both Inherit Address and Emergency Contact are already checked - no changes needed");
         }
     }
 
@@ -487,7 +550,265 @@ export class SiteAdminPage extends AdminHomePage {
         }
         else{
             console.log("Certification Revalidation is already checked");
-    }}
+        }
+    }
+
+
+
+    async verifyAndEnableCommerceIfDisabled() {
+        await this.wait("mediumWait");
+        const button = this.page.locator(this.selectors.disabledCommerce)
+        const isToggleEnabled = await button.isChecked();
+
+        if(!isToggleEnabled){
+            await this.wait("mediumWait");
+            await this.click(this.selectors.disabledCommerce,"enable","toggle");
+            await this.click(this.selectors.saveCommerce,"save","button");
+        }
+        else{
+            console.log("Commerce module is already enabled");
+        }
+        
+       
+    }
+
+    async verifyCommerceInAdminSiteConfiguration(){
+        await this.wait("mediumWait");
+
+            const commerceEnabledToggle = this.page.locator(this.selectors.enabledCommerceInAdminSiteConfig);
+            const isCommerceEnabled = await commerceEnabledToggle.isVisible();
+            
+            if (isCommerceEnabled) {
+                console.log("✅ Commerce module is ENABLED by default in Admin Site Configuration");
+                return true;
+
+
+            } 
+            else {
+                console.log("❌ Commerce module is still DISABLED in Admin Site Configuration. Expected it to be enabled by default.");
+            }
+            await this.page.reload();            
+    }
+
+
+    async clickTenant(tenantName: string){
+        await this.wait("mediumWait");
+        await this.page.locator(this.selectors.clickTenant(tenantName)).scrollIntoViewIfNeeded();
+        await this.validateElementVisibility(this.selectors.clickTenant(tenantName),"Tenant Name");
+        await this.click(this.selectors.clickTenant(tenantName),"Tenant Name","Link");
+        await this.wait("mediumWait");
+    }
+ 
+    async verifyCommerceInLearnerSiteConfiguration(){
+        await this.wait("mediumWait");
+        
+        // Check if Commerce is enabled in Learner Site Configuration
+        const commerceEnabledToggle = this.page.locator(this.selectors.enabledCommerceInLearnerSiteConfig);
+        const isCommerceEnabled = await commerceEnabledToggle.isVisible();
+        
+        if (!isCommerceEnabled) {
+            console.log("❌ Commerce module is DISABLED in Learner Site Configuration");
+            return false;
+        }
+        
+        console.log("✅ Commerce module is ENABLED in Learner Site Configuration");
+        
+        // Click Edit button for Commerce
+        await this.click(this.selectors.clickEditCommerce, "Edit Commerce", "Button");
+        await this.wait("minWait");
+        
+        // Check if Tax checkbox is checked
+        const taxCheckboxChecked = this.page.locator(this.selectors.taxCheckboxChecked);
+        const isTaxChecked = await taxCheckboxChecked.isVisible();
+        
+        if (isTaxChecked) {
+            console.log("✅ Tax checkbox is already CHECKED in Commerce configuration");
+            return true;
+        }
+        
+        console.log("⚠️ Tax checkbox is UNCHECKED. Checking it now...");
+        
+        // Click on the unchecked Tax checkbox
+        const taxCheckboxUnchecked = this.page.locator(this.selectors.taxCheckboxUnchecked);
+        await taxCheckboxUnchecked.click();
+        await this.wait("minWait");
+        
+        // Save the changes
+        await this.click(this.selectors.saveCommerceInLearnerSiteConfig, "Save Commerce", "Button");
+        await this.wait("mediumWait");
+        
+        // Refresh the page to reflect the changes
+        await this.page.reload();
+        await this.wait("mediumWait");
+
+        console.log("✅ Tax checkbox has been CHECKED and saved");
+        return true;
+
+    }
+
+    async verifyCybersourceConfiguration(cybersourceConfig: any){
+        await this.wait("mediumWait");
+        
+        // Check if Cybersource is disabled
+        const cybersourceDisabledToggle = this.page.locator(this.selectors.disabledCybersource);
+        const isCybersourceDisabled = await cybersourceDisabledToggle.isVisible().catch(() => false);
+        
+        if (isCybersourceDisabled) {
+            console.log("⚠️ Cybersource is DISABLED. Enabling it now...");
+            await cybersourceDisabledToggle.click();
+            await this.wait("mediumWait");
+            
+            // Wait for success popup and verify message
+            const successMessage = this.page.locator(this.selectors.settingsSuccessMessage);
+            const isSuccessVisible = await successMessage.isVisible().catch(() => false);
+            
+            if (isSuccessVisible) {
+                const messageText = await successMessage.textContent();
+                console.log(`✅ Success message displayed: "${messageText}"`);
+                await this.click(this.selectors.SAVE, "OK", "Button");
+                await this.wait("minWait");
+            }
+            
+            // Wait for the toggle to change state and edit button to appear
+            await this.page.waitForSelector(this.selectors.enabledCybersource, { state: 'visible', timeout: 10000 });
+            await this.wait("minWait");
+            console.log("✅ Cybersource has been ENABLED");
+        } else {
+            // Check if it's enabled
+            const cybersourceEnabledToggle = this.page.locator(this.selectors.enabledCybersource);
+            const isCybersourceEnabled = await cybersourceEnabledToggle.isVisible().catch(() => false);
+            
+            if (isCybersourceEnabled) {
+                console.log("✅ Cybersource is already ENABLED");
+            } else {
+                console.log("⚠️ Cybersource toggle state could not be determined");
+                return false;
+            }
+        }
+        
+        // Now click Edit button for Cybersource (only visible when enabled)
+        await this.page.waitForSelector(this.selectors.clickEditCybersource, { state: 'visible', timeout: 10000 });
+        await this.click(this.selectors.clickEditCybersource, "Edit Cybersource", "Button");
+        await this.wait("minWait");
+        
+        // Verify Payment Server dropdown
+        const currentPaymentServer = await this.page.locator(this.selectors.paymentServerDropdown).textContent();
+        const expectedPaymentServer = cybersourceConfig.paymentServer;
+        
+        if (currentPaymentServer?.trim() !== expectedPaymentServer) {
+            console.log(`⚠️ Payment Server is "${currentPaymentServer?.trim()}", expected "${expectedPaymentServer}". Updating...`);
+            await this.click(this.selectors.paymentServerDropdown, "Payment Server Dropdown", "Dropdown");
+            await this.wait("minWait");
+            await this.click(this.selectors.paymentServerOption(expectedPaymentServer), "Payment Server Option", "Option");
+            await this.wait("minWait");
+        } else {
+            console.log(`✅ Payment Server is correct: "${expectedPaymentServer}"`);
+        }
+        
+        // Verify and update Merchant ID
+        const currentMerchantId = await this.page.locator(this.selectors.merchantIdInput).inputValue();
+        if (currentMerchantId !== cybersourceConfig.merchantId) {
+            console.log(`⚠️ Merchant ID is incorrect or empty. Updating to: ${cybersourceConfig.merchantId}`);
+            await this.page.locator(this.selectors.merchantIdInput).clear();
+            await this.page.locator(this.selectors.merchantIdInput).fill(cybersourceConfig.merchantId);
+        } else {
+            console.log(`✅ Merchant ID is correct: ${cybersourceConfig.merchantId}`);
+        }
+        
+        // Verify and update Rest API Key
+        const currentRestAPIKey = await this.page.locator(this.selectors.restAPIKeyInput).inputValue();
+        if (currentRestAPIKey !== cybersourceConfig.restAPIKey) {
+            console.log(`⚠️ Rest API Key is incorrect or empty. Updating...`);
+            await this.page.locator(this.selectors.restAPIKeyInput).clear();
+            await this.page.locator(this.selectors.restAPIKeyInput).fill(cybersourceConfig.restAPIKey);
+        } else {
+            console.log(`✅ Rest API Key is correct`);
+        }
+        
+        // Verify and update Rest API Secret Key
+        const currentRestAPISecretKey = await this.page.locator(this.selectors.restAPISecretKeyInput).inputValue();
+        if (currentRestAPISecretKey !== cybersourceConfig.restAPISecretKey) {
+            console.log(`⚠️ Rest API Secret Key is incorrect or empty. Updating...`);
+            await this.page.locator(this.selectors.restAPISecretKeyInput).clear();
+            await this.page.locator(this.selectors.restAPISecretKeyInput).fill(cybersourceConfig.restAPISecretKey);
+        } else {
+            console.log(`✅ Rest API Secret Key is correct`);
+        }
+        
+        // Verify and update Secured Acceptence ProfileId
+        const currentProfileId = await this.page.locator(this.selectors.securedAcceptenceProfileIdInput).inputValue();
+        if (currentProfileId !== cybersourceConfig.securedAcceptenceProfileId) {
+            console.log(`⚠️ Secured Acceptence ProfileId is incorrect or empty. Updating...`);
+            await this.page.locator(this.selectors.securedAcceptenceProfileIdInput).clear();
+            await this.page.locator(this.selectors.securedAcceptenceProfileIdInput).fill(cybersourceConfig.securedAcceptenceProfileId);
+        } else {
+            console.log(`✅ Secured Acceptence ProfileId is correct`);
+        }
+        
+        // Verify and update Secured Acceptence Secret Key
+        const currentSecretKey = await this.page.locator(this.selectors.securedAcceptenceSecretKeyInput).inputValue();
+        if (currentSecretKey !== cybersourceConfig.securedAcceptenceSecretKey) {
+            console.log(`⚠️ Secured Acceptence Secret Key is incorrect or empty. Updating...`);
+            await this.page.locator(this.selectors.securedAcceptenceSecretKeyInput).clear();
+            await this.page.locator(this.selectors.securedAcceptenceSecretKeyInput).fill(cybersourceConfig.securedAcceptenceSecretKey);
+        } else {
+            console.log(`✅ Secured Acceptence Secret Key is correct`);
+        }
+        
+        // Verify and update Secured Acceptence Access Key
+        const currentAccessKey = await this.page.locator(this.selectors.securedAcceptenceAccessKeyInput).inputValue();
+        if (currentAccessKey !== cybersourceConfig.securedAcceptenceAccessKey) {
+            console.log(`⚠️ Secured Acceptence Access Key is incorrect or empty. Updating...`);
+            await this.page.locator(this.selectors.securedAcceptenceAccessKeyInput).clear();
+            await this.page.locator(this.selectors.securedAcceptenceAccessKeyInput).fill(cybersourceConfig.securedAcceptenceAccessKey);
+        } else {
+            console.log(`✅ Secured Acceptence Access Key is correct`);
+        }
+        
+        // Check if any changes were made
+        const allFieldsCorrect = 
+            currentPaymentServer?.trim() === expectedPaymentServer &&
+            currentMerchantId === cybersourceConfig.merchantId &&
+            currentRestAPIKey === cybersourceConfig.restAPIKey &&
+            currentRestAPISecretKey === cybersourceConfig.restAPISecretKey &&
+            currentProfileId === cybersourceConfig.securedAcceptenceProfileId &&
+            currentSecretKey === cybersourceConfig.securedAcceptenceSecretKey &&
+            currentAccessKey === cybersourceConfig.securedAcceptenceAccessKey;
+        
+        if (allFieldsCorrect) {
+            console.log("✅ All Cybersource fields are already correctly configured - no changes needed");
+            return true;
+        }
+        
+        // Save the changes only if modifications were made
+        console.log("💾 Saving Cybersource configuration changes...");
+        await this.click(this.selectors.cybersourceSaveBtn, "Save Cybersource", "Button");
+        await this.wait("mediumWait");
+        
+        // Wait for success popup after save
+        const successMessageAfterSave = this.page.locator(this.selectors.settingsSuccessMessage);
+        const isSuccessVisibleAfterSave = await successMessageAfterSave.isVisible().catch(() => false);
+        
+        if (isSuccessVisibleAfterSave) {
+            const messageText = await successMessageAfterSave.textContent();
+            console.log(`✅ Success message after save: "${messageText}"`);
+            await this.click(this.selectors.SAVE, "OK", "Button");
+            await this.wait("minWait");
+        }
+        
+        // Wait for save to complete
+        await this.page.waitForLoadState('networkidle');
+        
+        // Refresh the page to reflect the changes
+        await this.page.reload();
+        await this.wait("mediumWait");
+        
+        console.log("✅ Cybersource has been configured successfully");
+        return true;
+    }
+    
+
+
 
     //Allow learners to enroll again (default) - In Site Admin Business Rules
     async verifyAllowLearnersEnrollAgainDefault(shouldBeUnchecked: boolean = true) {

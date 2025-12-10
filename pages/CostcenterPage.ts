@@ -48,7 +48,6 @@ export class CostcenterPage extends LearnerHomePage {
         courseTotal: (courseName: string) => `//span[@class='field_title_1 ms-1' and text()='${courseName}']/ancestor::div[@class='row p-2 mx-0 background_5' or @class='row p-2 mx-0 background_3']//div[@class='col-2']//div[@class='text-end rawtxt text-capitalize' and contains(text(),'$')]`,
         subTotalValue: `//div[text()='Sub Total :']/following::div[@class='field_title_1 text-end'][1]`,
         discountValue: `//div[text()='Discount :']/following::div[@class='field_title_1 text-end'][1]`,
-        taxValue: `//div[text()='Tax :']/following::div[@class='field_title_1 text-end'][1]`,
         grandTotalValue: `//div[contains(text(),'Grand Total :')]/following::div[@class='field_title_1 text-end'][1]`,
         termsAndContionLink:`//a[text()='Terms and Conditions']`,
         
@@ -58,6 +57,8 @@ export class CostcenterPage extends LearnerHomePage {
         billingName: `//div[text()='billing details']/following-sibling::div[contains(@class,'border')]//label[text()='Name']/following-sibling::input`,
         billingContactNumber: `//label[normalize-space()='Contact Number']/following-sibling::input`,
 
+        taxValue: "(//span[text()='Tax :']/following::span[@data-bs-toggle='tooltip'])[1]",
+        adminTaxValue: "(//div[text()='Tax :']/following::div[@class='field_title_1 text-end'])[1]",
     };
 
     public async orderSummaryLabelVerify() {
@@ -94,6 +95,46 @@ export class CostcenterPage extends LearnerHomePage {
     public async fillCostCenterInput(){
         await this.type(this.selectors.costCenterInput,"Input","67675545546");
     }
+
+    // Verify tax value changes from 0.00 to calculated amount after billing details and calculate tax
+    // Accepts an optional selector to support both learner and admin pages (default uses learner-side `taxValue`).
+    public async verifyTaxValueAfterBillingDetails(selector?: string): Promise<void> {
+        const sel = selector || this.selectors.taxValue;
+        await this.wait('minWait');
+
+        // Scroll to tax element before reading initial value
+        await this.page.locator(sel).scrollIntoViewIfNeeded();
+        await this.wait('minWait');
+
+        // Get initial tax value (should be 0.00)
+        const initialTaxValue = await this.page.locator(sel).textContent();
+        const cleanedInitialValue = initialTaxValue?.trim() || "";
+        console.log(`📊 Initial Tax value (${sel}): ${cleanedInitialValue}`);
+
+        if (cleanedInitialValue === "0.00" || cleanedInitialValue === "$0.00") {
+            console.log("✅ Verified: Initial tax value is 0.00 before billing details");
+        }
+
+        await this.wait('mediumWait');
+
+        // Scroll to tax element before reading updated value
+        await this.page.locator(sel).scrollIntoViewIfNeeded();
+        await this.wait('minWait');
+
+        // Get updated tax value after calculate tax button
+        const updatedTaxValue = await this.page.locator(sel).textContent();
+        const cleanedUpdatedValue = updatedTaxValue?.trim() || "";
+        console.log(`📊 Updated Tax value after billing details (${sel}): ${cleanedUpdatedValue}`);
+
+        // Verify tax value has changed from 0.00 - MUST CHANGE OR TEST FAILS
+        if (cleanedUpdatedValue !== "0.00" && cleanedUpdatedValue !== "$0.00" && cleanedUpdatedValue !== cleanedInitialValue) {
+            console.log(`✅ Tax value successfully changed from ${cleanedInitialValue} to ${cleanedUpdatedValue}`);
+        } else {
+            throw new Error(`❌ TEST FAILED: Tax value did not change from 0.00 after selecting US + California. Current value: ${cleanedUpdatedValue}`);
+        }
+    }
+
+    // Note: admin-specific verification removed — use `verifyTaxValueAfterBillingDetails(this.selectors.adminTaxValue)` instead.
     // public async fillCreditDetails() {
     //     await this.type(this.selectors.cardNumber, "Card Number", getCreditCardNumber())
     //     await this.type(this.selectors.expiryDate, "Expiry Date", getcardExpiryDate())

@@ -154,7 +154,8 @@ test.describe(`Verify_the_Multi_Instance_coutrse_status_when_those_are_attached_
 
     await enrollHome.clickSelectLearner();
     await enrollHome.searchandSelectTP(title)
-    await enrollHome.selectCls();
+    // await enrollHome.selectCls();
+    await enrollHome.selectCourseOrInstance(courseName,1);
 
     // Verify courses inside TP and enroll the EL course
     await enrollHome.verifyTPHasCourses([class1,class2,elCourseName]);

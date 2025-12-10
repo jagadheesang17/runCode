@@ -226,6 +226,8 @@ export class EnrollmentPage extends AdminHomePage {
 
         revalidateSuccessMessage:(title:string) => `Re-Validate  to "${title}" has been done successfully for “1”  learner(s).`,
 
+
+
 enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     searchUserInput: `//input[@placeholder='Search']`,
     searchUserCheckbox: (user:string) => `(//td[text()='${user}']/following::i)[1]`,
@@ -247,6 +249,8 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     instanceEnrollButton: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::button[contains(@class,'enroll') or text()='Enroll'][1]`,
 
     recertificationCheckbox:`//span[text()='Recertification']/preceding-sibling::i[@class='fa-duotone fa-square icon_16_1 icon_16_1']`,
+    selectCourseOrInst:(courseName:string,index:number)=>`//span[text()='${courseName}']/preceding::i[contains(@class,'fa-duotone lms-chevron-up-down')][${index}]`,
+
 
     // 
     }
@@ -311,6 +315,12 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         // const randomIndex = Math.floor(Math.random() * index) + 1;
         await this.click(this.selectors.userListOpt(data), "Course", "Options")
         //await this.click(this.selectors.selectUser, "Select Course", "Radio button")
+        await this.type(this.selectors.searchcourseOrUser, "Course Name", data)
+        const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
+        const randomIndex = Math.floor(Math.random() * index) + 1;
+        await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
+        await this.wait("minWait")
+        await this.click(this.selectors.selectUser, "Select Course", "Radio button")
     }
     async searchUser(data: string) {
         await this.wait("minWait")
@@ -776,10 +786,16 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
   await expect(selectLocator).toBeEnabled();
   await selectLocator.click();
  
-       
-
     }
 
+     public async selectCourseOrInstance(courseName:string,index:number) {
+        await this.wait("maxWait");
+  const selectLocator =  this.page.locator(this.selectors.selectCourseOrInst(courseName,index));
+  await selectLocator.scrollIntoViewIfNeeded();
+  await selectLocator.waitFor({ state: "visible" });
+  await expect(selectLocator).toBeEnabled();
+  await selectLocator.click();
+     }
     //  public async searchUser(user:string) {
     //     await this.wait("maxWait");
     //    await this.typeAndEnter("(//input[@placeholder='Search'])[1]", "User", user);

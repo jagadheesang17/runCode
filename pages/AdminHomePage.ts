@@ -27,6 +27,7 @@ export class AdminHomePage extends AdminLogin {
         learnerGrouplink: `//a[text()='Learner Group']`,
         locationLink: "//a[text()='Location']",
         commerceMenu: `//span[text()='Commerce']`,
+        commerceMenuAfterReports: `(//span[text()='Reports']/following::span[text()='Commerce'])[1]`,
         learningPathLink: "//a[text()='Learning Path']",
         //learningPathLink:"//a[text()='Learning Path']",
         certificationLink: "//a[text()='Certification']",
@@ -51,6 +52,8 @@ export class AdminHomePage extends AdminLogin {
         quickAccessIcon: `#dd-icon-wrapper i`,
         quickAccessDD: `button div:text-is('Select Quick Access Buttons To Add Below')`,
         quickAccessValue: `//div[@class='dropdown-menu show'] //a`,
+        quickAccessDropdownOptions: `//div[@class='dropdown-menu show']//a`,
+        manageTaxInQuickAccess: `//div[@class='dropdown-menu show']//a[text()='Manage Tax']`,
         tickIcon: `i[aria-label="Click here to save"]`,
         deleteIcon: `//div[contains(@class,'mandatory pointer')]//i`,
         yesBtn: `//button[text()='Yes']`,
@@ -85,6 +88,16 @@ export class AdminHomePage extends AdminLogin {
         metaLibOption: (data: string) => `//a[text()='${data}']`,
         dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
 
+
+        manageTaxLink:`//a[text()='Manage Tax']`,
+
+        setupTaxButton:`//button[text()='SETUP TAX']`,
+
+        manageTaxOptionInDropdown:(options:string)  => `//span[text()='${options}']`,
+
+        manageTaxInQuickAccessList:`(//div[text()='Manage Tax'])[2]`,
+
+        removeSpecificModuleFromQuickAccess:(module:string) => `(//div[text()='${module}']/preceding::i[@class='fa-duotone fa-circle-xmark'])[1]`,
         ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`,
         createOrder:`//a[text()='Create Order']`,
         ordersLink:`//a[text()='Order']`,
@@ -245,6 +258,124 @@ export class AdminHomePage extends AdminLogin {
         await this.wait('minWait');
     }
 
+    // Verify and click Manage Tax from quick access dropdown
+    public async verifyAndClickManageTaxFromQuickAccess(option:string) {
+        // Check if dropdown is already open
+        const dropdownOptions = this.page.locator(this.selectors.quickAccessDropdownOptions);
+        const isDropdownOpen = await dropdownOptions.first().isVisible().catch(() => false);
+        
+        if (!isDropdownOpen) {
+            await this.clickQuickAccess();
+        } else {
+            console.log("Quick Access dropdown is already open");
+        }
+        
+        // Check if Manage Tax option is available in dropdown
+        const manageTaxInDropdown = this.page.locator(this.selectors.manageTaxOptionInDropdown(option));
+        const isAvailable = await manageTaxInDropdown.isVisible().catch(() => false);
+        
+        if (isAvailable) {
+            console.log("✅ Manage Tax option found in Quick Access dropdown");
+            await this.click(this.selectors.manageTaxOptionInDropdown(option), "Manage Tax", "Quick Access Option");
+            
+            // Wait for the option to be added to the listing
+            await this.wait('minWait');
+             // Click the tick icon to save
+            await this.click(this.selectors.tickIcon, "Tick Icon", "Icon");
+            await this.wait('minWait');
+             
+            await this.spinnerDisappear();
+            
+            // Verify if Manage Tax is now present in the Quick Access listing page
+            const manageTaxInList = this.page.locator(this.selectors.manageTaxInQuickAccessList);
+            const isPresentInList = await manageTaxInList.isVisible().catch(() => false);
+            
+            if (isPresentInList) {
+                console.log("✅ Manage Tax has been successfully added to Quick Access listing page");
+            } 
+            else {
+                console.log("⚠️ Manage Tax option was clicked but not found in Quick Access listing page");
+            }
+            
+           
+        } 
+        else {
+            console.log("⚠️ Manage Tax option not found in Quick Access dropdown");
+            // Close the dropdown
+            await this.page.keyboard.press('Escape');
+            await this.wait('minWait');
+            
+            // Verify if Manage Tax is already present in the Quick Access listing page
+            const manageTaxInList = this.page.locator(this.selectors.manageTaxInQuickAccessList);
+            const isPresentInList = await manageTaxInList.isVisible().catch(() => false);
+            
+            if (isPresentInList) {
+                console.log("✅ Manage Tax is already present in the Quick Access listing page");
+            } else {
+                console.log("❌ Manage Tax is NOT found in Quick Access listing page");
+            }
+        }
+    }
+
+    // Remove Manage Tax from Quick Access and verify it's removed from listing and returns to dropdown
+    public async removeManageTaxFromQuickAccessAndVerify(option: string) {
+        // Click Quick Access icon to enable editing mode
+        await this.validateElementVisibility(this.selectors.quickAccessIcon, "QuickAccess Icon");
+        await this.click(this.selectors.quickAccessIcon, "QuickAccess Icon", "Icon");
+        await this.wait('minWait');
+        
+        // Verify Manage Tax is present in the listing before removing
+        const manageTaxInListBefore = this.page.locator(this.selectors.manageTaxInQuickAccessList);
+        const isPresentBeforeRemoval = await manageTaxInListBefore.isVisible().catch(() => false);
+        
+        if (!isPresentBeforeRemoval) {
+            console.log("⚠️ Manage Tax is not present in Quick Access listing to remove");
+            return;
+        }
+        
+        console.log("✅ Manage Tax found in Quick Access listing, proceeding to remove it");
+        
+        // Find and click the delete icon for Manage Tax using the selector
+        await this.click(this.selectors.removeSpecificModuleFromQuickAccess("Manage Tax"), "Delete Icon for Manage Tax", "Icon");
+        await this.wait('minWait');
+        
+        // Confirm deletion
+        await this.click(this.selectors.yesBtn, "Yes", "Button");
+        await this.wait('minWait');
+        
+        // Click tick icon to save changes
+        await this.click(this.selectors.tickIcon, "Tick Icon", "Icon");
+        await this.wait('minWait');
+        await this.spinnerDisappear();
+        
+        // Verify Manage Tax is removed from the listing
+        const manageTaxInListAfter = this.page.locator(this.selectors.manageTaxInQuickAccessList);
+        const isPresentAfterRemoval = await manageTaxInListAfter.isVisible().catch(() => false);
+        
+        if (!isPresentAfterRemoval) {
+            console.log("✅ Manage Tax has been successfully removed from Quick Access listing");
+        } else {
+            console.log("⚠️ Manage Tax is still present in Quick Access listing after deletion attempt");
+        }
+        
+        // Open the Quick Access dropdown to verify option is back in dropdown
+        await this.clickQuickAccess();
+        
+        // Check if Manage Tax option is now available in dropdown again
+        const manageTaxInDropdown = this.page.locator(this.selectors.manageTaxOptionInDropdown(option));
+        const isAvailableInDropdown = await manageTaxInDropdown.isVisible().catch(() => false);
+        
+        if (isAvailableInDropdown) {
+            console.log("✅ Manage Tax option has automatically returned to the Quick Access dropdown");
+        } else {
+            console.log("⚠️ Manage Tax option is NOT found in Quick Access dropdown after removal");
+        }
+        
+        // Close the dropdown
+        await this.page.keyboard.press('Escape');
+        await this.wait('minWait');
+    }
+
     public async selectingQuickAccessValue() {
         let count = await this.page.locator(this.selectors.quickAccessValue).count() / 2;
         console.log(count);
@@ -384,6 +515,9 @@ export class AdminHomePage extends AdminLogin {
         this.click(this.selectors.commerceMenu, "Commerce Menu", "Button")
     }
 
+    async clickManageTax(){
+        this.click(this.selectors.manageTaxLink,"Manage Tax","Link")
+    }
     public async clickCompletionCertification() {
         await this.mouseHover(this.selectors.completionCertificationLink, "Completion Certification");
         await this.click(this.selectors.completionCertificationLink, "CompletiionCertification", "Link");
@@ -749,6 +883,39 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
+        async verifyCommerceMenuInMenuBar() {
+        await this.wait("mediumWait");
+        
+        try {
+            const commerceMenuElement = this.page.locator(this.selectors.commerceMenuAfterReports);
+            
+            // Scroll to Commerce option in menu bar and hover
+            await commerceMenuElement.scrollIntoViewIfNeeded();
+            await this.wait("minWait");
+            await this.mouseHover(this.selectors.commerceMenuAfterReports, "Commerce Menu");
+            
+            const isCommerceVisible = await commerceMenuElement.isVisible();
+            
+            if (isCommerceVisible) {
+                console.log("✅ Commerce option is ENABLED and visible in the menu bar");
+                return true;
+            } else {
+                throw new Error("❌ Commerce option is NOT visible in the menu bar after Reports. Expected it to be enabled.");
+            }
+        } catch (error) {
+            throw new Error(`❌ Failed to verify Commerce menu visibility in menu bar: ${error}`);
+        }
+    }
+
+
+    async clickSetupTaxButton(){
+        await this.click(this.selectors.setupTaxButton,"Manage Tax","Link");
+    }
+
+
+
+    
+    
 
     public async clickCreateOrder() {
         await this.validateElementVisibility(this.selectors.createOrder, "Create Order");

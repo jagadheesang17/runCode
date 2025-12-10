@@ -100,14 +100,21 @@ export class CoursePage extends AdminHomePage {
     instanceCountInput: "//div[@id='exp-course-instances-options']//input",
     createInstanceBtn: "//button[@id='instance-add']",
     sessionNameInput: "//label[text()='Session Name']/following-sibling::input",
+    sessionNameInput2: "(//label[text()='Session Name']/following-sibling::input)[2]",
+
     sessionNameIndex: (index: number) => `(//label[text()='Session Name']/following-sibling::input)[${index}]`,
     instructorDropdown: "//label[text()='Instructor']/following-sibling::div//input",
     instructorDropdownIndex: (index: number) => `(//label[text()='Instructor']/following-sibling::div//input)[${index}]`,
     instructorOption: (instructorName: string) => `//li[contains(text(),'${instructorName}')]`,
     instructorOptionIndex: (instructorName: string, index: number) => `(//li[contains(text(),'${instructorName}')])[${index}]`,
     locationSelection: "//label[text()='Select Location']/following-sibling::div//input[1]",
+    locationSelection2: "(//label[text()='Select Location']/following-sibling::div//input)[2]",
+
     locationDropdown: "//label[text()='Select Location']/following-sibling::div//input[@placeholder='Search']",
+
     locationOption: (locationName: string) => `//li[text()='${locationName}']`,
+
+
     CourseCalendaricon: "//div[@id='complete_by_date']/input",
     tomorrowdate: "//td[@class='today day']/following-sibling::td[1]",
     nextMonth: `//div[@class='datepicker-days']//th[@class='next']`,
@@ -179,6 +186,8 @@ export class CoursePage extends AdminHomePage {
     // indianTimezoneIndex:(timezoneIndia:number)=> `(//li[contains(text(),'Indian Standard Time/Kolkata')])[${timezoneIndia}]`,
     indianTimezone: `//li[contains(text(),'Indian Standard Time/Kolkata')]`,
     Date: "(//label[contains(text(),'Date')]/following-sibling::div/input)[1]",
+        Date2: "(//label[contains(text(),'Date')]/following-sibling::div/input)[2]",
+
     startDateInstanceIndex: (index: number) => `(//label[text()='Start Date']/following-sibling::div/input)[${index}]`,
     timeInputIndex: (index: number) => `(//label[text()='Start Time']/following-sibling::input)[${index}]`,
     addDeleteIcon: `//label[text()='session add/delete']/following::i[contains(@class,'fad fa-plus')]`,
@@ -464,7 +473,9 @@ export class CoursePage extends AdminHomePage {
     addFileButton: `//button[text()='Add']`,
 
     createCourseButton:`//a[text()='Create Course']`,
-    courseTitle: (title: string) => `(//div[text()='${title}'])[1]`
+    courseTitle: (title: string) => `(//div[text()='${title}'])[1]`,
+    considerForCompletionCheckbox: `(//span[text()='Consider For Completion']/following::i[@class='fa-duotone fa-square icon_16_1'])[1]`,
+
   };
 
   constructor(page: Page, context: BrowserContext) {
@@ -2633,6 +2644,19 @@ export class CoursePage extends AdminHomePage {
     );
   }
 
+  async enterSessionName2(sessionName: string){
+    await this.validateElementVisibility(
+      this.selectors.sessionNameInput2,
+      "Session Name"
+    );
+    await this.mouseHover(this.selectors.sessionNameInput2, "Session Name");
+    await this.type(
+      this.selectors.sessionNameInput2,
+      "Session Name",
+      sessionName
+    );
+  }
+
   async selectInstructor(instructorName: string) {
     await this.click(
       this.selectors.instructorDropdown,
@@ -2731,6 +2755,11 @@ export class CoursePage extends AdminHomePage {
     const date = getRandomFutureDate();
     await this.keyboardType(this.selectors.Date, date);
   }
+async enterDateValue2() {
+    const date = getRandomFutureDate();
+    await this.keyboardType(this.selectors.Date2, date);
+  }
+
 
   async enterpastDateValue() {
     const date = getRandomPastDate();
@@ -6063,7 +6092,104 @@ async startandEndTime() {
           console.log("Continuing with default time value");
         }
       
+      async startandEndTime2() {
+      // Session-2: use indexed selectors (1-based index = 2)
+      const idx = 2;
+      const indexedTimeSelector = this.selectors.timeInputIndex(idx);
+      const indexedDateSelector = this.selectors.startDateInstanceIndex(idx);
+
+      // Ensure the indexed time input exists and is visible
+      try {
+        const el = this.page.locator(indexedTimeSelector);
+        const visible = await el.isVisible().catch(() => false);
+        if (!visible) {
+          console.warn(`startandEndTime2: indexed time input not visible using ${indexedTimeSelector}. Falling back to generic time input.`);
+        } else {
+          await this.click(indexedTimeSelector, "Start Time Input (session-2)", "Input");
+          await this.wait("mediumWait");
+        }
+      } catch (e) {
+        console.warn('startandEndTime2: error checking indexed time input', e);
+      }
+    
+    function getCurrentTimePlusTwoHours() {
+      const now = new Date();
+      now.setHours(now.getHours() + 2); // Add 2 hours
+      let hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12 || 12; // Convert to 12-hour format
+      const roundedMinutes = Math.ceil(minutes / 15) * 15;
+      const formattedMinutes =
+        roundedMinutes === 60
+          ? "00"
+          : roundedMinutes.toString().padStart(2, "0");
+      if (roundedMinutes === 60) {
+        hours = (hours % 12) + 1;
+      }
+      return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
+    }
+    async function selectNextAvailableTime() {
+      // Target only the visible time picker using :visible or style check
+      const list = await this.page
+        .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
+        .allTextContents();
+      console.log(list);
+      const timeToSelect = getCurrentTimePlusTwoHours();
+      console.log("Current Time + 2 hours:", timeToSelect);
+
+      // Scope the locator to the second timepicker occurrence if multiple are present
+      const timeLocator = this.page.locator(
+        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])[2]`
+      );
+
+      const count = await timeLocator.count();
+      if (count > 0) {
+        await timeLocator.first().click();
+      } else {
+        // Fallback: try first available matching time anywhere
+        const anyLocator = this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`);
+        const anyCount = await anyLocator.count();
+        if (anyCount > 0) {
+          await anyLocator.first().click();
+        } else {
+          console.log(`Time ${timeToSelect} not found for session-2, selecting closest available`);
+          for (const time of list) {
+            if (time >= timeToSelect) {
+              await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])[2]`).first().click().catch(() => {});
+              break;
+            }
+          }
+        }
+      }
+    }
+    await selectNextAvailableTime.call(this);
+    
+    const timeToSet = getCurrentTimePlusTwoHours();
+    console.log("Setting time to:", timeToSet);
+    
+  
       
+      // Fallback: try to use timepicker if it exists
+      try {
+        await this.page.waitForSelector("//div[contains(@class,'timepicker')]//li", { timeout: 5000 });
+        const timeOptions = await this.page.locator("//div[contains(@class,'timepicker')]//li").all();
+        
+        if (timeOptions.length > 0) {
+          // Select a time that's likely to be in the future (avoid first few options which might be past times)
+          const safeIndex = Math.max(5, Math.floor(timeOptions.length / 3));
+          await this.wait("minWait");
+          await timeOptions[safeIndex].click();
+          console.log("Selected time from timepicker at index:", safeIndex);
+        }
+      } catch (timepickerError) {
+        console.error("Timepicker fallback also failed:", timepickerError);
+        console.log("Continuing with default time value");
+      }
+    
+
+          console.log("Continuing with default time value");
+        }
   
       /* const pickRandomTime = async () => {
               const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
@@ -6087,6 +6213,14 @@ async startandEndTime() {
     //select location by input
        async selectLocationByInput(locationName: string) {
         await this.click(this.selectors.locationSelection,"Select location","Field")
+        await this.click(this.selectors.locationDropdown, "Select Location", "DropDown");
+        await this.type(this.selectors.locationDropdown, "Location", locationName);
+        await this.mouseHover(this.selectors.locationOption(locationName), "Location Option");
+        await this.click(this.selectors.locationOption(locationName), "Location Option","Selected");
+
+    }
+     async selectLocationByInput2(locationName: string) {
+        await this.click(this.selectors.locationSelection2,"Select location","Field")
         await this.click(this.selectors.locationDropdown, "Select Location", "DropDown");
         await this.type(this.selectors.locationDropdown, "Location", locationName);
         await this.mouseHover(this.selectors.locationOption(locationName), "Location Option");
