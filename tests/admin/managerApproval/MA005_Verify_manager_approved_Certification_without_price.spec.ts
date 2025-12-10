@@ -3,7 +3,7 @@ import { FakerData } from '../../../utils/fakerUtils';
 import { credentials } from "../../../constants/credentialData";
 
 const courseName = FakerData.getCourseName();
-const certName = "CERT_" + FakerData.getCourseName();
+const certName =FakerData.getCourseName()+Date.now();
 const description = FakerData.getDescription();
 const managerName = credentials.MANAGERNAME.username;
 
@@ -88,6 +88,10 @@ test.describe(`Verify manager approved Certification without price`, async () =>
         await catalog.clickRequestapproval();
         await catalog.selectManagerOnRequestApprovalPopup(managerName);
         await catalog.submitRequestAndVerify();
+             await catalog.clickDashboardLink();
+        await learnerHome.clickINA();
+        await learnerHome.clickINAOption("Pending Requests");
+        await learnerHome.verifyCourseInINA(certName);
     })
 
     test(`Ensure that the manager is able to successfully approve the Certification request`, async ({ learnerHome }) => {
@@ -109,11 +113,10 @@ test.describe(`Verify manager approved Certification without price`, async () =>
             { type: `Test Description`, description: `Verify manager approved Certification is available on the learner side` }
         );
         await learnerHome.learnerLogin("TEAMUSER2", "DefaultPortal");
-        await learnerHome.clickDashboardLink();
-        await dashboard.clickLearningPath_And_Certification();
-        await dashboard.clickCertificationLink();
-        await dashboard.searchCertification(certName);
-        await catalog.clickMoreonCourse(certName);
+         await catalog.clickDashboardLink();
+        await learnerHome.clickINA();
+        await learnerHome.clickINAOption("Pending Requests");
+        await learnerHome.clickCourseInINA(certName);
         await readContentHome.AICCFilecontainingaPPT_Storyline();
         await readContentHome.saveLearningAICC();
         await catalog.verifyStatus("Completed");

@@ -7,7 +7,7 @@ import { ca } from "date-fns/locale";
 import { credentials } from "../../../constants/credentialData";
 
 
-const courseName = FakerData.getCourseName();
+const courseName = FakerData.getCourseName()+Date.now();;
 const instructorName = credentials.INSTRUCTORNAME.username
 const managerName = credentials.MANAGERNAME.username;
 
@@ -60,31 +60,36 @@ test.describe(`Verify manager approved Elearning course without price`, async ()
         await catalog.clickRequestapproval();
         await catalog.selectManagerOnRequestApprovalPopup(managerName);
         await catalog.submitRequestAndVerify();
+        await catalog.clickDashboardLink();
+        await learnerHome.clickINA();
+        await learnerHome.clickINAOption("Pending Requests");
+        await learnerHome.verifyCourseInINA(courseName);
+
     })
 
-    test(`Ensure that the manager is able to successfully approve the given request`, async ({ managerHome, learnerHome, profile, createUser, editCourse, location }) => {
-            test.info().annotations.push(
-                { type: `Author`, description: `Tamilvanan` },
-                { type: `TestCase`, description: `Ensure that the manager is able to successfully approve the given request` },
-                { type: `Test Description`, description: `Ensure that the manager is able to successfully approve the given request` }
-            );
-            await learnerHome.learnerLogin("MANAGERNAME", "DefaultPortal");
-            await learnerHome.selectCollaborationHub();
-            await learnerHome.clickApprove(courseName);
-            await learnerHome.verifyApprovedSuccessfully();
+    test(`Ensure that the manager is able to successfully approve the given request`, async ({ catalog, learnerHome, profile, createUser, editCourse, location }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Tamilvanan` },
+            { type: `TestCase`, description: `Ensure that the manager is able to successfully approve the given request` },
+            { type: `Test Description`, description: `Ensure that the manager is able to successfully approve the given request` }
+        );
+        await learnerHome.learnerLogin("MANAGERNAME", "DefaultPortal");
+        await learnerHome.selectCollaborationHub();
+        await learnerHome.clickApprove(courseName);
+        await learnerHome.verifyApprovedSuccessfully();
     });
 
-    test(`Verify manager approved Elearning course is available on the learner side`, async ({ learnerHome, readContentHome,catalog }) => {
+    test(`Verify manager approved Elearning course is available on the learner side`, async ({ learnerHome, readContentHome, catalog }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Verify manager approved Elearning course is available on the learner side` },
             { type: `Test Description`, description: `Verify manager approved Elearning course is available on the learner side` }
         );
         await learnerHome.learnerLogin("TEAMUSER1", "DefaultPortal");
-        await learnerHome.clickMyLearning();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
-              await catalog.clickCourseInMyLearning(courseName);
+        await catalog.clickDashboardLink();
+        await learnerHome.clickINA();
+        await learnerHome.clickINAOption("Pending Requests");
+        await learnerHome.clickCourseInINA(courseName);
         await readContentHome.AICCFilecontainingaPPT_Storyline();
         await readContentHome.saveLearningAICC();
         await catalog.clickMyLearning();

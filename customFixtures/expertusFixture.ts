@@ -265,6 +265,16 @@ export const test = baseTest.extend<expertusFixture>({
     transferEnrollment: async ({ page, context }, use) => {
         const transferEnrollment = new TransferEnrollmentPage(page, context);
         await use(transferEnrollment);
+    },
+
+    discount: async ({ page, context }, use) => {
+        const discount = new DiscountPage(page, context);
+        await use(discount);
+    },
+
+    reportPage: async ({ page, context }, use) => {
+        const reportPage = new ReportPage(page, context);
+        await use(reportPage);
     }
 
 })

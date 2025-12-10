@@ -4,6 +4,7 @@ import { AdminHomePage } from "./AdminHomePage";
 
 import { FakerData, getCurrentDateFormatted, gettomorrowDateFormatted } from "../utils/fakerUtils";
 import { create } from "domain";
+import { FilterUtils } from "../utils/filterUtils";
 
 export class LearningPathPage extends AdminHomePage {
 
@@ -838,6 +839,7 @@ export class LearningPathPage extends AdminHomePage {
         await this.wait('mediumWait');
         const inner = await this.getInnerText("//label[text()='CODE']/parent::div");
         console.log(inner);
+        return inner;
 
         /*   let codeValue = await this.fetchattribute(this.selectors.codeInput, "placeholder");
           console.log(codeValue); */
@@ -1312,5 +1314,104 @@ export class LearningPathPage extends AdminHomePage {
         );
         await this.wait("minWait");
         console.log("✅ Clicked OK button on recertification enroll again popup");
+    }
+
+    /**
+     * Apply Learning Path filters with optional parameters
+     * @param filters - Object containing optional filter parameters
+     * @param filters.category - Category filter value (searchable dropdown)
+     * @param filters.currency - Currency filter value (searchable dropdown)
+     * @param filters.language - Language filter value (searchable dropdown)
+     * @param filters.tags - Tags filter value (searchable dropdown)
+     * @param filters.provider - Provider filter value (searchable dropdown)
+     * @param filters.status - Status filter value (without search dropdown)
+     * @param filters.priceMin - Minimum price (text field)
+     * @param filters.priceMax - Maximum price (text field)
+     * @param filters.code - CODE filter value (search filter)
+     * @param filters.course - Course filter value (search filter)
+     */
+    async applyLearningPathFilters(filters: {
+        category?: string;
+        currency?: string;
+        language?: string;
+        tags?: string;
+        provider?: string;
+        status?: string;
+        priceMin?: string;
+        priceMax?: string;
+        code?: string;
+        course?: string;
+    } = {}) {
+        const filterUtils = new FilterUtils(this.page, this.context);
+
+        // Click filter icon to open filters
+        await filterUtils.clickFilterIcon();
+        await this.wait("minWait");
+        console.log("🔍 Opened Learning Path filters");
+
+        // Apply Category filter (searchable dropdown)
+        if (filters.category) {
+            await filterUtils.applySearchableDropdownFilter("Category", filters.category);
+            console.log(`✅ Applied Category filter: ${filters.category}`);
+        }
+
+        // Apply Currency filter (searchable dropdown)
+        if (filters.currency) {
+            await filterUtils.applySearchableDropdownFilter("Currency", filters.currency);
+            console.log(`✅ Applied Currency filter: ${filters.currency}`);
+        }
+
+        // Apply Language filter (searchable dropdown)
+        if (filters.language) {
+            await filterUtils.applySearchableDropdownFilter("Language", filters.language);
+            console.log(`✅ Applied Language filter: ${filters.language}`);
+        }
+
+        // Apply Tags filter (searchable dropdown)
+        if (filters.tags) {
+            await filterUtils.applySearchableDropdownFilter("Tags", filters.tags);
+            console.log(`✅ Applied Tags filter: ${filters.tags}`);
+        }
+
+        // Apply Provider filter (searchable dropdown)
+        if (filters.provider) {
+            await filterUtils.applySearchableDropdownFilter("Provider", filters.provider);
+            console.log(`✅ Applied Provider filter: ${filters.provider}`);
+        }
+
+        // Apply Status filter (without search dropdown)
+        if (filters.status) {
+            await filterUtils.applyDefaultDropdownFilter("Status", filters.status);
+            console.log(`✅ Applied Status filter: ${filters.status}`);
+        }
+
+        // Apply Price Min filter (text field)
+        if (filters.priceMin) {
+            await filterUtils.applyTextFieldFilter("Price Min", filters.priceMin);
+            console.log(`✅ Applied Price Min filter: ${filters.priceMin}`);
+        }
+
+        // Apply Price Max filter (text field)
+        if (filters.priceMax) {
+            await filterUtils.applyTextFieldFilter("Price Max", filters.priceMax);
+            console.log(`✅ Applied Price Max filter: ${filters.priceMax}`);
+        }
+
+        // Apply CODE filter (search filter)
+        if (filters.code) {
+            await filterUtils.searchAndSelectValue("CODE", filters.code);
+            console.log(`✅ Applied CODE filter: ${filters.code}`);
+        }
+
+        // Apply Course filter (search filter)
+        if (filters.course) {
+            await filterUtils.searchAndSelectValue("Course", filters.course);
+            console.log(`✅ Applied Course filter: ${filters.course}`);
+        }
+
+        // Click Apply button
+        await filterUtils.clickApplyFilter();
+        await this.wait("mediumWait");
+        console.log("✅ Applied all Learning Path filters");
     }
 }

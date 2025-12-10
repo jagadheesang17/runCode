@@ -8,8 +8,8 @@ export class FilterUtils extends AdminHomePage {
         
         // Text field dropdown (with search)
         filterDropdown: (field: string) => `(//span[text()='${field}']//following::div)[1]`,
-        filterSearchInput: (field: string) => `(//span[text()='${field}']//following::input[@placeholder='Search'])[1]`,
-        filterOption: (value: string) => `//li[text()='${value}']`,
+        filterSearchInput: (field: string) => `((//span[text()='${field}']//following::input[@placeholder='Search'])[1] | (//footer//following::input)[1])[1]`,
+        filterOption: (value: string) => `(//li[text()='${value}'] | //span[text()='${value}'])[1]`,
         
         // Default dropdown (without search)
         defaultFilterDropdown: (field: string) => `(//span[text()='${field}']//following::div)[1]`,
@@ -163,6 +163,7 @@ export class FilterUtils extends AdminHomePage {
     public async applySearchableDropdownFilter(field: string, value: string) {
         await this.selectFilterDropdown(field);
         await this.searchAndSelectFilterValue(field, value);
+        await this.selectFilterDropdown(field);
     }
 
     /**
@@ -173,6 +174,7 @@ export class FilterUtils extends AdminHomePage {
     public async applyDefaultDropdownFilter(field: string, value: string) {
         await this.selectDefaultFilterDropdown(field);
         await this.selectDefaultFilterOption(value);
+        await this.selectDefaultFilterDropdown(field);
     }
 
     /**

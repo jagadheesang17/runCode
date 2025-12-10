@@ -50,7 +50,7 @@ const myProfileCloseBtn = `//div[contains(@class,'modal-header d-flex ')]//follo
 
  const clickLaunchButton = `//div[text()='Alerts']/following::i[@aria-label='Click to play']`;
 
- const clickINA=`//div[text()='Items Need Attention']`;
+ const clickINA=`(//h1[text()='My Dashboard']//following::div[text()='Items Need Attention'])[1]`;
 
  const clickLaunchTabInINA=`//a[contains(text(),'Launch')]`;
 
@@ -475,7 +475,42 @@ async clickShowAll(){
     await this.validateElementVisibility(clickshowAll,"Show All Button");
     await this.click(clickshowAll,"Show All Button","Button");
 
-}/**
+}
+
+/**
+ * Click on an option in INA (Items Need Attention) section
+ * @param text - The text of the option to click
+ */
+async clickINAOption(text: string) {
+    const inaOptionLocator = `//a[contains(text(),'${text}')]`;
+    await this.validateElementVisibility(inaOptionLocator, `INA Option: ${text}`);
+    await this.click(inaOptionLocator, `INA Option: ${text}`, "Link");
+}
+
+/**
+ * Verify course is present in INA (Items Need Attention) under Pending Requests
+ * @param text - The text/course name to verify
+ */
+async verifyCourseInINA(text: string) {
+    const courseLocator = `//span//p[text()='${text}']`;
+    await this.validateElementVisibility(courseLocator, `Course in Pending Requests: ${text}`);
+    await this.verification(courseLocator, text);
+    console.log(`✅ Verified: Course "${text}" is present in Pending Requests under INA`);
+}
+
+/**
+ * Click on a course in INA (Items Need Attention) section
+ * @param text - The text/course name to click
+ */
+async clickCourseInINA(text: string) {
+    await this.wait("minWait");
+    const courseMoreButtonLocator = `(//span//p[text()='${text}']//following::button[text()='more'])[1]`;
+    await this.validateElementVisibility(courseMoreButtonLocator, `More button for course: ${text}`);
+    await this.click(courseMoreButtonLocator, `More button for course: ${text}`, "Button");
+    console.log(`✅ Clicked more button for course "${text}" in INA`);
+}
+
+/**
  * Custom login method that accepts username, password, and url for bulk enrollment testing
  */
 public async customLogin(username: string, url: string, password: string = "Welcome1@") {

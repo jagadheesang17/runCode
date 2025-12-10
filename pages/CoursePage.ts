@@ -463,7 +463,8 @@ export class CoursePage extends AdminHomePage {
     instructorEvaluatorOption: `//span[text()='Instructor/Evaluator']`,
     addFileButton: `//button[text()='Add']`,
 
-    createCourseButton:`//a[text()='Create Course']`
+    createCourseButton:`//a[text()='Create Course']`,
+    courseTitle: (title: string) => `(//div[text()='${title}'])[1]`
   };
 
   constructor(page: Page, context: BrowserContext) {
