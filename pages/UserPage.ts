@@ -1147,4 +1147,80 @@ export class UserPage extends AdminHomePage {
             expect(message).toContain('There are no results that match your current filters');
             console.log("User Segmentation is working correctly");
     }
+
+    /**
+     * Apply user filters with optional parameters
+     * @param filters - Object containing optional filter parameters
+     * @param filters.userType - User Type filter value (search filter)
+     * @param filters.jobRole - Job Role filter value (search filter)
+     * @param filters.department - Department filter value (search filter)
+     * @param filters.roles - Roles filter value (dropdown with search)
+     * @param filters.country - Country filter value (dropdown with search)
+     * @param filters.stateProvince - State/Province filter value (dropdown with search)
+     * @param filters.status - Status filter value (checkbox - e.g., "Active")
+     */
+    async applyUserFilters(filters: {
+        userType?: string;
+        jobRole?: string;
+        department?: string;
+        roles?: string;
+        country?: string;
+        stateProvince?: string;
+        status?: string;
+    } = {}) {
+        const { FilterUtils } = await import("../utils/filterUtils");
+        const filterUtils = new FilterUtils(this.page, this.context);
+
+        // Click filter icon to open filters
+        await filterUtils.clickFilterIcon();
+        await this.wait("minWait");
+        console.log("🔍 Opened User filters");
+
+        // Apply User Type filter (search filter)
+        if (filters.userType) {
+            await filterUtils.searchAndSelectValue("User Type", filters.userType);
+            console.log(`✅ Applied User Type filter: ${filters.userType}`);
+        }
+
+        // Apply Job Role filter (search filter)
+        if (filters.jobRole) {
+            await filterUtils.searchAndSelectValue("Job Role", filters.jobRole);
+            console.log(`✅ Applied Job Role filter: ${filters.jobRole}`);
+        }
+
+        // Apply Department filter (search filter)
+        if (filters.department) {
+            await filterUtils.searchAndSelectValue("Department", filters.department);
+            console.log(`✅ Applied Department filter: ${filters.department}`);
+        }
+
+        // Apply Roles filter (dropdown with search)
+        if (filters.roles) {
+            await filterUtils.applySearchableDropdownFilter("Roles", filters.roles);
+            console.log(`✅ Applied Roles filter: ${filters.roles}`);
+        }
+
+        // Apply Country filter (dropdown with search)
+        if (filters.country) {
+            await filterUtils.applySearchableDropdownFilter("Country", filters.country);
+            console.log(`✅ Applied Country filter: ${filters.country}`);
+        }
+
+        // Apply State/Province filter (dropdown with search)
+        if (filters.stateProvince) {
+            await filterUtils.applySearchableDropdownFilter("State/Province", filters.stateProvince);
+            console.log(`✅ Applied State/Province filter: ${filters.stateProvince}`);
+        }
+
+        // Apply Status filter (checkbox)
+        if (filters.status) {
+            await filterUtils.clickCheckboxFilter(filters.status);
+            console.log(`✅ Applied Status filter: ${filters.status}`);
+        }
+
+        // Click Apply button
+        await filterUtils.clickApplyFilter();
+        await this.wait("mediumWait");
+        console.log("✅ Applied all User filters");
+    }
 }

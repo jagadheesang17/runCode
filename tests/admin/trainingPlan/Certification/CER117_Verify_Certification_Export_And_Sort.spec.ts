@@ -1,22 +1,20 @@
 import { credentials } from "../../../../constants/credentialData";
 import { test } from "../../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../../utils/fakerUtils";
+import { FilterUtils } from "../../../../utils/filterUtils";
 
 let courseName = FakerData.getCourseName();
-let learningPathTitle = FakerData.getCourseName();
+let certificationTitle = FakerData.getCourseName();
 let description = FakerData.getDescription();
-let learningPathCode: string;
-let categoryName: string;
-let providerName: string;
-let tagName: string;
+let certificationCode: string;
 
 test.describe.configure({ mode: "serial" });
 
-test(`Create Learning Path with category, provider, and tags`, async ({ adminHome, learningPath, createCourse, editCourse, contentHome }) => {
+test(`Create Certification and verify export and sort functionality`, async ({ adminHome, learningPath, createCourse, editCourse, contentHome, exportPage, page, context }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Create Learning Path with filters` },
-        { type: `Test Description`, description: `Create learning path with category, provider, tags and get the code` }
+        { type: `TestCase`, description: `Verify Certification export and sort functionality` },
+        { type: `Test Description`, description: `Create certification and verify export as Excel and all sort options` }
     );
      await adminHome.loadAndLogin("CUSTOMERADMIN");
     await adminHome.menuButton();
@@ -35,19 +33,11 @@ test(`Create Learning Path with category, provider, and tags`, async ({ adminHom
     console.log(`✅ Course created: ${courseName}`);
     await adminHome.menuButton();
     await adminHome.clickLearningMenu();
-    await adminHome.clickLearningPath();
-    await learningPath.clickCreateLearningPath();
-    await learningPath.title(learningPathTitle);
+    await adminHome.clickCertification();
+    await learningPath.clickCreateCertification();
+    await learningPath.title(certificationTitle);
     await learningPath.description(description);
     await learningPath.language();
-
-    // Add Category and capture the value
-    categoryName = await createCourse.handleCategoryADropdown();
-    console.log(`📌 Category selected: ${categoryName}`);
-
-    // Add Provider and capture the value
-    providerName = await createCourse.providerDropdown();
-    console.log(`📌 Provider selected: ${providerName}`);
     await createCourse.selectTotalDuration();
     await createCourse.typeAdditionalInfo();
 
@@ -59,35 +49,21 @@ test(`Create Learning Path with category, provider, and tags`, async ({ adminHom
     await learningPath.searchAndClickCourseCheckBox(courseName);
     await learningPath.clickAddSelectCourse();
 
-    // Add Tags and capture the value
-    await editCourse.clickTagMenu();
-    tagName = await editCourse.selectTags();
-    console.log(`📌 Tag selected: ${tagName}`);
-    await editCourse.clickClose();
-
     // Publish to catalog
     await learningPath.clickDetailTab();
     await learningPath.clickCatalogBtn();
     await learningPath.clickUpdateBtn();
     await learningPath.verifySuccessMessage();
-    await learningPath.clickEditLearningPath();
-    learningPathCode = await createCourse.retriveCode();
-    console.log(`✅ Learning Path created: ${learningPathTitle}`);
-    await learningPath.description(description + " - Added Either Direct or Other Manager Approval");
-    await createCourse.clickUpdate();
     await contentHome.gotoListing();
+    
+    // Test Export functionality
+    console.log(`📤 Testing Export as Excel functionality`);
+    await exportPage.clickExportAs("Excel");
+    console.log(`✅ Export as Excel completed successfully`);
 
-    // Apply filters using the new method
-
-    await learningPath.applyLearningPathFilters({
-        category: categoryName,
-        provider: providerName,
-        tags: tagName,
-        status: "Show in Catalog",
-        //course: courseName,
-        code: learningPathCode
-    });
-
-    await createCourse.verifyTitle(learningPathTitle);
-    console.log(`📋 Learning Path Code: ${learningPathCode}`);
+    // Test Sort functionality
+    console.log(`🔄 Testing all sort options`);
+    const filterUtils = new FilterUtils(page, context);
+    await filterUtils.verifyAllSortOptions();
+    console.log(`✅ All sort options verified successfully`);
 });  

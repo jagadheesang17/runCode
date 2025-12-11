@@ -35,7 +35,11 @@ export class FilterUtils extends AdminHomePage {
         calendarInput: (index: number) => `(//input[contains(@id,'admin-date-filter')])[${index}]`,
         
         // Apply button
-        apply: "(//button[text()='Apply'])[1]"
+        apply: "(//button[text()='Apply'])[1]",
+
+        // Sort dropdown and options
+        sortDropdown: "//button[contains(@class,'sort') or contains(text(),'Sort')]",
+        sortOption: (option: string) => `//button[contains(@class,'sort') or contains(text(),'Sort')]//following::span[text()='${option}']`
     };
 
     /**
@@ -221,5 +225,52 @@ export class FilterUtils extends AdminHomePage {
     public async applyDateRangeFilter(fromDate: string, toDate: string) {
         await this.enterDateFilter("From", fromDate);
         await this.enterDateFilter("To", toDate);
+    }
+
+    /**
+     * Click the sort dropdown to open sort options
+     */
+    public async clickSortDropdown() {
+        await this.wait("minWait");
+        await this.click(this.filterSelectors.sortDropdown, "Sort Dropdown", "Dropdown");
+    }
+
+    /**
+     * Select a sort option
+     * @param option - The sort option to select (A-Z, Z-A, New-Old, Old-New)
+     */
+    public async selectSortOption(option: string) {
+        await this.wait("minWait");
+        await this.click(this.filterSelectors.sortOption(option), `Sort Option: ${option}`, "Option");
+        await this.wait("minWait");
+        console.log(`✅ Selected sort option: ${option}`);
+    }
+
+    /**
+     * Complete workflow: Click sort dropdown and select option
+     * @param option - The sort option to select (A-Z, Z-A, New-Old, Old-New)
+     */
+    public async applySortOption(option: string) {
+        await this.clickSortDropdown();
+        await this.selectSortOption(option);
+    }
+
+    /**
+     * Verify all sort options are clickable
+     * Tests all four sort options: A-Z, Z-A, New-Old, Old-New
+     */
+    public async verifyAllSortOptions() {
+        const sortOptions = ["A-Z", "Z-A", "New-Old", "Old-New"];
+        
+        console.log("🔍 Verifying all sort options are clickable...");
+        
+        for (const option of sortOptions) {
+            await this.clickSortDropdown();
+            await this.wait("minWait");
+            await this.selectSortOption(option);
+            console.log(`✅ Verified sort option: ${option}`);
+        }
+        
+        console.log("✅ All sort options verified successfully");
     }
 }
