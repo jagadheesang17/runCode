@@ -147,10 +147,10 @@ export class SiteAdminPage extends AdminHomePage {
         checkCertificationRevalidation:`(//span[text()='Certification re-validation']/preceding-sibling::i)[2]`,
 
         //Discount Module - Commerce
-        clickEditCommerce: `//i[@data-bs-target='#Commerce-content']`,
+        // clickEditCommerce: `//i[@data-bs-target='#Commerce-content']`,
         discountModuleEnabled: `//span[text()='Discount']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
         discountModuleUnchecked: `//span[text()='Discount']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
-        commerceSaveBtn: `//div[@id='Commerce-content']//button[text()='SAVE']`,
+
         
         // Discount Selection Configuration Dropdown (Minimum, Maximum, Combine All)
         discountSelectionDropdown: `(//label[text()='Discount Group']/following::div[@class="filter-option-inner"])[1]`,
