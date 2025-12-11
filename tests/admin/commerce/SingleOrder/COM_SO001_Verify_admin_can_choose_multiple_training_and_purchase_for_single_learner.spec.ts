@@ -18,12 +18,14 @@ test.describe(`SO001_Verify_admin_can_choose_multiple_training_and_purchase_for_
             { type: `Test Description`, description: `Verify admin can choose multiple training and purchase for single learner` }
         );
 
+        const price1 = "500";
+        const price2 = "200";
+
 
         console.log(`🔄 Creating 1 E-Learning ,1 ILT courses`);
         const content = 'content testing-001';
-        await createElearningCourse(content, course1, "published", "single", "e-learning", "500", "usd");
-
-        const instanceNames = await createILTMultiInstance(course2, "published", 2, "future", "200", "usd");
+        await createElearningCourse(content, course1, "published", "single", "e-learning", price1, "eur");
+        const instanceNames = await createILTMultiInstance(course2, "published", 2, "future", price2, "usd");
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
         await adminHome.menuButton();
@@ -34,6 +36,9 @@ test.describe(`SO001_Verify_admin_can_choose_multiple_training_and_purchase_for_
         await enrollHome.clickSelectedLearner();
         await enrollHome.enterSearchUserForSingleOrder(credentials.LEARNERUSERNAME.username);
         await enrollHome.clickCheckoutButton();
+
+        
+
         const timerStatus = await enrollHome.validateTimerIsRunning();
         expect(timerStatus.isPresent).toBe(true);
         expect(timerStatus.isCountingDown).toBe(true);

@@ -50,18 +50,30 @@ export class LearnerHomePage extends LearnerLogin {
         privacypopupContent: `//iframe[contains(@src,'privacy')]`,
         scrollBar: `//div[@id='gridSystemModal']//div[@class='lmsfilterscroll background_1']`,
         agreeBtn: `//button[text()='Agree']`,
+        denyBtn: `//button[text()='Deny']`,
         closebtn: `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`,
         //For QR scanning code reading user profile
         myprofilebutton: `//span[text()='My Profile']`,
-        qrLocator:'//img[@class="img-fluid usr-prof-qrcodeimage modal_img my-2"]',
-        qrImagePath:'data/finalimage.png',
-        userEmail:'//div[text()="Email :"]/following-sibling::div[1]',
-        userphone:'//div[text()="Phone :"]/following-sibling::div[1]',
-        selectAdmin:`//span[text()='Admin']`,
+        qrLocator: '//img[@class="img-fluid usr-prof-qrcodeimage modal_img my-2"]',
+        qrImagePath: 'data/finalimage.png',
+        userEmail: '//div[text()="Email :"]/following-sibling::div[1]',
+        userphone: '//div[text()="Phone :"]/following-sibling::div[1]',
+        selectAdmin: `//span[text()='Admin']`,
 
-        organizationInProfile:(orgname:string)=>`//h4[text()='${orgname} ']`,
+        organizationInProfile: (orgname: string) => `//h4[text()='${orgname} ']`,
 
         instrctor: `//a/span[text()='Instructor']`,
+
+        // Profile tabs
+        preferencesTab: `//a[contains(@class,'nav-link') and text()='preferences']`,
+        detailsTab: `//a[contains(@class,'nav-link') and text()='Details']`,
+        oneProfileTab: `//a[contains(@class,'nav-link') and text()='ONE-Profile']`,
+        ordersTab: `//a[contains(@class,'nav-link') and text()='Orders']`,
+
+        // Terms and Privacy Policy hyperlinks in preferences
+        termsAndConditionsLink: `//a[text()='TERMS & CONDITIONS']`,
+        privacyPolicyLink: `//a[text()='Privacy Policy']`,
+        profileSettings: `(//div[@id='accountsetttings'])[1]`,
 
 
     };
@@ -255,7 +267,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.click(this.selectors.collaborationHub, "CH", "Option");
         await this.spinnerDisappear();
     }
-     async selectAdmin() {
+    async selectAdmin() {
         await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
         await this.validateElementVisibility(this.selectors.selectAdmin, "Admin")
         await this.click(this.selectors.selectAdmin, "Admin", "Option");
@@ -328,7 +340,7 @@ export class LearnerHomePage extends LearnerLogin {
     // }
 
     //Terms and Conditions
-    async termsAndConditionScroll() {
+    async termsAndConditionScroll(action: string = "agree") {
         const element = this.page.locator(`//div[@class='container-fluid bd-example-row']/div[1]/div`).first();
         const box = await element.boundingBox();
         if (box) {
@@ -361,18 +373,26 @@ export class LearnerHomePage extends LearnerLogin {
         await this.page.mouse.move(0, 456);
         await this.page.mouse.up();
         await this.wait("minWait")
-        await this.validateElementVisibility(this.selectors.agreeBtn, "Agree");
-        await this.mouseHover(this.selectors.agreeBtn, "Agree");
-        await this.click(this.selectors.agreeBtn, "Agree", "Button");
-        await this.click(this.selectors.closebtn, "Close", "Button");
+
+        if (action.toLowerCase() === "deny") {
+            await this.validateElementVisibility(this.selectors.denyBtn, "Deny");
+            await this.mouseHover(this.selectors.denyBtn, "Deny");
+            await this.click(this.selectors.denyBtn, "Deny", "Button");
+        } else {
+            await this.validateElementVisibility(this.selectors.agreeBtn, "Agree");
+            await this.mouseHover(this.selectors.agreeBtn, "Agree");
+            await this.click(this.selectors.agreeBtn, "Agree", "Button");
+            await this.verifyPreferencesTabActive();
+            await this.click(this.selectors.closebtn, "Close", "Button");
+        }
         await this.wait('minWait');
+        console.log(` Successfully performed terms and conditions action: ${action}`);
     }
 
     //For QR scanning code reading user profile
-public async clickmyprofile()
-    {
-        await this.mouseHover(this.selectors.myprofilebutton, "bulkupload");
-        await this.click(this.selectors.myprofilebutton, "bulkupload", "Button");
+    public async clickmyprofile() {
+        await this.mouseHover(this.selectors.myprofilebutton, "My profile");
+        await this.click(this.selectors.myprofilebutton, "My profile", "Button");
         await this.wait('maxWait')
     }
 
@@ -405,22 +425,22 @@ public async clickmyprofile()
         //console.log("User information needs to be updated.");
         if (QR_Decoded_email !== expectedEmail) {
             console.log(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
-        //throw new Error(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
+            //throw new Error(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
+        }
+        if (QR_Decoded_phone !== expectedPhone) {
+            console.log(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+            //throw new Error(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+        }
+        console.log("User email and phone match the expected values.");
     }
-    if (QR_Decoded_phone !== expectedPhone) {
-        console.log(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
-        //throw new Error(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+
+    async launchDCL(url: string) {
+        await this.wait("minWait");
+        await this.loadApp(url);
+        await this.wait("mediumWait");
     }
-    console.log("User email and phone match the expected values.");
-      }
 
-      async launchDCL(url:string){
-    await this.wait("minWait");
-    await this.loadApp(url);
-    await this.wait("mediumWait");
- }
-
- async selectInstructor() {
+    async selectInstructor() {
         await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
         await this.validateElementVisibility(this.selectors.instrctor, "Instructor")
         await this.click(this.selectors.instrctor, "Instructor", "Option");
@@ -428,9 +448,150 @@ public async clickmyprofile()
     }
 
 
-async verifyMappedOrganization(orgname:string,expectedOrgname:string){
-    await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
-}
+    async verifyMappedOrganization(orgname: string, expectedOrgname: string) {
+        await this.verification(this.selectors.organizationInProfile(orgname), expectedOrgname);
+    }
+
+    /**
+     * Verify that only Preferences tab is active
+     */
+    async verifyPreferencesTabActive() {
+        await this.wait("minWait");
+
+        const preferencesTabLocator = this.page.locator(this.selectors.preferencesTab);
+        const preferencesClass = await preferencesTabLocator.getAttribute('class');
+
+        if (!preferencesClass?.includes('active') || !preferencesClass?.includes('h2_active')) {
+            throw new Error(` FAIL: Preferences tab should be active but is not. Class: ${preferencesClass}`);
+        }
+
+        const detailsTabLocator = this.page.locator(this.selectors.detailsTab);
+        const detailsClass = await detailsTabLocator.getAttribute('class');
+
+        const oneProfileTabLocator = this.page.locator(this.selectors.oneProfileTab);
+        const oneProfileClass = await oneProfileTabLocator.getAttribute('class');
+
+        const ordersTabLocator = this.page.locator(this.selectors.ordersTab);
+        const ordersClass = await ordersTabLocator.getAttribute('class');
+
+        if (detailsClass?.includes('active') || detailsClass?.includes('h2_active')) {
+            throw new Error(` FAIL: Details tab should be inactive. Class: ${detailsClass}`);
+        }
+
+        if (oneProfileClass?.includes('active') || oneProfileClass?.includes('h2_active')) {
+            throw new Error(` FAIL: ONE-Profile tab should be inactive. Class: ${oneProfileClass}`);
+        }
+
+        if (ordersClass?.includes('active') || ordersClass?.includes('h2_active')) {
+            throw new Error(` FAIL: Orders tab should be inactive. Class: ${ordersClass}`);
+        }
+
+        console.log(` Verified: Only Preferences tab is active`);
+    }
+
+    /**
+     * Verify Terms and Conditions popup is not visible and page headers are visible
+     */
+    async verifyT_C_NotVisible() {
+        await this.wait("minWait");
+        const termCondiPopupLocator = this.page.locator(this.selectors.termCondiPopup);
+        const isTermsVisible = await termCondiPopupLocator.isVisible().catch(() => false);
+        if (isTermsVisible) {
+            throw new Error(`FAIL: Terms and Conditions popup should not be visible but it is displayed`);
+        }
+        await this.validateElementVisibility(this.selectors.myLearningLink, "My Learning");
+        await this.validateElementVisibility(this.selectors.myDashboardLink, "My Dashboard");
+        await this.validateElementVisibility(this.selectors.catalogLink, "Catalog");
+        await this.validateElementVisibility(this.selectors.myprofilebutton, "My Profile");
+        console.log(` All page headers are visible and Terms & Conditions popup is not displayed`);
+    }
+
+    async clickPreferenceTab(){
+        await this.validateElementVisibility(this.selectors.preferencesTab, "Preferences Tab");
+        await this.click(this.selectors.preferencesTab, "Preferences Tab", "Tab");
+    }
+
+    /**
+     * Click Terms and Conditions link and verify it opens in new tab
+     */
+    async clickTermsAndConditionsLinkAndVerifyNewTab() {
+        await this.wait("minWait");
+        // Get current page count
+        const pages = this.context.pages();
+        const initialPageCount = pages.length;
+
+        // Click Terms and Conditions link
+        await this.validateElementVisibility(this.selectors.termsAndConditionsLink, "Terms and Conditions");
+        const [newPage] = await Promise.all([
+            this.context.waitForEvent('page'),
+            this.click(this.selectors.termsAndConditionsLink, "Terms and Conditions", "Link")
+        ]);
+
+        await newPage.waitForLoadState('load');
+        await this.wait("minWait");
+
+        // Verify new tab opened
+        const currentPages = this.context.pages();
+        if (currentPages.length !== initialPageCount + 1) {
+            throw new Error(` FAIL: Expected ${initialPageCount + 1} tabs but found ${currentPages.length}`);
+        }
+        console.log(` Verified: New tab opened for Terms and Conditions`);
+
+        // Verify Terms and Conditions content in new tab
+        const url = newPage.url();
+        if (!url.includes('terms')) {
+            throw new Error(` FAIL: Expected URL to contain 'terms' but got: ${url}`);
+        }
+        console.log(` Verified: Terms and Conditions page displayed in new tab`);
+        await newPage.close();
+        await this.wait("minWait");
+        console.log(` Verified: Closed Terms and Conditions tab`);
+    }
+
+    /**
+     * Click Privacy Policy link and verify it opens in new tab
+     */
+    async clickPrivacyPolicyLinkAndVerifyNewTab() {
+        await this.wait("minWait");
+
+        // Get current page count
+        const pages = this.context.pages();
+        const initialPageCount = pages.length;
+
+        // Click Privacy Policy link
+        await this.validateElementVisibility(this.selectors.privacyPolicyLink, "Privacy Policy");
+        const [newPage] = await Promise.all([
+            this.context.waitForEvent('page'),
+            this.click(this.selectors.privacyPolicyLink, "Privacy Policy", "Link")
+        ]);
+
+        await newPage.waitForLoadState('load');
+        await this.wait("minWait");
+
+        // Verify new tab opened
+        const currentPages = this.context.pages();
+        if (currentPages.length !== initialPageCount + 1) {
+            throw new Error(` FAIL: Expected ${initialPageCount + 1} tabs but found ${currentPages.length}`);
+        }
+        console.log(` Verified: New tab opened for Privacy Policy`);
+
+        // Verify Privacy Policy content in new tab
+        const url = newPage.url();
+        if (!url.includes('privacy')) {
+            throw new Error(` FAIL: Expected URL to contain 'privacy' but got: ${url}`);
+        }
+        console.log(` Verified: Privacy Policy page displayed in new tab`);
+
+        // Close the new tab
+        await newPage.close();
+        await this.wait("minWait");
+        console.log(` Verified: Closed Privacy Policy tab`);
+    }
+    async clickUserProfile() {
+        await this.validateElementVisibility(this.selectors.profileSettings, "My profile");
+        await this.click(this.selectors.profileSettings, "My profile", "Button");
+    }
+
 
 /**
  * Verify approved successfully popup and close

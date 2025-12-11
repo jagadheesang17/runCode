@@ -8,12 +8,12 @@ const description = FakerData.getDescription();
 test.describe(`CNT035 - Confirm that MOV content can be created, edited,previewed and downloaded successfully.`, async () => {
     test.describe.configure({ mode: "serial" });
 
-    test(`Step 1: Create MOV Content`, async ({ 
-        adminHome, 
-        contentHome, 
+    test(`Step 1: Create MOV Content`, async ({
+        adminHome,
+        contentHome,
         createCourse,
         SurveyAssessment,
-        bannerHome 
+        bannerHome
     }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Divya` },
@@ -41,11 +41,11 @@ test.describe(`CNT035 - Confirm that MOV content can be created, edited,previewe
         console.log("✅ MOV content created successfully");
     });
 
-    test(`Step 2: Edit MOV Content and Publish`, async ({ 
-        adminHome, 
-        contentHome, 
+    test(`Step 2: Edit MOV Content and Publish`, async ({
+        adminHome,
+        contentHome,
         bannerHome,
-        createCourse ,
+        createCourse,
         SurveyAssessment
     }) => {
         test.info().annotations.push(
@@ -69,9 +69,9 @@ test.describe(`CNT035 - Confirm that MOV content can be created, edited,previewe
         console.log("✅ MOV content edited and published successfully");
     });
 
-    test(`Step 3: Preview MOV Content`, async ({ 
-        adminHome, 
-        contentHome 
+    test(`Step 3: Preview MOV Content`, async ({
+        adminHome,
+        contentHome
     }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Divya` },
@@ -94,28 +94,28 @@ test.describe(`CNT035 - Confirm that MOV content can be created, edited,previewe
         await contentHome.wait("maxWait");
         console.log("✅ MOV content preview opened successfully");
     });
-test(`Step 4: Download MOV Content`, async ({ 
-            adminHome, 
-            contentHome 
-        }) => {
-            test.info().annotations.push(
-                { type: `Author`, description: `Divya` },
-                { type: `TestCase`, description: `CNT035 - Download MOV Content` },
-                { type: `Test Description`, description: `Verify MOV content can be downloaded` }
-            );
-    
-            await adminHome.loadAndLogin("SUPERADMIN");
-            await adminHome.menuButton();
-            await adminHome.clickLearningMenu();
-            await adminHome.clickContentmenu();
-            // Step 3.2: Search for the published content
-            await contentHome.contentVisiblity(contentTitle);
-    
-            // Step 3.3: Edit to access preview
-            await contentHome.clickEditContentOnListing();
-            await contentHome.verifyDownloadedFileType("mov");
-            await contentHome.wait("maxWait");
-            console.log("✅ MOV content downloaded successfully");
-        });
-    
+    test(`Step 4: Download MOV Content`, async ({
+        adminHome,
+        contentHome
+    }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Divya` },
+            { type: `TestCase`, description: `CNT035 - Download MOV Content` },
+            { type: `Test Description`, description: `Verify MOV content can be downloaded` }
+        );
+
+        await adminHome.loadAndLogin("SUPERADMIN");
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickContentmenu();
+        // Step 3.2: Search for the published content
+        await contentHome.contentVisiblity(contentTitle);
+
+        // Step 3.3: Edit to access preview
+        await contentHome.clickEditContentOnListing();
+        await contentHome.verifyDownloadedFileType("mov");
+        await contentHome.wait("maxWait");
+        console.log("✅ MOV content downloaded successfully");
+    });
+
 });

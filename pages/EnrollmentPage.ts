@@ -21,7 +21,7 @@ export class EnrollmentPage extends AdminHomePage {
         userList: `(//div[contains(@id,'lms-scroll-results')]//li)`,
         userListOpt: (data: string) => `(//td[text()='${data}']/following::i)[2]`,
         selectCourse: `(//input[contains(@id,'training')]/following::i)[1]`,
-        selectPaidCourse:(course: string) => `(//div[text()='${course}']//following::input[contains(@id,'training')]/following::i)[2]`,
+        selectPaidCourse: (course: string) => `(//div[text()='${course}']//following::input[contains(@id,'training')]/following::i)[2]`,
         selectedLearners: `//button[text()='Select Learner']`,
         selectUser: `(//input[contains(@id,'selectedlearners')]/following::i)[2]`,
         enrollBtn: "//button[text()='Enroll']",
@@ -32,11 +32,11 @@ export class EnrollmentPage extends AdminHomePage {
         submitReason: `//button[text()='Submit']`,
         saveStatus: `//button[text()='Save']`,
         dateInput: `//input[contains(@id,'input')]`,
-        
+
         //Admin Enrollment:-
         clickModifyEnroll: `//a[text()='View/Modify Enrollment']`,
         completionDateInput: `//div[contains(@id,'check_box')]/input`,
-        
+
         // Enrollment status action dropdown and options
         enrollmentActionBtn: (index: number) => `(//button[contains(@data-id,'enrollment-action')])[${index}]`,
         enrollmentStatusOption: (status: string) => `//button[contains(@data-id,'enrollment-action')]/following::span[text()='${status}']`,
@@ -65,23 +65,23 @@ export class EnrollmentPage extends AdminHomePage {
         okBtn: "//button[text()='OK']",
         clickEnrollButton: `//a[contains(@class,'btn') and text()='Enroll']`,
         goToHome: `//a[text()='Go to Home']`,
-        goToOrderList:`//a[text()='go to order list']`,
-        
+        goToOrderList: `//a[text()='go to order list']`,
+
         //Dedicated to Training Plan message
         dedicatedToTPMsg: `//div[contains(@class,'justify-content-center text')]//span`,
-        
+
         //selecting the user for order creation
         selectUserForOrderCreation: (data: string) => `//td[contains(text(),'${data}')]//following::i[contains(@class,'fa-circle icon')][1]`,
         clickCheckoutBtn: `//button[text()='checkout']`,
         clickCalculateTax: `//button[text()='Calculate Tax']`,
-        clickCreateAndApproveOrder:`//button[text()='create order & approve']`,
-        clickCreateOrderBtn:`//button[text()='Create Order']`,
-        selectCourseForOrderCreation:`(//input[contains(@id,'training')]/following::i)[2]`,
+        clickCreateAndApproveOrder: `//button[text()='create order & approve']`,
+        clickCreateOrderBtn: `//button[text()='Create Order']`,
+        selectCourseForOrderCreation: `(//input[contains(@id,'training')]/following::i)[2]`,
         paymentMethodDropdown: `//label[text()='Payment Method']//following::div[@id='wrapper-state']`,
         paymentMethod: (option: string) => `//span[text()='${option}']`,
         orderSuccessMsg: `//section[contains(@class,'lms-success')]//h3`,
         loadMoreBtn: `//button[text()='Load More']`,
-        
+
         //Mandatory checkbox
         mandatoryCheckbox: `(//input[@id='ismandatory']//following::label)[1]`,
 
@@ -122,7 +122,7 @@ export class EnrollmentPage extends AdminHomePage {
         //View/Update Status - Course/TP Table Fields
         viewUpdateStatusTable: `//table[contains(@class,'viewupdate-status-crstp')]`,
         tableHeaderByName: (fieldName: string) => `//table[contains(@class,'viewupdate-status-crstp')]//th[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'${fieldName.toLowerCase()}')]`,
-        
+
         // Learner row locators (by username)
         // learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]`,
         learnerFieldValue: (username: string, fieldName: string) => {
@@ -145,7 +145,7 @@ export class EnrollmentPage extends AdminHomePage {
             const index = fieldIndex[fieldName.toLowerCase()] || 1;
             return `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[${index}]`;
         },
-        
+
         // Specific field locators
         learnerName: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[1]`,
         learnerUsername: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[2]`,
@@ -196,24 +196,24 @@ export class EnrollmentPage extends AdminHomePage {
         enrollmentStatusRow: (username: string) => `//tr[contains(.,'${username}')]`,
         enrollmentStatus: (username: string) => `//tr[contains(.,'${username}')]//td[contains(@class,'status')]`,
         bulkEnrollmentResults: `//div[contains(@class,'bulk-results')] | //div[contains(@class,'enrollment-results')]`,
-        
+
         // Navigation and menu items for bulk enrollment
         enrollmentMenu: `//a[contains(@href,'enrollment')] | //span[text()='Enrollment'] | //span[text()='Enrollments']`,
         bulkOperationsMenu: `//a[contains(text(),'Bulk')] | //span[contains(text(),'Bulk')]`,
-        certificationType:`(//select[@id='certification_type']/following::button)[1]`,
-        recertificationOption:`//span[text()='Recertification']`,
-        gotCreateOrderBtn:`//a[text()='go to create order']`,
-        clearSectionBtn:`//button[text()='Clear Selection']`,
-        courseNames:`//div[@class='field_title_1 text-truncate']`,
+        certificationType: `(//select[@id='certification_type']/following::button)[1]`,
+        recertificationOption: `//span[text()='Recertification']`,
+        gotCreateOrderBtn: `//a[text()='go to create order']`,
+        clearSectionBtn: `//button[text()='Clear Selection']`,
+        courseNames: `//div[@class='field_title_1 text-truncate']`,
         subTotalAmount: `//div[contains(text(),'Sub Total')]`,
-        purchaseTimer:`//div[contains(text(),'Time left to complete your purchase')]//span`,
-        selectedCourseRemoveBtn:(course:string)=>`(//div[text()='${course}']//following::i)[1]`,        clickEnrollBtnAfterEnrollment:`//a[text()='View/Modify Enrollment']/following-sibling::a[text()='Enroll']`,
-        clickCourseStatusInTpDropdown:`//input[@id='learning-path-selection-filter-field']`,
-        typeTpNameInsearchBar:`//input[@id='learning-path-selection']`,
-        selectTp:(tp:string) => `//span[text()='${tp}']`,
+        purchaseTimer: `//div[contains(text(),'Time left to complete your purchase')]//span`,
+        selectedCourseRemoveBtn: (course: string) => `(//div[text()='${course}']//following::i)[1]`, clickEnrollBtnAfterEnrollment: `//a[text()='View/Modify Enrollment']/following-sibling::a[text()='Enroll']`,
+        clickCourseStatusInTpDropdown: `//input[@id='learning-path-selection-filter-field']`,
+        typeTpNameInsearchBar: `//input[@id='learning-path-selection']`,
+        selectTp: (tp: string) => `//span[text()='${tp}']`,
 
-        assessmentScorePreAndPost:(tpName:string,assessment:string)=> `(//div[text()='${tpName}']/following::div[text()='${assessment}']/following::input[@type='text'])[1]`,
-        clickMany:(tpName:string)=>`(//div[text()='${tpName}']/following::button[text()='Many'])[1]`,
+        assessmentScorePreAndPost: (tpName: string, assessment: string) => `(//div[text()='${tpName}']/following::div[text()='${assessment}']/following::input[@type='text'])[1]`,
+        clickMany: (tpName: string) => `(//div[text()='${tpName}']/following::button[text()='Many'])[1]`,
 
         // Get the row containing the second completed status (previous entry)
         secondCompletedEntryRow: `(//span[text()='Completed'])[2]/ancestor::tr`,
@@ -222,37 +222,34 @@ export class EnrollmentPage extends AdminHomePage {
         // Find status in a row containing specific text
         statusInRowWithText: (text: string, status: string) => `//tr[contains(.,'${text}')]//span[text()='${status}']`,
 
-        certificationDropdown:(certificationType:string) => `//div[text()='${certificationType}']`,
+        certificationDropdown: (certificationType: string) => `//div[text()='${certificationType}']`,
 
-        revalidateSuccessMessage:(title:string) => `Re-Validate  to "${title}" has been done successfully for “1”  learner(s).`,
+        revalidateSuccessMessage: (title: string) => `Re-Validate  to "${title}" has been done successfully for “1”  learner(s).`,
 
+        enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
+        searchUserInput: `//input[@placeholder='Search']`,
+        searchUserCheckbox: (user: string) => `(//td[text()='${user}']/following::i)[1]`,
+        userSearchCheckbox: (username: string) => `//td[contains(text(),'${username}')]//following::td//label)[1]`,
+        selectLearnerBtn: `//button[text()='Select Learner']`,
+        tpSearchInput: `(//input[@placeholder='Search'])[2]`,
+        tpSearchResult: (tpName: string) => `//td[contains(text(),'${tpName}')]`,
+        selectTPRadio: `//input[@type='radio']`,
+        tpCourseSearchInput: `//input[@placeholder='Search Course']`,
+        tpCourseResult: (courseName: string) => `//td[contains(text(),'${courseName}')]`,
+        tpInstanceResult: (data: string) => `//li[text()='${data}']`,
+        enrollmentsTab: `//a[text()='Enrollments']`,
 
+        statusOfCourseInsideTP: (courseName: string) => `(//span[text()='${courseName}']/following::div[text()='0% [enrolled] '])[1]`,
 
-enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
-    searchUserInput: `//input[@placeholder='Search']`,
-    searchUserCheckbox: (user:string) => `(//td[text()='${user}']/following::i)[1]`,
-    userSearchCheckbox: (username: string) => `//td[contains(text(),'${username}')]//following::td//label)[1]`,
-    selectLearnerBtn: `//button[text()='Select Learner']`,
-    tpSearchInput: `(//input[@placeholder='Search'])[2]`,
-    tpSearchResult: (tpName: string) => `//td[contains(text(),'${tpName}')]`,
-    selectTPRadio: `//input[@type='radio']`,
-    tpCourseSearchInput: `//input[@placeholder='Search Course']`,
-    tpCourseResult: (courseName: string) => `//td[contains(text(),'${courseName}')]`,
-    tpInstanceResult: (data:string) => `//li[text()='${data}']`,
-    enrollmentsTab: `//a[text()='Enrollments']`,
+        // TP Instance verification selectors
+        allTPInstances: `//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate']`,
+        instanceEnrollmentStatus: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::span[contains(text(),'enrolled') or contains(text(),'Not enrolled')]`,
+        instanceEnrollButton: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::button[contains(@class,'enroll') or text()='Enroll'][1]`,
 
-    statusOfCourseInsideTP:(courseName:string) => `(//span[text()='${courseName}']/following::div[text()='0% [enrolled] '])[1]`,
-    
-    // TP Instance verification selectors
-    allTPInstances: `//div[@class='col-md-3 field_title_1 d-flex']/span[@class='text-truncate']`,
-    instanceEnrollmentStatus: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::span[contains(text(),'enrolled') or contains(text(),'Not enrolled')]`,
-    instanceEnrollButton: (instanceName: string) => `//span[text()='${instanceName}']/ancestor::div[contains(@class,'cls_instance')]//following::button[contains(@class,'enroll') or text()='Enroll'][1]`,
+        recertificationCheckbox: `//span[text()='Recertification']/preceding-sibling::i[@class='fa-duotone fa-square icon_16_1 icon_16_1']`,
+        selectUserforSingleOrder:(user:string)=>`(//td[text()='${user}']//following::i)[1]`,
 
-    recertificationCheckbox:`//span[text()='Recertification']/preceding-sibling::i[@class='fa-duotone fa-square icon_16_1 icon_16_1']`,
-    selectCourseOrInst:(courseName:string,index:number)=>`//span[text()='${courseName}']/preceding::i[contains(@class,'fa-duotone lms-chevron-up-down')][${index}]`,
-
-
-    // 
+        // 
     }
 
 
@@ -261,13 +258,13 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     }
     async clickViewLearner() {
         await this.click(this.selectors.viewLearner, "View Learner", "Button")
-         await this.wait("maxWait");
-        
+        await this.wait("maxWait");
+
 
     }
-    
-     //Popup handling when an admin tries to enroll for cancelled/completed class
-     async clickOkBtn(){
+
+    //Popup handling when an admin tries to enroll for cancelled/completed class
+    async clickOkBtn() {
         await this.wait("minWait")
         await this.validateElementVisibility(this.selectors.okBtn, 'OK');
         await this.click(this.selectors.okBtn, "OK", "Button")
@@ -293,7 +290,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
         const randomIndex = Math.floor(Math.random() * index) + 1;
         await this.click(this.selectors.courseListOpt(randomIndex), "Course", "Options")
-        
+
         if (courseType === "paid") {
             await this.click(this.selectors.selectPaidCourse(data), "Select Paid Course", "Radio button")
         } else {
@@ -329,7 +326,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async clickEnrollBtn() {
         await this.click(this.selectors.enrollBtn, "Enroll", "Button")
     }
-    async clickGotoHome(){
+    async clickGotoHome() {
         await this.wait("minWait")
         await this.click(this.selectors.goToHome, "Go to Home", "Button")
     }
@@ -340,7 +337,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     //     await this.click(this.selectors.enrollStatus,"Enroll Status","Dropdown")
     //     await this.click(this.selectors.enrollORCancel(data),"Enroll Status","Option")
     // }
-    async saveBtn(){
+    async saveBtn() {
         await this.click(this.selectors.saveStatus, "Submit", "button")
     }
 
@@ -357,7 +354,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.clickModifyEnroll, "View/Modify Enrollment", "Button")
     }
 
- public async completionDateInAdminEnrollment() {
+    public async completionDateInAdminEnrollment() {
         await this.keyboardType(this.selectors.completionDateInput, getCurrentDateFormatted())
         await this.page.keyboard.press('Tab');
         await this.wait("minWait")
@@ -371,11 +368,11 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     }
 
     async selectEnrollOrCancel(data: string) {
-        
+
         await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown")
         //await this.click(this.selectors.enrollORCancel(data).first(),"Enroll Status","Option")\
         await this.wait("minWait");
-       
+
 
         await this.page.locator(this.selectors.enrollORCancel(data)).first().click({ force: true });
         await this.wait("minWait");
@@ -461,13 +458,13 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async verifyEnrollmentStatusOptions(index: number, expectedStatuses: string[]): Promise<{ availableStatuses: string[], hasAllExpected: boolean, missingStatuses: string[] }> {
         await this.wait("minWait");
-        
+
         // Click the enrollment action dropdown
         const actionButton = this.page.locator(this.selectors.enrollmentActionBtn(index));
         await actionButton.scrollIntoViewIfNeeded();
         await actionButton.click();
         await this.wait("minWait");
-        
+
         // Get all available status options
         const availableStatuses: string[] = [];
         for (const status of expectedStatuses) {
@@ -477,20 +474,20 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
                 availableStatuses.push(status);
             }
         }
-        
+
         // Close the dropdown by clicking elsewhere or pressing Escape
         await this.page.keyboard.press('Escape');
         await this.wait("minWait");
-        
+
         // Check which statuses are missing
         const missingStatuses = expectedStatuses.filter(status => !availableStatuses.includes(status));
         const hasAllExpected = missingStatuses.length === 0;
-        
+
         console.log(`   Available Statuses: ${availableStatuses.join(', ')}`);
         if (missingStatuses.length > 0) {
             console.log(`   Missing Statuses: ${missingStatuses.join(', ')}`);
         }
-        
+
         return { availableStatuses, hasAllExpected, missingStatuses };
     }
 
@@ -502,59 +499,57 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async selectEnrollmentOption(statusOption: string, maxRetries: number = 3): Promise<void> {
         console.log(`Attempting to select enrollment status: ${statusOption}`);
-        
+
         let attempt = 0;
         let success = false;
-        
+
         while (attempt < maxRetries && !success) {
             try {
                 attempt++;
                 console.log(`   Attempt ${attempt} of ${maxRetries}`);
-                
+
                 // Click on enrollment action dropdown
                 const enrollmentActionButton = `//button[@data-id='enrollment-action']`;
                 await this.wait("minWait");
                 await this.validateElementVisibility(enrollmentActionButton, "Enrollment Action Dropdown");
                 await this.click(enrollmentActionButton, "Enrollment Action", "Dropdown");
-                
+
                 // Wait for the status option to appear
                 const statusOptionSelector = `//span[text()='${statusOption}']`;
                 await this.page.waitForSelector(statusOptionSelector, { timeout: 5000 });
                 console.log(`   Status option ${statusOption} is now visible`);
-                
+
                 // Click on the status option
                 await this.wait("minWait");
                 await this.click(statusOptionSelector, statusOption, "Option");
-                
+
                 console.log(`Successfully selected enrollment status: ${statusOption}`);
                 success = true;
-                
+
             } catch (error) {
                 console.log(`   Attempt ${attempt} failed: ${error}`);
-                
+
                 if (attempt >= maxRetries) {
                     throw new Error(`Failed to select enrollment status ${statusOption} after ${maxRetries} attempts. Last error: ${error}`);
                 }
-                
+
                 await this.wait("minWait");
             }
         }
     }
 
-      //manage enrollment
+    //manage enrollment
     async manageEnrollment(data: string) {
         await this.wait("mediumWait")
         await this.click(this.selectors.manageEnrollement, "Manage Enrollment ", "Dropdown")
         await this.click(this.selectors.enrollORCancel(data), "Manage Enrollment ", " EnrollLink")
     }
     async enterSearchUserForSingleOrder(data: string) {
-        await this.wait("mediumWait")
-        await this.wait("maxWait")
         await this.click(this.selectors.searchcourseOrUser, "Search User", "Input Field")
         await this.typeAndEnter(this.selectors.searchcourseOrUser, "User Name", data)
-        //await this.click(this.selectors.userListOpt(data), "User", "Options")
-        await this.click(this.selectors.selectUserForOrderCreation(data), "Select User", "Radio button")
+        await this.click(this.selectors.selectUserforSingleOrder(data), "user", "checkbox");
     }
+
     async clickCheckoutButton() {
         await this.wait("minWait")
         await this.click(this.selectors.clickCheckoutBtn, "Checkout", "button")
@@ -568,7 +563,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.clickCalculateTax, "Calculate Tax", "button")
         await this.spinnerDisappear();
     }
-    async clickApproveOrder(){
+    async clickApproveOrder() {
         await this.wait("minWait")
         await this.click(this.selectors.clickCreateAndApproveOrder, "Approve Order", "button")
         await this.spinnerDisappear();
@@ -580,7 +575,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async clickApproveOrderAndCaptureId(): Promise<number> {
         await this.wait("minWait");
-        
+
         // Set up response listener before clicking - match any response with order_summary_id
         const responsePromise = this.page.waitForResponse(
             async response => {
@@ -597,15 +592,15 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             },
             { timeout: 30000 }
         );
-        
+
         await this.click(this.selectors.clickCreateAndApproveOrder, "Approve Order", "button");
-        
+
         // Wait for the response
         const response = await responsePromise;
         const responseBody = await response.json();
-        
+
         await this.spinnerDisappear();
-        
+
         if (responseBody.result === "success" && responseBody.order_summary_id) {
             console.log(`✅ Order created successfully - Order Summary ID: ${responseBody.order_summary_id}`);
             return responseBody.order_summary_id;
@@ -628,7 +623,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.validateElementVisibility(this.selectors.orderSuccessMsg, "The order has been placed successfully")
         await this.verification(this.selectors.orderSuccessMsg, "The order has been placed successfully")
     }
-    async clickCreateOrder(){
+    async clickCreateOrder() {
         await this.wait("minWait")
         await this.click(this.selectors.clickCreateOrderBtn, "Create Order", "button")
         await this.spinnerDisappear();
@@ -650,20 +645,20 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.clickEnrollButton, "Enroll Button", "Button")
     }
 
-   async selectclassBtn(){
+    async selectclassBtn() {
         await this.validateElementVisibility(this.selectors.selectClassBtn, "Select Class Button");
         await this.click(this.selectors.selectClassBtn, "Select Class Button", "Button")
     }
-    async learnerforSC(data:string){
+    async learnerforSC(data: string) {
         await this.wait("minWait");
         await this.validateElementVisibility(this.selectors.learnerSelect(data), "Select Learner");
         await this.click(this.selectors.learnerSelect(data), "Select Learner", "Button")
     }
-    async selectInstance(data:string){
+    async selectInstance(data: string) {
         await this.validateElementVisibility(this.selectors.selectInstance(data), "Select Instance");
         await this.click(this.selectors.selectInstance(data), "Select Instance", "Button");
     }
-    async searchCourseForSC(instance:string){
+    async searchCourseForSC(instance: string) {
         await this.click(this.selectors.searchCourseForSC, "Search Course", "Button");
         await this.typeAndEnter(this.selectors.searchCourseForSC, "Search Course", instance);
         await this.wait("minWait");
@@ -675,43 +670,43 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     }
 
 
-    async clickEnrollButtonAfterEnrollment(){
+    async clickEnrollButtonAfterEnrollment() {
         await this.validateElementVisibility(this.selectors.clickEnrollBtnAfterEnrollment, "Enroll Button After Enrollment");
         await this.click(this.selectors.clickEnrollBtnAfterEnrollment, "Enroll Button After Enrollment", "Button")
     }
 
 
-    async verifyTpCompletionStatus(status:string){
+    async verifyTpCompletionStatus(status: string) {
         await this.verification(this.selectors.enrollORCancel(status), "Completed")
     }
 
-    async selectCourseOrInstanceFromTp(trainingPlan:string){
+    async selectCourseOrInstanceFromTp(trainingPlan: string) {
         await this.click(this.selectors.clickCourseStatusInTpDropdown, "Course Status In Tp Dropdown", "Dropdown")
         await this.type(this.selectors.typeTpNameInsearchBar, "Type Tp Name In search Bar", trainingPlan);
         await this.click(this.selectors.selectTp, "SelectTp", "Option")
     }
 
-    async clickManyButton(tpName:string){
+    async clickManyButton(tpName: string) {
         await this.wait("minWait");
         await this.validateElementVisibility(this.selectors.clickMany(tpName), 'Many Button');
         await this.click(this.selectors.clickMany(tpName), "Many", "Button")
     }
 
-    async getDisplayedScoreInManageEnrollmentSide(tpName:string,assessment:string){
+    async getDisplayedScoreInManageEnrollmentSide(tpName: string, assessment: string) {
         await this.wait("minWait");
-        const scoreInManageEnrollment=await this.page.locator(this.selectors.assessmentScorePreAndPost(tpName,assessment)).inputValue();
-       const convertedValue=Number(scoreInManageEnrollment.trim());
+        const scoreInManageEnrollment = await this.page.locator(this.selectors.assessmentScorePreAndPost(tpName, assessment)).inputValue();
+        const convertedValue = Number(scoreInManageEnrollment.trim());
 
 
         return convertedValue;
     }
 
 
-    async verifyPreviousEntryAsCompleted(){
+    async verifyPreviousEntryAsCompleted() {
         // Find the second completed entry (previous one)
         const completedSelector = `(//span[text()='Completed'])[2]`;
         await this.verification(completedSelector, "Completed");
-        
+
         // Get unique text from the completed entry row (enrollment code or date)
         try {
             const entryTextElement = await this.page.locator(this.selectors.secondCompletedEntryText).first();
@@ -723,7 +718,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         }
     }
 
-    async verifyPreviousEntryAsExpired(){
+    async verifyPreviousEntryAsExpired() {
         // Verify that the SAME entry (identified by the stored text) now shows 'Expired'
         if (this.previousEntryIdentifier) {
             const expiredSelector = this.selectors.statusInRowWithText(this.previousEntryIdentifier, "Expired");
@@ -737,7 +732,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         }
     }
 
-    async selectCertificationType(certificationType:string){
+    async selectCertificationType(certificationType: string) {
         await this.validateElementVisibility(this.selectors.certificationDropdown(certificationType), "Certification Dropdown");
         await this.click(this.selectors.certificationDropdown(certificationType), "Certification Dropdown", "Dropdown");
 
@@ -745,42 +740,42 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
 
     }
 
-    async verifyStatusInManageEnrollment(status:string){
+    async verifyStatusInManageEnrollment(status: string) {
         await this.verification(this.selectors.enrollStatus, status)
     }
 
-   
 
-    async verifyRevalidatedSuccessMessage(title:string){
+
+    async verifyRevalidatedSuccessMessage(title: string) {
         await this.wait("mediumWait")
         await this.validateElementVisibility(this.selectors.revalidateSuccessMessage(title), "Revalidation Success Message");
         console.log(`✅ Verified: Re-Validate to '${title}' has been done successfully for "1" learner(s).`);
     }
 
-    async clickSelect(){
+    async clickSelect() {
         await this.validateElementVisibility(this.selectors.selectTeamUserBtn, "Select");
         await this.click(this.selectors.selectTeamUserBtn, "Select", "Button")
     }
 
 
-     public async clickSelectLearner() {
-  await this.wait("maxWait");
-
-  const selectUserLocator = this.page.getByRole('button', { name: 'Select' });
-  await selectUserLocator.scrollIntoViewIfNeeded();
-  await selectUserLocator.waitFor({ state: "visible" });
-  await expect(selectUserLocator).toBeEnabled();
-  await selectUserLocator.click();
-}
- public async searchandSelectTP(TP:string) {
+    public async clickSelectLearner() {
         await this.wait("maxWait");
-     
+
+        const selectUserLocator = this.page.getByRole('button', { name: 'Select' });
+        await selectUserLocator.scrollIntoViewIfNeeded();
+        await selectUserLocator.waitFor({ state: "visible" });
+        await expect(selectUserLocator).toBeEnabled();
+        await selectUserLocator.click();
+    }
+    public async searchandSelectTP(TP: string) {
+        await this.wait("maxWait");
+
         await this.click("//div[@id='learning-path-selection-filter-icon']", "searchbar", "Button")
         await this.type("//input[@id='learning-path-selection']", "SearchTp", TP)
         await this.click(`//span[text()='${TP}']`, "SelectTp", "Link"
         )
     }
-  public async selectCls() {
+    public async selectCls() {
         await this.wait("maxWait");
   const selectLocator =  this.page.locator("(//div[contains(@class,'field_title')]//preceding::i[contains(@class,'lms-chevron-up-down')][1])");
   await selectLocator.scrollIntoViewIfNeeded();
@@ -802,20 +797,20 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     //     await this.wait("maxWait");
     //    await this.typeAndEnter("(//input[@placeholder='Search'])[1]", "User", user);
     // } 
-    
-    public async clickSearchUserCheckbox(user:string) {
-        await this.waitSelector(this.selectors.searchUserCheckbox(user), "searchUserCheckbox" )
+
+    public async clickSearchUserCheckbox(user: string) {
+        await this.waitSelector(this.selectors.searchUserCheckbox(user), "searchUserCheckbox")
         await this.click(this.selectors.searchUserCheckbox(user), "searchUser", "chkbox")
     }
 
-    async verifyInstanceStatus(courseNames: string[], status: string){
+    async verifyInstanceStatus(courseNames: string[], status: string) {
         console.log(`\n🔍 Verifying status for ${courseNames.length} course(s) inside the Training Plan...`);
-        
+
         for (const courseName of courseNames) {
             await this.verification(this.selectors.statusOfCourseInsideTP(courseName), status);
             console.log(`✅ Verified: Course '${courseName}' has status '${status}'`);
         }
-        
+
         console.log(`✅ All ${courseNames.length} course(s) verified successfully with status '${status}'\n`);
     }
 
@@ -823,7 +818,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyTransferEnrollmentOptionNotVisible(): Promise<void> {
         await this.wait("mediumWait");
         const isVisible = await this.page.locator(this.selectors.transferEnrollmentOption).isVisible();
-        
+
         if (!isVisible) {
             console.log("✅ Transfer Enrollment option is NOT visible (as expected when disabled in site settings)");
         } else {
@@ -836,7 +831,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         const transferOption = this.page.locator(this.selectors.transferEnrollmentOption);
         await this.validateElementVisibility(this.selectors.transferEnrollmentOption, "Transfer Enrollment Option");
         const isVisible = await transferOption.isVisible();
-        
+
         if (isVisible) {
             console.log("✅ Transfer Enrollment option IS visible (as expected when enabled in site settings)");
         } else {
@@ -849,7 +844,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("mediumWait");
         const section = this.page.locator(this.selectors.availableCoursesTPSection);
         const isVisible = await section.isVisible();
-        
+
         if (isVisible) {
             console.log("✅ Available Courses/Training Plans section is visible after clicking Transfer Enrollment");
         } else {
@@ -869,24 +864,24 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         await this.typeAndEnter(this.selectors.searchCourseTransfer, "Search Course", courseName);
         await this.wait("mediumWait");
-        
+
         try {
             // Try to find the course checkbox first
             const courseCheckbox = this.page.locator(`(//label[@class="custom-control-label"])[1]`);
             await courseCheckbox.waitFor({ state: 'visible', timeout: 3000 });
-            
+
             // If checkbox found, select it and click Select Training button
             await courseCheckbox.click();
             await this.wait("minWait");
             await this.page.locator("//button[text()='Select Training']").click();
             await this.wait("mediumWait");
-            
+
         } catch (error) {
             // If checkbox not found, check for "Search to see results" message
             try {
                 const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
                 const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
-                
+
                 if (isVisible) {
                     console.log(`Single instance course is not listed in transfer enrollment as expected`);
                     return;
@@ -900,10 +895,10 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
 
     async selectLearnerForTransfer(username: string): Promise<void> {
         await this.wait("minWait");
-       await this.page.locator(`(//label[@class="custom-control-label"])[1]`).click();
+        await this.page.locator(`(//label[@class="custom-control-label"])[1]`).click();
     }
-    
-    async selectlearner(){
+
+    async selectlearner() {
         await this.wait("minWait");
         await this.page.locator(`//button[text()='Select Learners']`).click();
     }
@@ -912,23 +907,23 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.sourceInstanceDropdown, "Source Instance", "Dropdown");
         await this.wait("minWait");
         await this.typeAndEnter(this.selectors.sourceInstanceDropdown, "Source Instance", instanceName);
-        
+
         try {
             // Try to find the instance checkbox first
             const instanceCheckbox = this.page.locator(`(//label[@class="custom-control-label"])[1]`);
             await instanceCheckbox.waitFor({ state: 'visible', timeout: 3000 });
-            
+
             // If checkbox found, select it
             await this.wait("maxWait");
             await instanceCheckbox.click();
             console.log(`Source instance ${instanceName} available for transfer enrollment`);
-            
+
         } catch (error) {
             // If checkbox not found, check for "Search to see results" message
             try {
                 const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
                 const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
-                
+
                 if (isVisible) {
                     console.log(`Source instance not found in transfer enrollment`);
                     return;
@@ -945,23 +940,23 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
         await this.wait("minWait");
         await this.typeAndEnter(this.selectors.targetInstanceDropdown, "Target Instance", instanceName);
-        
+
         try {
             // Try to find the instance checkbox first
             const instanceCheckbox = this.page.locator(`(//input[@id="enrtfr-search-selectinstances-removeindividuals-filter-field"]/following::label[@class="custom-control-label"])[1]`);
             await instanceCheckbox.waitFor({ state: 'visible', timeout: 3000 });
-            
+
             // If checkbox found, select it
             await this.wait("minWait");
             await instanceCheckbox.click();
             console.log(`Target instance ${instanceName} available for transfer enrollment`);
-            
+
         } catch (error) {
             // If checkbox not found, check for "Search to see results" message
             try {
                 const noResultsMessage = this.page.locator("//h3[text()='Search to see results.']").first();
                 const isVisible = await noResultsMessage.isVisible({ timeout: 2000 });
-                
+
                 if (isVisible) {
                     console.log(`Other course instances are not listed in transfer enrollment as expected`);
                     return;
@@ -1002,7 +997,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyLearnerEnrolledInInstance(username: string): Promise<void> {
         await this.wait("mediumWait");
         const isEnrolled = await this.page.locator(this.selectors.learnerInstanceCell(username)).isVisible();
-        
+
         if (isEnrolled) {
             console.log(`✅ Learner ${username} is enrolled in instance:`);
         } else {
@@ -1013,7 +1008,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyLearnerNotInInstance(username: string, instanceName: string): Promise<void> {
         await this.wait("mediumWait");
         const isEnrolled = await this.page.locator(this.selectors.learnerInstanceCell(username, instanceName)).isVisible();
-        
+
         if (!isEnrolled) {
             console.log(`✅ Learner ${username} is NOT in instance: ${instanceName} (as expected after transfer)`);
         } else {
@@ -1026,16 +1021,16 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
         await this.wait("minWait");
-        
+
         const instanceOption = this.page.locator(this.selectors.targetInstanceOption(instanceName));
         const isVisible = await instanceOption.isVisible().catch(() => false);
-        
+
         if (!isVisible) {
             console.log(`✅ Instance "${instanceName}" is NOT available in target dropdown (as expected - different course)`);
         } else {
             throw new Error(`❌ Instance "${instanceName}" is visible in target dropdown but should not be (different course)`);
         }
-        
+
         // Close dropdown
         await this.page.keyboard.press('Escape');
     }
@@ -1044,18 +1039,18 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         await this.click(this.selectors.targetInstanceDropdown, "Target Instance", "Dropdown");
         await this.wait("minWait");
-        
+
         // Get all available options in target dropdown
         const allOptions = await this.page.locator(this.selectors.targetInstanceDropdown + "//following::div[contains(@class,'dropdown-menu')]//span").allTextContents();
-        
+
         console.log(`Available instances in target dropdown: ${allOptions.join(', ')}`);
-        
+
         if (allOptions.length > 0) {
             console.log(`✅ Target dropdown shows instances (assuming they are from the same course: ${courseName})`);
         } else {
             console.log(`ℹ️ No instances available in target dropdown`);
         }
-        
+
         // Close dropdown
         await this.page.keyboard.press('Escape');
     }
@@ -1065,34 +1060,34 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async clearFilterCrossMarks(): Promise<void> {
         await this.wait("minWait");
         const crossMarkSelector = `//i[contains(@class,"fa-duotone fa-times pointer fa-swap-opacity icon")]`;
-        
+
         let cleared = 0;
         const maxClicks = 3; // Safety limit
-        
+
         for (let i = 0; i < maxClicks; i++) {
             try {
                 // Re-query for cross marks on each iteration
                 const crossMark = this.page.locator(crossMarkSelector).first();
-                
+
                 // Check if any cross mark exists
                 const isVisible = await crossMark.isVisible({ timeout: 1000 });
-                
+
                 if (!isVisible) {
                     break; // No more cross marks
                 }
-                
+
                 // Click the first cross mark
                 await crossMark.click();
                 cleared++;
                 console.log(`Cleared cross mark ${cleared}`);
                 await this.wait("minWait");
-                
+
             } catch (error) {
                 // No more cross marks found
                 break;
             }
         }
-        
+
         console.log(`✅ Cleared ${cleared} filter cross mark(s)`);
     }
 
@@ -1100,7 +1095,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyDraftInstanceNotListed(instanceSession: string): Promise<void> {
         await this.wait("minWait");
         const instanceSelector = `//span[contains(text(),'${instanceSession}')]`;
-        
+
         try {
             const isVisible = await this.page.locator(instanceSelector).isVisible({ timeout: 2000 });
             if (isVisible) {
@@ -1116,7 +1111,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyDraftInstanceNotInToSection(instanceSession: string): Promise<void> {
         await this.wait("minWait");
         const instanceSelector = `//span[contains(text(),'${instanceSession}')]`;
-        
+
         try {
             const isVisible = await this.page.locator(instanceSelector).isVisible({ timeout: 2000 });
             if (isVisible) {
@@ -1129,14 +1124,14 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     }
     public async verifyLearnerStatusInTransferEnrollmentPage(username: string, expectedStatus: string) {
         await this.wait("minWait");
-        
+
         // For Completed and Canceled status, verify learner is NOT displayed
         if (expectedStatus === "Completed" || expectedStatus === "Canceled" || expectedStatus === "Incomplete" || expectedStatus === "Suspended") {
             const learnerRow = this.page.locator(`//td[contains(text(),'${username}')]`).first();
-            
+
             try {
                 const isVisible = await learnerRow.isVisible({ timeout: 2000 });
-                
+
                 if (isVisible) {
                     throw new Error(`❌ Learner "${username}" with ${expectedStatus} status should NOT be displayed in transfer enrollment list but was found`);
                 }
@@ -1151,10 +1146,10 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         } else {
             // For other statuses (Enrolled, No Show, etc.), verify learner IS displayed
             const learnerRow = this.page.locator(`//td[contains(text(),'${username}')]`).first();
-            
+
             try {
                 const isVisible = await learnerRow.isVisible({ timeout: 3000 });
-                
+
                 if (isVisible) {
                     console.log(`✅ Learner "${username}" with ${expectedStatus} status is displayed in transfer enrollment list`);
                 } else {
@@ -1173,7 +1168,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.validateElementVisibility(this.selectors.dedicatedToTPMsg, "Dedicated to Training Plan Message");
         const messageText = await this.page.locator(this.selectors.dedicatedToTPMsg).textContent();
         const expectedText = "The selected course or class is marked as Dedicated to a Training Plan";
-        
+
         if (messageText && messageText.includes(expectedText)) {
             console.log(`✅ Verified - Message: "${messageText}"`);
             return true;
@@ -1185,7 +1180,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyDedicatedTPCourseNotFound(courseName: string) {
         await this.type(this.selectors.searchcourseOrUser, "Course Name", courseName);
         await this.wait("minWait");
-        const courseCount = await this.page.locator(this.selectors.courseList).count();        
+        const courseCount = await this.page.locator(this.selectors.courseList).count();
         if (courseCount === 0) {
             console.log(`✅ Verified - The selected course or class is marked as Dedicated to TP (Course not found in search results)`);
             return true;
@@ -1215,11 +1210,11 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyAllTableHeaders() {
         await this.wait("minWait");
         const headers = [
-            "Name", "Username", "Manager", "Organization", "Reg From", 
+            "Name", "Username", "Manager", "Organization", "Reg From",
             "Date", "Score", "Status", "Enrollment Type", "Checklist",
             "Action", "Add Notes", "Files", "Progress"
         ];
-        
+
         for (const header of headers) {
             await this.verifyTableHeader(header);
         }
@@ -1235,18 +1230,18 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyField(fieldName: string, expectedValue: string, username: string) {
         await this.wait("minWait");
         const selector = this.selectors.learnerFieldValue(username, fieldName);
-        
+
         // Special handling for status field
         if (fieldName.toLowerCase() === "status") {
             // Try to find dropdown first (for Enrolled, In Progress, Canceled)
             const statusDropdownSelector = this.selectors.learnerStatus(username);
             const dropdownCount = await this.page.locator(statusDropdownSelector).count();
-            
+
             if (dropdownCount > 0) {
                 // Status is displayed as dropdown
                 await this.validateElementVisibility(statusDropdownSelector, `Status dropdown for ${username}`);
                 const statusValue = await this.page.locator(statusDropdownSelector).getAttribute('title');
-                
+
                 if (statusValue && statusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
                     console.log(`✅ Verified - ${fieldName}: "${statusValue}" contains "${expectedValue}" (dropdown)`);
                     return true;
@@ -1259,7 +1254,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
                 await this.validateElementVisibility(statusTextSelector, `Status text for ${username}`);
                 const statusValue = await this.page.locator(statusTextSelector).textContent();
                 const cleanStatusValue = statusValue?.trim() || '';
-                
+
                 if (cleanStatusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
                     console.log(`✅ Verified - ${fieldName}: "${cleanStatusValue}" contains "${expectedValue}" (text)`);
                     return true;
@@ -1268,12 +1263,12 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
                 }
             }
         }
-        
+
         // For other fields
         await this.validateElementVisibility(selector, `${fieldName} field for ${username}`);
         const actualValue = await this.page.locator(selector).textContent();
         const cleanActualValue = actualValue?.trim() || '';
-        
+
         if (cleanActualValue.toLowerCase().includes(expectedValue.toLowerCase())) {
             console.log(`✅ Verified - ${fieldName}: "${cleanActualValue}" contains "${expectedValue}"`);
             return true;
@@ -1318,10 +1313,10 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         const selector = this.selectors.learnerProgress(username);
         await this.validateElementVisibility(selector, `Progress field for ${username}`);
-        
+
         const actualProgress = await this.page.locator(selector).textContent();
         const cleanProgress = actualProgress?.trim().replace(/\s+/g, ' ') || '';
-        
+
         // Check if progress contains the expected percentage
         if (cleanProgress.includes(expectedProgress)) {
             console.log(`✅ Verified - Progress: "${cleanProgress}" contains "${expectedProgress}%"`);
@@ -1400,25 +1395,25 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async changeLearnerStatus(username: string, status: string, certType: string | null = null) {
         await this.wait("minWait");
-        
+
         // Determine column index based on certType
         const columnIndex = certType === 'Recertification' ? 9 : 8;
         const dropdownSelector = `(//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[${columnIndex}]//button)[1]`;
-        
+
         await this.validateElementVisibility(dropdownSelector, `Status dropdown for ${username}`);
-        
+
         // Click the dropdown button to open options
         await this.click(dropdownSelector, `Status dropdown for ${username}`, "Button");
         await this.wait("minWait");
-        
+
         // Click the status option (more specific - from the dropdown menu that just opened)
         const statusOptionSelector = `//div[contains(@class,'dropdown-menu') and contains(@class,'show')]//span[text()='${status}']`;
         await this.validateElementVisibility(statusOptionSelector, `${status} option`);
         await this.page.locator(statusOptionSelector).first().click({ force: true });
         console.log(`✅ Changed status to "${status}" for ${username}`);
-        
+
         await this.wait("minWait");
-        
+
         // Handle different status types
         if (status.toLowerCase() === "completed") {
             // For Completed: Enter date
@@ -1447,7 +1442,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             await this.click(this.selectors.saveStatus, "Save Status", "Button");
             await this.wait("minWait");
         }
-        
+
         console.log(`✅ Status change saved for ${username}`);
     }
 
@@ -1496,25 +1491,25 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async changeEnrollmentType(username: string) {
         await this.wait("minWait");
-        
+
         const dropdownSelector = this.selectors.learnerEnrollmentTypeDropdown(username);
         await this.validateElementVisibility(dropdownSelector, `Enrollment type dropdown for ${username}`);
-        
+
         // Click the dropdown button to open options
         await this.click(dropdownSelector, `Enrollment type dropdown for ${username}`, "Button");
         await this.wait("minWait");
-        
+
         // Click the Optional option (from the currently open dropdown menu)
         const optionalOptionSelector = `//div[contains(@class,'dropdown-menu') and contains(@class,'show')]//span[text()='Optional']`;
         await this.validateElementVisibility(optionalOptionSelector, `Optional option`);
         await this.page.locator(optionalOptionSelector).first().click({ force: true });
         console.log(`✅ Changed enrollment type to "Optional" for ${username}`);
-        
+
         await this.wait("minWait");
-        
+
         // Enter reason for changing enrollment type
         await this.type(this.selectors.reaonDesc, "Enrollment Type Change Reason", FakerData.getDescription());
-        
+
         // Click Submit and Save
         await this.click(this.selectors.submitReason, "Submit button", "Button");
         await this.wait("minWait");
@@ -1531,14 +1526,14 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyLearnerScore(expectedScore: string, username: string) {
         await this.wait("minWait");
         const scoreSelector = this.selectors.learnerScore(username);
-        
+
         await this.validateElementVisibility(scoreSelector, `Score field for ${username}`);
-        
+
         // Check if it's the "Many" button (for completed courses with multiple scores)
         if (expectedScore.toLowerCase() === "many") {
             const manyButtonSelector = this.selectors.learnerScoreManyButton(username);
             const isManyButtonVisible = await this.page.locator(manyButtonSelector).isVisible();
-            
+
             if (isManyButtonVisible) {
                 console.log(`✅ Verified - Score field shows "Many" button for ${username}`);
                 return true;
@@ -1546,11 +1541,11 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
                 throw new Error(`Expected "Many" button in score field but it was not found for ${username}`);
             }
         }
-        
+
         // Otherwise, verify the actual score value
         const actualScore = await this.page.locator(scoreSelector).textContent();
         const cleanScore = actualScore?.trim() || '';
-        
+
         if (cleanScore.includes(expectedScore)) {
             console.log(`✅ Verified - Score for ${username}: "${cleanScore}" contains "${expectedScore}"`);
             return true;
@@ -1561,7 +1556,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     public async verifyWarningMsgForTransferToSameInstance() {
         await this.wait('minWait');
         const messageText = await this.page.locator("//span[text()='The selected users are already enrolled to the training.']").textContent();
-        if(messageText?.trim() === "The selected users are already enrolled to the training."){
+        if (messageText?.trim() === "The selected users are already enrolled to the training.") {
             console.log(`✅ Verified - Warning Message: "${messageText}"`);
         } else {
             throw new Error(`Expected warning message not found. Got: "${messageText}"`);
@@ -1572,7 +1567,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         const learnerRow = this.page.locator(this.selectors.learnerRow(username));
         const isVisible = await learnerRow.isVisible().catch(() => false);
-        
+
         if (isVisible) {
             console.log(`✅ Learner "${username}" IS visible in transfer learner list (as expected)`);
         } else {
@@ -1584,7 +1579,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.wait("minWait");
         const learnerRow = this.page.locator(this.selectors.learnerRow(username));
         const isVisible = await learnerRow.isVisible().catch(() => false);
-        
+
         if (!isVisible) {
             console.log(`✅ Learner "${username}" is NOT visible in transfer learner list (as expected - suspended user)`);
         } else {
@@ -1592,7 +1587,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         }
     }
 
-     //for multiple order
+    //for multiple order
     async clickMultipleOrderRadioBtn() {
         await this.wait("minWait")
         await this.click(this.selectors.clickMultipleOrderRadioBtn, "Multiple Order", "Radio button")
@@ -1622,14 +1617,14 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         }
     }
 
-    async selectRecertification(){
+    async selectRecertification() {
         await this.wait("minWait")
         await this.click(this.selectors.certificationType, "Certification Type", "button")
         await this.wait("minWait")
         await this.click(this.selectors.recertificationOption, "Select Certification Type", "Options")
     }
 
-    async clickGoToCreaetOrderButton(){
+    async clickGoToCreaetOrderButton() {
         await this.wait("minWait")
         await this.click(this.selectors.gotCreateOrderBtn, "Go to Create Order", "button")
     }
@@ -1637,7 +1632,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
     async verifyCoursesAre(status: "Selected" | "NotSelected"): Promise<boolean> {
         await this.wait("minWait");
         const selectedCourses = await this.page.locator(this.selectors.selectedCourseIndicator).count();
-        
+
         if (status === "Selected") {
             if (selectedCourses > 0) {
                 console.log(`✅ ${selectedCourses} course(s) selected`);
@@ -1742,12 +1737,12 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         console.log(`✅ Filters applied successfully`);
     }
 
-    async clearFilters(){
+    async clearFilters() {
         await this.click(this.selectors.filterButton, "Filter", "Button");
         await this.wait("minWait");
         await this.click(this.selectors.clearAllFiltersBtn, "Clear All Filters", "button");
         await this.click(this.selectors.filterButton, "Filter", "Button");
-        console.log(" Cleared all filters applied" );
+        console.log(" Cleared all filters applied");
     }
 
     async verifyDeliveryTypeIcons(courseName: string, expectedPrice: string, currency: string) {
@@ -1768,15 +1763,15 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         console.log(`Course: ${courseNameText} | Code: ${codeText} | Language: ${languageText} | Enrollments: ${enrollmentText} | Price: ${priceText} | Seats: ${seatsText} | Date: ${startDateText} | Location: ${locationText} | Checkbox: ${checkboxExists ? 'Yes' : 'No'}`);
     }
 
-    async clickClearSectionButton(){
+    async clickClearSectionButton() {
         await this.wait("minWait")
         await this.click(this.selectors.clearSectionBtn, "Clear Section", "button")
-        console.log(" Clicked Clear Section button" );
+        console.log(" Clicked Clear Section button");
     }
 
-    async clickGoToOrderList(){
+    async clickGoToOrderList() {
         await this.click(this.selectors.goToOrderList, "Go to Order List", "button")
-        console.log(" Clicked Go to Order List button" );
+        console.log(" Clicked Go to Order List button");
     }
     /**
      * Click Load More button to load additional courses
@@ -1812,11 +1807,11 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async getSubTotal(): Promise<number> {
         const subTotalText = await this.page.locator(this.selectors.subTotalAmount).textContent();
-        
+
         // Extract only numeric value from text like "Sub Total : $ 1314 USD"
         const numericValue = subTotalText?.replace(/[^0-9.]/g, '') || '0';
         const subTotal = parseFloat(numericValue);
-        
+
         console.log(`✅ Sub Total amount: ${subTotal} (from: "${subTotalText}")`);
         return subTotal;
     }
@@ -1827,30 +1822,30 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      */
     async validateTimerIsRunning(): Promise<{ isPresent: boolean; isCountingDown: boolean; initialTime: string; finalTime: string }> {
         console.log("Validating purchase timer is present and counting down...");
-        
+
         // Check if timer is present
         const timerLocator = this.page.locator(this.selectors.purchaseTimer);
         await this.wait("minWait");
-        
+
         const isPresent = await timerLocator.isVisible();
         if (!isPresent) {
             console.log("❌ Purchase timer is not visible");
             return { isPresent: false, isCountingDown: false, initialTime: "", finalTime: "" };
         }
-        
+
         console.log("✅ Purchase timer is visible");
-        
+
         // Get initial timer value
         const initialTimerText = await timerLocator.textContent() || "";
         console.log(`Initial timer value: ${initialTimerText}`);
-        
+
         // Wait for 3 seconds
         await this.page.waitForTimeout(3000);
-        
+
         // Get final timer value after 3 seconds
         const finalTimerText = await timerLocator.textContent() || "";
         console.log(`Timer value after 3 seconds: ${finalTimerText}`);
-        
+
         // Parse time values (expecting format like "24:13" or "24:13 MINS")
         const parseTimeToSeconds = (timeStr: string): number => {
             const match = timeStr.match(/(\d+):(\d+)/);
@@ -1861,20 +1856,20 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
             }
             return 0;
         };
-        
+
         const initialSeconds = parseTimeToSeconds(initialTimerText);
         const finalSeconds = parseTimeToSeconds(finalTimerText);
-        
+
         // Check if time is reducing (counting down)
         const isCountingDown = finalSeconds < initialSeconds;
-        
+
         if (isCountingDown) {
             const timeDifference = initialSeconds - finalSeconds;
             console.log(`✅ Timer is counting down - Reduced by ${timeDifference} seconds`);
         } else {
             console.log(`❌ Timer is NOT counting down - Initial: ${initialSeconds}s, Final: ${finalSeconds}s`);
         }
-        
+
         return {
             isPresent,
             isCountingDown,
@@ -1887,54 +1882,54 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
      * Set the purchase timer to a specific time value
      * @param timeValue - Time in MM:SS format (e.g., "00:02" for 2 seconds)
      */
-async setTimerValue(timeValue: string = "00:02"): Promise<void> {
-    console.log(`⏳ Forcing purchase timer to: ${timeValue}`);
+    async setTimerValue(timeValue: string = "00:02"): Promise<void> {
+        console.log(`⏳ Forcing purchase timer to: ${timeValue}`);
 
-    await this.page.waitForSelector('.branding-color', { timeout: 5000 });
+        await this.page.waitForSelector('.branding-color', { timeout: 5000 });
 
-    await this.page.evaluate((forcedTime) => {
-        // 1️⃣ Kill all intervals running
-        for (let i = 1; i < 99999; i++) {
-            clearInterval(i);
-        }
-
-        // 2️⃣ Get the timer element
-        const timerEl = document.querySelector('.branding-color');
-        if (!timerEl) {
-            console.error("TIMER ELEMENT NOT FOUND");
-            return;
-        }
-
-        // 3️⃣ Set the forced starting time
-        timerEl.textContent = forcedTime;
-
-        console.log("Timer forced to:", forcedTime);
-
-        // 4️⃣ Create a FAST countdown engine (100ms = 10× faster)
-        let [min, sec] = forcedTime.split(":").map(n => parseInt(n.trim()));
-
-        const fastInterval = setInterval(() => {
-            if (sec === 0) {
-                if (min === 0) {
-                    timerEl.textContent = "00:00";
-                    clearInterval(fastInterval);
-                    console.log("Timer reached ZERO");
-                    return;
-                }
-                min--;
-                sec = 59;
-            } else {
-                sec--;
+        await this.page.evaluate((forcedTime) => {
+            // 1️⃣ Kill all intervals running
+            for (let i = 1; i < 99999; i++) {
+                clearInterval(i);
             }
 
-            const m = min.toString().padStart(2, "0");
-            const s = sec.toString().padStart(2, "0");
-            timerEl.textContent = `${m}:${s}`;
-        }, 10); // 100ms → super fast countdown
-    }, timeValue);
+            // 2️⃣ Get the timer element
+            const timerEl = document.querySelector('.branding-color');
+            if (!timerEl) {
+                console.error("TIMER ELEMENT NOT FOUND");
+                return;
+            }
 
-    console.log(`✅ Fake timer engine started at → ${timeValue}`);
-}
+            // 3️⃣ Set the forced starting time
+            timerEl.textContent = forcedTime;
+
+            console.log("Timer forced to:", forcedTime);
+
+            // 4️⃣ Create a FAST countdown engine (100ms = 10× faster)
+            let [min, sec] = forcedTime.split(":").map(n => parseInt(n.trim()));
+
+            const fastInterval = setInterval(() => {
+                if (sec === 0) {
+                    if (min === 0) {
+                        timerEl.textContent = "00:00";
+                        clearInterval(fastInterval);
+                        console.log("Timer reached ZERO");
+                        return;
+                    }
+                    min--;
+                    sec = 59;
+                } else {
+                    sec--;
+                }
+
+                const m = min.toString().padStart(2, "0");
+                const s = sec.toString().padStart(2, "0");
+                timerEl.textContent = `${m}:${s}`;
+            }, 10); // 100ms → super fast countdown
+        }, timeValue);
+
+        console.log(`✅ Fake timer engine started at → ${timeValue}`);
+    }
 
 
 
@@ -1943,6 +1938,6 @@ async setTimerValue(timeValue: string = "00:02"): Promise<void> {
         await this.validateElementVisibility(removeBtnSelector, `Remove button for course: ${courseName}`);
         await this.click(removeBtnSelector, `Remove course: ${courseName}`, "Button");
     }
-    
-    
+
+
 }

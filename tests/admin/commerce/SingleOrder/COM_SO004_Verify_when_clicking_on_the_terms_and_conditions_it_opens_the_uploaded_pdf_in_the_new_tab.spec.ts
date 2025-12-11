@@ -34,27 +34,17 @@ test.describe(`Verify when clicking on the terms and conditions it opens the upl
         await enrollHome.selectBycourse(courseName, "paid");
         await enrollHome.clickSelectedLearner();
         await enrollHome.enterSearchUserForSingleOrder(userName);
-
         await enrollHome.clickCheckoutButton();
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton();
-        await enrollHome.paymentMethod("Purchase Order");
-        await costCenter.fillPaymentMethodInput();
-
 
         const newTab = await costCenter.clickTermsAndConditionLink();
-        const learnerHomeNewTab = Object.assign(
-            Object.create(Object.getPrototypeOf(learnerHome)),
-            learnerHome
-        );
+        await expect(newTab).toHaveURL(/\.pdf$/);
 
-        learnerHomeNewTab.page = newTab;
-        await learnerHomeNewTab.basicLogin(userName, "default");
-        await learnerHomeNewTab.termsAndConditionScroll();
         await page.bringToFront();
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);
         await enrollHome.orderSuccessMsg();
     });
-});
+}); 

@@ -37,32 +37,32 @@ const dropdownOption = (data: string) => `//span[text()='${data}']`;
 const passwordAttemptErrMsg =
     `//span[text()='Your account has been temporarily locked after 3 unsuccessful login attempts. Please try again later.']`
 
- //Landing page verification
- const pageName = (data: string) => `(//h1[text()='${data}'])[1]`;
+//Landing page verification
+const pageName = (data: string) => `(//h1[text()='${data}'])[1]`;
 const myProfileCloseBtn = `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`;
 
 
 
 
- const clickAlertIcon = `//i[@class='fa-duotone fa-exclamation-triangle']`;
+const clickAlertIcon = `//i[@class='fa-duotone fa-exclamation-triangle']`;
 
- const courseListing = (title: string) => `//span[text()='${title}']`;
+const courseListing = (title: string) => `//span[text()='${title}']`;
 
- const clickLaunchButton = `//div[text()='Alerts']/following::i[@aria-label='Click to play']`;
+const clickLaunchButton = `//div[text()='Alerts']/following::i[@aria-label='Click to play']`;
 
  const clickINA=`(//h1[text()='My Dashboard']//following::div[text()='Items Need Attention'])[1]`;
 
- const clickLaunchTabInINA=`//a[contains(text(),'Launch')]`;
+const clickLaunchTabInINA = `//a[contains(text(),'Launch')]`;
 
- const verifyTextInLaunchTab=`//p[@class='my-2 h1_inactive fw-lighter']`;
+const verifyTextInLaunchTab = `//p[@class='my-2 h1_inactive fw-lighter']`;
 
- const certificationInLaunchTab=`(//p[@class='h4_action_title_active mb-0'])[1]`;
+const certificationInLaunchTab = `(//p[@class='h4_action_title_active mb-0'])[1]`;
 
- const clickLaunchButtonInINA=(title:string)=>`(//p[text()='${title}']/following::span[text()='Launch'])[1]`;
- 
- const certificationRemovedFromLaunchTab=(title:string)=>`//p[text()='${title}']`;
+const clickLaunchButtonInINA = (title: string) => `(//p[text()='${title}']/following::span[text()='Launch'])[1]`;
 
- const clickshowAll=`//button[text()='Show All']`;
+const certificationRemovedFromLaunchTab = (title: string) => `//p[text()='${title}']`;
+
+const clickshowAll = `//button[text()='Show All']`;
 
 export class LearnerLogin extends PlaywrightWrapper {
 
@@ -124,7 +124,7 @@ export class LearnerLogin extends PlaywrightWrapper {
     }
 
 
-     public async basicLogin(username: string, url: string) {
+    public async basicLogin(username: string, url: string) {
         const signIn = async () => {
             try {
                 await this.waitSelector(signInLocator);
@@ -171,7 +171,7 @@ export class LearnerLogin extends PlaywrightWrapper {
         }
     }
     //To verify the password policy,if the password is entered more than the configured value then it will throw an error message
-    public async passwordPolicyLogin(username: string,password:string,url: string) {
+    public async passwordPolicyLogin(username: string, password: string, url: string) {
         const signIn = async () => {
             try {
                 await this.waitSelector(signInLocator);
@@ -402,7 +402,7 @@ export class LearnerLogin extends PlaywrightWrapper {
     }
 
     public async DirectContentLogin(role: string) {
-    const { username, password } = credentials[role];
+        const { username, password } = credentials[role];
         await this.type(usernameSelector, "Username", username);
         await this.type(passwordSelector, "Password", password);
         await this.wait('minWait');
@@ -416,66 +416,74 @@ export class LearnerLogin extends PlaywrightWrapper {
         console.log(await this.page.title());
         await this.page.reload({ waitUntil: 'commit' });
         await this.wait('mediumWait');
-    } catch (error) {
+    } catch(error) {
         console.error(`Login attempt failed: ${error}`);
         throw error;
     }
 
-async verifyLandingPage(page:string) {
-    await this.wait("minWait");
-    await this.verification(pageName(page), page);
-}
-
-async clickAlertIcon(){
-    await this.validateElementVisibility(clickAlertIcon,"Alert Icon");
-    await this.click(clickAlertIcon,"Alert Icon","Icon");
-
-}
-async verifyAndClickLaunchFromAlert(title:string){
-    await this.page.locator(courseListing(title)).scrollIntoViewIfNeeded();
-
-    await this.verification(courseListing(title),title);
-
-    await this.click(clickLaunchButton,"Launch Button","Button");
-}
-
-async clickINA(){
-    await this.validateElementVisibility(clickINA,"Items Need Attention");
-    await this.click(clickINA,"Items Need Attention","Link");
-
-}
-
-async clickLaunchTabInINA(title:string){
-    await this.validateElementVisibility(clickLaunchTabInINA,"Launch Tab");
-    await this.click(clickLaunchTabInINA,"Launch Tab","Tab");
-    await this.verification(verifyTextInLaunchTab,"Your certification requires Re-Validate. Please complete the certification.")
-
-    await this.verification(certificationInLaunchTab,title)
-    await this.click(clickLaunchButtonInINA(title),"Launch Button","Button");
-}
-
-async verifyTheCertificationRemovedAfterCompletion(title: string){
-    // Verify the certification is removed from the Launch tab in INA after completion
-    await this.validateElementVisibility(clickLaunchTabInINA,"Launch Tab");
-    await this.click(clickLaunchTabInINA,"Launch Tab","Tab");
-    
-    // Verify certification is NOT present
-    const certificationLocator = this.page.locator(certificationRemovedFromLaunchTab(title));
-    const isVisible = await certificationLocator.isVisible().catch(() => false);
-    
-    if(!isVisible){
-        console.log(`✅ Verified: Certification "${title}" is removed from Launch tab in INA after completion`);
-    } else {
-        throw new Error(`❌ FAIL: Certification "${title}" is still present in Launch tab in INA. Expected it to be removed after completion.`);
+    async verifyLandingPage(page: string) {
+        await this.wait("minWait");
+        await this.verification(pageName(page), page);
     }
-}
 
-async clickShowAll(){
+    async clickAlertIcon() {
+        await this.validateElementVisibility(clickAlertIcon, "Alert Icon");
+        await this.click(clickAlertIcon, "Alert Icon", "Icon");
 
-    await this.validateElementVisibility(clickshowAll,"Show All Button");
-    await this.click(clickshowAll,"Show All Button","Button");
+    }
+    async verifyAndClickLaunchFromAlert(title: string) {
+        await this.page.locator(courseListing(title)).scrollIntoViewIfNeeded();
 
-}
+        await this.verification(courseListing(title), title);
+
+        await this.click(clickLaunchButton, "Launch Button", "Button");
+    }
+
+    async clickINA() {
+        await this.validateElementVisibility(clickINA, "Items Need Attention");
+        await this.click(clickINA, "Items Need Attention", "Link");
+
+    }
+
+    async clickLaunchTabInINA(title: string) {
+        await this.validateElementVisibility(clickLaunchTabInINA, "Launch Tab");
+        await this.click(clickLaunchTabInINA, "Launch Tab", "Tab");
+        await this.verification(verifyTextInLaunchTab, "Your certification requires Re-Validate. Please complete the certification.")
+
+        await this.verification(certificationInLaunchTab, title)
+        await this.click(clickLaunchButtonInINA(title), "Launch Button", "Button");
+    }
+
+    async verifyTheCertificationRemovedAfterCompletion(title: string) {
+        // Verify the certification is removed from the Launch tab in INA after completion
+        await this.validateElementVisibility(clickLaunchTabInINA, "Launch Tab");
+        await this.click(clickLaunchTabInINA, "Launch Tab", "Tab");
+
+        // Verify certification is NOT present
+        const certificationLocator = this.page.locator(certificationRemovedFromLaunchTab(title));
+        const isVisible = await certificationLocator.isVisible().catch(() => false);
+
+        if (!isVisible) {
+            console.log(`✅ Verified: Certification "${title}" is removed from Launch tab in INA after completion`);
+        } else {
+            throw new Error(`❌ FAIL: Certification "${title}" is still present in Launch tab in INA. Expected it to be removed after completion.`);
+        }
+    }
+
+    async clickShowAll() {
+
+        await this.validateElementVisibility(clickshowAll, "Show All Button");
+        await this.click(clickshowAll, "Show All Button", "Button");
+
+    }
+
+    /**
+     * Verify user is logged out by checking Sign In button visibility
+     */
+    async verifyLoggedOut() {
+        await this.validateElementVisibility(signInLocator, "Sign In");
+        console.log(`✅ Verified: User is logged out successfully.`);
+    }
 
 /**
  * Click on an option in INA (Items Need Attention) section
@@ -525,39 +533,39 @@ public async customLogin(username: string, url: string, password: string = "Welc
         }
     };
 
-    try {
-        switch (url) {
-            case "Portal1": {
-                await this.loadApp(URLConstants.learnerportal);
-                break;
+        try {
+            switch (url) {
+                case "Portal1": {
+                    await this.loadApp(URLConstants.learnerportal);
+                    break;
+                }
+                case "Portal2": {
+                    await this.loadApp(URLConstants.learnerportal2);
+                    break;
+                }
+                default:
+                    await this.loadApp(URLConstants.leanerURL);
+                    break;
             }
-            case "Portal2": {
-                await this.loadApp(URLConstants.learnerportal2);
-                break;
-            }
-            default:
-                await this.loadApp(URLConstants.leanerURL);
-                break;
+            await signIn();
+            await this.type(usernameSelector, "Username", username);
+            await this.type(passwordSelector, "Password", password);
+            await this.wait('minWait');
+            await this.click(signInButtonLocator, "Sign In button", "Button");
+            await this.page.waitForLoadState('domcontentloaded');
+            await this.waitSelector(logoutButtonLocator);
+            const logoutButton = this.page.locator(logoutButtonLocator);
+            await expect(logoutButton).toBeVisible({ timeout: 20000 });
+            console.log(`Custom login successful for user: ${username}`);
+            await this.wait('minWait')
+            console.log(await this.page.title());
+            await this.page.reload({ waitUntil: 'commit' });
+            await this.wait('mediumWait');
+        } catch (error) {
+            console.error(`Custom login attempt failed: ${error}`);
+            throw error;
         }
-        await signIn();
-        await this.type(usernameSelector, "Username", username);
-        await this.type(passwordSelector, "Password", password);
-        await this.wait('minWait');
-        await this.click(signInButtonLocator, "Sign In button", "Button");
-        await this.page.waitForLoadState('domcontentloaded');
-        await this.waitSelector(logoutButtonLocator);
-        const logoutButton = this.page.locator(logoutButtonLocator);
-        await expect(logoutButton).toBeVisible({ timeout: 20000 });
-        console.log(`Custom login successful for user: ${username}`);
-        await this.wait('minWait')
-        console.log(await this.page.title());
-        await this.page.reload({ waitUntil: 'commit' });
-        await this.wait('mediumWait');
-    } catch (error) {
-        console.error(`Custom login attempt failed: ${error}`);
-        throw error;
     }
-}
 
 
 }

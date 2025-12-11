@@ -2480,11 +2480,14 @@ export class CoursePage extends AdminHomePage {
   }
 
   async typeCompleteByDate() {
+    const date =getRandomFutureDate();
+    console.log("Complete by date selected: " + date);
     await this.typeAndEnter(
       this.selectors.completeByDateInput,
       "Completed Date",
-      gettomorrowDateFormatted()
+      date
     );
+
   }
 
   async selectCompleteByDate() {
@@ -2508,13 +2511,15 @@ export class CoursePage extends AdminHomePage {
     await this.click(this.selectors.randomDate, "RandomDate", "Field");
   }
   async clickregistrationEnds() {
+    const date =getCurrentDateFormatted();
+    console.log("Registration End Date -"+date)
     await this.validateElementVisibility(
       this.selectors.registrationEnd,
       "Enter Date"
     );
     await this.keyboardType(
       this.selectors.registrationEnd,
-      gettomorrowDateFormatted()
+      date
     );
   }
 
@@ -2767,6 +2772,7 @@ async enterDateValue2() {
   }
   async enterfutureDateValue() {
     const date = getFutureDate();
+    console.log("Future date  " + date);
     await this.keyboardType(this.selectors.Date, date);
   }
   
@@ -3519,7 +3525,8 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
     await this.click(this.selectors.indianTimezone, "Indian Timezone", "Selected");
     
     // Set start date
-    await this.typeAndEnter(this.selectors.startDateInstanceIndex(index), "Start Date", gettomorrowDateFormatted());
+    const startDate =gettomorrowDateFormatted();
+    await this.typeAndEnter(this.selectors.startDateInstanceIndex(index), "Start Date", startDate);
     
     // Set start time - Primary time selection
     await this.click(this.selectors.timeInput, "Start Time Input", "Input");
@@ -6003,9 +6010,17 @@ async startandEndTime() {
       return;
     }
     
-    // Click on the time input field
+    // Click on the time input field to open the picker
     await this.click(timeInputSelector, "Start Time Input", "Input");
     await this.wait("mediumWait");
+    
+    // Check if timepicker is visible, if not click again
+    const timepickerVisible = await this.page.locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li").first().isVisible().catch(() => false);
+    if (!timepickerVisible) {
+      console.log("Timepicker not visible, clicking time input again...");
+      await this.page.locator(timeInputSelector).click();
+      await this.wait("mediumWait");
+    }
     
     function getCurrentTimePlusTwoHours() {
       const now = new Date();
@@ -6025,17 +6040,20 @@ async startandEndTime() {
       return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
     }
     async function selectNextAvailableTime() {
-      // Target only the visible time picker using :visible or style check
+      // Wait for timepicker to be visible
+      await this.page.waitForSelector("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li", { timeout: 5000 });
+      
+      // Target only the visible time picker
       const list = await this.page
         .locator("//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li")
         .allTextContents();
-      console.log(list);
+      console.log("Available times:", list);
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
 
       // Use first() to avoid strict mode violation when multiple elements match
       const timeLocator = this.page.locator(
-        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
+        `//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${timeToSelect}']`
       );
 
       // Check if multiple elements exist and use first() to select the first match
@@ -6051,18 +6069,11 @@ async startandEndTime() {
         for (const time of list) {
           if (time >= timeToSelect) {
             console.log('Selecting closest available time:', time);
-            await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).first().click();
+            await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
             break;
           }
         }
       }
-      /* for (const time of list) {
-                if (time >= timeToSelect) {
-                    console.log('Selecting time:', time);
-                    await this.page.locator(`//div[contains(@class,'timepicker') and not(contains(@style,'display: none'))]//li[text()='${time}']`).first().click();
-                    break;
-                }
-            } */
     }
     await selectNextAvailableTime.call(this);
     

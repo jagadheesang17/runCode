@@ -6,13 +6,13 @@ import { createCourseAPI as createElearningCourse } from "../../../../api/apiTes
 import { CostcenterPage } from "../../../../pages/CostcenterPage";
 
 
-test.describe(`Verify once the training is deleted the sub-total,grand total  is been updated & Validate the Training Details`, () => {
+test.describe(`Verify once the training is deleted the sub-total,grand total  is been updated , Validate the Training Details & Currency Conversion`, () => {
     test.describe.configure({ mode: "serial" });
     test(`Test 1: Verify once the training is deleted the sub-total is been updated`, async ({ adminHome, enrollHome, costCenter }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },
-            { type: `TestCase`, description: `SO003_TC003 - Verify sub-total updates after training addition & deletion , ` },
-            { type: `Test Description`, description: `Verify once the training is deleted the sub-total is been updated` }
+            { type: `TestCase`, description: `SO003_TC003 - Verify sub-total updates after training addition , deletion & Currency Conversion ` },
+            { type: `Test Description`, description: `Verify once the training is deleted the sub-total is been updated  with Currency Conversion` }
         );
 
         //REMOVING COURSE 2 FROM THE ORDER AND VALIDATING THE SUB-TOTAL UPDATION
@@ -24,8 +24,8 @@ test.describe(`Verify once the training is deleted the sub-total,grand total  is
         const price2 = "315";
         const price3 = "215";
 
-        await createElearningCourse(content, courseName, "published", "single", "e-learning", price1, "usd");
-        await createElearningCourse(content, courseName2, "published", "single", "e-learning", price2, "usd");
+        await createElearningCourse(content, courseName, "published", "single", "e-learning", price1, "eur");
+        await createElearningCourse(content, courseName2, "published", "single", "e-learning", price2, "gbp");
         await createElearningCourse(content, courseName3, "published", "single", "e-learning", price3, "usd");
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
@@ -38,34 +38,64 @@ test.describe(`Verify once the training is deleted the sub-total,grand total  is
         await enrollHome.clickSelectedLearner();
         await enrollHome.enterSearchUserForSingleOrder(credentials.LEARNERUSERNAME.username);
 
+        // Convert all prices to USD using exchange rates shown in admin UI
+        // Rates from UI screenshot:
+        // EUR -> USD = 1.0716000000
+        // GBP -> USD = 1.2685500000
+        // USD -> USD = 1.0
+        const exchangeRates = {
+            EUR_to_USD: 1.0716,
+            GBP_to_USD: 1.26855,
+            USD_to_USD: 1.0,
+        };
+
+        const price1Usd = parseFloat(price1) * exchangeRates.EUR_to_USD;
+        const price2Usd = parseFloat(price2) * exchangeRates.GBP_to_USD;
+        const price3Usd = parseFloat(price3) * exchangeRates.USD_to_USD;
+
+        console.log(`\n💱 Currency Conversion to USD:`);
+        console.log(`   Course 1 (EUR ${price1}): ${price1} × ${exchangeRates.EUR_to_USD} = $${price1Usd.toFixed(2)}`);
+        console.log(`   Course 2 (GBP ${price2}): ${price2} × ${exchangeRates.GBP_to_USD} = $${price2Usd.toFixed(2)}`);
+        console.log(`   Course 3 (USD ${price3}): ${price3} × ${exchangeRates.USD_to_USD} = $${price3Usd.toFixed(2)}\n`);
+
+        const expectedTotalUsd = parseFloat((price1Usd + price2Usd + price3Usd).toFixed(2));
+
         const subTotal = await enrollHome.getSubTotal();
-        const expectedTotal = parseInt(price1) + parseInt(price2) + parseInt(price3);
-        expect(subTotal).toBe(expectedTotal);
-        console.log(`✅ Sub Total validation passed: ${subTotal} = ${price1} + ${price2} + ${price3}`);
+        // Use close comparison for floating point currency totals (2 decimal places)
+        expect(subTotal).toBeCloseTo(expectedTotalUsd, 2);
+        console.log(`✅ Sub Total validation passed (USD): ${subTotal} ≈ ${expectedTotalUsd}`);
 
         await enrollHome.removeSelectedCourse(courseName2);
         const updatedSubTotal = await enrollHome.getSubTotal();
-        console.log(`✅ Updated Sub Total after course -${courseName2} removal  validation passed: ${updatedSubTotal} = ${price1} + ${price3}`);
-        expect(updatedSubTotal).toBe(parseInt(price1) + parseInt(price3));
+        const expectedUpdatedUsd = parseFloat((price1Usd + price3Usd).toFixed(2));
+        console.log(`✅ Updated Sub Total after course -${courseName2} removal  validation passed (USD): ${updatedSubTotal} ≈ ${expectedUpdatedUsd}`);
+        expect(updatedSubTotal).toBeCloseTo(expectedUpdatedUsd, 2);
         await enrollHome.clickCheckoutButton();
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton();
-        await enrollHome.paymentMethod("Purchase Order");
-        await costCenter.fillPaymentMethodInput();
-        
 
         await costCenter.validateCourseTitle([courseName, courseName3]);
         await costCenter.validateCourseUserCount(courseName, 1);
         await costCenter.validateCourseUserCount(courseName3, 1);
 
-        // Validate Prices and Totals for all Courses in the Order
         const discount = await costCenter.getDiscountValue();
-        await costCenter.validateCoursePrice(courseName, parseFloat(price1));
-        await costCenter.validateCoursePrice(courseName3, parseFloat(price3));
-        await costCenter.validateCourseTotal(courseName, parseFloat(price1)); 
-        await costCenter.validateCourseTotal(courseName3, parseFloat(price3));
-        await costCenter.validateSubTotal(parseFloat(price1) + parseFloat(price3));
-        await costCenter.validateGrandTotal(parseFloat(price1) + parseFloat(price3)- discount);
+        // Validate prices/totals in USD (rounded to 2 decimals)
+        await costCenter.validateCoursePrice(courseName, parseFloat(price1Usd.toFixed(2)));
+        await costCenter.validateCoursePrice(courseName3, parseFloat(price3Usd.toFixed(2)));
+        await costCenter.validateCourseTotal(courseName, parseFloat(price1Usd.toFixed(2)));
+        await costCenter.validateCourseTotal(courseName3, parseFloat(price3Usd.toFixed(2)));
+        await costCenter.validateSubTotal(parseFloat((price1Usd + price3Usd).toFixed(2)));
+        const grandTotal = await costCenter.validateGrandTotal(parseFloat((price1Usd + price3Usd).toFixed(2)) - discount);
+
+        // Validate payment method visibility based on grand total
+        if (grandTotal === 0 || grandTotal === 0.00 ) {
+            console.log(`✅ Payment method is not visible as grand total is $0.00`);
+        } else {
+            await enrollHome.paymentMethod("Purchase Order");
+            await costCenter.fillPaymentMethodInput();
+            console.log(`✅ Payment method filled as grand total is $${grandTotal}`);
+        }
+
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);

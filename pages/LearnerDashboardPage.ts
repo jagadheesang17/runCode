@@ -3,6 +3,7 @@ import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
 import { BrowserContext, expect, Locator, Page } from "@playwright/test";
 import { LearnerHomePage } from "./LearnerHomePage";
 import { th } from "@faker-js/faker";
+import { verify } from 'crypto';
 
 export class LearnerDashboardPage extends LearnerHomePage {
   public selectors = {
@@ -62,7 +63,15 @@ export class LearnerDashboardPage extends LearnerHomePage {
     applyBtn: `//button[text()='Apply']`,
     completedCertificates: `//h5[contains(@class,'title_active')]`,
     resultCourse_TP: (data: string) => `//h5[text()='${data}']`,
-    courseStatus: (courseName: string, status: string) => `//h5[text()='${courseName}']//following::div[contains(text(),'${status}')]`
+    courseStatus: (courseName: string, status: string) => `//h5[text()='${courseName}']//following::div[contains(text(),'${status}')]`,
+    learninghrs:`(//h5[text()='Jan - Dec 2025']//following::td[text()='Actual']//following::td)[1]`,
+    assignmentTypeChart: `//canvas[@id='assignment-type-chart']`,
+    trainingTypeChart: `//canvas[@id='training-type-chart']`,
+    deliveryTypeChart: `//canvas[@id='delivery-type-chart']`,
+    overAllLink: `//a[text()='Overall']`,
+    actionCenter:`//h5[text()='Action Center']`,
+    wishListLink: `//canvas[@id='overallwishlist-chart']`,
+    wishListCount: `(//div[text()='Added to Wishlist']//following::div)[1]`,
   };
 
   //To Navigate to Bookmark->Content/Certification/Learning Path pages
@@ -387,7 +396,71 @@ export class LearnerDashboardPage extends LearnerHomePage {
     }
   }
 
+  async getLearningHours(): Promise<string> {
+    await this.wait("minWait");
+    const learningHours = await this.page.locator(this.selectors.learninghrs).innerText();
+    console.log(`📊 Total Learning Hours: ${learningHours}`);
+    
+    // Validate learning hours is not 0
+    if (learningHours === "0" || learningHours === "0.00" || parseFloat(learningHours) === 0) {
+      throw new Error(`Learning hours should not be 0. Current value: ${learningHours}`);
+    }
+    
+    return learningHours;
+  }
 
+  async verifyAssignmentTypeChart() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.assignmentTypeChart,
+      "Assignment Type Chart"
+    );
+    console.log(`✅ Assignment Type Chart is displayed`);
+  }
+
+  async verifyTrainingTypeChart() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.trainingTypeChart,
+      "Training Type Chart"
+    );
+    console.log(`✅ Training Type Chart is displayed`);
+  }
+
+  async verifyDeliveryTypeChart() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.deliveryTypeChart,
+      "Delivery Type Chart"
+    );
+    console.log(`✅ Delivery Type Chart is displayed`);
+  }
+
+  async clickOverallLink() {
+    await this.wait("minWait");
+    await this.click(this.selectors.overAllLink, "Overall Link", "Link");
+  }
+
+  async verifyActionCenter() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.actionCenter,
+      "Action Center"
+    );
+    console.log(`✅ Action Center is displayed`);
+  }
+  async verifyWishListChartAndGetCount(): Promise<string> {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.wishListLink,
+      "Wish List Chart"
+    );
+    console.log(`✅ Wish List Chart is displayed`);
+    
+    const wishlistCount = await this.page.locator(this.selectors.wishListCount).innerText();
+    console.log(`📊 Wishlist Count: ${wishlistCount}`);
+    return wishlistCount;
+  }
 
 }
 

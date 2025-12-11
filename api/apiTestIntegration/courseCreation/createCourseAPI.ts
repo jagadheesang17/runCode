@@ -522,7 +522,7 @@ async function addClassroomInstances(
   const sessionList = [];
   
   for (let i = 0; i < instanceCount; i++) {
-    const startDate = dateType.toLowerCase() === "pastclass" 
+    const startDate = dateType.toLowerCase() === "past" 
       ? getRandomPastDate() 
       : getRandomFutureDate();
     const startTime = getRandomTime();
@@ -913,7 +913,7 @@ async function updateVCInstance(
   dateType: string = "future",
   status: string = "published"
 ): Promise<void> {
-  const startDate = dateType.toLowerCase() === "pastclass" 
+  const startDate = dateType.toLowerCase() === "past" 
     ? getRandomPastDate() 
     : getRandomFutureDate();
   const startTime = getRandomTime();
