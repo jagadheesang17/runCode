@@ -23,7 +23,7 @@ export class CostcenterPage extends LearnerHomePage {
         stateField: `//div[@id='wrapper-state']//button[@data-id='state']`,
         cityTown: `//label[text()='City/Town']/following-sibling::input`,
         zipcode: `//label[text()='Zip Code']/following-sibling::input`,
-        paymentMode: `//div[@id='wrapper-payment_mode']`,
+        paymentMode: `//div[@id="wrapper-state"]`,
         paymentOption: (option: number) => `(//div[@id='wrapper-payment_mode']/following::ul//a)[${option}]`,
         paymentMethod: (option: string) => `//span[text()='${option}']`,
         cardNumber: `//label[text()='Card Number']/following-sibling::input`,
@@ -49,7 +49,7 @@ export class CostcenterPage extends LearnerHomePage {
         subTotalValue: `//div[text()='Sub Total :']/following::div[@class='field_title_1 text-end'][1]`,
         discountValue: `//div[text()='Discount :']/following::div[@class='field_title_1 text-end'][1]`,
         grandTotalValue: `//div[contains(text(),'Grand Total :')]/following::div[@class='field_title_1 text-end'][1]`,
-        termsAndContionLink:`//a[text()='Terms and Conditions']`,
+        
         
         // Billing Details - Order Summary Page (Read-only fields)
         billingZipCode: `//div[text()='billing details']/following-sibling::div[contains(@class,'border')]//label[text()='Zip Code']/following-sibling::input`,

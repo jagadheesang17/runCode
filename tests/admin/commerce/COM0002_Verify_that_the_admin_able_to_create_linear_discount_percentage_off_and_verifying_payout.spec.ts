@@ -5,7 +5,7 @@ import { generateCode } from "../../../data/apiData/formData";
 import { URLConstants } from "../../../constants/urlConstants";
 //const courseName = FakerData.getCourseName();
 const courseName = "Open-source Driver Override";
-const discountName = FakerData.getTagNames()+" "+"Discount";
+const discountName = FakerData.getTagNames()+" "+"Discount_"+FakerData.getTagNames();
 const description = FakerData.getDescription();
 const price = FakerData.getPrice();
 const code = "DIS-"+ generateCode();
@@ -42,7 +42,10 @@ test(`Creating paid EL course and adding discount`, async ({ createCourse, admin
     );
 
     await adminHome.loadAndLogin("SUPERADMIN")
-    await adminHome.clickMenu("Course");
+    await adminHome.menuButton();
+    await adminHome.clickLearningMenu();
+    await adminHome.clickCourseLink();
+    await createCourse.clickCreateCourse();
     await createCourse.verifyCreateUserLabel("CREATE COURSE");
     await createCourse.enter("course-title", courseName);
     await createCourse.selectLanguage("English");
@@ -58,9 +61,10 @@ test(`Creating paid EL course and adding discount`, async ({ createCourse, admin
     await createCourse.editcourse();
     await createCourse.clickCourseOption("Discount")
     await editCourse.verifyDiscountApplied(discountName,URLConstants.portal1)
-    await editCourse.selectDiscountOption();
+    //await editCourse.selectDiscountOption();
     await createCourse.clickDetailButton();
-    await createCourse.clickCatalog();
+    await createCourse.typeDescription(description);
+    //await createCourse.clickCatalog();
     await createCourse.clickUpdate();
     await createCourse.verifySuccessMessage();   
 })

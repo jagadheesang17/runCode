@@ -83,6 +83,16 @@ export class CommerceHomePage extends AdminHomePage{
         await this.click(this.selectors.commerceOptions(data),"Commerce Option","Link");
     }
 
+    // Search for discount
+    async discountSearch(discountName: string){
+        await this.wait('minWait');
+        await this.type(this.selectors.discountSearchInput, "Discount Search", discountName);
+        await this.wait('mediumWait');
+        const searchResult = this.page.locator(this.selectors.discountSearchResult(discountName));
+        await this.validateElementVisibility(this.selectors.discountSearchResult(discountName), `Discount: ${discountName}`);
+        console.log(`✅ Found discount '${discountName}' in search results`);
+    }
+
     public async clickInvoiceButton(orderId:number|string){
         await this.validateElementVisibility(this.selectors.invoiceBtn(orderId),"Invoice Link");
         await this.click(this.selectors.invoiceBtn(orderId),"Invoice Link","Icon");
@@ -532,4 +542,3 @@ export class CommerceHomePage extends AdminHomePage{
     return true; // New tax created
   }
 }
-

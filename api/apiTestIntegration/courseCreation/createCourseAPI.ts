@@ -514,7 +514,8 @@ async function addClassroomInstances(
   courseName: string,
   instanceCount: number,
   status: string,
-  dateType: string = "future"
+  dateType: string = "future",
+  maxSeat: string = "45"
 ): Promise<void> {
   // Generate instance data
   const initSessions = [];
@@ -561,7 +562,7 @@ async function addClassroomInstances(
       end_time: endTime,
       instructors: [],
       location: location,
-      maxSeat: "45",
+      maxSeat: maxSeat,
       wailtList: "",
       isStatusChecked: i === instanceCount - 1, // Last instance checked
       disableStatusCheckbox: i === 0, // First instance disabled
@@ -650,6 +651,7 @@ export async function createCourseAPI(
  * @param status - Course status (default: "published")
  * @param instanceCount - Number of instances to create (default: 2)
  * @param dateType - Date type for instances: "future" (default) or "pastclass" for past dates
+ * @param maxSeat - Optional max seat limit for instances (default: "45")
  * @param price - Optional price for the course
  * @param currency - Optional currency (required if price is provided)
  * @returns Array of instance names
@@ -659,6 +661,7 @@ export async function createILTMultiInstance(
   status = "published",
   instanceCount = 2,
   dateType: string = "future",
+  maxSeat: string = "45",
   price?: string,
   currency?: string
 ): Promise<string[]> {
@@ -679,7 +682,7 @@ export async function createILTMultiInstance(
   
   await createAccessGroupMapping(course_id, catalog_id, status);
   
-  await addClassroomInstances(course_id, courseName, instanceCount, status, dateType);
+  await addClassroomInstances(course_id, courseName, instanceCount, status, dateType, maxSeat);
   
   // Generate instance names array based on actual API behavior:
   // - Single instance (1): API returns course name without suffix

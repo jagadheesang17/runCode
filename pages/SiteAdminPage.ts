@@ -146,6 +146,19 @@ export class SiteAdminPage extends AdminHomePage {
 
         checkCertificationRevalidation:`(//span[text()='Certification re-validation']/preceding-sibling::i)[2]`,
 
+        //Discount Module - Commerce
+        clickEditCommerce: `//i[@data-bs-target='#Commerce-content']`,
+        discountModuleEnabled: `//span[text()='Discount']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
+        discountModuleUnchecked: `//span[text()='Discount']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        commerceSaveBtn: `//div[@id='Commerce-content']//button[text()='SAVE']`,
+        
+        // Discount Selection Configuration Dropdown (Minimum, Maximum, Combine All)
+        discountSelectionDropdown: `(//label[text()='Discount Group']/following::div[@class="filter-option-inner"])[1]`,
+        discountOptionInDropdown: (option: string) => `//span[text()='${option}']`,
+        discountMinimumSelected: `//label[@for='minimum']//i[contains(@class,'fa-dot-circle')]`,
+        discountMaximumSelected: `//label[@for='maximum']//i[contains(@class,'fa-dot-circle')]`,
+        discountCombineAllSelected: `//label[@for='sum']//i[contains(@class,'fa-dot-circle')]`,
+
     };
 
 
@@ -1020,6 +1033,122 @@ export class SiteAdminPage extends AdminHomePage {
         const isUnchecked = await uncheckedElement.isVisible();
         expect(isUnchecked).toBeTruthy();
         console.log("✅ Verified: Transfer Enrollment - Training Plan is disabled");
+    }
+
+    //Discount Module - Commerce
+    async clickEditCommerce() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.clickEditCommerce, "Edit Commerce");
+        await this.click(this.selectors.clickEditCommerce, "Edit Commerce", "Button");
+    }
+
+    async enableDiscountModule() {
+        await this.wait("mediumWait");
+        const uncheckedElement = this.page.locator(this.selectors.discountModuleUnchecked);
+        const isUnchecked = await uncheckedElement.isVisible();
+        
+        if (isUnchecked) {
+            await this.click(this.selectors.discountModuleUnchecked, "Enable Discount Module", "Checkbox");
+            await this.click(this.selectors.save, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Enabled: Discount Module checkbox is now checked");
+        } else {
+            console.log("ℹ️ Discount Module is already enabled");
+        }
+    }
+
+    async disableDiscountModule() {
+        await this.wait("mediumWait");
+        const checkedElement = this.page.locator(this.selectors.discountModuleEnabled);
+        const isChecked = await checkedElement.isVisible();
+        
+        if (isChecked) {
+            await this.click(this.selectors.discountModuleEnabled, "Disable Discount Module", "Checkbox");
+            await this.click(this.selectors.save, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Disabled: Discount Module checkbox is now unchecked");
+        } else {
+            console.log("ℹ️ Discount Module is already disabled");
+        }
+    }
+
+    async verifyDiscountModuleEnabled() {
+        await this.wait("mediumWait");
+        const checkedElement = this.page.locator(this.selectors.discountModuleEnabled);
+        const isChecked = await checkedElement.isVisible();
+        expect(isChecked).toBeTruthy();
+        console.log("✅ Verified: Discount Module is enabled");
+    }
+
+    async verifyDiscountModuleDisabled() {
+        await this.wait("mediumWait");
+        const uncheckedElement = this.page.locator(this.selectors.discountModuleUnchecked);
+        const isUnchecked = await uncheckedElement.isVisible();
+        expect(isUnchecked).toBeTruthy();
+        console.log("✅ Verified: Discount Module is disabled");
+    }
+
+    // Discount Selection Configuration Methods - Dropdown
+    async selectDiscountOption(option: "Minimum" | "Maximum" | "Combine All") {
+        await this.wait("mediumWait");
+        console.log(`🔄 Selecting discount option: ${option} of All from dropdown`);
+        
+        // Click the dropdown to open it
+        await this.click(this.selectors.discountSelectionDropdown, "Discount Selection Dropdown", "Dropdown");
+        await this.wait("minWait");
+        
+        // Click the option
+        await this.click(this.selectors.discountOptionInDropdown(option), `${option}`, "Option");
+        await this.wait("minWait");
+        
+        // Save the configuration
+        await this.click(this.selectors.commerceSaveBtn, "Save", "Button");
+        await this.wait("mediumWait");
+        console.log(`✅ Selected: ${option} of All discount configuration saved`);
+    }
+
+    async verifyDiscountOptionSelected(option: "Minimum" | "Maximum" | "Combine") {
+        await this.wait("mediumWait");
+        
+        const selectedText = await this.page.locator(this.selectors.discountSelectedValue).textContent();
+        const expectedText = `${option} of All`;
+        
+        if (selectedText?.trim() === expectedText) {
+            console.log(`✅ Verified: ${option} of All is selected in site admin configuration dropdown`);
+        } else {
+            throw new Error(`❌ Expected "${expectedText}" but found "${selectedText?.trim()}" in dropdown`);
+        }
+    }
+
+    //Transfer Enrollment - Course (matching TECRS01 test)
+    async enableTransferEnrollment() {
+        await this.wait("mediumWait");
+        const uncheckedElement = this.page.locator(this.selectors.transferEnrollmentCheckboxToCheck);
+        const isUnchecked = await uncheckedElement.isVisible();
+        
+        if (isUnchecked) {
+            await this.click(this.selectors.transferEnrollmentCheckboxToCheck, "Enable Transfer Enrollment", "Checkbox");
+            await this.click(this.selectors.businessRulesSaveBtn, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Enabled: Transfer Enrollment checkbox is now checked");
+        } else {
+            console.log("ℹ️ Transfer Enrollment is already enabled");
+        }
+    }
+
+    async disableTransferEnrollment() {
+        await this.wait("mediumWait");
+        const checkedElement = this.page.locator(this.selectors.transferEnrollmentCheckbox);
+        const isChecked = await checkedElement.isChecked();
+        
+        if (isChecked) {
+            await this.click(this.selectors.transferEnrollmentCheckbox, "Disable Transfer Enrollment", "Checkbox");
+            await this.click(this.selectors.businessRulesSaveBtn, "Save", "Button");
+            await this.wait("mediumWait");
+            console.log("✅ Disabled: Transfer Enrollment checkbox is now unchecked");
+        } else {
+            console.log("ℹ️ Transfer Enrollment is already disabled");
+        }
     }
  
 }

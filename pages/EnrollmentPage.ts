@@ -182,7 +182,7 @@ export class EnrollmentPage extends AdminHomePage {
         transferSuccessMsg: `//h3[text()='1 Learner Successfully Transfered']`,
         searchCourseViewStatus: `//input[@id='exp-searchenrollments-course' or contains(@placeholder,'Search')]`,
         searchLearnerViewStatus: `//input[@id="exp-search-undefinedundefined-field"]`,
-        learnerInstanceCell: (username: string) => `//td[contains(text(),'${username}')]/following::div[text()='Enrolled']`,
+        learnerInstanceCell: (username: string) => `//span[contains(text(),'${username}')]/following::div[text()='Enrolled']`,
         learnerRow: (username: string, status: string) => `(//td[text()='${username}']/following-sibling::td[text()='${status}'])[1]`,
 
         // Bulk enrollment selectors
@@ -548,11 +548,12 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
         await this.click(this.selectors.enrollORCancel(data), "Manage Enrollment ", " EnrollLink")
     }
     async enterSearchUserForSingleOrder(data: string) {
-        await this.type(this.selectors.searchcourseOrUser, "Course Name", data)
-        const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
-        const randomIndex = Math.floor(Math.random() * index) + 1;
-        await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
-        await this.click(this.selectors.selectUserForOrderCreation(data), "Select Course", "Radio button")
+        await this.wait("mediumWait")
+        await this.wait("maxWait")
+        await this.click(this.selectors.searchcourseOrUser, "Search User", "Input Field")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "User Name", data)
+        //await this.click(this.selectors.userListOpt(data), "User", "Options")
+        await this.click(this.selectors.selectUserForOrderCreation(data), "Select User", "Radio button")
     }
     async clickCheckoutButton() {
         await this.wait("minWait")
@@ -586,6 +587,7 @@ enrollToTpBtn: `//span[text()='View Status/Enroll Learner to TP Courses']`,
                 if (response.status() === 200) {
                     try {
                         const body = await response.json();
+                        console.log("Response body:", body);
                         return body.hasOwnProperty('order_summary_id');
                     } catch {
                         return false;

@@ -652,4 +652,130 @@ async function certificationExpiry_CronJob() {
 
 
 
+// Get discount validity dates from database
+export async function getDiscountValidityDates(discountName: string) {
+    try {
+        const discountData = await dataBase.executeQuery(
+            `SELECT valid_from, valid_to, name FROM discounts 
+             WHERE name = '${discountName}' 
+             AND tenant_id='${tenant_ID}' 
+             AND portal_id='${portal_ID}' 
+             ORDER BY id DESC LIMIT 1`
+        );
+        
+        if (discountData && discountData.length > 0) {
+            const validFrom = discountData[0].valid_from;
+            const validTo = discountData[0].valid_to;
+            console.log(`📅 Discount "${discountName}" validity:`);
+            console.log(`   Valid From: ${validFrom}`);
+            console.log(`   Valid To: ${validTo}`);
+            return {
+                valid_from: validFrom,
+                valid_to: validTo,
+                name: discountData[0].name
+            };
+        } else {
+            console.log(`⚠️ Discount "${discountName}" not found in database`);
+            return null;
+        }
+    } catch (error) {
+        console.log(`❌ Error fetching discount validity dates: ${error}`);
+        throw error;
+    }
+}
+
+// Update discount validity dates to be outside current date
+export async function setDiscountValidityOutsideCurrentDate(discountName: string) {
+    try {
+        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+        const currentTimeString = currentTimeResult[0]['NOW()'];
+        const currentTime = new Date(currentTimeString);
+        
+        // Set valid_from to 60 days in the PAST
+        const pastDate = new Date(currentTime);
+        pastDate.setDate(pastDate.getDate() - 60);
+        const validFrom = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
+        
+        // Set valid_to to 30 days in the PAST
+        const recentPastDate = new Date(currentTime);
+        recentPastDate.setDate(recentPastDate.getDate() - 30);
+        const validTo = format(recentPastDate, 'yyyy-MM-dd HH:mm:ss');
+        
+        console.log(`📅 Current Date: ${format(currentTime, 'yyyy-MM-dd HH:mm:ss')}`);
+        console.log(`📅 Setting discount validity OUTSIDE current date (PAST dates):`);
+        console.log(`   Valid From: ${validFrom} (60 days ago)`);
+        console.log(`   Valid To: ${validTo} (30 days ago)`);
+        
+        const updateResult = await dataBase.executeQuery(
+            `UPDATE discounts 
+             SET valid_from='${validFrom}', valid_to='${validTo}' 
+             WHERE name='${discountName}' 
+             AND tenant_id='${tenant_ID}' 
+             AND portal_id='${portal_ID}'`
+        );
+        
+        console.log(`💾 Update query result:`, updateResult);
+        
+        // Verify the update
+        const verifyData = await dataBase.executeQuery(
+            `SELECT valid_from, valid_to, name FROM discounts 
+             WHERE name='${discountName}' 
+             AND tenant_id='${tenant_ID}' 
+             AND portal_id='${portal_ID}' 
+             ORDER BY id DESC LIMIT 1`
+        );
+        
+        if (verifyData && verifyData.length > 0) {
+            console.log(`✅ Verification - Discount dates updated in database:`);
+            console.log(`   Valid From: ${verifyData[0].valid_from}`);
+            console.log(`   Valid To: ${verifyData[0].valid_to}`);
+        } else {
+            console.log(`⚠️ Warning: Could not verify discount update`);
+        }
+        
+        return { validFrom, validTo };
+    } catch (error) {
+        console.log(`❌ Error updating discount validity dates: ${error}`);
+        throw error;
+    }
+}
+
+// Update discount validity dates to include current date
+export async function setDiscountValidityIncludeCurrentDate(discountName: string) {
+    try {
+        const currentTimeResult = await dataBase.executeQuery("SELECT NOW()");
+        const currentTimeString = currentTimeResult[0]['NOW()'];
+        const currentTime = new Date(currentTimeString);
+        
+        // Set valid_from to 5 days ago
+        const pastDate = new Date(currentTime);
+        pastDate.setDate(pastDate.getDate() - 5);
+        const validFrom = format(pastDate, 'yyyy-MM-dd HH:mm:ss');
+        
+        // Set valid_to to 30 days in the future
+        const futureDate = new Date(currentTime);
+        futureDate.setDate(futureDate.getDate() + 30);
+        const validTo = format(futureDate, 'yyyy-MM-dd HH:mm:ss');
+        
+        console.log(`📅 Current Date: ${format(currentTime, 'yyyy-MM-dd HH:mm:ss')}`);
+        console.log(`📅 Setting discount validity to INCLUDE current date:`);
+        console.log(`   Valid From: ${validFrom} (5 days ago)`);
+        console.log(`   Valid To: ${validTo} (30 days from now)`);
+        
+        const updateResult = await dataBase.executeQuery(
+            `UPDATE discounts 
+             SET valid_from='${validFrom}', valid_to='${validTo}' 
+             WHERE name='${discountName}' 
+             AND tenant_id='${tenant_ID}' 
+             AND portal_id='${portal_ID}'`
+        );
+        
+        console.log(`✅ Discount validity dates updated to include current date`);
+        return { validFrom, validTo };
+    } catch (error) {
+        console.log(`❌ Error updating discount validity dates: ${error}`);
+        throw error;
+    }
+}
+
 export { expiryRemainder_cronjob,certificationExpiry_CronJob, mailDispatcherCron, notificationCron, bulkMailDispatcherCron,courseEnrollmentOverdueCron, courseEnrollmentIncompleteCron, programEnrollmentOverdueCron, programEnrollmentIncompleteCron, complianceCertificationExpiry_CronJob, nonComplianceCertificationExpiry_CronJob, updatecronForBanner,catalogDetail, course_session_details,updatetableForAnnoncement, updateCertificationComplianceFlow, updateSingleInstanceAutoRegister,passwordHistoryStatusUpdate,verifyUserGuidInDatabase,adminGroupDateValidity,dataloadCron}

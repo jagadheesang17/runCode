@@ -64,6 +64,7 @@ export class AdminHomePage extends AdminLogin {
         siteSettingsLink: `//a[text()='Site Settings']`,
         adminConfigLink: `//a[text()='Admin Configuration']`,
         enrollmentsLink: `//i[@data-bs-target="#Enrollments-content"]`,
+        commerceLink: `//i[@data-bs-target="#Commerce-content"]`,
         // To navigate from Enroll option to view/update status course tp:-
         viewUpdateStatusCourseTpLink: `//a[text()='View/update Status - Course/TP']`,
         clickBack: `//i[@id='dismissSidebar']`,
@@ -646,6 +647,14 @@ export class AdminHomePage extends AdminLogin {
         await this.validateElementVisibility(this.selectors.enrollmentsLink, "Enrollments");
         await this.mouseHover(this.selectors.enrollmentsLink, "Enrollments");
         await this.click(this.selectors.enrollmentsLink, "Enrollments", "Button");
+        await this.spinnerDisappear();
+    }
+
+    public async siteAdmin_Commerce() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.commerceLink, "Commerce");
+        await this.mouseHover(this.selectors.commerceLink, "Commerce");
+        await this.click(this.selectors.commerceLink, "Commerce", "Button");
         await this.spinnerDisappear();
     }
 

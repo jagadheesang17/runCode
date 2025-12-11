@@ -4074,7 +4074,7 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
   }
 
   async addSpecificSurveyCourse(data: string) {
-    await this.wait("minWait");
+    await this.wait("mediumWait");
     await this.validateElementVisibility(
       this.selectors.surveyAndAssessmentLink,
       "Survey/Assessment"
@@ -4257,12 +4257,12 @@ async selectMeetingType(instructorName: string, sessionName: string, index: numb
     await this.spinnerDisappear();
     
     await this.validateElementVisibility(
-      this.selectors.surveySaveBtn,
+      this.selectors.saveEquivalenceButton,
       "Survey Save Button"
     );
     
     await this.click(
-      this.selectors.surveySaveBtn,
+      this.selectors.saveEquivalenceButton,
       "Survey Save",
       "Button"
     );

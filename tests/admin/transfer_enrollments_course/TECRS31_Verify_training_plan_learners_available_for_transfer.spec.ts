@@ -111,7 +111,39 @@ test.describe.serial(`TECRS31 - Verify that learners enrolled through training p
         
         console.log(`✅ Learner "${credentials.LEARNERUSERNAME.username}" enrolled in Learning Path: ${lpTitle}`);
     });
+test(`Verify that multi instance course and Enroll the required instance from Certification path`, async ({ adminHome, enrollHome, catalog, editCourse, learnerHome }) => {
 
+    await adminHome.loadAndLogin("CUSTOMERADMIN1")
+    await adminHome.menuButton()
+    await adminHome.clickEnrollmentMenu();
+    await adminHome.clickEnroll();
+    await enrollHome.selectByOption("Learning Path");
+    await enrollHome.selectBycourse(lpTitle)
+    await enrollHome.clickSelectedLearner();
+
+    await enrollHome.manageEnrollment("View Status/Enroll Learner to TP Courses");
+    await enrollHome.searchUser(credentials.LEARNERUSERNAME.username)
+    await enrollHome.clickSearchUserCheckbox(credentials.LEARNERUSERNAME.username)
+
+    await enrollHome.clickSelectLearner();
+    await enrollHome.searchandSelectTP(lpTitle)
+    await enrollHome.selectCls();
+
+    // Verify courses inside TP and enroll the EL course
+    await enrollHome.verifyTPHasCourses([el1InstanceName]);
+    await enrollHome.enrollCourseByName(el1InstanceName);
+
+    await enrollHome.searchUser(credentials.LEARNERUSERNAME.username)
+    await enrollHome.clickSearchUserCheckbox(credentials.LEARNERUSERNAME.username)
+
+    await enrollHome.clickSelectLearner();
+    await enrollHome.searchandSelectTP(lpTitle)
+    await enrollHome.selectCls();
+
+    await enrollHome.verifyCourseEnrolledInTP(el1InstanceName);
+
+
+  })
     test(`Verify Training Plan enrolled learner available for transfer from first instance`, async ({ adminHome, enrollHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Divya` },
@@ -139,8 +171,14 @@ test.describe.serial(`TECRS31 - Verify that learners enrolled through training p
         
         // Verify learner enrolled via training plan is visible for transfer
         await enrollHome.verifyLearnerStatusInTransferEnrollmentPage(credentials.LEARNERUSERNAME.username, "Enrolled");
+        await enrollHome.selectLearnerForTransfer(credentials.LEARNERUSERNAME.username);
+        await enrollHome.clickTransferButton();
+        await enrollHome.wait("minWait");
+        await enrollHome.verifyTransferSuccessMessage();
         
         console.log(`✅ Learner enrolled via Training Plan is available in transfer list`);
     });
+
+
 
 });
