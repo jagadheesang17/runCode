@@ -86,16 +86,8 @@ test.describe(`Verify once the training is deleted the sub-total,grand total  is
         await costCenter.validateCourseTotal(courseName3, parseFloat(price3Usd.toFixed(2)));
         await costCenter.validateSubTotal(parseFloat((price1Usd + price3Usd).toFixed(2)));
         const grandTotal = await costCenter.validateGrandTotal(parseFloat((price1Usd + price3Usd).toFixed(2)) - discount);
-
-        // Validate payment method visibility based on grand total
-        if (grandTotal === 0 || grandTotal === 0.00 ) {
-            console.log(`✅ Payment method is not visible as grand total is $0.00`);
-        } else {
-            await enrollHome.paymentMethod("Purchase Order");
-            await costCenter.fillPaymentMethodInput();
-            console.log(`✅ Payment method filled as grand total is $${grandTotal}`);
-        }
-
+        console.log(`price1Usd: ${price1Usd}, price3Usd: ${price3Usd}, discount: ${discount}, grandTotal: ${grandTotal}`);
+        await costCenter.handlePaymentMethodBasedOnGrandTotal(grandTotal);
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);

@@ -25,7 +25,7 @@ test.describe(`SO001_Verify_admin_can_choose_multiple_training_and_purchase_for_
         console.log(`🔄 Creating 1 E-Learning ,1 ILT courses`);
         const content = 'content testing-001';
         await createElearningCourse(content, course1, "published", "single", "e-learning", price1, "eur");
-        const instanceNames = await createILTMultiInstance(course2, "published", 2, "future", price2, "usd");
+        const instanceNames = await createILTMultiInstance(course2, "published", 2, "future", "45", price2, "usd");
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")
         await adminHome.menuButton();
@@ -45,8 +45,8 @@ test.describe(`SO001_Verify_admin_can_choose_multiple_training_and_purchase_for_
 
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton()
-        await enrollHome.paymentMethod("Purchase Order");
-        await costCenter.fillPaymentMethodInput();
+        const grandTotal = await costCenter.validateGrandTotal();
+        await costCenter.handlePaymentMethodBasedOnGrandTotal(grandTotal);
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);

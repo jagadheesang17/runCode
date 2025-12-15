@@ -533,6 +533,23 @@ async validateBillingDetailsAreReadOnly() {
     return allFieldsDisabled;
 }
 
+/**
+ * Handle payment method based on grand total
+ * If grand total is 0 or 0.00, payment method is not required
+ * If grand total is greater than 0, fill payment method details
+ * @param grandTotal - The grand total amount
+ * @param paymentMethodType - Payment method type (e.g., "Purchase Order", "Credit Card")
+ */
+async handlePaymentMethodBasedOnGrandTotal(grandTotal: number, paymentMethodType: string = "Purchase Order"): Promise<void> {
+    if (grandTotal === 0 || grandTotal === 0.00) {
+        console.log(`✅ Payment method is not required as grand total is $0.00`);
+    } else {
+        await this.paymentMethod(paymentMethodType);
+        await this.fillPaymentMethodInput();
+        console.log(`✅ Payment method filled as grand total is $${grandTotal}`);
+    }
+}
+
 
 
 }

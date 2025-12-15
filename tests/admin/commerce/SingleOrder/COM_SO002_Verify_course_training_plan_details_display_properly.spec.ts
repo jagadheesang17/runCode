@@ -17,7 +17,7 @@ test.describe(`SO002_Verify_course_training_plan_details_display_properly`, () =
         const price = "200";
         const currency = "usd";
         console.log(`🔄 Creating ILT course with pricing...`);
-        const instanceNames = await createILTMultiInstance(courseName, "published", 2, "future", price, currency);
+        const instanceNames = await createILTMultiInstance(courseName, "published", 2, "future","50", price, currency);
         console.log(`✅ ILT course created: ${instanceNames[0]}`);
 
         await adminHome.loadAndLogin("CUSTOMERADMIN")

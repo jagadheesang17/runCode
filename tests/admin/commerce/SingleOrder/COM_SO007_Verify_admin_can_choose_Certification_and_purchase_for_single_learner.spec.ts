@@ -67,8 +67,8 @@ test.describe(`SO001_Verify_admin_can_choose_multiple_training_and_purchase_for_
 
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton()
-        await enrollHome.paymentMethod("Purchase Order");
-        await costCenter.fillPaymentMethodInput();
+        const grandTotal = await costCenter.validateGrandTotal();
+        await costCenter.handlePaymentMethodBasedOnGrandTotal(grandTotal);
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);

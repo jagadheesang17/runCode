@@ -33,8 +33,8 @@ test.describe(`Verify in the order summary page, panel 1 displays the billing de
         await enrollHome.clickCheckoutButton();
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton();
-        await enrollHome.paymentMethod("Purchase Order");
-        await costCenter.fillPaymentMethodInput();
+        const grandTotal = await costCenter.validateGrandTotal();
+        await costCenter.handlePaymentMethodBasedOnGrandTotal(grandTotal);
 
         await costCenter.validateBillingDetailsAreReadOnly();
         await costCenter.clickTermsandCondition();

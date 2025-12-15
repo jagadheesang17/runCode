@@ -38,10 +38,13 @@ test.describe(`Verify when clicking on the terms and conditions it opens the upl
         await costCenter.billingDetails("United States", "Alaska")
         await enrollHome.clickCalculateTaxButton();
 
+        const grandTotal = await costCenter.validateGrandTotal();
+        
         const newTab = await costCenter.clickTermsAndConditionLink();
         await expect(newTab).toHaveURL(/\.pdf$/);
 
         await page.bringToFront();
+        await costCenter.handlePaymentMethodBasedOnGrandTotal(grandTotal);
         await costCenter.clickTermsandCondition();
         const orderSummaryId = await enrollHome.clickApproveOrderAndCaptureId();
         console.log(`📋 Captured Order Summary ID: ${orderSummaryId}`);
