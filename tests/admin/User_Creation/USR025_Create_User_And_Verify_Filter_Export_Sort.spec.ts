@@ -35,7 +35,7 @@ test(`Create user with manager role and verify filter, export, and sort function
     
     await createUser.clickCreateUser();
     await createUser.uncheckInheritAddressIfPresent();
-    await createUser.uncheckInheritEmergencyContactIfPresent();
+   await createUser.uncheckInheritEmergencyContactIfPresent();
     await createUser.uncheckAutoGenerateUsernameIfPresent();
 
     for (const row of data) {
@@ -82,24 +82,7 @@ test(`Create user with manager role and verify filter, export, and sort function
 
     // Navigate back to user listing
     await contentHome.gotoListing();
-    
-    // Apply filters using the new method
-    console.log(`🔍 Applying filters for user search`);
-    await createUser.applyUserFilters({
-        userType: userType,
-        jobRole: jobRole,
-        department: department,
-        roles: roles,
-        country: country,
-        stateProvince: stateProvince,
-        status: "Active"
-    });
-    
-    // Verify user is in filtered results
-    await createUser.userSearchField(testUserName);
-    await createUser.wait("minWait");
-    console.log(`✅ User ${testUserName} found in filtered results`);
-    
+
     // Test Export functionality
     console.log(`📤 Testing Export as Excel functionality`);
     await exportPage.clickExportAs("Excel");
@@ -110,4 +93,21 @@ test(`Create user with manager role and verify filter, export, and sort function
     const filterUtils = new FilterUtils(page, context);
     await filterUtils.verifyAllSortOptions();
     console.log(`✅ All sort options verified successfully`);
+    
+    // Apply filters using the new method
+    console.log(`🔍 Applying filters for user search`);
+    await createUser.applyUserFilters({
+        userType: userType,
+        jobRole: jobRole,
+        department: department,
+        roles: roles,
+        status: "Active"
+    });
+    
+    // Verify user is in filtered results
+    await createUser.userSearchField(testUserName);
+    await createUser.wait("minWait");
+    console.log(`✅ User ${testUserName} found in filtered results`);
+    
+ 
 });

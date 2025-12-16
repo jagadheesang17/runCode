@@ -2,18 +2,19 @@ import { URLConstants } from "../data/apiData/apiUtil";
 import { customAdminOuthData } from "../data/apiData/formData";
 import { postRequest } from "../utils/requestUtils";
 import { assertResponse } from "../utils/verificationUtils";
+import { getOauthToken, refreshOauthToken, getTokenInfo } from "../utils/tokenManager";
 
 let endPointURL = URLConstants.adminEndPointUrl
 
+/**
+ * Returns the OAuth token in format "Bearer <token>"
+ * Token is automatically cached and refreshed from tokenCache.json
+ */
 async function generateOauthToken() {
     try {
-        const response = await postRequest(customAdminOuthData, endPointURL);        
-    //    await assertResponse(response.status, 200);
-        if (response.data && response.data.access_token) {
-            return "Bearer " + response.data.access_token
-        } else {
-            throw new Error("Access token not found in response");
-        }
+        // Returns token in format: "Bearer <token>" from JSON cache
+        const token = await getOauthToken();
+        return token;
     } catch (error) {
         console.error("Failed to generate OAuth token:", error);
         throw error;
@@ -30,4 +31,4 @@ async function generateOauthToken() {
     });
  */
 
-export { generateOauthToken }
+export { generateOauthToken, getOauthToken, refreshOauthToken, getTokenInfo }

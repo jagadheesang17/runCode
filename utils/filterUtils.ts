@@ -8,7 +8,7 @@ export class FilterUtils extends AdminHomePage {
         
         // Text field dropdown (with search)
         filterDropdown: (field: string) => `(//span[text()='${field}']//following::div)[1]`,
-        filterSearchInput: (field: string) => `((//span[text()='${field}']//following::input[@placeholder='Search'])[1] | (//footer//following::input)[1])[1]`,
+        filterSearchInput: (field: string) => `((//span[text()='${field}']//following::input[@placeholder='Search' or @aria-label='Search'])[1] | (//footer//following::input)[1])[1]`,
         filterOption: (value: string) => `(//li[text()='${value}'] | //span[text()='${value}'])[1]`,
         
         // Default dropdown (without search)
@@ -19,7 +19,7 @@ export class FilterUtils extends AdminHomePage {
         textFieldInput: (input: string) => `(//span[text()='${input}']//following::input[@type='text'])[1]`,
         
         // Search text field
-        searchFieldInput: (input: string) => `(//span[text()='${input}']//following::input[contains(@id,'search')])[1]`,
+        searchFieldInput: (input: string) => `(//span[text()='${input}']//following::input[contains(@placeholder,'Search')])[1]`,
         searchFieldOption: (value: string) => `(//li[text()='${value}'])[1]`,
         
         // Date format

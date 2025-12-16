@@ -9,8 +9,9 @@ export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction"  = 'qa
 export default defineConfig({
  timeout: 700000,  
   expect: { timeout: 10000 }, // 10 sec for assertions
+
   
- 
+
   testDir: './tests',
   globalSetup: require.resolve('./global-setup.ts'),
 
