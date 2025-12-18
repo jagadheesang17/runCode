@@ -31,7 +31,7 @@ test(`Verify equivalence functionality works correctly for enrolled courses`, as
     await createCourse.verifySuccessMessage();
 })
 
-test(`Verifying learner side that able to complete equivalence course`, async ({ learnerHome, catalog }) => {
+test(`Verifying learner side that able to complete equivalence course`, async ({ learnerHome, catalog, dashboard }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },
         { type: `TestCase`, description: `Verifying learner side that able to complete equivalence course` },
@@ -47,9 +47,9 @@ test(`Verifying learner side that able to complete equivalence course`, async ({
     await catalog.clickLaunchButton();
     await catalog.saveLearningStatus();
     await catalog.clickMyLearning();
-    await catalog.clickCompletedButton();
-    await catalog.searchMyLearning(equivalenceCoursename);
-    await catalog.verifyCompletedCourse(equivalenceCoursename);
+    await dashboard.selectDashboardItems("Learning History");
+    await dashboard.learningHistoryCourseSearch(equivalenceCoursename);
+    await dashboard.vaidatVisibleCourse_Program(equivalenceCoursename, "Completed");
 })
 
 test(`Creation of Single Instance Elearning with Youtube content and add equivalence course`, async ({ adminHome, editCourse, createCourse }) => {
@@ -85,7 +85,7 @@ test(`Creation of Single Instance Elearning with Youtube content and add equival
 })
 
 
-test(`Verifying learner side that equivalence functionality works correctly`, async ({ learnerHome, catalog }) => {
+test(`Verifying learner side that equivalence functionality works correctly`, async ({ learnerHome, catalog ,dashboard}) => {
     test.info().annotations.push(
         { type: `Author`, description: `Tamilvanan` },
         { type: `TestCase`, description: `Verifying learner side that equivalence functionality works correctly` },
@@ -99,10 +99,10 @@ test(`Verifying learner side that equivalence functionality works correctly`, as
     await catalog.clickSelectcourse(mainCourseName);
     await catalog.clickEnroll();
     await catalog.clickEqlConfirmationPopup("No")
-    await catalog.verifyEquivalenceGrantedMessage();    
+    await catalog.verifyEquivalenceGrantedMessage();
     await catalog.clickMyLearning();
-    await catalog.clickCompletedButton();
-    await catalog.searchMyLearning(mainCourseName);
-    await catalog.verifyCompletedCourse(mainCourseName);
+    await dashboard.selectDashboardItems("Learning History");
+    await dashboard.learningHistoryCourseSearch(mainCourseName);
+    await dashboard.vaidatVisibleCourse_Program(mainCourseName, "Completed");
 })
 

@@ -97,8 +97,8 @@ test(`Learner verifies enrollment in ILT instance after transfer`, async ({ lear
     await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
     await learnerHome.wait("mediumWait");
     await learnerHome.clickMyLearning();
-    await catalog.searchMyLearning(instanceNames[0]);
-    await catalog.verifyEnrolledCourseByTitle(instanceNames[0]);
+    await catalog.searchMyLearning(courseName);
+    await catalog.verifyEnrolledCourseByTitle(courseName);
     await catalog.verifyCompletedCourse("Enrolled");
 });
 

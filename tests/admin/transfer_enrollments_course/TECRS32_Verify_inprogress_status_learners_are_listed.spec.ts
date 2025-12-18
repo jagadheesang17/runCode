@@ -178,7 +178,7 @@ test.describe.serial(`TECRS32 - Verify that learners in the In-Progress status f
         test.info().annotations.push(
             { type: `Author`, description: `Divya` },
             { type: `TestCase`, description: `TECRS31 - Step 5: Verify Transfer in Admin Side` },
-            { type: `Test Description`, description: `Verify the enrollment is transferred to second instance in View/Update Status - Course/TP` }
+            { type: `Test Description`, description: `Verify the enrollment is transferred to second instance in View/update Status - Course/TP` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");

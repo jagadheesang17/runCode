@@ -96,7 +96,7 @@ test.describe(`CMP_015: Verify Anniversary Date with Enrollment Date Month Perio
         console.log(`   • After Years: 1`);
     });
 
-    test(`Step 2: Enroll User in Enrollment Date Month Period Anniversary Course`, async ({ learnerHome, catalog, adminHome, enrollHome }) => {
+    test(`Step 2: Enroll User in Enrollment Date Month Period Anniversary Course`, async ({ learnerHome, catalog, adminHome, enrollHome, dashboard }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation` },
             { type: `TestCase`, description: `Enroll User in Enrollment Date Month Period Anniversary Course` },
@@ -129,9 +129,10 @@ test.describe(`CMP_015: Verify Anniversary Date with Enrollment Date Month Perio
         console.log(`💾 Completed course content`);
         await catalog.wait("mediumWait");
         
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+	    await catalog.clickMyLearning();
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
         console.log(`✅ Verified course completion status`);
         
         console.log(`🎯 Enrollment Date Month Period Anniversary Course Enrollment Summary:`);
@@ -175,7 +176,7 @@ test.describe(`CMP_015: Verify Anniversary Date with Enrollment Date Month Perio
         }
     });
 
-    test(`Step 4: Verify Enrollment Date Month Period Anniversary Course Expiry Status`, async ({ learnerHome, catalog }) => {
+    test(`Step 4: Verify Enrollment Date Month Period Anniversary Course Expiry Status`, async ({ learnerHome, catalog ,dashboard}) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation` },
             { type: `TestCase`, description: `Verify Enrollment Date Month Period Anniversary Course Expiry Status` },
@@ -185,16 +186,12 @@ test.describe(`CMP_015: Verify Anniversary Date with Enrollment Date Month Perio
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LearnerPortal");
         console.log(`👤 Logged in as learner to verify enrollment date month period anniversary course expiry`);
         
-        await learnerHome.clickMyLearning();
         console.log(`📚 Navigated to My Learning section`);
-        await catalog.clickCompletedButton();
-        
-        await catalog.searchMyLearning(courseName);
-        console.log(`🔍 Searching for expired enrollment date month period anniversary course: ${courseName}`);
-        
-        await catalog.clickCourseInMyLearning(courseName);
-        await catalog.verifyExpiredCourse(courseName);
-        
+        console.log(`🔍 Searching for expired enrollment date month period anniversary course: ${courseName}`);8
+	    await catalog.clickMyLearning();
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Expired");
         console.log(`📋 Confirmed: Enrollment date month period anniversary course shows expiry status`);
         
         console.log(`🎯 Enrollment Date Month Period Anniversary Course Expiry Verification Summary:`);

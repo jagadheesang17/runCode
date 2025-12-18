@@ -361,6 +361,7 @@ export class CostcenterPage extends LearnerHomePage {
         await this.wait("minWait");
         
         const grandTotalLocator = this.page.locator(this.selectors.grandTotalValue);
+        await grandTotalLocator.scrollIntoViewIfNeeded();
         const grandTotalText = await grandTotalLocator.textContent();
         const numericValue = grandTotalText?.replace(/[^0-9.]/g, '') || '0';
         const actualGrandTotal = parseFloat(numericValue);

@@ -3,10 +3,10 @@ import { FakerData } from '../../../utils/fakerUtils';
 import { expect } from "allure-playwright";
 import { createCourseAPI } from "../../../api/apiTestIntegration/courseCreation/createCourseAPI";
 
-test.describe('CC012 - Course Certificate Validation', () => {
+test.describe.serial('CC012 - Course Certificate Validation', () => {
 
     const certificateTitle = FakerData.getcertificationTitle();
-    const courseName = FakerData.getCourseName();
+    const courseName ="CC "+FakerData.getCourseName();
     const certUser = require('../../../data/completionCertificate/certificateTestUser.json');
 
 
@@ -29,8 +29,8 @@ test.describe('CC012 - Course Certificate Validation', () => {
         await CompletionCertification.clickCreateCompletionCertificate();
         await CompletionCertification.clickTemplateType();
         await CompletionCertification.title(certificateTitle);
-        // await CompletionCertification.designCertificate(FakerData.getDescription());
-        await CompletionCertification.designCertificateWithHtml(FakerData.getDescription());
+        await CompletionCertification.designCertificate(FakerData.getDescription());
+        // await CompletionCertification.designCertificateWithHtml(FakerData.getDescription());
         await CompletionCertification.clickPublish();
         await CompletionCertification.clickProceed();
         await createCourse.verifySuccessMessage
@@ -71,9 +71,9 @@ test.describe('CC012 - Course Certificate Validation', () => {
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
         await catalog.clickViewCertificate();
         await catalog.verifyCertificateModalDisplayed();
         // Verify certificate content in UI modal

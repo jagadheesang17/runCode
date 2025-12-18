@@ -52,7 +52,7 @@ test.describe(`Verify_that_the_course_status_does_not_change_to_In_Progress_when
         await enrollHome.verifytoastMessage();
     })
 
-    test(`Verify that a course already marked as 'Completed' by the admin does not revert to 'In Progress' when accessed by the learner.spec.ts`, async ({ learnerHome, catalog }) => {
+    test(`Verify that a course already marked as 'Completed' by the admin does not revert to 'In Progress' when accessed by the learner.spec.ts`, async ({ learnerHome, catalog ,dashboard}) => {
         test.info().annotations.push(
             { type: `Author`, description: `Arivazhagan P` },
             { type: `TestCase`, description: `Verify that a course already marked as 'Completed' by the admin does not revert to 'In Progress' when accessed by the learner.spec.ts` },
@@ -60,10 +60,9 @@ test.describe(`Verify_that_the_course_status_does_not_change_to_In_Progress_when
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.clickCourseInMyLearning(courseName);
-        await catalog.verifyStatus("Completed");  //Course status before launching the content
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");  //Course status before launching the content
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatusBookmark();
         await catalog.verifyStatus("Completed");  //Course status after launching the content

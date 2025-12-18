@@ -175,7 +175,7 @@ test.describe(`CMP_019: Verify Anniversary Date with Completion Date Quarter Per
         }
     });
 
-    test(`Step 4: Verify Completion Date Quarter Period Anniversary Course Expiry Status`, async ({ learnerHome, catalog }) => {
+    test(`Step 4: Verify Completion Date Quarter Period Anniversary Course Expiry Status`, async ({ learnerHome, catalog ,dashboard}) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation` },
             { type: `TestCase`, description: `Verify Completion Date Quarter Period Anniversary Course Expiry Status` },
@@ -185,11 +185,9 @@ test.describe(`CMP_019: Verify Anniversary Date with Completion Date Quarter Per
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LearnerPortal");
         console.log(`👤 Logged in as learner to verify completion date quarter period anniversary course expiry`);
         
-        await learnerHome.clickMyLearning();
-        console.log(`📚 Navigated to My Learning section`);
-        await catalog.clickCompletedButton();
-        
-        await catalog.searchMyLearning(courseName);
+	    await catalog.clickMyLearning();
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
         console.log(`🔍 Searching for expired completion date quarter period anniversary course: ${courseName}`);
         
         await catalog.clickCourseInMyLearning(courseName);

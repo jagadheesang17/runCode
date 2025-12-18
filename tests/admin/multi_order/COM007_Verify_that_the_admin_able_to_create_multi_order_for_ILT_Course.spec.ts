@@ -92,8 +92,8 @@ test.describe(`Confirm that Admin Multi Order creation functions correctly and a
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await catalog.clickMyLearning();
-        await catalog.searchMyLearning(instanceName);
-        await catalog.clickCourseInMyLearning(instanceName);
+        await catalog.searchMyLearning(courseName);
+        await catalog.clickCourseInMyLearning(courseName);
         await catalog.verifyStatus("Enrolled");
     })
 

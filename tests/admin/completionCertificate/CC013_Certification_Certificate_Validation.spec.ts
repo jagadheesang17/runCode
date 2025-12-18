@@ -34,7 +34,7 @@ test.describe('CC013 - Training Plan Certificate Validation', () => {
         await CompletionCertification.clickCreateCompletionCertificate();
         await CompletionCertification.clickTemplateType();
         await CompletionCertification.title(certificateTitle);
-        await CompletionCertification.designCertificateWithHtml(description);
+        await CompletionCertification.designCertificate(description);
         await CompletionCertification.clickPublish();
         await CompletionCertification.clickProceed();
         await createCourse.verifySuccessMessage
@@ -100,9 +100,9 @@ test.describe('CC013 - Training Plan Certificate Validation', () => {
         await dashboard.clickCertificateTitle(certificationTP);
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
-
-        await learnerHome.clickDashboardLink();
-        await dashboard.clickLearningPath_And_Certification();
+        
+        await learnerHome.clickMyLearning();
+        await dashboard.selectDashboardItems("Learning History");
         await dashboard.clickCertificationLink();
         await dashboard.searchCertification(certificationTP);
         await dashboard.clickCertificateTitle(certificationTP);

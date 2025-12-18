@@ -1,4 +1,4 @@
-import { BrowserContext, expect, Page } from "@playwright/test";
+import { BrowserContext, expect, Page, selectors } from '@playwright/test';
 import { AdminHomePage } from "./AdminHomePage";
 import { URLConstants } from "../constants/urlConstants";
 import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
@@ -119,51 +119,61 @@ export class EnrollmentPage extends AdminHomePage {
         filterApplyButton: `//button[text()='Apply']`,
         filterClearButton: `//button[text()='Clear']`,
 
-        //View/Update Status - Course/TP Table Fields
+        //View/update Status - Course/TP Table Fields
         viewUpdateStatusTable: `//table[contains(@class,'viewupdate-status-crstp')]`,
         tableHeaderByName: (fieldName: string) => `//table[contains(@class,'viewupdate-status-crstp')]//th[contains(translate(text(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'${fieldName.toLowerCase()}')]`,
 
         // Learner row locators (by username)
-        // learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]`,
+        // learnerRow: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr//td[contains(text(),'${username}')]]`,
         learnerFieldValue: (username: string, fieldName: string) => {
-            const fieldIndex: { [key: string]: number } = {
-                'name': 1,
-                'username': 2,
-                'manager': 3,
-                'organization': 4,
-                'reg from': 5,
-                'date': 6,
-                'score': 7,
-                'status': 8,
-                'enrollment type': 9,
-                'checklist': 10,
-                'action': 11,
-                'add notes': 12,
-                'files': 13,
-                'progress': 14
+            const fieldNameLower = fieldName.toLowerCase();
+            
+            // Fields in ancestor axis (Name, Username)
+            if (fieldNameLower === 'name' || fieldNameLower === 'username') {
+                const ancestorIndex: { [key: string]: number } = {
+                    'name': 1,
+                    'username': 2
+                };
+                const index = ancestorIndex[fieldNameLower] || 1;
+                return `(//span[contains(text(),'${username}')]//ancestor::tr//span)[${index}]`;
+            }
+            
+            // Fields in following axis (all others)
+            const followingIndex: { [key: string]: number } = {
+                'manager': 1,
+                'organization': 2,
+                'reg from': 3,
+                'date': 4,
+                'score': 5,
+                'status': 6,
+                'enrollment type': 7,
+                'checklist': 8,
+                'action': 9,
+                'add notes': 10,
+                'files': 11,
+                'progress': 12
             };
-            const index = fieldIndex[fieldName.toLowerCase()] || 1;
-            return `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[${index}]`;
+            const index = followingIndex[fieldNameLower] || 1;
+            return `(//span[contains(text(),'${username}')]//following::td)[${index}]`;
         },
 
         // Specific field locators
-        learnerName: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[1]`,
-        learnerUsername: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[2]`,
-        learnerManager: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[3]`,
-        learnerOrganization: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[4]`,
-        learnerRegFrom: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[5]`,
-        learnerDate: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[6]`,
-        learnerScore: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[7]`,
-        learnerScoreManyButton: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[7]//button[contains(text(),'Many')]`,
-        learnerStatus: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//select`,
-        learnerStatusDropdown: (username: string) => `(//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//button)[1]`,
-        learnerStatusOption: (username: string, status: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//select//option[@value='${status.toLowerCase()}']`,
-        learnerEnrollmentType: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[9]`,
-        learnerEnrollmentTypeDropdown: (username: string) => `(//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[9]//select[contains(@id,'enrollment-mro-status')]/following::button)[1]`,
-        enrollmentTypeOptionalOption: `//a//span[text()='Optional']`,
-        learnerProgress: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[14]`,
-        learnerAddNotesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[12]//i[contains(@class,'fa-note-sticky')]`,
-        learnerFilesIcon: (username: string) => `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[13]//i[contains(@class,'fa-upload')]`,
+        learnerName: (username: string) => `(//span[contains(text(),'${username}')]//ancestor::tr//span)[1]`,
+        learnerUsername: (username: string) => `//span[contains(text(),'${username}')]`,
+        learnerManager: (username: string) => `(//span[contains(text(),'${username}')]//following::td)[1]`,
+        learnerOrganization: (username: string) => `(//span[contains(text(),'${username}')]//following::td)[2]`,
+        learnerDate: (username: string) => `(//span[contains(text(),'${username}')]//following::td)[4]`,
+        learnerScore: (username: string) => `(//span[contains(text(),'${username}')]//following::button)[1]`,
+        learnerScoreManyButton: (username: string) => `(//span[contains(text(),'${username}')]//following::button)[1]`,
+        learnerStatus: (username: string) => `(//span[contains(text(),'${username}')]//following::select//following::button)[1]`,
+        learnerStatusDropdown: (username: string) => `(//span[contains(text(),'${username}')]//following::select//following::button)[1]`,
+        learnerStatusOption: (username: string, status: string) => `(//ul[@class='dropdown-menu inner show']//li//span[text()='${status}'])[1]`,
+        learnerEnrollmentType: (username: string) => `(//span[contains(text(),'${username}')]//following::button//div[@class='filter-option-inner-inner'])[2]`,
+        learnerEnrollmentTypeDropdown: (username: string) => `(//span[contains(text(),'${username}')]//following::select//following::button)[3]`,
+        enrollmentTypeOptionalOption: `(//a//span[text()='Optional'])[3]`,
+        learnerProgress: (username: string) => `(//span[contains(text(),'${username}')]//following::td)[12]`,
+        learnerAddNotesIcon: (username: string) => `(//span[contains(text(),'${username}')]//following::i[contains(@class,'note-sticky')])[1]`,
+        learnerFilesIcon: (username: string) => `(//span[contains(text(),'${username}')]//following::i[contains(@class,'upload')])[1]`,
 
 
         //Transfer Enrollment - TECRS01
@@ -305,23 +315,13 @@ export class EnrollmentPage extends AdminHomePage {
     }
     async enterSearchUser(data: string) {
         await this.wait("mediumWait")
-        await this.wait("maxWait")
         await this.click(this.selectors.searchcourseOrUser, "Search User", "Input Field")
-        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
-        // const index = await this.page.locator(`//div[contains(@id,'lms-scroll-results')]//li[text()='${data}']`).count();
-        // const randomIndex = Math.floor(Math.random() * index) + 1;
-        await this.click(this.selectors.userListOpt(data), "Course", "Options")
-        //await this.click(this.selectors.selectUser, "Select Course", "Radio button")
-        await this.type(this.selectors.searchcourseOrUser, "Course Name", data)
-        const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
-        const randomIndex = Math.floor(Math.random() * index) + 1;
-        await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
-        await this.wait("minWait")
-        await this.click(this.selectors.selectUser, "Select Course", "Radio button")
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "User Name", data)
+        await this.click(this.selectors.userListOpt(data), "User", "Options")
     }
     async searchUser(data: string) {
         await this.wait("minWait")
-        await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
+        await this.typeAndEnter(this.selectors.searchcourseOrUser, "User Name", data)
     }
     async clickEnrollBtn() {
         await this.click(this.selectors.enrollBtn, "Enroll", "Button")
@@ -1233,33 +1233,34 @@ export class EnrollmentPage extends AdminHomePage {
 
         // Special handling for status field
         if (fieldName.toLowerCase() === "status") {
-            // Try to find dropdown first (for Enrolled, In Progress, Canceled)
-            const statusDropdownSelector = this.selectors.learnerStatus(username);
-            const dropdownCount = await this.page.locator(statusDropdownSelector).count();
-
-            if (dropdownCount > 0) {
-                // Status is displayed as dropdown
-                await this.validateElementVisibility(statusDropdownSelector, `Status dropdown for ${username}`);
-                const statusValue = await this.page.locator(statusDropdownSelector).getAttribute('title');
-
-                if (statusValue && statusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
-                    console.log(`✅ Verified - ${fieldName}: "${statusValue}" contains "${expectedValue}" (dropdown)`);
-                    return true;
-                } else {
-                    throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${statusValue}" (dropdown)`);
-                }
-            } else {
-                // Status is displayed as plain text (for Completed)
-                const statusTextSelector = `//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[8]//span`;
+            // Check if status is Canceled, Completed, or Expired (displayed as plain text span)
+            const nonEditableStatuses = ["canceled", "completed", "expired"];
+            
+            if (nonEditableStatuses.includes(expectedValue.toLowerCase())) {
+                // Status is displayed as plain text span (for Canceled, Completed, Expired)
+                const statusTextSelector = `(//span[text()='${username}']//following::span[text()='${expectedValue}'])[1]`;
                 await this.validateElementVisibility(statusTextSelector, `Status text for ${username}`);
                 const statusValue = await this.page.locator(statusTextSelector).textContent();
                 const cleanStatusValue = statusValue?.trim() || '';
 
-                if (cleanStatusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
-                    console.log(`✅ Verified - ${fieldName}: "${cleanStatusValue}" contains "${expectedValue}" (text)`);
+                if (cleanStatusValue.toLowerCase() === expectedValue.toLowerCase()) {
+                    console.log(`✅ Verified - ${fieldName}: "${cleanStatusValue}" matches "${expectedValue}" (text)`);
                     return true;
                 } else {
-                    throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${cleanStatusValue}" (text)`);
+                    throw new Error(`Expected ${fieldName} to be "${expectedValue}" but got "${cleanStatusValue}" (text)`);
+                }
+            } else {
+                // Status is displayed as dropdown (for Enrolled, In Progress, etc.)
+                const statusDropdownSelector = `(//span[contains(text(),'${username}')]//following::select//following::button//div)[3]`;
+                await this.validateElementVisibility(statusDropdownSelector, `Status dropdown for ${username}`);
+                const statusValue = await this.page.locator(statusDropdownSelector).textContent();
+                const cleanStatusValue = statusValue?.trim() || '';
+
+                if (cleanStatusValue.toLowerCase().includes(expectedValue.toLowerCase())) {
+                    console.log(`✅ Verified - ${fieldName}: "${cleanStatusValue}" contains "${expectedValue}" (dropdown)`);
+                    return true;
+                } else {
+                    throw new Error(`Expected ${fieldName} to contain "${expectedValue}" but got "${cleanStatusValue}" (dropdown)`);
                 }
             }
         }
@@ -1396,9 +1397,8 @@ export class EnrollmentPage extends AdminHomePage {
     async changeLearnerStatus(username: string, status: string, certType: string | null = null) {
         await this.wait("minWait");
 
-        // Determine column index based on certType
         const columnIndex = certType === 'Recertification' ? 9 : 8;
-        const dropdownSelector = `(//table[contains(@class,'viewupdate-status-crstp')]//tbody//tr[td[contains(text(),'${username}')]]//td[${columnIndex}]//button)[1]`;
+        const dropdownSelector = await this.selectors.learnerStatusDropdown(username, columnIndex);
 
         await this.validateElementVisibility(dropdownSelector, `Status dropdown for ${username}`);
 
@@ -1482,6 +1482,7 @@ export class EnrollmentPage extends AdminHomePage {
             "Mandatory",
             "Checkbox"
         );
+        await this.wait("minWait");
     }
 
     /**

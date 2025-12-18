@@ -161,7 +161,7 @@ test.describe(`Verify admin can change enrollment status for Recertification`, (
     test(`Test 4: Verify learners see correct status in Learning History - User 1: Incomplete, User 2: Completed, User 3: Canceled`, async ({ learnerHome, catalog, dashboard, createUser }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },
-            { type: `TestCase`, description: `ENR_VUS_011 - Verify learner side status in Learning History` },
+            { type: `TestCase`, description: `ENR_VUS_011 - Verify learner side status in Learning History & To verify that the Re-certification will be listed the learners who have Status for the recertification` },
             { type: `Test Description`, description: `User 1: Incomplete, User 2: Completed, User 3: Canceled in Learning History` }
         );
 

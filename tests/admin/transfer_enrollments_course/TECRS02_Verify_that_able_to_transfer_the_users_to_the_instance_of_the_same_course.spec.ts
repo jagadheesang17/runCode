@@ -137,7 +137,7 @@ test.describe.serial(`TECRS02 - Verify transfer of users between instances of th
         test.info().annotations.push(
             { type: `Author`, description: `Divya` },
             { type: `TestCase`, description: `TECRS02 - Step 4: Verify Transfer` },
-            { type: `Test Description`, description: `Verify the enrollment is transferred to second instance in View/Update Status - Course/TP` }
+            { type: `Test Description`, description: `Verify the enrollment is transferred to second instance in View/update Status - Course/TP` }
         );
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");

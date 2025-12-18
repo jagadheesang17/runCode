@@ -62,8 +62,8 @@ test.describe(`Verify admin can change enrollment status from Enrolled to Incomp
         for (let i = 0; i < Math.min(users.length, 3); i++) {
             console.log(`\n🔄 Verifying for User ${i + 1}: ${users[i].username}`);
             await learnerHome.basicLogin(users[i].username, "default");
-            await catalog.searchMyLearning(instanceNames[0]);
-            await catalog.clickCourseInMyLearning(instanceNames[0]);
+            await catalog.searchMyLearning(courseName);//changed to course name due to changes in my learning UI
+            await catalog.clickCourseInMyLearning(courseName); 
             console.log(`✅ User ${i + 1} can see the class instance in My Learning`);
             await createUser.clickLogOutButton();
         }

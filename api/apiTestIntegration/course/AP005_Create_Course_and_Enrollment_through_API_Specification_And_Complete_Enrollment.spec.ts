@@ -61,11 +61,11 @@ test.describe(`Creating a course in the UI, enrolling through the API, and final
         await completeEnrolledCourse(createdCode, user, { Authorization: access_token })
     })
 
-    test(`Verify Completed Course in Learner side`, async ({ learnerHome, catalog }) => {
+    test(`Verify Completed Course in Learner side`, async ({ learnerHome, dashboard }) => {
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
-        await catalog.clickMyLearning();
-        await catalog.clickCompletedButton()
-        await catalog.searchMyLearning(createdCode);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
       //  await catalog.verifyEnrolledCourseByCODE(createdCode);
 
     })

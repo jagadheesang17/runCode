@@ -9,32 +9,32 @@ import { th } from "@faker-js/faker";
 
 export class CatalogPage extends LearnerHomePage {
   public selectors = {
-        ...this.selectors,
-        searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
-        searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
-        mostRecentMenuItem: `//div[text()="Most Recent"]`,
-        createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
-        moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
-        enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
-        courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
-        selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
-        enrollButton: `//span[text()='Enroll']`,
-        requestApproval: `//span[text()='Request approval']`,
-        approvalcostcenter: `//input[@id='cc']`,
-        submitRequest: `//button[text()='Submit request']`,
-        closeBtn: `(//button[text()='Close'])[1]`,
-        managerApprovalRequiredIcon: (courseName: string) => `(//div[text()='${courseName}']//following::i[@aria-label='Manager Approval Required'])[1]`,
-        selectManagerDropdown: `//label[@for='selectManager']//following::button[@data-id='selectManager']`,
-        selectManagerOption: (managerName: string) => `(//label[@for='selectManager']//following::span[contains(text(),'${managerName}')])[1]`,
-        requestSentPopup: `//span//b[text()='Your request has been sent! ']`,
-        approvedSuccessPopup: `//span//b[text()='Approved Successfully! ']`,
-        //launchButton:`//button[text()="Launch Content"]`,
-        completedButton: `//a[contains(text(),"Completed")]`,
-        completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
-        filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
-        // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
-        searchButton:`//input[contains(@id,'catalog_search')]`,
-        // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
+    ...this.selectors,
+    searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+    searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+    mostRecentMenuItem: `//div[text()="Most Recent"]`,
+    createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+    moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+    enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+    courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+    selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+    enrollButton: `//span[text()='Enroll']`,
+    requestApproval: `//span[text()='Request approval']`,
+    approvalcostcenter: `//input[@id='cc']`,
+    submitRequest: `//button[text()='Submit request']`,
+    closeBtn: `(//button[text()='Close'])[1]`,
+    managerApprovalRequiredIcon: (courseName: string) => `(//div[text()='${courseName}']//following::i[@aria-label='Manager Approval Required'])[1]`,
+    selectManagerDropdown: `//label[@for='selectManager']//following::button[@data-id='selectManager']`,
+    selectManagerOption: (managerName: string) => `(//label[@for='selectManager']//following::span[contains(text(),'${managerName}')])[1]`,
+    requestSentPopup: `//span//b[text()='Your request has been sent! ']`,
+    approvedSuccessPopup: `//span//b[text()='Approved Successfully! ']`,
+    //launchButton:`//button[text()="Launch Content"]`,
+    completedButton: `//a[contains(text(),"Completed")]`,
+    completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+    filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+    // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+    searchButton: `//input[contains(@id,'catalog_search')]`,
+    // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
     // searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
     // searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
     // mostRecentMenuItem: `//div[text()="Most Recent"]`,
@@ -70,7 +70,7 @@ export class CatalogPage extends LearnerHomePage {
     viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
     viewCertificateBtn: "(//i[@aria-label='View Certificate'])[1]",
     okBtn: "//button[text()='Ok']",
-        OKBtnFromPopup: `//button[text()='OK']`,
+    OKBtnFromPopup: `//button[text()='OK']`,
     downloadPdfBtn: "(//i[contains(@class,'download')])[1]",
     certificateModal: "//div[contains(@class,'modal-dialog modal-xl')]",
     addToCart: `//span[text()='Add to cart']`,
@@ -136,8 +136,7 @@ export class CatalogPage extends LearnerHomePage {
     selectTPCourse: `//div[contains(text(),'Seats')]//following::div[contains(@class,'custom-radio')]`,
     clickTPSelectedCourseRegisterButton: `//button[contains(text(),'Enroll')]`,
 
-    toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,
-    //completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
+    toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,//completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
     enrolledCourseCode: `//span[contains(text(),'code:')]/following-sibling::span`,
 
     //Video Content:-
@@ -179,7 +178,7 @@ export class CatalogPage extends LearnerHomePage {
     optionalCourseRadioButton: `//div[text()='Optional']//following::div[contains(@class,'custom-radio')]`,
     enrollButtonLP: `//button[contains(text(),'Enroll')]`,
 
-        prerequisiteMandatoryMessageFromAdminSide:`//div[contains(@class,'align-items-center justify-content-center text')]//span`,
+    prerequisiteMandatoryMessageFromAdminSide: `//div[contains(@class,'align-items-center justify-content-center text')]//span`,
     //verify thumbnail img
     thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
 
@@ -222,29 +221,29 @@ export class CatalogPage extends LearnerHomePage {
 
     costcenterValue: `//input[@id='cc']`,
 
-            prerequisiteWarningText:`//span[@class='ms-2']`,
+    prerequisiteWarningText: `//span[@class='ms-2']`,
 
-            clickPrerequisite:(prerequisitename:string)=>`//div[text()='modules/courses']/following::span[text()='${prerequisitename}']`,
-            clickMainCourse:(coursename:string) => `(//span[contains(text(),'${coursename}')])[1]`,
+    clickPrerequisite: (prerequisitename: string) => `//div[text()='modules/courses']/following::span[text()='${prerequisitename}']`,
+    clickMainCourse: (coursename: string) => `(//span[contains(text(),'${coursename}')])[1]`,
 
-            verifyCompletedMaincourse:(maincourse:string)=>`//h5[text()='${maincourse}']`,
+    verifyCompletedMaincourse: (maincourse: string) => `//h5[text()='${maincourse}']`,
 
-            popupMessageTpWhenHavePrereq:`//span[contains(text(),'Prerequisite training(s) need to be completed')]`,
+    popupMessageTpWhenHavePrereq: `//span[contains(text(),'Prerequisite training(s) need to be completed')]`,
 
-            verifyPopupWhenCourseHavePrerequisiteWhileAdding:`//span[text()='Course(s) added have Prerequisites Associated with them. These Prerequisites have also been added to the Training Structure. You can remove the Prerequisite Course by clicking on the delete icon']`,
+    verifyPopupWhenCourseHavePrerequisiteWhileAdding: `//span[text()='Course(s) added have Prerequisites Associated with them. These Prerequisites have also been added to the Training Structure. You can remove the Prerequisite Course by clicking on the delete icon']`,
 
-            score:`//div[contains(text(),'assessment.')]/following-sibling::div[contains(@class,'mb')]`,
-            section2:`//*[text()='Section 2'] | //li//*[contains(text(),'Section 2')]`,
+    score: `//div[contains(text(),'assessment.')]/following-sibling::div[contains(@class,'mb')]`,
+    section2: `//*[text()='Section 2'] | //li//*[contains(text(),'Section 2')]`,
 
-            retakeAssessmentBtn:`//button[text()='Retake']`,
+    retakeAssessmentBtn: `//button[text()='Retake']`,
 
-            reviewAssessmentBtn:`//span[text()='review']`,
+    reviewAssessmentBtn: `//span[text()='review']`,
 
-            answerFeedbackText:`//div[@class='rawtxt text-capitalize']`,
+    answerFeedbackText: `//div[@class='rawtxt text-capitalize']`,
 
-            ceuUnitOnDetailsPage:`(//div[text()='Continuing Education Units (CEU)']/following::span[@class='me-3'])[2]`,
+    ceuUnitOnDetailsPage: `(//div[text()='Continuing Education Units (CEU)']/following::span[@class='me-3'])[2]`,
 
-            surveyLaunchBtn:`//span[text()='Launch']`,
+    surveyLaunchBtn: `//span[text()='Launch']`,
 
     // Verify label selector for any text verification
     verifyLabel: (text: string) => `//div[text()='${text}']`,
@@ -254,7 +253,7 @@ export class CatalogPage extends LearnerHomePage {
     dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
     enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
     enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
-  
+
 
   };
   constructor(page: Page, context: BrowserContext) {
@@ -403,7 +402,7 @@ export class CatalogPage extends LearnerHomePage {
     }
   }
 
-   public async verifyPrerequisiteMandatoryMessageFromAdmin(data?: string) {
+  public async verifyPrerequisiteMandatoryMessageFromAdmin(data?: string) {
     if (data == "Training Plan") {
       await this.verification(
         this.selectors.prerequisiteMandatoryMessageFromAdminSide,
@@ -428,36 +427,36 @@ export class CatalogPage extends LearnerHomePage {
   }
 
 
-  async verifyPopupMessageWithoutCompletingPrerequisite(){
-    const verifyPrereqMsg= this.page.locator(this.selectors.popupMessageTpWhenHavePrereq);
+  async verifyPopupMessageWithoutCompletingPrerequisite() {
+    const verifyPrereqMsg = this.page.locator(this.selectors.popupMessageTpWhenHavePrereq);
     if (await verifyPrereqMsg.isVisible()) {
-      await this.validateElementVisibility(this.selectors.OKBtnFromPopup,"OK Button From Popup");
-await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
     }
-    else{
+    else {
       console.log("No prerequisite popup message displayed/the prerequisite is already completed");
     }
 
   }
 
-  async verifyThePopupMessageWhenCourseHavePrerequisite(){
-const verifyPopupWhenCourseHavePrereq= this.page.locator(this.selectors.verifyPopupWhenCourseHavePrerequisiteWhileAdding);
+  async verifyThePopupMessageWhenCourseHavePrerequisite() {
+    const verifyPopupWhenCourseHavePrereq = this.page.locator(this.selectors.verifyPopupWhenCourseHavePrerequisiteWhileAdding);
     if (await verifyPopupWhenCourseHavePrereq.isVisible()) {
-      await this.validateElementVisibility(this.selectors.OKBtnFromPopup,"OK Button From Popup");
-await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
     }
-    else{
+    else {
       console.log("No popup message displayed while adding the course with prerequisite");
     }
   }
 
-  async verifyPopupMessageWithoutCompletingPrerequisiteFromLearnerSide(){
+  async verifyPopupMessageWithoutCompletingPrerequisiteFromLearnerSide() {
     const popupMessage = this.page.locator(this.selectors.prerequisiteMandatoryMessageFromAdminSide);
     if (await popupMessage.isVisible()) {
-      await this.validateElementVisibility(this.selectors.OKBtnFromPopup,"OK Button From Popup");
-      await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
     }
-    else{
+    else {
       console.log("No popup message displayed while adding the course with prerequisite without completing prerequisite");
     }
   }
@@ -1125,7 +1124,7 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
     await this.click(this.selectors.recertifyBtn, "Recertify", "Button");
     //await this.page.waitForTimeout(20000)
     await this.wait("maxWait");
-     await this.wait("maxWait");
+    await this.wait("maxWait");
 
     // await this.page.reload(); //Added by Arivu temporarily to avoid the error "Recertification button is not clickable"
     await this.page.waitForLoadState("load");
@@ -1212,6 +1211,7 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
 
   async saveLearningStatus() {
     await this.click(this.selectors.saveLearningStatus, "save", "button");
+
     //await this.validateElementVisibility(this.selectors.verificationEnrollment, "button");
     await this.spinnerDisappear();
     await this.page.keyboard.press("PageDown");
@@ -1231,6 +1231,8 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
       if (await completed.isVisible()) {
         await completed.scrollIntoViewIfNeeded();
         console.log("The Video Has Completed");
+        await this.wait("minWait");
+        await this.click(this.selectors.saveLearningStatus, "save", "button");
       } else {
         await this.clickLaunchButton();
         await this.saveLearningStatus();
@@ -1424,6 +1426,8 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
   }
 
   async searchMyLearning(data: string) {
+  await this.wait("minWait");
+  await this.page.locator(this.selectors.searchlearningInput).scrollIntoViewIfNeeded();
     const searchSelector = this.selectors.searchlearningInput;
     await this.typeAndEnter(searchSelector, "Search Field", data);
     //await this.keyboardAction(searchSelector, "Enter", "Input", "Search Field");
@@ -1474,11 +1478,11 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
     const completedCourseSelector = this.selectors.completedCourse(name);
     await this.mouseHover(completedCourseSelector, "Text");
   }
-  async clickEnrollAgain(){
-      await this.wait ("minWait");
-      await this.page.locator("//button[text()='Enroll Again']").click();
-      await this.wait ("mediumWait");
-     }
+  async clickEnrollAgain() {
+    await this.wait("minWait");
+    await this.page.locator("//button[text()='Enroll Again']").click();
+    await this.wait("mediumWait");
+  }
 
   async verifyCourseNotVisibleInCatalog(courseName: string) {
     const courseSelector = `(//div[@id='learner_catalog']//span[text()='${courseName}'])[1]`;
@@ -1850,7 +1854,7 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
 
 
 
-  
+
   public async negativeWriteContent() {
     await this.wait("mediumWait");
     let checkBox = this.page.locator(this.selectors.checkBox);
@@ -2179,7 +2183,7 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
   async clickCourseInMyLearning(coursename: string) {
     await this.wait("minWait");
     await this.click(
-      this.selectors.toCompleteORCompleteEnrolledCourse,
+      this.selectors.verifyCompletedMaincourse(coursename),
       coursename,
       "Link"
     );
@@ -2488,16 +2492,16 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
   }
 
 
-    async verifyPrerequisiteWarningForCourseInTP(prerequisitename:string){
-              await this.wait("mediumWait");
+  async verifyPrerequisiteWarningForCourseInTP(prerequisitename: string) {
+    await this.wait("mediumWait");
 
-      const prerequisiteWarning = this.page.locator(this.selectors.prerequisiteWarningText);
-      try {
-        await this.wait("mediumWait");
-        await prerequisiteWarning.isVisible();
-        console.log("Prerequisite warning is displayed for this course");
-        
-        await this.click(this.selectors.clickPrerequisite(prerequisitename),"prerequisite","course");
+    const prerequisiteWarning = this.page.locator(this.selectors.prerequisiteWarningText);
+    try {
+      await this.wait("mediumWait");
+      await prerequisiteWarning.isVisible();
+      console.log("Prerequisite warning is displayed for this course");
+
+      await this.click(this.selectors.clickPrerequisite(prerequisitename), "prerequisite", "course");
 
 
     }
@@ -2506,223 +2510,223 @@ await this.click(this.selectors.OKBtnFromPopup,"OK Button From Popup","Button");
     }
 
 
-}
-async clickMainCourse(coursename:string){
-  await this.wait("mediumWait");
-  await this.click(this.selectors.clickMainCourse(coursename),"Main Course","course");
-}
-
-async verifyTheCompletedTpFromMyLearning(maincourse:string){
-  await this.verification(this.selectors.verifyCompletedMaincourse(maincourse),"Completed");
-}
-
-
-
-async enrollCourseByClickRadioAndEnrollButton(courseName:string){
-   await this.click(this.selectors.selectCourseRadioBtn(courseName),"Select Course Radio Button","Radio Button");
-   await this.click(this.selectors.enrollButton,"Enroll Button","Button");
-   await this.spinnerDisappear();
-   await this.wait("maxWait")
-}
-
-async getScore() {
-  const scoreStored = await this.page.locator(this.selectors.score).innerText();
-  console.log('Raw score text:', scoreStored);
-
-  // Extract only numbers from the text
-  const match = scoreStored.match(/\d+/);
-  const score = match ? Number(match[0]) : NaN;
-
-  console.log('Extracted score:', score);
-  return score;
-}
-
-/**
- * Verify assessment result by calculating percentage from actual marks
- * @param actualScore - Learner's actual score from assessment
- * @param totalMarks - Total marks of all questions in the assessment
- * @param passPercentage - Required pass percentage from assessment configuration
- * @param expectedResult - Expected result: "Pass" or "Fail"
- */
-async verifyAssessmentResult(
-  actualScore: number, 
-  totalMarks: number, 
-  passPercentage: number, 
-  expectedResult: "Pass" | "Fail"
-): Promise<void> {
-  // Calculate achieved percentage
-  const achievedPercentage = (actualScore / totalMarks) * 100;
-  
-  // Determine pass or fail based on pass percentage
-  const actualResult = achievedPercentage >= passPercentage ? "Pass" : "Fail";
-
-  console.log(`\n========== Assessment Result Verification ==========`);
-  console.log(`Learner's Actual Score: ${actualScore}`);
-  console.log(`Total Marks: ${totalMarks}`);
-  console.log(`Achieved Percentage: ${achievedPercentage.toFixed(2)}%`);
-  console.log(`Required Pass Percentage: ${passPercentage}%`);
-  console.log(`Actual Result: ${actualResult}`);
-  console.log(`Expected Result: ${expectedResult}`);
-  
-  if (actualResult === expectedResult) {
-    console.log(`✅ PASS: Assessment result is ${actualResult} as expected!`);
-  } else {
-    throw new Error(
-      `❌ FAIL: Expected ${expectedResult} but got ${actualResult}\n` +
-      `Score: ${actualScore}/${totalMarks} = ${achievedPercentage.toFixed(2)}%`
-    );
   }
-  console.log(`====================================================\n`);
-}
+  async clickMainCourse(coursename: string) {
+    await this.wait("mediumWait");
+    await this.click(this.selectors.clickMainCourse(coursename), "Main Course", "course");
+  }
+
+  async verifyTheCompletedTpFromMyLearning(maincourse: string) {
+    await this.verification(this.selectors.verifyCompletedMaincourse(maincourse), "Completed");
+  }
 
 
-/**
- * Verify that specific question names are displayed in the assessment
- * @param questionNames - Array of question names to verify
- * @param assessmentType - Type of assessment (e.g., "Pre-Assessment", "Post-Assessment")
- */
-async verifyAssessmentQuestions(questionNames: string[], assessmentType: string): Promise<void> {
+
+  async enrollCourseByClickRadioAndEnrollButton(courseName: string) {
+    await this.click(this.selectors.selectCourseRadioBtn(courseName), "Select Course Radio Button", "Radio Button");
+    await this.click(this.selectors.enrollButton, "Enroll Button", "Button");
+    await this.spinnerDisappear();
+    await this.wait("maxWait")
+  }
+
+  async getScore() {
+    const scoreStored = await this.page.locator(this.selectors.score).innerText();
+    console.log('Raw score text:', scoreStored);
+
+    // Extract only numbers from the text
+    const match = scoreStored.match(/\d+/);
+    const score = match ? Number(match[0]) : NaN;
+
+    console.log('Extracted score:', score);
+    return score;
+  }
+
+  /**
+   * Verify assessment result by calculating percentage from actual marks
+   * @param actualScore - Learner's actual score from assessment
+   * @param totalMarks - Total marks of all questions in the assessment
+   * @param passPercentage - Required pass percentage from assessment configuration
+   * @param expectedResult - Expected result: "Pass" or "Fail"
+   */
+  async verifyAssessmentResult(
+    actualScore: number,
+    totalMarks: number,
+    passPercentage: number,
+    expectedResult: "Pass" | "Fail"
+  ): Promise<void> {
+    // Calculate achieved percentage
+    const achievedPercentage = (actualScore / totalMarks) * 100;
+
+    // Determine pass or fail based on pass percentage
+    const actualResult = achievedPercentage >= passPercentage ? "Pass" : "Fail";
+
+    console.log(`\n========== Assessment Result Verification ==========`);
+    console.log(`Learner's Actual Score: ${actualScore}`);
+    console.log(`Total Marks: ${totalMarks}`);
+    console.log(`Achieved Percentage: ${achievedPercentage.toFixed(2)}%`);
+    console.log(`Required Pass Percentage: ${passPercentage}%`);
+    console.log(`Actual Result: ${actualResult}`);
+    console.log(`Expected Result: ${expectedResult}`);
+
+    if (actualResult === expectedResult) {
+      console.log(`✅ PASS: Assessment result is ${actualResult} as expected!`);
+    } else {
+      throw new Error(
+        `❌ FAIL: Expected ${expectedResult} but got ${actualResult}\n` +
+        `Score: ${actualScore}/${totalMarks} = ${achievedPercentage.toFixed(2)}%`
+      );
+    }
+    console.log(`====================================================\n`);
+  }
+
+
+  /**
+   * Verify that specific question names are displayed in the assessment
+   * @param questionNames - Array of question names to verify
+   * @param assessmentType - Type of assessment (e.g., "Pre-Assessment", "Post-Assessment")
+   */
+  async verifyAssessmentQuestions(questionNames: string[], assessmentType: string): Promise<void> {
     await this.wait("mediumWait");
     console.log(`\n========== Verifying ${assessmentType} Questions ==========`);
-    
+
     // Wait for any dynamic content to load
-    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => { });
     await this.page.waitForTimeout(1000); // Additional wait for content rendering
-    
+
     const pageContent = await this.page.content();
     let allQuestionsFound = true;
-    
-    for (let i = 0; i < questionNames.length; i++) {
-        const questionName = questionNames[i];
-        
-        // Check if question text is present in the page
-        const isPresent = pageContent.includes(questionName);
-        
-        if (isPresent) {
-            console.log(`✅ Question ${i + 1} found: "${questionName}"`);
-        } else {
-            console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
-            allQuestionsFound = false;
-        }
-    }
-    
-    if (allQuestionsFound) {
-        console.log(`\n✅ ${assessmentType}: All ${questionNames.length} questions are displayed!`);
-    } else {
-        throw new Error(`${assessmentType}: Some questions are missing!`);
-    }
-    
-    console.log("==============================================\n");
-}
 
-async verifySurveyQuestions(questionNames: string[]): Promise<void> {
+    for (let i = 0; i < questionNames.length; i++) {
+      const questionName = questionNames[i];
+
+      // Check if question text is present in the page
+      const isPresent = pageContent.includes(questionName);
+
+      if (isPresent) {
+        console.log(`✅ Question ${i + 1} found: "${questionName}"`);
+      } else {
+        console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
+        allQuestionsFound = false;
+      }
+    }
+
+    if (allQuestionsFound) {
+      console.log(`\n✅ ${assessmentType}: All ${questionNames.length} questions are displayed!`);
+    } else {
+      throw new Error(`${assessmentType}: Some questions are missing!`);
+    }
+
+    console.log("==============================================\n");
+  }
+
+  async verifySurveyQuestions(questionNames: string[]): Promise<void> {
     await this.wait("mediumWait");
     console.log(`\n========== Verifying ${questionNames} Questions ==========`);
-    
+
     // Wait for any dynamic content to load
-    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {});
+    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => { });
     await this.page.waitForTimeout(1000); // Additional wait for content rendering
-    
+
     const pageContent = await this.page.content();
     let allQuestionsFound = true;
-    
+
     for (let i = 0; i < questionNames.length; i++) {
-        const questionName = questionNames[i];
-        
-        // Check if question text is present in the page
-        const isPresent = pageContent.includes(questionName);
-        
-        if (isPresent) {
-            console.log(`✅ Question ${i + 1} found: "${questionName}"`);
-        } else {
-            console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
-            allQuestionsFound = false;
-        }
+      const questionName = questionNames[i];
+
+      // Check if question text is present in the page
+      const isPresent = pageContent.includes(questionName);
+
+      if (isPresent) {
+        console.log(`✅ Question ${i + 1} found: "${questionName}"`);
+      } else {
+        console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
+        allQuestionsFound = false;
+      }
     }
-    
+
     if (allQuestionsFound) {
-        console.log(`\n✅ ${questionNames}: All ${questionNames.length} questions are displayed!`);
+      console.log(`\n✅ ${questionNames}: All ${questionNames.length} questions are displayed!`);
     } else {
-        throw new Error(`${questionNames}: Some questions are missing!`);
+      throw new Error(`${questionNames}: Some questions are missing!`);
     }
-    
+
     console.log("==============================================\n");
-}
-
-
-
-async clickSection2(){
-
-   await this.wait("minWait"); // Wait for Section 1 to complete
-  // await this.spinnerDisappear(); // Wait for any loading spinners
-    await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
-  await this.page.locator("//span[text()='Assessment/Survey ']").click();
-  // // Wait for Section 2 to be clickable
-  // await this.page.waitForSelector(this.selectors.section2, { state: 'visible', timeout: 10000 });
-  // await this.validateElementVisibility(this.selectors.section2,"Section 2");
-  
-  // Scroll into view and click
-  //await this.page.locator(this.selectors.section2).scrollIntoViewIfNeeded();
-  await this.click(this.selectors.section2,"Section 2","Section");
-  
-  // Wait for Section 2 content to load
-  await this.wait("mediumWait");
-  await this.spinnerDisappear();
-}
-
-async retakeAssessment(){
-  await this.validateElementVisibility(this.selectors.retakeAssessmentBtn,"Retake Assessment");
-  await this.click(this.selectors.retakeAssessmentBtn,"Retake Assessment","Button");
-}
-
-async reviewAssessment(){
-  await this.click(this.selectors.reviewAssessmentBtn,"Review Assessment","Button");
-}
-
-async verifyAnswerFeedback(expectedFeedback: string){
-  await this.verification(this.selectors.answerFeedbackText, expectedFeedback);
-}
-
-
-async verifyUpdatedCEUUnitFromDetailsPage(expectedCEU: string){
-  await this.verification(this.selectors.ceuUnitOnDetailsPage, expectedCEU);
-}
-
-async clickSurveyLaunchButton(){
-  await this.mouseHover(this.selectors.surveyLaunchBtn, "Launch Survey");
-  await this.click(this.selectors.surveyLaunchBtn, "Launch Survey", "Button");
-  await this.spinnerDisappear();  
-}
-
-async clickAssessmentSurvey(){
-   await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
-  await this.page.locator("//span[text()='Assessment/Survey ']").click();
-
-}
-async clickDoneButton(){
-  await this.validateElementVisibility(this.selectors.doneBtn,"Done Button");
-  await this.click(this.selectors.doneBtn,"Done","Button"); 
-}
-async verifyStatusWhenConsiderForCompletionIsChecked(){
-  await this.wait("maxWait");
-  await this.validateElementVisibility(
-    this.selectors.statusOnDetailsPage,
-    "Course Status"
-  );
-  
-  // Get the actual status from the page
-  const element = this.page.locator(this.selectors.statusOnDetailsPage).nth(0);
-  const actualStatus = await element.innerText();
-  console.log(`Actual Course Status: ${actualStatus}`);
-  
-  // When "Consider for Completion" is checked, course status should remain "In Progress"
-  // It should NOT be "Completed" even after finishing the content
-  if (actualStatus.toLowerCase().includes("completed")) {
-    throw new Error(`Failed: Course status is "${actualStatus}" but should be "In Progress" when "Consider for Completion" is checked for survey`);
   }
-  
-  await this.verification(this.selectors.statusOnDetailsPage, "In Progress");
-}
+
+
+
+  async clickSection2() {
+
+    await this.wait("minWait"); // Wait for Section 1 to complete
+    // await this.spinnerDisappear(); // Wait for any loading spinners
+    await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
+    await this.page.locator("//span[text()='Assessment/Survey ']").click();
+    // // Wait for Section 2 to be clickable
+    // await this.page.waitForSelector(this.selectors.section2, { state: 'visible', timeout: 10000 });
+    // await this.validateElementVisibility(this.selectors.section2,"Section 2");
+
+    // Scroll into view and click
+    //await this.page.locator(this.selectors.section2).scrollIntoViewIfNeeded();
+    await this.click(this.selectors.section2, "Section 2", "Section");
+
+    // Wait for Section 2 content to load
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
+  }
+
+  async retakeAssessment() {
+    await this.validateElementVisibility(this.selectors.retakeAssessmentBtn, "Retake Assessment");
+    await this.click(this.selectors.retakeAssessmentBtn, "Retake Assessment", "Button");
+  }
+
+  async reviewAssessment() {
+    await this.click(this.selectors.reviewAssessmentBtn, "Review Assessment", "Button");
+  }
+
+  async verifyAnswerFeedback(expectedFeedback: string) {
+    await this.verification(this.selectors.answerFeedbackText, expectedFeedback);
+  }
+
+
+  async verifyUpdatedCEUUnitFromDetailsPage(expectedCEU: string) {
+    await this.verification(this.selectors.ceuUnitOnDetailsPage, expectedCEU);
+  }
+
+  async clickSurveyLaunchButton() {
+    await this.mouseHover(this.selectors.surveyLaunchBtn, "Launch Survey");
+    await this.click(this.selectors.surveyLaunchBtn, "Launch Survey", "Button");
+    await this.spinnerDisappear();
+  }
+
+  async clickAssessmentSurvey() {
+    await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
+    await this.page.locator("//span[text()='Assessment/Survey ']").click();
+
+  }
+  async clickDoneButton() {
+    await this.validateElementVisibility(this.selectors.doneBtn, "Done Button");
+    await this.click(this.selectors.doneBtn, "Done", "Button");
+  }
+  async verifyStatusWhenConsiderForCompletionIsChecked() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.statusOnDetailsPage,
+      "Course Status"
+    );
+
+    // Get the actual status from the page
+    const element = this.page.locator(this.selectors.statusOnDetailsPage).nth(0);
+    const actualStatus = await element.innerText();
+    console.log(`Actual Course Status: ${actualStatus}`);
+
+    // When "Consider for Completion" is checked, course status should remain "In Progress"
+    // It should NOT be "Completed" even after finishing the content
+    if (actualStatus.toLowerCase().includes("completed")) {
+      throw new Error(`Failed: Course status is "${actualStatus}" but should be "In Progress" when "Consider for Completion" is checked for survey`);
+    }
+
+    await this.verification(this.selectors.statusOnDetailsPage, "In Progress");
+  }
 
   async closeCertificate() {
     await this.wait("minWait");
