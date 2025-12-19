@@ -3,9 +3,34 @@ import { FakerData, getRandomFutureDate, getRandomPastDate } from '../../../util
 import fs from 'fs';
 import path from 'path';
 import { URLConstants } from '../../../constants/urlConstants';
+import { setupCourseCreation } from '../../../utils/cookieSetup';
 
 const BASE_URL = URLConstants.adminURL.replace('/backdoor', '');
-const SESSION_COOKIE = fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8').trim();
+
+// Helper to get fresh cookies every time
+function getSessionCookie(): string {
+  return fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8').trim();
+}
+
+// Track last cookie refresh time
+let lastCookieRefresh = Date.now();
+const COOKIE_REFRESH_INTERVAL = 18 * 60 * 1000; // 18 minutes
+
+/**
+ * Refresh cookies if more than 18 minutes have passed
+ */
+async function refreshCookiesIfNeeded(): Promise<void> {
+  const now = Date.now();
+  const timeSinceRefresh = now - lastCookieRefresh;
+  
+  if (timeSinceRefresh >= COOKIE_REFRESH_INTERVAL) {
+    const minutesSinceRefresh = Math.floor(timeSinceRefresh / 60000);
+    console.log(`🔄 Cookies expired (${minutesSinceRefresh} mins). Refreshing...`);
+    await setupCourseCreation();
+    lastCookieRefresh = Date.now();
+    console.log('✅ Cookies refreshed');
+  }
+}
 
 const CURRENCY_MAP: { [key: string]: string } = {
   'us dollar': 'currency_001',
@@ -119,9 +144,18 @@ const COMMON_HEADERS = {
   "sec-fetch-site": "same-origin",
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
   // "Authorization": "Bearer ...",
-  "x-requested-with": "XMLHttpRequest",
-  "Cookie": SESSION_COOKIE,
+  "x-requested-with": "XMLHttpRequest"
 };
+
+// Helper to get headers with fresh cookie
+function getHeaders(referer?: string) {
+  const headers: any = {
+    ...COMMON_HEADERS,
+    "Cookie": getSessionCookie()
+  };
+  if (referer) headers["referer"] = referer;
+  return headers;
+}
 
 async function searchContent(contentName: string): Promise<number> {
   const params = new URLSearchParams({
@@ -137,10 +171,7 @@ async function searchContent(contentName: string): Promise<number> {
   
   const url = `${BASE_URL}/ajax/admin/manage/content/list?${params.toString()}`;
   const response = await axios.get(url, {
-    headers: {
-      ...COMMON_HEADERS,
-      "referer": `${BASE_URL}/admin/learning/course/create`,
-    },
+    headers: getHeaders(`${BASE_URL}/admin/learning/course/create`),
     maxBodyLength: Infinity,
   });
   
@@ -274,7 +305,7 @@ async function createCourse(
   formData.append("price", priceValue);
   formData.append("old_course_price", "");
   formData.append("currency_type", currencyCode);
-  formData.append("max_seat", "50");
+  formData.append("max_seat", "");
   formData.append("old_max_seat", "undefined");
   formData.append("contact_support", "Ashly58@gmail.com");
   formData.append("duration", "");
@@ -514,15 +545,14 @@ async function addClassroomInstances(
   courseName: string,
   instanceCount: number,
   status: string,
-  dateType: string = "future",
-  maxSeat: string = "45"
+  dateType: string = "future"
 ): Promise<void> {
   // Generate instance data
   const initSessions = [];
   const sessionList = [];
   
   for (let i = 0; i < instanceCount; i++) {
-    const startDate = dateType.toLowerCase() === "past" 
+    const startDate = dateType.toLowerCase() === "pastclass" 
       ? getRandomPastDate() 
       : getRandomFutureDate();
     const startTime = getRandomTime();
@@ -562,7 +592,7 @@ async function addClassroomInstances(
       end_time: endTime,
       instructors: [],
       location: location,
-      maxSeat: maxSeat,
+      maxSeat: "45",
       wailtList: "",
       isStatusChecked: i === instanceCount - 1, // Last instance checked
       disableStatusCheckbox: i === 0, // First instance disabled
@@ -637,6 +667,9 @@ export async function createCourseAPI(
   price?: string,
   currency?: string
 ): Promise<string> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
   const uniqueId = Date.now().toString();
   const contentId = await searchContent(content);
   await listUploadedContent(contentId, uniqueId);
@@ -651,7 +684,6 @@ export async function createCourseAPI(
  * @param status - Course status (default: "published")
  * @param instanceCount - Number of instances to create (default: 2)
  * @param dateType - Date type for instances: "future" (default) or "pastclass" for past dates
- * @param maxSeat - Optional max seat limit for instances (default: "45")
  * @param price - Optional price for the course
  * @param currency - Optional currency (required if price is provided)
  * @returns Array of instance names
@@ -661,10 +693,12 @@ export async function createILTMultiInstance(
   status = "published",
   instanceCount = 2,
   dateType: string = "future",
-  maxSeat: string = "45",
   price?: string,
   currency?: string
 ): Promise<string[]> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
   console.log(`\n🎓 Creating Classroom Multi-Instance Course: ${courseName}`);
   console.log(`📊 Instance Count: ${instanceCount}`);
   console.log(`📅 Date Type: ${dateType}\n`);
@@ -682,7 +716,7 @@ export async function createILTMultiInstance(
   
   await createAccessGroupMapping(course_id, catalog_id, status);
   
-  await addClassroomInstances(course_id, courseName, instanceCount, status, dateType, maxSeat);
+  await addClassroomInstances(course_id, courseName, instanceCount, status, dateType);
   
   // Generate instance names array based on actual API behavior:
   // - Single instance (1): API returns course name without suffix
@@ -913,7 +947,7 @@ async function updateVCInstance(
   dateType: string = "future",
   status: string = "published"
 ): Promise<void> {
-  const startDate = dateType.toLowerCase() === "past" 
+  const startDate = dateType.toLowerCase() === "pastclass" 
     ? getRandomPastDate() 
     : getRandomFutureDate();
   const startTime = getRandomTime();
@@ -1053,6 +1087,9 @@ export async function createVCMultiInstance(
   price?: string,
   currency?: string
 ): Promise<string | string[]> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
   console.log(`\n🎥 Creating Virtual Classroom Course: ${courseName}`);
   console.log(`📊 Instance Count: ${instanceCount}`);
   console.log(`📅 Date Type: ${dateType}\n`);
