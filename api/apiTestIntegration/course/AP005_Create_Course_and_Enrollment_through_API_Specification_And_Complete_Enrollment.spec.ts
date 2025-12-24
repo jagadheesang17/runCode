@@ -1,19 +1,12 @@
 import { credentials } from "../../../constants/credentialData";
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
-import { generateOauthToken } from "../../accessToken";
 import { completeEnrolledCourse, enrollCourse, listEnrolledCourse } from "../../courseAPI";
 
 const courseName = "API " + FakerData.getCourseName();
 const description = FakerData.getDescription();
 let createdCode: any
-let access_token: string
 let user = credentials.LEARNERUSERNAME.username
-
-test.beforeAll('Generate Access Tokken', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe(`Creating a course in the UI, enrolling through the API, and finally verifying on the learner's side in the UI`, async () => {
     test.describe.configure({ mode: "serial" });
@@ -46,7 +39,7 @@ test.describe(`Creating a course in the UI, enrolling through the API, and final
     })
 
     test(`Create Enrollment through API`, async () => {
-        await enrollCourse(createdCode, user, { Authorization: access_token })
+        await enrollCourse(createdCode, user)
     })
 
     test(`Verify to Complete Course in Learner side`, async ({ learnerHome, catalog }) => {
@@ -58,7 +51,7 @@ test.describe(`Creating a course in the UI, enrolling through the API, and final
     })
 
     test(`Complete Enrolled Course through API`, async () => {
-        await completeEnrolledCourse(createdCode, user, { Authorization: access_token })
+        await completeEnrolledCourse(createdCode, user)
     })
 
     test(`Verify Completed Course in Learner side`, async ({ learnerHome, dashboard }) => {
@@ -71,7 +64,7 @@ test.describe(`Creating a course in the UI, enrolling through the API, and final
     })
 
     test(`List the completed enrolled course`, async () => {
-        await listEnrolledCourse(createdCode, user, { Authorization: access_token })
+        await listEnrolledCourse(createdCode, user)
     })
 
 })

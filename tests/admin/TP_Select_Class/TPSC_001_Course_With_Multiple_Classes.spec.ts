@@ -1,7 +1,6 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from "../../../utils/fakerUtils";
 import { credentials } from "../../../constants/credentialData";
-import { generateOauthToken } from "../../../api/accessToken";
 import { userCreation } from "../../../api/userAPI";
 import { userCreationData } from "../../../data/apiData/formData";
 import { createILTMultiInstance, createVCMultiInstance } from "../../../api/apiTestIntegration/courseCreation/createCourseAPI";

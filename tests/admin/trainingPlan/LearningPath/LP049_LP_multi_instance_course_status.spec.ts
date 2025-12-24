@@ -7,7 +7,6 @@ const class2 = "Classroom " + FakerData.getCourseName();
 const class1 = "VirtualClass " + FakerData.getCourseName();
 const description = FakerData.getDescription();
 let createdCode: any
-let access_token: string
 let user = credentials.LEARNERUSERNAME.username
 
 const sessionName = FakerData.getSession();

@@ -1,22 +1,15 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createCEUProvider } from "../../metaDataLibraryAPI";
 import { generateCode } from "../../../data/apiData/formData";
 
-let access_token: string;
 const ceuProviderName = FakerData.getCEUProviderName();
 const generatedcode = generateCode();
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Creation of CEU Provider', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating CEU Provider through API', async () => {
-        await createCEUProvider(generatedcode,ceuProviderName, { Authorization: access_token });
+        await createCEUProvider(generatedcode,ceuProviderName);
     });
     test(`Verify that a CEU provider can be added under Metadata Library`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(

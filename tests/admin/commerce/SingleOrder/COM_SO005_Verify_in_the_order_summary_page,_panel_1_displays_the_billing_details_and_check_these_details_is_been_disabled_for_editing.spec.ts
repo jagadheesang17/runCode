@@ -3,7 +3,6 @@ import { expect } from "@playwright/test";
 import { FakerData } from "../../../../utils/fakerUtils";
 import { credentials } from "../../../../constants/credentialData";
 import { createCourseAPI as createElearningCourse } from "../../../../api/apiTestIntegration/courseCreation/createCourseAPI";
-import { generateOauthToken } from "../../../../api/accessToken";
 import { userCreation } from "../../../../api/userAPI";
 import { userCreationData } from "../../../../data/apiData/formData";
 

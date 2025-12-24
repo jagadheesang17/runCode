@@ -1,22 +1,15 @@
 import { test } from "@playwright/test";
 import { listSingleUser, userCreationWithGuid } from "../../userAPI";
-import { generateOauthToken } from "../../accessToken";
 import { userCreationWithGuidData } from "../../../data/apiData/formData";
 import { FakerData } from "../../../utils/fakerUtils";
 import { assertResponse } from "../../../utils/verificationUtils";
 import { verifyUserGuidInDatabase } from "../../../tests/admin/DB/DBJobs";
 
 let generatingusername = FakerData.getUserId();
-let access_token: any;
 let createdUserId: any;
 let userId: any;
 let userName: any;
 let userGuid: any;
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Testing UserAPI Functionality with GUID', () => {
     test.describe.configure({ mode: 'serial' });
@@ -33,7 +26,7 @@ test.describe('Testing UserAPI Functionality with GUID', () => {
         console.log('User creation data with GUID:', userData);
         console.log('Generated GUID:', userGuid);
         
-        createdUserId = await userCreationWithGuid(userData, { Authorization: access_token });
+        createdUserId = await userCreationWithGuid(userData);
         console.log('Created User ID:', createdUserId);
     });
 
@@ -44,7 +37,7 @@ test.describe('Testing UserAPI Functionality with GUID', () => {
             { type: `Test Description`, description: `Retrieve and verify the user created with GUID` }
         );
 
-        let userDetails: any = await listSingleUser(generatingusername, { Authorization: access_token });
+        let userDetails: any = await listSingleUser(generatingusername);
         [userId, userName] = userDetails;
         
         console.log('Retrieved User ID:', userId);

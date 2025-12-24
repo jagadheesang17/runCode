@@ -5,8 +5,8 @@ import { URLConstants } from "../../data/apiData/apiUtil";
 
 let endPointURL = URLConstants.learnerEndPointUrl
 
-export async function retrive_CatalogList(userName: string,authorization: any) {
-    let response = await postRequest(getCatalogList(userName), endPointURL, authorization);
+export async function retrive_CatalogList(userName: string) {
+    let response = await postRequest(getCatalogList(userName), endPointURL);
     console.log(response.data);
     await assertStatus(response.status, 200);
     await assertResponse(response.data.status, "success");

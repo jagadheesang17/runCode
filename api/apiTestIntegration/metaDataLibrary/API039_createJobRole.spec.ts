@@ -1,22 +1,15 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createJobRole } from "../../metaDataLibraryAPI";
 import { generateCode } from "../../../data/apiData/formData";
 
-let access_token: string;
 const jobRoleName = FakerData.getJobRoleName();
 const generatedcode = generateCode();
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Creation of Job Role', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating Job Role through API', async () => {
-        await createJobRole(jobRoleName,generatedcode, { Authorization: access_token });
+        await createJobRole(jobRoleName,generatedcode);
     });
     test(`Verify that a job role can be added under Metadata Library`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(

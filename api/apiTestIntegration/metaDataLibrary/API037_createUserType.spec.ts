@@ -1,22 +1,15 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createUserType } from "../../metaDataLibraryAPI";
 import { generateCode } from "../../../data/apiData/formData";
 
-let access_token: string;
 const userTypeName = FakerData.getUserTypeName();
 const generatedcode = generateCode();
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Creation of User Type', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating User Type through API', async () => {
-        await createUserType(userTypeName,generatedcode, { Authorization: access_token });
+        await createUserType(userTypeName,generatedcode);
     });
     test(`Verify that a user type can be added under Metadata Library`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(

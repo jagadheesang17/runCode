@@ -1,7 +1,6 @@
 import { test } from "../../../customFixtures/expertusFixture"
 import { FakerData } from '../../../utils/fakerUtils';
 import { userCreation, userUpdation } from "../../../api/userAPI";
-import { generateOauthToken } from "../../../api/accessToken";
 import { userCreationDataWithOptional } from "../../../data/apiData/formData";
 
 const courseName = FakerData.getCourseName();
@@ -9,15 +8,9 @@ const manager1Username = "MGR1_" + FakerData.getUserId();
 const manager2Username = "MGR2_" + FakerData.getUserId();
 const user1Username = "USR1_" + FakerData.getUserId();
 const description = FakerData.getDescription();
-let access_token: any;
 let manager1UserId: any;
 let manager2UserId: any;
 let user1UserId: any;
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe(`Verify manager approved Elearning course with Other Manager approval`, async () => {
     test.describe.configure({ mode: 'serial' })
@@ -29,7 +22,7 @@ test.describe(`Verify manager approved Elearning course with Other Manager appro
             { type: `Test Description`, description: `Create Manager 1 user with Manager role via API` }
         );
         
-        manager1UserId = await userCreation(userCreationDataWithOptional(manager1Username, "manager"), { Authorization: access_token });
+        manager1UserId = await userCreation(userCreationDataWithOptional(manager1Username, "manager"));
         console.log("Created Manager 1 with User ID:", manager1UserId);
     })
 
@@ -40,7 +33,7 @@ test.describe(`Verify manager approved Elearning course with Other Manager appro
             { type: `Test Description`, description: `Create Manager 2 user with Manager role via API` }
         );
         
-        manager2UserId = await userCreation(userCreationDataWithOptional(manager2Username, "manager"), { Authorization: access_token });
+        manager2UserId = await userCreation(userCreationDataWithOptional(manager2Username, "manager"));
         console.log("Created Manager 2 with User ID:", manager2UserId);
     })
 
@@ -51,7 +44,7 @@ test.describe(`Verify manager approved Elearning course with Other Manager appro
             { type: `Test Description`, description: `Create regular user and assign Manager 1 as direct manager via API` }
         );
         
-        user1UserId = await userCreation(userCreationDataWithOptional(user1Username, undefined, undefined, undefined, undefined, undefined, undefined, manager1Username, manager2Username), { Authorization: access_token });
+        user1UserId = await userCreation(userCreationDataWithOptional(user1Username, undefined, undefined, undefined, undefined, undefined, undefined, manager1Username, manager2Username));
         console.log("Created User 1 with Manager 1 as direct manager and Manager 2 as other manager, User ID:", user1UserId);
     })
 

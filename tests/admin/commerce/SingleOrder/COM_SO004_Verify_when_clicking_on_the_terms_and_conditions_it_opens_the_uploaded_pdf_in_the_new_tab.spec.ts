@@ -3,12 +3,10 @@ import { expect } from "@playwright/test";
 import { FakerData } from "../../../../utils/fakerUtils";
 import { credentials } from "../../../../constants/credentialData";
 import { createCourseAPI as createElearningCourse } from "../../../../api/apiTestIntegration/courseCreation/createCourseAPI";
-import { generateOauthToken } from "../../../../api/accessToken";
 import { userCreation } from "../../../../api/userAPI";
 import { userCreationData } from "../../../../data/apiData/formData";
 
 let userName = FakerData.getUserId();
-let access_token: any;
 let createdUserId: any;
 
 test.describe(`Verify when clicking on the terms and conditions it opens the uploaded pdf in the new tab`, () => {
@@ -19,8 +17,7 @@ test.describe(`Verify when clicking on the terms and conditions it opens the upl
             { type: `TestCase`, description: `SO004_TC001 - Verify terms and conditions PDF opens in new tab` },
             { type: `Test Description`, description: `Verify when clicking on the terms and conditions it opens the uploaded pdf in the new tab` }
         );
-        access_token = await generateOauthToken();
-        createdUserId = await userCreation(userCreationData(userName), { Authorization: access_token });
+        createdUserId = await userCreation(userCreationData(userName));
 
         const content = 'content testing-001';
         const courseName = FakerData.getCourseName();

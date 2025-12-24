@@ -1,12 +1,10 @@
 import { test } from "@playwright/test";
 import { userCreation } from "../../../../api/userAPI";
-import { generateOauthToken } from "../../../../api/accessToken";
 import { userCreationData } from "../../../../data/apiData/formData";
 import { FakerData } from "../../../../utils/fakerUtils";
 import * as fs from 'fs';
 import * as path from 'path';
 
-let access_token: any;
 let enrollmentUsers: any[] = [];
 
 test.describe('CC000 - Create Enrollment Test Users', () => {
@@ -20,8 +18,7 @@ test.describe('CC000 - Create Enrollment Test Users', () => {
         );
 
         // Generate OAuth token
-        access_token = await generateOauthToken();
-        console.log('✅ Access Token generated');
+        console.log('✅ Access Token will be auto-generated');
 
         // Create 3 users
         for (let i = 1; i <= 3; i++) {
@@ -30,7 +27,7 @@ test.describe('CC000 - Create Enrollment Test Users', () => {
 
             const userData = userCreationData(generatingusername);
             
-            const createdUserId = await userCreation(userData, { Authorization: access_token });
+            const createdUserId = await userCreation(userData);
             console.log(`✅ User ${i} created with ID: ${createdUserId}`);
 
             const enrollmentUserData = {
