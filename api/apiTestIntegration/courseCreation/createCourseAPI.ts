@@ -501,13 +501,15 @@ async function createAccessGroupMapping(
   catalog_id: number,
   status: string
 ): Promise<void> {
-  const formData = new URLSearchParams();
+  // Use FormData for multipart/form-data (same as UI)
+  const FormDataNode = require('form-data');
+  const formData = new FormDataNode();
   formData.append("entity_id", course_id.toString());
   formData.append("catalog_id", catalog_id.toString());
   formData.append("entity_type", "course");
   formData.append("status", status);
   formData.append("is_compliance", "0");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8"); // Multiple portals like UI
 
   try {
     const response = await axios.post(
@@ -516,9 +518,10 @@ async function createAccessGroupMapping(
       {
         headers: {
           ...COMMON_HEADERS,
+          ...formData.getHeaders(), // Get proper multipart headers with boundary
+          "Cookie": getSessionCookie(), // Include session cookies
           "origin": `${BASE_URL}`,
           "referer": `${BASE_URL}/admin/learning/course/create`,
-          "content-type": "application/x-www-form-urlencoded",
         },
         maxBodyLength: Infinity,
       }
@@ -526,13 +529,34 @@ async function createAccessGroupMapping(
 
     console.log(`\n*** CREATE ACCESS GROUP MAPPING RESPONSE ***`);
     console.log(`Status Code: ${response.status}`);
-    console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+    console.log(`Response: ${JSON.stringify(response.data, null, 2)}\n`);
+    
     if (response.status !== 200 || response.data.result !== "success") {
       console.warn("⚠️ Access Group Mapping failed but continuing...");
     }
   } catch (error: any) {
-    console.warn("⚠️ Access Group Mapping API failed - this is optional, continuing...");
-    console.warn(`Error: ${error.message}`);
+    console.warn("\n⚠️ Access Group Mapping API failed - this is optional, continuing...");
+    console.warn(`Error Message: ${error.message}`);
+    
+    // Print full error response details
+    if (error.response) {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR RESPONSE ***`);
+      console.warn(`Status Code: ${error.response.status}`);
+      console.warn(`Status Text: ${error.response.statusText}`);
+      console.warn(`Response Headers: ${JSON.stringify(error.response.headers, null, 2)}`);
+      console.warn(`Response Body: ${JSON.stringify(error.response.data, null, 2)}`);
+    } else if (error.request) {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR - NO RESPONSE ***`);
+      console.warn(`Request made but no response received`);
+    } else {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR - REQUEST SETUP ***`);
+      console.warn(`Error setting up request: ${error.message}`);
+    }
+    
+    console.warn(`\n*** REQUEST PAYLOAD ***`);
+    console.warn(`Entity ID: ${course_id}, Catalog ID: ${catalog_id}, Status: ${status}`);
+    console.warn(`FormData sent with portals: 5,7,8\n`);
+    
     // Don't throw error - access group mapping is optional
   }
 }

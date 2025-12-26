@@ -1,3 +1,4 @@
+import { da } from "@faker-js/faker";
 import { URLConstants } from "../../constants/urlConstants";
 import { test } from "../../customFixtures/expertusFixture";
 import { FakerData } from '../../utils/fakerUtils';
@@ -71,9 +72,9 @@ test.describe(`Verify_that_the_user_is_able_to_bookmark_the_course_complete_it_a
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName1);
-        await catalog.verifyCompletedCourse(courseName1);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName1);
+        await dashboard.vaidatVisibleCourse_Program(courseName1, "Completed");
     })
 
     test(`Verify able to remove the bookmarked course`, async ({ learnerHome, dashboard, catalog }) => {
@@ -87,6 +88,8 @@ test.describe(`Verify_that_the_user_is_able_to_bookmark_the_course_complete_it_a
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LearnerPortal");
         await learnerHome.clickDashboardLink();
         await dashboard.clickBookmarkLink();
+        await dashboard.verifyBookmarkSections();
+        await dashboard.verifyBookmarkedDate(courseName1);
         await dashboard.bookMarkSearch(courseName1);
         await dashboard.bookmarkRemove(courseName1);
         await dashboard.bookMarkSearch(courseName1);

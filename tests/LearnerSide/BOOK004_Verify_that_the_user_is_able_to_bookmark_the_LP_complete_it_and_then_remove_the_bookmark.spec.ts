@@ -82,7 +82,7 @@ test.describe(`Book004_Verify_that_the_user_is_able_to_bookmark_the_LP_complete_
         await catalog.mostRecent();
         await catalog.searchCatalog(title);
         await catalog.clickEnrollButton();
-        await catalog.viewCoursedetails();
+        await catalog.clickViewLearningPathDetails();
         // await catalog.clickViewCertificationDetails();
         await catalog.bookmarkClass(title);
         // await catalog.clickLaunchButton();

@@ -84,7 +84,7 @@ test.describe(`Verify admin can change enrollment status for Learning Path`, () 
             { type: `TestCase`, description: `ENR_VUS_008 - Verify learner side Learning Path visibility` },
             { type: `Test Description`, description: `Login as all 3 users and verify the Learning Path is available in My Learning` }
         );
-
+        //same scenario is covering Dashboard - Cert/LP
         for (let i = 0; i < Math.min(users.length, 3); i++) {
             console.log(`\n🔄 Verifying for User ${i + 1}: ${users[i].username}`);
             await learnerHome.basicLogin(users[i].username, "DefaultPortal");

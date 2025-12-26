@@ -253,6 +253,15 @@ export class CatalogPage extends LearnerHomePage {
     dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
     enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
     enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
+    ML_learningpathAndcertification: `//a[text()='Learning Path and Certification']`,
+    addToPlaylist: (content: string) => `//div[text()='${content}']//following::i[contains(@class,'fa-list')]`,
+    createNewPlayList:`//span[text()='Create-New-Playlist']`,
+    existingPlayList:`//span[text()='Add to existing Playlist']`, 
+    playlistNameInput:`#playlistname`,
+    saveBtn:`//button[text()='Save']`,
+    selectPlayList: (playlistName: string) => `(//div[text()='${playlistName}']//following::i)[1]`,
+    closePlayListIcon: `//i[contains(@class,'ms-auto fa-swap-opacity')]`,
+    contentAlreadyAddedMessage: `//div[contains(@class,'information_text')]//span[contains(text(),'already included in the playlist')]`,
 
 
   };
@@ -1426,8 +1435,8 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   async searchMyLearning(data: string) {
-  await this.wait("minWait");
-  await this.page.locator(this.selectors.searchlearningInput).scrollIntoViewIfNeeded();
+    await this.wait("minWait");
+    await this.page.locator(this.selectors.searchlearningInput).scrollIntoViewIfNeeded();
     const searchSelector = this.selectors.searchlearningInput;
     await this.typeAndEnter(searchSelector, "Search Field", data);
     //await this.keyboardAction(searchSelector, "Enter", "Input", "Search Field");
@@ -2780,6 +2789,86 @@ export class CatalogPage extends LearnerHomePage {
     }
   }
 
+  async clickMyLearning_LPAndCertification() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.ML_learningpathAndcertification,
+      "LearningPath and Certification"
+    );
+    await this.wait("maxWait");
+    await this.click(
+      this.selectors.ML_learningpathAndcertification,
+      "LearningPath and Certification",
+      "Button"
+    );
+  }
 
-}
+  /**
+   * Add content to playlist - tries to add to existing playlist first,
+   * if not available, creates a new playlist
+   * @param playlistName - The name of the playlist
+   */
+  async addtoplayLilst(content: string, playlistName: string) {
+    await this.wait("mediumWait");
+    await this.page.locator(this.selectors.addToPlaylist(content)).scrollIntoViewIfNeeded();
+    await this.validateElementVisibility(this.selectors.addToPlaylist(content), "Add to Playlist Button");
+    await this.click(this.selectors.addToPlaylist(content), "Add to Playlist", "Button");
+    await this.wait("minWait");
+    
+    // Step 2: Click existing playlist option
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.existingPlayList, "Existing Playlist Option");
+    await this.click(this.selectors.existingPlayList, "Add to existing Playlist", "Option");
+    await this.wait("minWait");
+    
+    // Step 3: Try to select the playlist
+    const playlistSelector = this.selectors.selectPlayList(playlistName);
+    const playlistExists = await this.page.locator(playlistSelector).isVisible({ timeout: 5000 }).catch(() => false);
+    
+    if (playlistExists) {
+      console.log(`✅ Playlist '${playlistName}' found, selecting it`);
+      await this.click(playlistSelector, `Select Playlist: ${playlistName}`, "Icon");
+      await this.wait("minWait");
+      await this.click(this.selectors.saveBtn, "Save", "Button");
+      await this.wait("mediumWait");
+      await this.spinnerDisappear();
+      
+      // Check if content is already added to playlist
+      const alreadyAddedMessage = this.page.locator(this.selectors.contentAlreadyAddedMessage);
+      const isAlreadyAdded = await alreadyAddedMessage.isVisible({ timeout: 3000 }).catch(() => false);
+      
+      if (isAlreadyAdded) {
+        const messageText = await alreadyAddedMessage.innerText();
+        console.log(`⚠️ ${messageText}`);
+        await this.verification(this.selectors.contentAlreadyAddedMessage, "already included in the playlist");
+        await this.click(this.selectors.okBtn, "OK", "Button");
+        console.log(`ℹ️ Content was already in playlist '${playlistName}' - exiting function`);
+        return; // Exit function if content already added
+      } else {
+        await this.click(this.selectors.okBtn, "OK", "Button");
+        console.log(`✅ Content added to playlist '${playlistName}' successfully`);
+      }
+    } else {
+      // Playlist doesn't exist, close and create new
+      console.log(`⚠️ Playlist '${playlistName}' not found, creating new playlist`);
+      await this.click(this.selectors.closePlayListIcon, "Close", "Button");
+      await this.wait("minWait");
+      
+      // Click add to playlist again
+      await this.validateElementVisibility(this.selectors.addToPlaylist(content), "Add to Playlist Button");
+      await this.wait("minWait");
+      await this.click(this.selectors.addToPlaylist(content), "Add to Playlist", "Button");      
+      await this.validateElementVisibility(this.selectors.createNewPlayList, "Create New Playlist Option");
+      await this.click(this.selectors.createNewPlayList, "Create New Playlist", "Option");
+      await this.wait("minWait");
+      await this.type(this.selectors.playlistNameInput, "Playlist Name", playlistName);
+      await this.click(this.selectors.saveBtn, "Save Playlist", "Button");
+      await this.wait("mediumWait");
+      await this.spinnerDisappear();
+      await this.click(this.selectors.okBtn, "OK", "Button");
+      await this.wait("minWait");
+      console.log(`✅ Content added to new playlist '${playlistName}' successfully`);
+    }
+  }
 
+} 
