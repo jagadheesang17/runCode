@@ -58,10 +58,14 @@ test.describe(`DB005 - Verify completed certification appears in My Certificates
         await catalog.clickMoreonCourse(certificationTitle);
         await catalog.clickSelectcourse(certificationTitle);
         await catalog.clickEnroll();
+        await catalog.clickLaunchButton();
+        await catalog.saveLearningStatus();
+
         console.log(`✅ Learner enrolled in course: ${certificationTitle}`);
         await learnerHome.clickDashboardLink();
         await dashboard.selectDashboardItems("My Certificates");
         await dashboard.clickLearningpathAndCertificationLink();
+        await dashboard.verifyCompletedOnDate();
         await dashboard.verifyMyCertificatesSection(certificationTitle);
     });
 });

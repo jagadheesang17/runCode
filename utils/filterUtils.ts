@@ -39,7 +39,11 @@ export class FilterUtils extends AdminHomePage {
 
         // Sort dropdown and options
         sortDropdown: "//button[contains(@class,'sort') or contains(text(),'Sort')]",
-        sortOption: (option: string) => `//button[contains(@class,'sort') or contains(text(),'Sort')]//following::span[text()='${option}']`
+        sortOption: (option: string) => `//button[contains(@class,'sort') or contains(text(),'Sort')]//following::span[text()='${option}']`,
+
+        // Collaboration Hub / Approval Filters (checkbox with form-label)
+        approvalFilterCheckbox: (optionName: string) => `//span[@class='form-label' and text()='${optionName}']`,
+        approvalFilterContainer: "#approval-filter-filters-container"
     };
 
     /**
@@ -272,5 +276,66 @@ export class FilterUtils extends AdminHomePage {
         }
         
         console.log("✅ All sort options verified successfully");
+    }
+
+    /**
+     * Apply filter in Collaboration Hub (MY APPROVAL REQUESTS)
+     * Handles Status, Training Type, and other checkbox filters
+     * @param fieldName - The field name (e.g., "Status", "Training Type")
+     * @param optionValue - The option to select (e.g., "Pending", "External Training")
+     * @example
+     * await filterUtils.applyFilter("Status", "Pending");
+     * await filterUtils.applyFilter("Training Type", "External Training");
+     */
+    public async applyFilter(fieldName: string, optionValue: string) {
+        console.log(`🔍 Applying filter: ${fieldName} = ${optionValue}`);
+        
+        // Click the checkbox
+        await this.wait("minWait");
+        await this.click(this.filterSelectors.approvalFilterCheckbox(optionValue), `${fieldName} - ${optionValue}`, "Checkbox");
+        
+        // Click Apply button
+        await this.clickApplyFilter();
+        
+        console.log(`✅ Filter applied: ${fieldName} = ${optionValue}`);
+    }
+
+    /**
+     * Apply multiple filters in Collaboration Hub and then click Apply once
+     * More efficient than calling applyFilter multiple times
+     * @param filters - Array of filter objects with fieldName and optionValue
+     * @example
+     * await filterUtils.applyMultipleFilters([
+     *   { fieldName: "Status", optionValue: "Pending" },
+     *   { fieldName: "Training Type", optionValue: "External Training" }
+     * ]);
+     */
+    public async applyMultipleFilters(filters: { fieldName: string; optionValue: string }[]) {
+        console.log(`🔍 Applying ${filters.length} filters...`);
+        await this.clickFilterIcon();
+        for (const filter of filters) {
+            await this.wait("minWait");
+            await this.click(
+                this.filterSelectors.approvalFilterCheckbox(filter.optionValue),
+                `${filter.fieldName} - ${filter.optionValue}`,
+                "Checkbox"
+            );
+        }
+        
+        // Click Apply button once after all selections
+        await this.clickApplyFilter();
+        
+        console.log(`✅ All ${filters.length} filters applied successfully`);
+    }
+
+    /**
+     * Clear all applied filters in Collaboration Hub
+     * Clicks the Clear button
+     */
+    public async clearApprovalFilters() {
+        await this.wait("minWait");
+        await this.click("//button[contains(@class,'button_negative_active') and text()='Clear']", "Clear Filters", "Button");
+        await this.wait("minWait");
+        console.log("✅ All filters cleared");
     }
 }

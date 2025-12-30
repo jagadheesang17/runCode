@@ -102,6 +102,15 @@ export class AdminHomePage extends AdminLogin {
         ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`,
         createOrder:`//a[text()='Create Order']`,
         ordersLink:`//a[text()='Order']`,
+        maintenanceMenu:`#parent_menu_maintenance`,
+        queryExecution:`//a[text()='Query Execution']`,
+        
+        //Query Execution
+        databaseDropdown: `//button[@data-id='db_name']`,
+        databaseOption: (dbName: string) => `//span[text()='${dbName}']`,
+        queryTextarea: `//textarea[@placeholder='Only SELECT, EXPLAIN, DESC, DESCRIBE, and SHOW queries are allowed.']`,
+        executeButton: `//button[text()='Execute']`,
+        emailSubjectInQueryResult: `//span[contains(text(),'has requested')]`,
 
     
     }
@@ -244,7 +253,71 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.surveyLink, "Survey", "Button");
     }
 
+    /**
+     * Click on Maintenance Menu
+     */
+    public async clickMaintenanceMenu() {
+        await this.validateElementVisibility(this.selectors.maintenanceMenu, "Maintenance Menu");
+        await this.click(this.selectors.maintenanceMenu, "Maintenance", "Menu");
+        await this.wait('minWait');
+    }
 
+    /**
+     * Click on Query Execution link
+     */
+    public async clickQueryExecution() {
+        await this.validateElementVisibility(this.selectors.queryExecution, "Query Execution");
+        await this.click(this.selectors.queryExecution, "Query Execution", "Link");
+        await this.spinnerDisappear();
+    }
+
+    /**
+     * Execute a database query
+     * @param database - Database name to select (e.g., 'LMS')
+     * @param query - SQL query to execute
+     */
+    public async executeQuery(database: string, query: string) {
+        // Select database from dropdown
+        await this.click(this.selectors.databaseDropdown, "Database Dropdown", "Button");
+        await this.wait('minWait');
+        await this.click(this.selectors.databaseOption(database), database, "Option");
+        await this.wait('minWait');
+        
+        // Type query in textarea
+        await this.type(this.selectors.queryTextarea, "Query Textarea", query);
+        await this.wait('minWait');
+        
+        // Click Execute button
+        await this.click(this.selectors.executeButton, "Execute", "Button");
+        await this.spinnerDisappear();
+    }
+
+    /**
+     * Verify email subject contains external training verification text and print content
+     */
+    public async verifyAndPrintEmailSubject() {
+        await this.wait('mediumWait');
+        await this.validateElementVisibility(this.selectors.emailSubjectInQueryResult, "Email Subject");
+        
+        // Get the entire text content
+        const emailSubjectText = await this.page.locator(this.selectors.emailSubjectInQueryResult).textContent();
+        const fullText = emailSubjectText?.trim() || '';
+        
+        // Print the entire email subject
+        console.log("=============================================");
+        console.log("Email Subject Content:");
+        console.log(fullText);
+        console.log("=============================================");
+        
+        // Validate the text contains 'external training' or 'verification'
+        const containsExternalTraining = fullText.toLowerCase().includes('external training');
+        const containsVerification = fullText.toLowerCase().includes('verification');
+        
+        if (!containsExternalTraining && !containsVerification) {
+            throw new Error(`Email subject does not contain 'external training' or 'verification'. Actual text: ${fullText}`);
+        }
+        console.log(`✅ Email subject contains external training verification keywords`);
+    }
 
     public async clickOnAssessmentLink() {
         await this.validateElementVisibility(this.selectors.assessmentLink, "Assessment");
@@ -921,11 +994,6 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.setupTaxButton,"Manage Tax","Link");
     }
 
-
-
-    
-    
-
     public async clickCreateOrder() {
         await this.validateElementVisibility(this.selectors.createOrder, "Create Order");
         await this.click(this.selectors.createOrder, "Create Order", "Link");
@@ -937,6 +1005,8 @@ export class AdminHomePage extends AdminLogin {
         await this.click(this.selectors.ordersLink, "Orders Link", "Link");
         await this.page.waitForLoadState('load');
     }
+    
+
 
 }
 

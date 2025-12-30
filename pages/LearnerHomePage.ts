@@ -35,9 +35,12 @@ export class LearnerHomePage extends LearnerLogin {
         proceedBtn: `//button[text()='Proceed']`,
         verifyOrder: `//div[contains(@class,'information_text ')]`,
         searchfield: `//input[@id='exp-searchapproval-search-field']`,
+        searchResultDropdown: (programName: string) => `//li[@class='dropdown-item text-wrap p-2 d-block' and @role='button' and text()='${programName}']`,
 
         //CH:-
         sortBy: `//button[@data-id='exp-sortapproval-sort']`,
+        usernameElement: (certificate: string) => `(//span[text()='${certificate}']//following::span)[1]`,
+        viewCertificateIconAfterUsername: (certificate: string, username: string) => `(//span[text()='${certificate}']//following::span[contains(text(),'${username}')]//following::i)[1]`,
         newlyListed: `(//footer//following::span[text()='Newly Listed'])[1]`,
         mapprovalSelectCountryInput: `(//div[@class='bs-searchbox']//input)[2]`,
         mapprovalSelectStateInput: `(//div[@class='bs-searchbox']//input)[3]`,
@@ -74,7 +77,18 @@ export class LearnerHomePage extends LearnerLogin {
         termsAndConditionsLink: `//a[text()='TERMS & CONDITIONS']`,
         privacyPolicyLink: `//a[text()='Privacy Policy']`,
         profileSettings: `(//div[@id='accountsetttings'])[1]`,
-
+        approveBtn: `//button[text()='Approve']`,
+        reasonInputBox: `#reason_for_rejection`,
+        rejectBtn: `//button[text()='Reject']`,
+        
+        //Approval Success Modal
+        approvalSuccessModal: `//div[@class='modal-content bg-transparent border-0']`,
+        approvalSuccessMessage: `//span/p/b[text()='Approved Successfully! ']`,
+        approvalModalCloseBtn: `//button[@class='btn button_negative_active me-3 rounded-0' and text()='Close']`,
+        
+        //Rejection Success Modal
+        rejectionSuccessMessage: `//b[text()='Rejected Successfully! ']`,
+        certificateName:`#ext_certificate`
 
     };
 
@@ -280,7 +294,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.wait("mediumWait")
         await this.click(this.selectors.sortBy, "My Approval Request Dropdown", "SortBy")
         await this.wait("minWait")
-        await this.click(this.selectors.newlyListed,"My Approval Request Dropdown", "Dropdown")
+        await this.click(this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
         //  await this.click(this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
         await this.click(this.selectors.approveTick(courseName), "Approve Course", "Icon")
     }
@@ -311,6 +325,17 @@ export class LearnerHomePage extends LearnerLogin {
         await this.type(this.selectors.searchfield, "Search Field", courseName);
         await this.keyboardAction(this.selectors.searchfield, "Enter", "Input", "Search Field");
         await this.wait('mediumWait')
+    }
+
+    /**
+     * Search for external training program in approval requests
+     * @param programName - Name of the external training program to search
+     */
+    async searchExternalTraining(programName: string) {
+        await this.type(this.selectors.searchfield, "External Training Search", programName);
+        await this.wait('minWait');
+        await this.click(this.selectors.searchResultDropdown(programName), programName, "Dropdown Item");
+        await this.wait('minWait');
     }
 
     async proceedAndVerify() {
@@ -506,7 +531,7 @@ export class LearnerHomePage extends LearnerLogin {
         console.log(` All page headers are visible and Terms & Conditions popup is not displayed`);
     }
 
-    async clickPreferenceTab(){
+    async clickPreferenceTab() {
         await this.validateElementVisibility(this.selectors.preferencesTab, "Preferences Tab");
         await this.click(this.selectors.preferencesTab, "Preferences Tab", "Tab");
     }
@@ -593,18 +618,96 @@ export class LearnerHomePage extends LearnerLogin {
     }
 
 
-/**
- * Verify approved successfully popup and close
- */
-async verifyApprovedSuccessfully() {
-    await this.wait("minWait");
-    const approvedSuccessPopup = `//span//b[text()='Approved Successfully! ']`;
-    const closeBtn = `(//button[text()='Close'])[1]`;
-    await this.verification(
-        approvedSuccessPopup,
-        "Approved Successfully!"
-    );
-    await this.click(closeBtn, "Close", "Button");
-}
+    /**
+     * Verify approved successfully popup and close
+     */
+    async verifyApprovedSuccessfully() {
+        await this.wait("minWait");
+        const approvedSuccessPopup = `//span//b[text()='Approved Successfully! ']`;
+        const closeBtn = `(//button[text()='Close'])[1]`;
+        await this.verification(
+            approvedSuccessPopup,
+            "Approved Successfully!"
+        );
+        await this.click(closeBtn, "Close", "Button");
+    }
 
+    /**
+     * Verify filtered data contains the expected username and click approval icon
+     * @param certificate - The certificate/training name to locate
+     * @param username - The expected username to verify
+     */
+    async verifyAndClickEyeicon(certificate: string, username: string) {
+        await this.wait("minWait");
+        const usernameText = await this.getInnerText(this.selectors.usernameElement(certificate));
+        await this.page.locator(this.selectors.usernameElement(certificate)).scrollIntoViewIfNeeded();
+        if (!usernameText.includes(username)) {
+            throw new Error(`❌ FAIL: Expected username '${username}' not found in filtered data. Found: '${usernameText}'`);
+        }
+
+        console.log(`✅ Verified: Filtered data contains username '${username}' for certificate '${certificate}'`);
+
+        // Click the approval icon after username verification
+        await this.click(this.selectors.viewCertificateIconAfterUsername(certificate, username), "View Certificate Icon", "Icon");
+        console.log(`✅ Clicked approval icon for '${certificate}' - '${username}'`);
+    }
+
+    async clickApproveButton() {
+        await this.wait("minWait");
+        await this.page.locator(this.selectors.approveBtn).scrollIntoViewIfNeeded();
+        await this.validateElementVisibility(this.selectors.approveBtn, "Approve")
+        await this.click(this.selectors.approveBtn, "Approve", "Button");
+        await this.wait("maxWait");
+    }
+
+    /**
+     * Verify approval success modal appears with success message
+     */
+    async verifyApprovalSuccessModal() {
+        await this.wait('mediumWait');
+        
+        // Verify modal is visible
+        await this.validateElementVisibility(this.selectors.approvalSuccessModal, "Approval Success Modal");
+        console.log("✅ Approval success modal is displayed");
+        
+        // Verify "Approved Successfully!" message is present
+        await this.validateElementVisibility(this.selectors.approvalSuccessMessage, "Approved Successfully! Message");
+        const successMessage = await this.page.locator(this.selectors.approvalSuccessMessage).textContent();
+        console.log(`✅ Success Message: ${successMessage?.trim()}`);
+        
+        // Close the modal
+        await this.click(this.selectors.approvalModalCloseBtn, "Close", "Button");
+        await this.wait('minWait');
+        console.log("✅ Approval success modal closed successfully");
+    }
+
+    /**
+     * Verify rejection success modal appears with success message
+     */
+    async verifyRejectionSuccessModal() {
+        await this.wait('mediumWait');
+        
+        // Verify modal is visible
+        await this.validateElementVisibility(this.selectors.approvalSuccessModal, "Rejection Success Modal");
+        console.log("✅ Rejection success modal is displayed");
+        
+        // Verify "Rejected Successfully!" message is present
+        await this.validateElementVisibility(this.selectors.rejectionSuccessMessage, "Rejected Successfully! Message");
+        const rejectionMessage = await this.page.locator(this.selectors.rejectionSuccessMessage).textContent();
+        console.log(`✅ Rejection Message: ${rejectionMessage?.trim()}`);
+        
+        // Close the modal
+        await this.click(this.selectors.approvalModalCloseBtn, "Close", "Button");
+        await this.wait('minWait');
+        console.log("✅ Rejection success modal closed successfully");
+    }
+
+    async clickRejectButton() {
+        await this.wait("minWait");
+        await this.page.locator(this.selectors.rejectBtn).scrollIntoViewIfNeeded();
+        await this.type(this.selectors.reasonInputBox, "Reason Input Box", "Automation Test Rejection");
+        await this.validateElementVisibility(this.selectors.rejectBtn, "Reject")
+        await this.click(this.selectors.rejectBtn, "Reject", "Button");
+        await this.wait("maxWait");
+    }
 }

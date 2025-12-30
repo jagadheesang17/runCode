@@ -76,6 +76,7 @@ export class LearnerDashboardPage extends LearnerHomePage {
     editPlaylist: (playlistName: string) => `(//p[contains(text(),'${playlistName}')]//following::i)[1]`,
     verifyContentInPlaylist: (contentName: string) => `//span[text()='${contentName}']`,
     addedOnDate: `(//div[@class='field_title' and contains(text(),'Added on :')])[1]`,
+    completedOnDate: `//div[contains(@class,'d-flex') and contains(text(),'Completed On :')]`,
     learningpathAndCertificationLink:`//a[text()='Learning path / Certification']`,
 
   };
@@ -334,6 +335,19 @@ export class LearnerDashboardPage extends LearnerHomePage {
     );
     const dateText = await this.page.locator(this.selectors.addedOnDate).innerText();
     console.log(`✅ Added on date is present: ${dateText}`);
+  }
+
+  /**
+   * Verify "Completed On" date is present
+   */
+  async verifyCompletedOnDate() {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.completedOnDate,
+      "Completed On Date"
+    );
+    const dateText = await this.page.locator(this.selectors.completedOnDate).innerText();
+    console.log(`✅ Completed On date is present: ${dateText}`);
   }
 
   //INA tabs

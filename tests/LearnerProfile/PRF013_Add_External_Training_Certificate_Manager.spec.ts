@@ -27,41 +27,37 @@ test.describe(`Add_External_Training_Certificate`, () => {
     })
 
 
-    test(`Test2_Approve the External Training Certificate as Manager `, async ({ learnerHome, page, context }) => {
+    test(`Test2_Reject the External Training Certificate as Manager `, async ({ learnerHome, page, context }) => {
 
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },
-            { type: `TestCase`, description: `Approve External Training Certificate` },
-            { type: `Test Description`, description: `Manager approves the external training certificate from Collaboration Hub` }
+            { type: `TestCase`, description: `Reject External Training Certificate` },
+            { type: `Test Description`, description: `Manager rejects the external training certificate from Collaboration Hub` }
 
         );
         await learnerHome.learnerLogin("MANAGERNAME", "DefaultPortal");
         await learnerHome.selectCollaborationHub();
-        const filterUtils = new FilterUtils(page, context);
-
-        await filterUtils.applyMultipleFilters([
-            // { fieldName: "Status", optionValue: "Pending" },
-            { fieldName: "Training Type", optionValue: "External Training" }
-        ]);
+        await learnerHome.searchExternalTraining(certificate);
         await learnerHome.verifyAndClickEyeicon(certificate, learnerUsername);
-        await learnerHome.clickApproveButton();
-        await learnerHome.verifyApprovalSuccessModal();    
+        
+        await learnerHome.clickRejectButton();
+        await learnerHome.verifyRejectionSuccessModal();
 
     })
 
 
-    test(`Test3 Verify verify that the Approved is getting displayed after manager approves the certificate `, async ({ learnerHome,profile }) => {
+    test(`Test3 Verify verify that the Rejected is getting displayed after manager rejects the certificate `, async ({ learnerHome,profile }) => {
 
         test.info().annotations.push(
             { type: `Author`, description: `Kathir A` },
-            { type: `TestCase`, description: `Verify Certificate Approval Status` },
-            { type: `Test Description`, description: `Verify approved status is displayed in learner profile after manager approval` }
+            { type: `TestCase`, description: `Verify Certificate Rejection Status` },
+            { type: `Test Description`, description: `Verify rejected status is displayed in learner profile after manager rejection` }
 
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "Portal");
         await profile.clickProfile();
         await profile.detailsTab();
-        await profile.verifyExternalCertificateStatus(certificate, "Approved");
+        await profile.verifyExternalCertificateStatus(certificate, "Rejected");
 
     })
 

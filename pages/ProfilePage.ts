@@ -6,6 +6,7 @@ import { stat } from "fs";
 import { FakerData, generateCreditScore, getCurrentDateFormatted, getFutureDate, getFutureyear, getPastDate } from "../utils/fakerUtils";
 import { getDayOfYear } from "date-fns/fp/getDayOfYear";
 import { getYear } from "date-fns";
+import { Certificate } from 'crypto';
 
 export class ProfilePage extends LearnerHomePage {
     public selectors = {
@@ -150,6 +151,7 @@ export class ProfilePage extends LearnerHomePage {
         dropdownOption: (data: string) => `//span[text()='${data}']`,
         addressInput: (label: string) => `(//label[contains(text(),'${label}')]/following::input[contains(@id,'addres')])[1]`,
         inputField: (name: string) => `//input[@id="${name}"]`,
+        approvalStatus: (certificate: string, status: string) => `(//span[text()='${certificate}']//following::span[text()='${status}'])[1]`,
 
 
     }
@@ -315,10 +317,10 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
-    async certificateVerificationbyManager(managerUser: string) {
+    async certificateVerificationbyManager(Certificate:string,managerUser: string) {
         await this.click(this.selectors.externalTraining, "External Training", "Icon");
         await this.click(this.selectors.addIcon, "Add", "Icon");
-        await this.type(this.selectors.titleField, "Title", FakerData.getcertificationTitle());
+        await this.type(this.selectors.titleField, "Title",Certificate);
         await this.type(this.selectors.issuedBy, "Issued By", FakerData.getOrganizationName());
         await this.type(this.selectors.certificateNumber, "Certificate Number", FakerData.getCertificationNumber());
         await this.typeAndEnter(this.selectors.completedOn, "Completed On", getCurrentDateFormatted());
@@ -333,7 +335,7 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
-    async certificateVerificationbyOther() {
+    async certificateVerificationbyOther(email:string) {
         await this.click(this.selectors.externalTraining, "External Training", "Icon");
         await this.click(this.selectors.addIcon, "Add", "Icon");
         await this.type(this.selectors.titleField, "Title", FakerData.getcertificationTitle());
@@ -347,7 +349,7 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.verifyBy, "Manager/others", "Dropdown")
         await this.click(this.selectors.selectManger("Others"), "Other", "Option")
         await this.type(this.selectors.othersName, "Name", FakerData.getFirstName());
-        await this.type(this.selectors.emailId, "E-Mail", FakerData.getUserId())
+        await this.type(this.selectors.emailId, "E-Mail", email)
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
@@ -644,6 +646,21 @@ export class ProfilePage extends LearnerHomePage {
     async enter(name: string, data: string) {
         const selector = this.selectors.inputField(name);
         await this.type(selector, name, data);
+    }
+
+    /**
+     * Verify external certificate approval status
+     * @param certificate - The certificate/training name to locate
+     * @param approved - The expected approval status (e.g., "Approved", "Rejected", "Pending")
+     */
+    async verifyExternalCertificateStatus(certificate: string, approved: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.approvalStatus(certificate, approved),
+            `${approved} Status`
+        );
+          await this.wait("maxWait");
+        console.log(`✅ Verified: External certificate '${certificate}' has status '${approved}'`);
     }
 
 }

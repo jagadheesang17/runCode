@@ -23,7 +23,7 @@ test.describe(`DB006 - Verify completed learning path appears in My Certificates
         const result = await createCourseAPI(content, courseName, 'published', 'single', 'e-learning');
         expect(result).toBe(courseName);
         console.log(`✅ Course created successfully via API: ${courseName}`);
-        
+
         await adminHome.loadAndLogin("CUSTOMERADMIN");
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
@@ -50,7 +50,7 @@ test.describe(`DB006 - Verify completed learning path appears in My Certificates
             { type: `TestCase`, description: `DB006_Test2 - Enroll in learning path and verify in My Certificates` },
             { type: `Test Description`, description: `Enroll in learning path from catalog and verify it appears in My Certificates section` }
         );
-        
+
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
@@ -58,11 +58,14 @@ test.describe(`DB006 - Verify completed learning path appears in My Certificates
         await catalog.clickMoreonCourse(learningPathTitle);
         await catalog.clickSelectcourse(learningPathTitle);
         await catalog.clickEnroll();
+        await catalog.clickLaunchButton();
+        await catalog.saveLearningStatus();
         console.log(`✅ Learner enrolled in learning path: ${learningPathTitle}`);
-        
+
         await learnerHome.clickDashboardLink();
         await dashboard.selectDashboardItems("My Certificates");
         await dashboard.clickLearningpathAndCertificationLink();
+        await dashboard.verifyCompletedOnDate();
         await dashboard.verifyMyCertificatesSection(learningPathTitle);
         console.log(`✅ Learning Path verified in My Certificates: ${learningPathTitle}`);
     });
