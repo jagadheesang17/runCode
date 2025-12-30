@@ -414,7 +414,7 @@ async function createClassroomCourse(
   formData.append("language", "lang_00002");
   formData.append("old_course_languages", "");
   formData.append("language_name", "English");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8");
   formData.append("old_portals", "");
   formData.append("provider_id", "4");
   formData.append("categorys", "");
@@ -802,7 +802,7 @@ async function createVirtualClassroomCourse(
   formData.append("language", "lang_00002");
   formData.append("old_course_languages", "");
   formData.append("language_name", "English");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8");
   formData.append("old_portals", "");
   formData.append("provider_id", "4");
   formData.append("categorys", "");
@@ -1019,7 +1019,7 @@ async function updateVCInstance(
   formData.append("language", "lang_00002");
   formData.append("old_course_languages", "lang_00002");
   formData.append("language_name", "English");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8");
   formData.append("old_portals", "5");
   formData.append("provider_id", "4");
   formData.append("categorys", "");
