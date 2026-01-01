@@ -62,7 +62,7 @@ test.describe(`Add_External_Training_Certificate`, () => {
         await profile.clickProfile();
         await profile.detailsTab();
         await profile.verifyExternalCertificateStatus(certificate, "Approved");
-
+        await profile.deleteExternalTraining(certificate);
     })
 
 

@@ -76,7 +76,7 @@ test.describe(`CNT070 - Verify whether the attached content is not displayed aga
         await createCourse.verifySuccessMessage();
     });
 
-    test.only(`Step 3: Edit Course and Verify Content Still Not in Library`, async ({ 
+    test(`Step 3: Edit Course and Verify Content Still Not in Library`, async ({ 
         adminHome, 
         createCourse
     }) => {

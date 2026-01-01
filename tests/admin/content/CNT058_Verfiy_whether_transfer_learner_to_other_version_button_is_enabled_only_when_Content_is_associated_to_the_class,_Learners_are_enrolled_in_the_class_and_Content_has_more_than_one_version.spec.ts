@@ -74,7 +74,7 @@ test(`Verfiy whether transfer learner to other version button is not enabled whe
 
 })
 
-test.only(`Verfiy whether transfer learner to other version button is enabled only when Content is associated to the class, Learners are enrolled in the class and Content has more than one version`, async ({ adminHome, contentHome, bannerHome, createCourse, enrollHome }) => {
+test(`Verfiy whether transfer learner to other version button is enabled only when Content is associated to the class, Learners are enrolled in the class and Content has more than one version`, async ({ adminHome, contentHome, bannerHome, createCourse, enrollHome }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Divya` },
         { type: `TestCase`, description: `Verfiy whether transfer learner to other version button is enabled only when Content is associated to the class, Learners are enrolled in the class and Content has more than one version` },

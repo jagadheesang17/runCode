@@ -59,7 +59,7 @@ test(`Verify Manage Tax in Quick Access dropdown, add to list, then remove and v
     
 })
 
-test.only(`Add Manage Tax to Quick Access, create tax, navigate to Admin Home, edit tax and verify dropdown states`, async ({ commercehome, adminHome, adminGroup, siteAdmin }) => {
+test(`Add Manage Tax to Quick Access, create tax, navigate to Admin Home, edit tax and verify dropdown states`, async ({ commercehome, adminHome, adminGroup, siteAdmin }) => {
       await adminHome.loadAndLogin("CUSTOMERADMIN")
     await adminHome.clickQuickAccess();
     await adminHome.verifyAndClickManageTaxFromQuickAccess("Manage Tax");

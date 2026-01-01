@@ -70,7 +70,7 @@ test(`COM008 - Step 2: Create paid course and link discount`, async ({ createCou
     await createCourse.verifySuccessMessage();
 });
 
-test.only(`COM008 - Step 3: Delete the discount after verification`, async ({ adminHome, commercehome, discount }) => {
+test(`COM008 - Step 3: Delete the discount after verification`, async ({ adminHome, commercehome, discount }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Divya` },
         { type: `TestCase`, description: `COM008 - Delete discount` },

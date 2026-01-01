@@ -1,0 +1,110 @@
+[
+  {
+    "name": "general",
+    "value": "066a67cdf35ff2f8bb66a198c507097d",
+    "domain": "automationtenant.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "admin",
+    "value": "0390a4aecc6d50e8c54361a08ac919c3",
+    "domain": "automationtenant.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "automationtenant",
+    "value": "02aa0f3a8422ce1ff36079eff735bd4d",
+    "domain": "automationtenant.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None"
+  },
+  {
+    "name": "YSC",
+    "value": "SPFDxUu9wfs",
+    "domain": ".youtube.com",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://expertusoneqa.in",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "VISITOR_INFO1_LIVE",
+    "value": "WSYtXCil5-8",
+    "domain": ".youtube.com",
+    "path": "/",
+    "expires": 1782815751.201249,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://expertusoneqa.in",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "VISITOR_PRIVACY_METADATA",
+    "value": "CgJJThIEGgAgIA%3D%3D",
+    "domain": ".youtube.com",
+    "path": "/",
+    "expires": 1782815751.201342,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://expertusoneqa.in",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "__Secure-ROLLOUT_TOKEN",
+    "value": "CL3TzO3fguK2hAEQ7uHvwJLqkQMY7uHvwJLqkQM%3D",
+    "domain": ".youtube.com",
+    "path": "/",
+    "expires": 1782815751.201435,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "None",
+    "partitionKey": "https://expertusoneqa.in",
+    "_crHasCrossSiteAncestor": true
+  },
+  {
+    "name": "6b4a2c8e06bb235f4c6deb26404f2568",
+    "value": "YToyOntzOjk6IkJhc2VQYXJhbSI7YToxNTp7czozOiJ1cmwiO3M6Nzc6Imh0dHBzOi8vYXV0b21hdGlvbnRlbmFudC5leHBlcnR1c29uZXFhLmluL2xlYXJuZXIvYXV0b21hdGlvbnRlbmFudC9hdXRob3JpemVkIjtzOjE4OiJtYXhfd3JvbmdfYXR0ZW1wdHMiO3M6MToiMyI7czoxNjoibG9ja291dF9kdXJhdGlvbiI7czoyOiI2MCI7czoxNToicGFzc3dvcmRfZXhwaXJ5IjtzOjM6IjE4MCI7czo4OiJ1c2VybmFtZSI7czoyNzoiYXV0b21hdGlvbnRlbmFudEBub21haWwuY29tIjtzOjg6InBhc3N3b3JkIjtzOjk6IldlbGNvbWUxQCI7czo3OiJjYXB0Y2hhIjtzOjA6IiI7czo0OiJhamF4IjtzOjU6ImZhbHNlIjtzOjExOiJyZWRpcmVjdF90byI7czoyNToiL2xlYXJuZXIvYXV0b21hdGlvbnRlbmFudCI7czoxNToiY2FwdGNoYVJlcXVpcmVkIjtzOjU6ImZhbHNlIjtzOjc6ImdlbmVyYWwiO3M6MzI6IjA2NmE2N2NkZjM1ZmYyZjhiYjY2YTE5OGM1MDcwOTdkIjtzOjU6ImFkbWluIjtzOjMyOiIwMzkwYTRhZWNjNmQ1MGU4YzU0MzYxYTA4YWM5MTljMyI7czoxNjoiYXV0b21hdGlvbnRlbmFudCI7czozMjoiMDJhYTBmM2E4NDIyY2UxZmYzNjA3OWVmZjczNWJkNGQiO3M6MTE6ImltcGVyc29uYXRlIjtzOjA6IiI7czo3OiJjb21wYW55IjtzOjE2OiJhdXRvbWF0aW9udGVuYW50Ijt9czoxMDoiQXV0aFN0YXR1cyI7YTozOntzOjY6IlN0YXR1cyI7czo3OiJTdWNjZXNzIjtzOjc6Ik1lc3NhZ2UiO3M6Mzc6IlVzZXIgYXV0aGVudGljYXRpb24gZG9uZSBzdWNjZXNzZnVsbHkiO3M6NzoiRGV0YWlscyI7YToxOTp7czoxMDoib25lcHJvZmlsZSI7czozMjoiMzQxODk4N2Y1NGU5ZWVlOGFmNWI0NmMwMGZjMjFiMTMiO3M6NjoiQWNjZXNzIjtzOjMwOiJ7ImFkbWluIjogWzVdLCAibGVhcm5lciI6IFswXX0iO3M6NjoiVXNlcklkIjtzOjM2OiJkZjQwNzI4NC0wODgwLTQwMGUtYTQ3NC1iNTcwNmQzNTc1OTMiO3M6ODoiVXNlcm5hbWUiO3M6Mjc6ImF1dG9tYXRpb250ZW5hbnRAbm9tYWlsLmNvbSI7czo4OiJQYXNzd29yZCI7czozMjoiMGI2ODU5YTc2OGI4N2I5NDMyY2RjMGIyNmE0OWJlNDIiO3M6NToiRW1haWwiO3M6MzA6IlBpZXRyby5HcmVlbmZlbGRlckBob3RtYWlsLmNvbSI7czo5OiJGaXJzdE5hbWUiO3M6MTA6ImF1dG9tYXRpb24iO3M6MTE6IkRpc3BsYXlOYW1lIjtOO3M6ODoiTGFzdE5hbWUiO3M6NToiYWRtaW4iO3M6ODoiRnVsbE5hbWUiO3M6MTY6ImF1dG9tYXRpb24gYWRtaW4iO3M6MTc6IlByZWZlcnJlZExhbmd1YWdlIjtzOjc6IkVuZ2xpc2giO3M6MTc6IlByZWZlcnJlZEN1cnJlbmN5IjtzOjk6IlVTIERvbGxhciI7czo3OiJDb21wYW55IjtzOjE2OiJhdXRvbWF0aW9udGVuYW50IjtzOjY6IlN0YXR1cyI7czo2OiJBY3RpdmUiO3M6NToiVGl0bGUiO047czo0OiJDaXR5IjtzOjA6IiI7czo3OiJQaWN0dXJlIjtzOjA6IiI7czo4OiJUaW1lWm9uZSI7czo3OiJ0bXpfMDU3IjtzOjM6Il9pZCI7aToxNDkxO319fQ%3D%3D",
+    "domain": ".universalprofile.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "d020d399bf9fcb2b8909c3559364765b",
+    "value": "a%3A1%3A%7Bi%3A0%3Bs%3A33%3A%22automationtenant.expertusoneqa.in%22%3B%7D",
+    "domain": ".universalprofile.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  },
+  {
+    "name": "657c997910fe88a1375f3922f5f4c540",
+    "value": "df407284-0880-400e-a474-b5706d357593",
+    "domain": ".automationtenant.expertusoneqa.in",
+    "path": "/",
+    "expires": -1,
+    "httpOnly": true,
+    "secure": true,
+    "sameSite": "Lax"
+  }
+]

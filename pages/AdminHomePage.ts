@@ -75,8 +75,8 @@ export class AdminHomePage extends AdminLogin {
 
         hoverOrgFromQuickAccess: (module: string) => `//div[text()='${module}']`,
 
-        courseStatusInsideTheTp:`//span[text()='View Status/Enroll Learner to TP Courses']`,    
-       
+        courseStatusInsideTheTp: `//span[text()='View Status/Enroll Learner to TP Courses']`,
+
 
         adminhome: `//span[text()='Admin Home']`,
         clickEditOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Edit'])[1]`,
@@ -84,35 +84,36 @@ export class AdminHomePage extends AdminLogin {
 
         clickCreateOrganization: (createmodule: string) => `(//div[text()='${createmodule}']/following::div[text()='Create'])[1]`,
 
-        
+
         //meta data library option
         metaLibOption: (data: string) => `//a[text()='${data}']`,
         dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
 
 
-        manageTaxLink:`//a[text()='Manage Tax']`,
+        manageTaxLink: `//a[text()='Manage Tax']`,
 
-        setupTaxButton:`//button[text()='SETUP TAX']`,
+        setupTaxButton: `//button[text()='SETUP TAX']`,
 
-        manageTaxOptionInDropdown:(options:string)  => `//span[text()='${options}']`,
+        manageTaxOptionInDropdown: (options: string) => `//span[text()='${options}']`,
 
-        manageTaxInQuickAccessList:`(//div[text()='Manage Tax'])[2]`,
+        manageTaxInQuickAccessList: `(//div[text()='Manage Tax'])[2]`,
 
-        removeSpecificModuleFromQuickAccess:(module:string) => `(//div[text()='${module}']/preceding::i[@class='fa-duotone fa-circle-xmark'])[1]`,
-        ViewStatusOrEnrollLearnerToTPCourses:`//a[text()='View Status/Enroll Learner to TP Courses']`,
-        createOrder:`//a[text()='Create Order']`,
-        ordersLink:`//a[text()='Order']`,
-        maintenanceMenu:`#parent_menu_maintenance`,
-        queryExecution:`//a[text()='Query Execution']`,
-        
+        removeSpecificModuleFromQuickAccess: (module: string) => `(//div[text()='${module}']/preceding::i[@class='fa-duotone fa-circle-xmark'])[1]`,
+        ViewStatusOrEnrollLearnerToTPCourses: `//a[text()='View Status/Enroll Learner to TP Courses']`,
+        createOrder: `//a[text()='Create Order']`,
+        ordersLink: `//a[text()='Order']`,
+        maintenanceMenu: `#parent_menu_maintenance`,
+        queryExecution: `//a[text()='Query Execution']`,
+
         //Query Execution
         databaseDropdown: `//button[@data-id='db_name']`,
         databaseOption: (dbName: string) => `//span[text()='${dbName}']`,
         queryTextarea: `//textarea[@placeholder='Only SELECT, EXPLAIN, DESC, DESCRIBE, and SHOW queries are allowed.']`,
         executeButton: `//button[text()='Execute']`,
         emailSubjectInQueryResult: `//span[contains(text(),'has requested')]`,
+        emailContentInQueryResult: `(//span[contains(text(),'has requested')]//following::div)[1]`,
 
-    
+
     }
     public async clickLearnerGroupLink() {
         try {
@@ -127,7 +128,7 @@ export class AdminHomePage extends AdminLogin {
         await this.mouseHover(this.selectors.hoverOrgFromQuickAccess(module), "module");
         await this.wait("minWait");
         await this.click(this.selectors.clickEditOrganization(createmodule), "Create module", "Button");
- 
+
     }
 
     constructor(page: Page, context: BrowserContext) {
@@ -141,15 +142,15 @@ export class AdminHomePage extends AdminLogin {
     }
 
 
-    async viewStatusOrEnrollLearnerToTPCourses(){
-        await this.click(this.selectors.courseStatusInsideTheTp,"Course Status Inside The Tp","Link");
+    async viewStatusOrEnrollLearnerToTPCourses() {
+        await this.click(this.selectors.courseStatusInsideTheTp, "Course Status Inside The Tp", "Link");
     }
 
     async clickViewStatusOrEnrollLearnerToTPCourses() {
-        await this.click(this.selectors.ViewStatusOrEnrollLearnerToTPCourses,"Course Status Inside The Tp","Link");
+        await this.click(this.selectors.ViewStatusOrEnrollLearnerToTPCourses, "Course Status Inside The Tp", "Link");
     }
 
-      public async clickviewUpdateStatusLearner() {
+    public async clickviewUpdateStatusLearner() {
         await this.click("//a[text()='View/update Status - Learner']", "Update Enrollment", "Link")
     }
 
@@ -166,12 +167,36 @@ export class AdminHomePage extends AdminLogin {
     }
     public async loadAndLogin(role: string) {
         try {
-            console.log("Loading admin home page...")
+            console.log(`🔐 Loading admin home page for ${role}...`);
+            
+            // Try to load cookies from cookies.txt first (only for CUSTOMERADMIN)
+            const cookiesLoaded = await this.loadCookiesFromFile(role);
+            
+            if (cookiesLoaded) {
+                // Navigate to admin page with cookies
+                await this.page.goto(AdminLogin.pageUrl, { waitUntil: 'domcontentloaded' });
+                await this.wait("minWait");
+                
+                // Verify if cookies are still valid
+                const cookiesValid = await this.verifyCookiesValid();
+                
+                if (cookiesValid) {
+                    console.log(`✅ Successfully authenticated using cookies for ${role}`);
+                    return;
+                }
+                
+                console.log(`⚠️ Cookies expired (10min inactivity timeout), performing fresh login for ${role}...`);
+            }
+            
+            // If cookies don't exist or are invalid, perform regular login
+            console.log(`🔑 Performing regular login for ${role}...`);
             await this.page.goto(AdminLogin.pageUrl);
             await this.adminLogin(role);
             await this.wait("minWait");
+            
             let pageTitle = await this.getTitle();
             console.log("Page Title:", pageTitle);
+            
             if (pageTitle.toLowerCase().includes("signin")) {
                 console.log("Sign-in page detected. Performing login...");
                 await this.adminLogin(role);
@@ -179,7 +204,10 @@ export class AdminHomePage extends AdminLogin {
                 pageTitle = await this.getTitle();
                 console.log("Page Title after login:", pageTitle);
             }
-        } catch(Error: any) {
+            
+            console.log(`✅ Authentication successful for ${role}`);
+            
+        } catch (Error: any) {
             console.error("Error during common setup:", Error);
             throw Error;
         }
@@ -282,11 +310,11 @@ export class AdminHomePage extends AdminLogin {
         await this.wait('minWait');
         await this.click(this.selectors.databaseOption(database), database, "Option");
         await this.wait('minWait');
-        
+
         // Type query in textarea
         await this.type(this.selectors.queryTextarea, "Query Textarea", query);
         await this.wait('minWait');
-        
+
         // Click Execute button
         await this.click(this.selectors.executeButton, "Execute", "Button");
         await this.spinnerDisappear();
@@ -298,25 +326,157 @@ export class AdminHomePage extends AdminLogin {
     public async verifyAndPrintEmailSubject() {
         await this.wait('mediumWait');
         await this.validateElementVisibility(this.selectors.emailSubjectInQueryResult, "Email Subject");
-        
+
         // Get the entire text content
         const emailSubjectText = await this.page.locator(this.selectors.emailSubjectInQueryResult).textContent();
         const fullText = emailSubjectText?.trim() || '';
-        
+
         // Print the entire email subject
         console.log("=============================================");
         console.log("Email Subject Content:");
         console.log(fullText);
         console.log("=============================================");
-        
+
         // Validate the text contains 'external training' or 'verification'
         const containsExternalTraining = fullText.toLowerCase().includes('external training');
         const containsVerification = fullText.toLowerCase().includes('verification');
-        
+
         if (!containsExternalTraining && !containsVerification) {
             throw new Error(`Email subject does not contain 'external training' or 'verification'. Actual text: ${fullText}`);
         }
         console.log(`✅ Email subject contains external training verification keywords`);
+
+    }
+
+    /**
+     * Retrieve email content, save to HTML file, open it in browser, take screenshot, and extract approve/reject links
+     * @param fileName - Name of the HTML file (default: 'email_content.html')
+     * @returns Object containing approveUrl and rejectUrl
+     */
+    public async saveEmailContentToHTML(fileName: string = 'email_content.html') {
+        const fs = require('fs');
+        const path = require('path');
+
+        await this.wait('mediumWait');
+        await this.validateElementVisibility(this.selectors.emailContentInQueryResult, "Email Content");
+
+        // Get the HTML content directly
+        const emailContentElement = this.page.locator(this.selectors.emailContentInQueryResult);
+        let htmlContent = await emailContentElement.textContent();
+        const textContent = htmlContent?.trim() || '';
+
+        // Wrap the content in proper HTML structure if it doesn't have <html> tag
+        if (!textContent.toLowerCase().includes('<html')) {
+            htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Content</title>
+</head>
+<body>
+${textContent}
+</body>
+</html>`;
+        } else {
+            htmlContent = textContent;
+        }
+
+        // Save to data folder
+        const dataFolderPath = path.join(process.cwd(), 'data');
+        const filePath = path.join(dataFolderPath, fileName);
+
+        // Ensure data folder exists
+        if (!fs.existsSync(dataFolderPath)) {
+            fs.mkdirSync(dataFolderPath, { recursive: true });
+        }
+
+        // Write HTML content to file
+        fs.writeFileSync(filePath, htmlContent, 'utf8');
+
+        console.log("=============================================");
+        console.log("✅ Email content saved successfully!");
+        console.log(`File Location: ${filePath}`);
+        console.log(`Text Content Preview: ${textContent.substring(0, 200)}...`);
+
+        // Open the HTML file in browser
+        const fileUrl = `file:///${filePath.replace(/\\/g, '/')}`;
+        await this.page.goto(fileUrl);
+        await this.wait('mediumWait');
+
+        console.log("✅ Email HTML opened in browser");
+
+        // Take screenshot of the email
+        const screenshotPath = path.join(dataFolderPath, fileName.replace('.html', '_screenshot.png'));
+        await this.page.screenshot({ path: screenshotPath, fullPage: true });
+        console.log(`✅ Screenshot saved: ${screenshotPath}`);
+
+        // Extract approve (Yes) and reject (No) URLs from the page
+        const approveLink = await this.page.locator('a:has-text("Yes")').getAttribute('href');
+        const rejectLink = await this.page.locator('a:has-text("No")').getAttribute('href');
+
+        console.log(`Approve URL (Yes): ${approveLink}`);
+        console.log(`Reject URL (No): ${rejectLink}`);
+        console.log("=============================================");
+
+        return { approveUrl: approveLink, rejectUrl: rejectLink };
+    }
+
+    /**
+     * Click Yes (Approve) or No (Reject) from email verification links and capture response message
+     * @param action - 'Approve' to click Yes, 'Reject' to click No
+     * @param approveUrl - URL for approve action
+     * @param rejectUrl - URL for reject action
+     */
+    public async clickEmailVerificationAction(action: 'Approve' | 'Reject', approveUrl: string | null, rejectUrl: string | null) {
+        const url = action === 'Approve' ? approveUrl : rejectUrl;
+
+        if (!url) {
+            throw new Error(`${action} URL not found in email content`);
+        }
+
+        console.log("=============================================");
+        console.log(`✅ Clicking ${action} button (${action === 'Approve' ? 'Yes' : 'No'})`);
+        console.log(`URL: ${url}`);
+        console.log("=============================================");
+
+        // Navigate to the URL (opens in same tab/new tab doesn't matter - Playwright handles it)
+        await this.page.goto(url);
+        await this.wait('mediumWait');
+        await this.spinnerDisappear();
+
+        // Get the response message text
+        const messageSelector = '.message-container.d-flex.align-items-center.justify-content-center';
+        await this.validateElementVisibility(messageSelector, "Response Message");
+
+        const messageText = await this.page.locator(messageSelector).textContent();
+        const trimmedMessage = messageText?.trim() || '';
+
+        console.log("=============================================");
+        console.log("📨 Response Message:");
+        console.log(trimmedMessage);
+        console.log("=============================================");
+
+        // Validate expected message based on action
+        const expectedMessage = action === 'Approve'
+            ? "You have successfully verified the User's External Training."
+            : "You have successfully rejected the User's External Training.";
+
+        if (trimmedMessage === expectedMessage) {
+            console.log(`✅ Message validated: "${expectedMessage}"`);
+        } else {
+            console.log(`⚠️ Expected: "${expectedMessage}"`);
+            console.log(`⚠️ Actual: "${trimmedMessage}"`);
+            throw new Error(`Response message mismatch. Expected: "${expectedMessage}", but got: "${trimmedMessage}"`);
+        }
+
+        // Take screenshot of the response page
+        const path = require('path');
+        const screenshotPath = path.join(process.cwd(), 'data', `${action.toLowerCase()}_response_screenshot.png`);
+        await this.page.screenshot({ path: screenshotPath, fullPage: true });
+        console.log(`✅ Response screenshot saved: ${screenshotPath}`);
+
+        console.log(`✅ ${action} action completed successfully!`);
     }
 
     public async clickOnAssessmentLink() {
@@ -333,56 +493,56 @@ export class AdminHomePage extends AdminLogin {
     }
 
     // Verify and click Manage Tax from quick access dropdown
-    public async verifyAndClickManageTaxFromQuickAccess(option:string) {
+    public async verifyAndClickManageTaxFromQuickAccess(option: string) {
         // Check if dropdown is already open
         const dropdownOptions = this.page.locator(this.selectors.quickAccessDropdownOptions);
         const isDropdownOpen = await dropdownOptions.first().isVisible().catch(() => false);
-        
+
         if (!isDropdownOpen) {
             await this.clickQuickAccess();
         } else {
             console.log("Quick Access dropdown is already open");
         }
-        
+
         // Check if Manage Tax option is available in dropdown
         const manageTaxInDropdown = this.page.locator(this.selectors.manageTaxOptionInDropdown(option));
         const isAvailable = await manageTaxInDropdown.isVisible().catch(() => false);
-        
+
         if (isAvailable) {
             console.log("✅ Manage Tax option found in Quick Access dropdown");
             await this.click(this.selectors.manageTaxOptionInDropdown(option), "Manage Tax", "Quick Access Option");
-            
+
             // Wait for the option to be added to the listing
             await this.wait('minWait');
-             // Click the tick icon to save
+            // Click the tick icon to save
             await this.click(this.selectors.tickIcon, "Tick Icon", "Icon");
             await this.wait('minWait');
-             
+
             await this.spinnerDisappear();
-            
+
             // Verify if Manage Tax is now present in the Quick Access listing page
             const manageTaxInList = this.page.locator(this.selectors.manageTaxInQuickAccessList);
             const isPresentInList = await manageTaxInList.isVisible().catch(() => false);
-            
+
             if (isPresentInList) {
                 console.log("✅ Manage Tax has been successfully added to Quick Access listing page");
-            } 
+            }
             else {
                 console.log("⚠️ Manage Tax option was clicked but not found in Quick Access listing page");
             }
-            
-           
-        } 
+
+
+        }
         else {
             console.log("⚠️ Manage Tax option not found in Quick Access dropdown");
             // Close the dropdown
             await this.page.keyboard.press('Escape');
             await this.wait('minWait');
-            
+
             // Verify if Manage Tax is already present in the Quick Access listing page
             const manageTaxInList = this.page.locator(this.selectors.manageTaxInQuickAccessList);
             const isPresentInList = await manageTaxInList.isVisible().catch(() => false);
-            
+
             if (isPresentInList) {
                 console.log("✅ Manage Tax is already present in the Quick Access listing page");
             } else {
@@ -397,54 +557,54 @@ export class AdminHomePage extends AdminLogin {
         await this.validateElementVisibility(this.selectors.quickAccessIcon, "QuickAccess Icon");
         await this.click(this.selectors.quickAccessIcon, "QuickAccess Icon", "Icon");
         await this.wait('minWait');
-        
+
         // Verify Manage Tax is present in the listing before removing
         const manageTaxInListBefore = this.page.locator(this.selectors.manageTaxInQuickAccessList);
         const isPresentBeforeRemoval = await manageTaxInListBefore.isVisible().catch(() => false);
-        
+
         if (!isPresentBeforeRemoval) {
             console.log("⚠️ Manage Tax is not present in Quick Access listing to remove");
             return;
         }
-        
+
         console.log("✅ Manage Tax found in Quick Access listing, proceeding to remove it");
-        
+
         // Find and click the delete icon for Manage Tax using the selector
         await this.click(this.selectors.removeSpecificModuleFromQuickAccess("Manage Tax"), "Delete Icon for Manage Tax", "Icon");
         await this.wait('minWait');
-        
+
         // Confirm deletion
         await this.click(this.selectors.yesBtn, "Yes", "Button");
         await this.wait('minWait');
-        
+
         // Click tick icon to save changes
         await this.click(this.selectors.tickIcon, "Tick Icon", "Icon");
         await this.wait('minWait');
         await this.spinnerDisappear();
-        
+
         // Verify Manage Tax is removed from the listing
         const manageTaxInListAfter = this.page.locator(this.selectors.manageTaxInQuickAccessList);
         const isPresentAfterRemoval = await manageTaxInListAfter.isVisible().catch(() => false);
-        
+
         if (!isPresentAfterRemoval) {
             console.log("✅ Manage Tax has been successfully removed from Quick Access listing");
         } else {
             console.log("⚠️ Manage Tax is still present in Quick Access listing after deletion attempt");
         }
-        
+
         // Open the Quick Access dropdown to verify option is back in dropdown
         await this.clickQuickAccess();
-        
+
         // Check if Manage Tax option is now available in dropdown again
         const manageTaxInDropdown = this.page.locator(this.selectors.manageTaxOptionInDropdown(option));
         const isAvailableInDropdown = await manageTaxInDropdown.isVisible().catch(() => false);
-        
+
         if (isAvailableInDropdown) {
             console.log("✅ Manage Tax option has automatically returned to the Quick Access dropdown");
         } else {
             console.log("⚠️ Manage Tax option is NOT found in Quick Access dropdown after removal");
         }
-        
+
         // Close the dropdown
         await this.page.keyboard.press('Escape');
         await this.wait('minWait');
@@ -589,8 +749,8 @@ export class AdminHomePage extends AdminLogin {
         this.click(this.selectors.commerceMenu, "Commerce Menu", "Button")
     }
 
-    async clickManageTax(){
-        this.click(this.selectors.manageTaxLink,"Manage Tax","Link")
+    async clickManageTax() {
+        this.click(this.selectors.manageTaxLink, "Manage Tax", "Link")
     }
     public async clickCompletionCertification() {
         await this.mouseHover(this.selectors.completionCertificationLink, "Completion Certification");
@@ -655,13 +815,13 @@ export class AdminHomePage extends AdminLogin {
         await this.wait("minWait");
     }
 
-    
+
     public async clickBulkUpload(options: string) {
-    await this.wait("minWait");
+        await this.wait("minWait");
         await this.click("//a[text()='Bulk Upload']", "Bulk Upload", "Link")
-                await this.wait("minWait");
+        await this.wait("minWait");
         await this.click(`//span[text()='${options}']`, "options", "checkbox")
-        
+
     }
 
     public async clickAdminRole() {
@@ -676,35 +836,35 @@ export class AdminHomePage extends AdminLogin {
         await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
         await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
     }
-    
+
     public async siteAdmin_learnerconfig() {
         await this.validateElementVisibility(this.selectors.learnerConfigLink, "Learner Configuration");
         await this.mouseHover(this.selectors.learnerConfigLink, "Learner Configuration");
         await this.click(this.selectors.learnerConfigLink, "Learner Configuration", "Button");
         await this.spinnerDisappear();
     }
-    
+
     public async siteSettings() {
         await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Settings");
         await this.mouseHover(this.selectors.siteSettingsLink, "Site Settings");
         await this.click(this.selectors.siteSettingsLink, "Site Settings", "Button");
         await this.spinnerDisappear();
     }
-    
+
     public async siteAdmin_Adminconfig() {
         await this.wait("minWait");
-                
+
         await this.validateElementVisibility(this.selectors.adminConfigLink, "Admin Configuration");
         await this.mouseHover(this.selectors.adminConfigLink, "Admin Configuration");
         await this.click(this.selectors.adminConfigLink, "Admin Configuration", "Button");
         await this.spinnerDisappear();
         await this.wait("minWait");
-        
+
         // Check if Admin Configuration section is collapsed and expand if needed
         const expandIcon = `//button[@data-bs-target='#lms-adminconfiguration-collapse']/child::div//i[contains(@class,'fa-plus')]`;
         try {
             const isCollapsed = await this.page.locator(expandIcon).isVisible({ timeout: 2000 });
-            
+
             if (isCollapsed) {
                 console.log("Admin Configuration section is collapsed, expanding it...");
                 await this.click(expandIcon, "Expand Admin Configuration", "Icon");
@@ -783,8 +943,8 @@ export class AdminHomePage extends AdminLogin {
         await this.mouseHover("//span[text()='Maintenance']", "Maintenance");
         await this.click("//span[text()='Maintenance']", "Maintenance", "Menu");
         await this.click("//a[text()='Customer Config']", "Customer Config", "Link");
-       await this.wait("mediumWait");
-       await this.page.locator("//input[@name='dataload[allow_excel]']").scrollIntoViewIfNeeded();
+        await this.wait("mediumWait");
+        await this.page.locator("//input[@name='dataload[allow_excel]']").scrollIntoViewIfNeeded();
         await this.page.locator("//input[@name='dataload[allow_excel]']").fill("0");
         await this.page.locator("//input[@id='edit_submit']").scrollIntoViewIfNeeded();
         await this.click("//input[@id='edit_submit']", "Submit", "Button");
@@ -792,7 +952,7 @@ export class AdminHomePage extends AdminLogin {
         console.log("✅ allow_excel configuration set to 0");
     }
 
-    
+
 
     ///Mail verification
     // async verifyEmails() {
@@ -913,7 +1073,7 @@ export class AdminHomePage extends AdminLogin {
         await this.page.waitForTimeout(1000);
         console.log(subject);
         await this.verificationByText(subject, status);
-    
+
     }
 
     async verifyAdminEnrollmentMailBody(body: string, courseName: string) {
@@ -958,26 +1118,26 @@ export class AdminHomePage extends AdminLogin {
         console.log(`Verified: TP enrollment mail body contains notification text '${notificationText}'`);
     }
 
-        public async metaDataLibraryOption(data: string) {
+    public async metaDataLibraryOption(data: string) {
         await this.wait("minWait")
         await this.validateElementVisibility(this.selectors.metaLibOption(data), "Meta Data Library");
         await this.mouseHover(this.selectors.metaLibOption(data), "meta data library");
         await this.click(this.selectors.metaLibOption(data), "meta data library", "Button");
         await this.spinnerDisappear();
     }
-        async verifyCommerceMenuInMenuBar() {
+    async verifyCommerceMenuInMenuBar() {
         await this.wait("mediumWait");
-        
+
         try {
             const commerceMenuElement = this.page.locator(this.selectors.commerceMenuAfterReports);
-            
+
             // Scroll to Commerce option in menu bar and hover
             await commerceMenuElement.scrollIntoViewIfNeeded();
             await this.wait("minWait");
             await this.mouseHover(this.selectors.commerceMenuAfterReports, "Commerce Menu");
-            
+
             const isCommerceVisible = await commerceMenuElement.isVisible();
-            
+
             if (isCommerceVisible) {
                 console.log("✅ Commerce option is ENABLED and visible in the menu bar");
                 return true;
@@ -990,8 +1150,8 @@ export class AdminHomePage extends AdminLogin {
     }
 
 
-    async clickSetupTaxButton(){
-        await this.click(this.selectors.setupTaxButton,"Manage Tax","Link");
+    async clickSetupTaxButton() {
+        await this.click(this.selectors.setupTaxButton, "Manage Tax", "Link");
     }
 
     public async clickCreateOrder() {
@@ -1000,12 +1160,12 @@ export class AdminHomePage extends AdminLogin {
         await this.page.waitForLoadState('load');
     }
 
-    public async clickOrderLink(){
+    public async clickOrderLink() {
         await this.validateElementVisibility(this.selectors.ordersLink, "Orders Link");
         await this.click(this.selectors.ordersLink, "Orders Link", "Link");
         await this.page.waitForLoadState('load');
     }
-    
+
 
 
 }

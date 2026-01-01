@@ -11,7 +11,7 @@ test.describe(`COM009 - Verify Tax Application for US-California in Checkout Pro
 
     test.describe.configure({ mode: "serial" });
 
-    test.only(`Verify and configure Cybersource payment gateway`, async ({ adminHome, siteAdmin }) => {
+    test(`Verify and configure Cybersource payment gateway`, async ({ adminHome, siteAdmin }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Balasundar` },
             { type: `TestCase`, description: `COM009-TC02` },

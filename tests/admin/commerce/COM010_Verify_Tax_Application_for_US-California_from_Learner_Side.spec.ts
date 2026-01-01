@@ -8,7 +8,7 @@ const vatNumber = FakerData.getPinCode();
 
 test.describe(`COM010 - Verify Tax Application for US-California from Learner Side`, () => {
     test.describe.configure({ mode: "serial" });
-test.only(`Enable commerce in site settings, verify in menu bar and admin config, then create tax`, async ({ commercehome, adminHome, adminGroup, siteAdmin }) => {
+test(`Enable commerce in site settings, verify in menu bar and admin config, then create tax`, async ({ commercehome, adminHome, adminGroup, siteAdmin }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `COM006-TC01` },

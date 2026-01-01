@@ -16,7 +16,7 @@ test(`Verify Direct content launch is available in site settings`, async ({ site
 
 })
 
-test.only(`Verify Direct content launch link in learning menu`, async ({ adminHome,directContent}) => {
+test(`Verify Direct content launch link in learning menu`, async ({ adminHome,directContent}) => {
     test.info().annotations.push(
         { type: `Author`, description: `Nithya` },
         { type: `TestCase`, description: `Verify Direct content launch link in learning menu` },

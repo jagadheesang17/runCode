@@ -122,6 +122,7 @@ export class ProfilePage extends LearnerHomePage {
         interestTitleOption: (index: number) => `(//input[@id='interests'])[${index}]`,
         addInterest: "(//label[text()='Interests']/following::i)[1]",
         externalTraining: "(//h5[text()='External Training']/following-sibling::i)[1]",
+        externalTrainingHeading: "//h5[@class='mb-0 h2_inactive' and text()='External Training']",
         verifyCertificate: "//span[text()='Verify Certificate By']",
         //  selectVerification: "//select[@id='selectedVerificationBy']",
         verifyBy: `//div[@id='wrapper-verify_by']`,
@@ -152,6 +153,7 @@ export class ProfilePage extends LearnerHomePage {
         addressInput: (label: string) => `(//label[contains(text(),'${label}')]/following::input[contains(@id,'addres')])[1]`,
         inputField: (name: string) => `//input[@id="${name}"]`,
         approvalStatus: (certificate: string, status: string) => `(//span[text()='${certificate}']//following::span[text()='${status}'])[1]`,
+        deleteExternalTraining: (certificate: string) => `(//span[text()='${certificate}']//following::i[contains(@class,'trash')])[1]`,
 
 
     }
@@ -662,6 +664,47 @@ export class ProfilePage extends LearnerHomePage {
           await this.wait("maxWait");
         console.log(`✅ Verified: External certificate '${certificate}' has status '${approved}'`);
     }
+
+    /**
+     * Delete external training certificate by certificate name
+     * @param certificate - Name of the certificate to delete
+     */
+    async deleteExternalTraining(certificate: string) {
+        await this.wait("maxWait");
+        console.log(`Attempting to delete external training certificate: '${certificate}'`);
+        await this.validateElementVisibility(this.selectors.deleteExternalTraining(certificate),`Delete icon for ${certificate}`);
+        await this.click(this.selectors.deleteExternalTraining(certificate),`Delete ${certificate}`,"Icon");
+        await this.wait("minWait");
+        console.log(`✅ Deleted external training certificate: '${certificate}'`);
+    }
+
+    /**
+     * Verify External Training section is visible in learner profile
+     */
+    async verifyExternalTrainingIsVisible() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.externalTrainingHeading,
+            "External Training Section"
+        );
+        console.log("✅ External Training section is visible in profile");
+    }
+
+    /**
+     * Verify External Training section is NOT visible in learner profile
+     */
+    async verifyExternalTrainingIsNotVisible() {
+        await this.wait("minWait");
+        const isVisible = await this.page.locator(this.selectors.externalTrainingHeading).isVisible();
+        
+        if (isVisible) {
+            throw new Error("❌ External Training section is visible but should not be!");
+        }
+        
+        console.log("✅ External Training section is NOT visible in profile (as expected)");
+    }
+
+     
 
 }
 

@@ -68,7 +68,7 @@ test(`Step 3: Create volume discount`, async ({ adminHome, commercehome, createC
     console.log(`✅ Step 3 Passed: Volume discount '${discountNameVolume}' created`);
 });
 
-test.only(`Step 4: Verify discount validity dates in database`, async () => {
+test(`Step 4: Verify discount validity dates in database`, async () => {
     // Get linear discount validity dates
     const linearDiscountData = await getDiscountValidityDates("protocol LinearDateValidityTest");
     expect(linearDiscountData).not.toBeNull();
@@ -82,7 +82,7 @@ test.only(`Step 4: Verify discount validity dates in database`, async () => {
     console.log(`✅ Step 4 Passed: Discount validity dates verified in database`);
 });
 
-test.only(`Step 5: Update discount validity dates to be OUTSIDE current date range`, async () => {
+test(`Step 5: Update discount validity dates to be OUTSIDE current date range`, async () => {
     // Update linear discount validity to past dates (outside current date)
     const linearUpdate = await setDiscountValidityOutsideCurrentDate("protocol LinearDateValidityTest");
     console.log(`✅ Linear discount validity updated to past dates`);

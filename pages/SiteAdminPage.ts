@@ -78,6 +78,20 @@ export class SiteAdminPage extends AdminHomePage {
         
         //Commerce - Learner Site Configuration
         enabledCommerceInLearnerSiteConfig: `//span[text()='Commerce Settings']/following::span[text()='Commerce']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
+
+        // Learner Page Builder
+        learnerPageBuilderLink: `//a[contains(@href,'learnerpagebuilder') and contains(text(),'Learner Page Builder')]`,
+        learnerPageBuilderHeading: `//div[@class='h1' and text()='Learner Page Builder']`,
+        tenantButton: (tenant: string) => `//nav[@id='portaltab']//button[contains(@class,'nav-link') and text()='${tenant}']`,
+        editTemplateButton: `//button[contains(@class,'button_positive_2_active') and text()='Edit Template']`,
+        myProfileSection: `//h1[text()='My Profile']`,
+        myProfileCollapseIcon: `//h1[text()='My Profile']//following::i[contains(@class,'custom-collape')][1]`,
+        externalTrainingCheckbox: `//label[@class='custom-control-label' and contains(@for,'display-userexternaltraining')]`,
+        externalTrainingChecked: `//label[contains(@for,'display-userexternaltraining')]//i[contains(@class,'fa-square-check')][1]`,
+        externalTrainingUnchecked: `//label[contains(@for,'display-userexternaltraining')]//i[contains(@class,'fa-square')][2]`,
+        saveTemplateButton: `//button[contains(@class,'button_positive_1_active') and text()='Save Template']`,
+        successMessage: `//span[contains(text(),'The Changes have been updated successfully.')]`,
+        successOkButton: `//button[contains(@class,'button_positive_1_active') and text()='OK']`,
         disabledCommerceInLearnerSiteConfig: `//span[text()='Commerce Settings']/following::span[text()='Commerce']/preceding-sibling::i[contains(@class,'toggle-off')]`,
         clickEditCommerce: `//div[text()='Learner Configuration']/following::span[text()='Commerce']/following::i[@data-bs-target='#Commerce-content'][1]`,
         taxCheckboxChecked: `//span[text()='Tax']/preceding-sibling::i[@class='fa-duotone fa-square-check me-1 icon_14_1']`,
@@ -1149,6 +1163,144 @@ export class SiteAdminPage extends AdminHomePage {
         } else {
             console.log("ℹ️ Transfer Enrollment is already disabled");
         }
+    }
+
+    /**
+     * Navigate to Learner Page Builder from Site Admin
+     */
+    async navigateToLearnerPageBuilder() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.learnerPageBuilderLink, "Learner Page Builder Link");
+        await this.click(this.selectors.learnerPageBuilderLink, "Learner Page Builder", "Link");
+        await this.wait("mediumWait");
+        await this.spinnerDisappear();
+    }
+
+    /**
+     * Select tenant in Learner Page Builder
+     * @param tenant - Name of the tenant to select
+     */
+    async selectTenantInPageBuilder(tenant: string) {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.tenantButton(tenant), `Tenant: ${tenant}`);
+        await this.click(this.selectors.tenantButton(tenant), tenant, "Tenant Button");
+        await this.wait("mediumWait");
+    }
+
+    /**
+     * Click Learner Page Builder heading after tenant selection
+     */
+    async clickLearnerPageBuilderHeading() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.learnerPageBuilderHeading, "Learner Page Builder Heading");
+        await this.click(this.selectors.learnerPageBuilderHeading, "Learner Page Builder", "Heading");
+        await this.wait("mediumWait");
+        await this.spinnerDisappear();
+    }
+
+    /**
+     * Click Edit Template button in Learner Page Builder
+     */
+    async clickEditTemplate() {
+        await this.wait("mediumWait");
+        await this.validateElementVisibility(this.selectors.editTemplateButton, "Edit Template Button");
+        await this.click(this.selectors.editTemplateButton, "Edit Template", "Button");
+        await this.wait("mediumWait");
+        await this.spinnerDisappear();
+    }
+
+    /**
+     * Expand My Profile section in Page Builder
+     */
+    async expandMyProfileSection() {
+        await this.wait("mediumWait");
+        // Scroll to My Profile section if needed
+            await this.page.locator(this.selectors.myProfileSection).scrollIntoViewIfNeeded();
+            await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.myProfileSection, "My Profile Section");
+        await this.page.locator(this.selectors.myProfileSection).scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        
+        // Click the collapse icon to expand
+        await this.click(this.selectors.myProfileCollapseIcon, "My Profile Expand", "Icon");
+        await this.wait("minWait");
+    }
+
+    /**
+     * Check if External Training is enabled in Page Builder
+     * @returns true if checked, false if unchecked
+     */
+    async isExternalTrainingEnabled(): Promise<boolean> {
+        await this.wait("minWait");
+        
+        // Scroll to External Training checkbox
+        await this.page.locator(this.selectors.externalTrainingCheckbox).scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        
+        // Check if the first icon (fa-square-check) has ::before/::after (checked state)
+        const checkedIcon = this.page.locator(this.selectors.externalTrainingChecked);
+        const isVisible = await checkedIcon.isVisible();
+        
+        // Additional check: the checked icon should have visible content
+        if (isVisible) {
+            const hasContent = await checkedIcon.evaluate((el) => {
+                const beforeContent = window.getComputedStyle(el, '::before').content;
+                const afterContent = window.getComputedStyle(el, '::after').content;
+                return beforeContent !== 'none' && afterContent !== 'none';
+            });
+            return hasContent;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Enable External Training in Page Builder
+     */
+    async enableExternalTraining() {
+        const isEnabled = await this.isExternalTrainingEnabled();
+        
+        if (!isEnabled) {
+            console.log("📝 Enabling External Training in Page Builder...");
+            await this.click(this.selectors.externalTrainingCheckbox, "External Training", "Checkbox");
+            await this.wait("minWait");
+            console.log("✅ External Training checkbox clicked (enabled)");
+        } else {
+            console.log("ℹ️ External Training is already enabled");
+        }
+    }
+
+    /**
+     * Disable External Training in Page Builder
+     */
+    async disableExternalTraining() {
+        const isEnabled = await this.isExternalTrainingEnabled();
+        
+        if (isEnabled) {
+            console.log("📝 Disabling External Training in Page Builder...");
+            await this.click(this.selectors.externalTrainingCheckbox, "External Training", "Checkbox");
+            await this.wait("minWait");
+            console.log("✅ External Training checkbox clicked (disabled)");
+        } else {
+            console.log("ℹ️ External Training is already disabled");
+        }
+    }
+
+    /**
+     * Save template in Page Builder
+     */
+    async saveTemplate() {
+        await this.wait("minWait");
+        await this.click(this.selectors.saveTemplateButton, "Save Template", "Button");
+        await this.wait("mediumWait");
+        
+        // Wait for success message
+        await this.validateElementVisibility(this.selectors.successMessage, "Success Message");
+        console.log("✅ Template saved successfully");
+        
+        // Click OK button
+        await this.click(this.selectors.successOkButton, "OK", "Button");
+        await this.wait("maxWait");
     }
  
 }

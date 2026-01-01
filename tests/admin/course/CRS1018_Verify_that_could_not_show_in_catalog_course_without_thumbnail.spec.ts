@@ -119,7 +119,7 @@ test.describe(`Verify that could not show in catalog course without thumbnail`, 
         console.log("Verified: Course without thumbnail catalog behavior checked");
     });
 
-    test.only(`Add thumbnail and verify course now appears properly in catalog`, async ({ adminHome, createCourse, learnerHome, catalog, page }) => {
+    test(`Add thumbnail and verify course now appears properly in catalog`, async ({ adminHome, createCourse, learnerHome, catalog, page }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation Team` },
             { type: `TestCase`, description: `CRS1018_Add_Thumbnail_Catalog_Visibility` },
