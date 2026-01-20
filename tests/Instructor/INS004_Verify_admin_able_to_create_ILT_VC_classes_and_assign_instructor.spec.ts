@@ -69,7 +69,7 @@ test.describe(`INS004_Verify_admin_able_to_create_ILT_VC_classes_and_assign_inst
         console.log(`📊 ========================================\n`);
     });
 
-    test(`Test 2: Create ILT course with instance and assign instructor`, async ({ adminHome, createCourse, editCourse }) => {
+    test(`Test 2: Create ILT course with instance and assign instructor`, async ({ adminHome, createCourse, editCourse, instructorHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Jagadish` },
             { type: `TestCase`, description: `INS004_TC002 - Create ILT course and assign instructor` },
@@ -119,7 +119,10 @@ test.describe(`INS004_Verify_admin_able_to_create_ILT_VC_classes_and_assign_inst
         await createCourse.enterSessionName(sessionName);
         await createCourse.setMaxSeat();
         await createCourse.enterDateValue();
-        await createCourse.startandEndTime();
+        // Open timepicker and select near-current start & end times
+        await createCourse.click(createCourse.selectors.timeInput, "Start Time", "Input");
+        const startTimeILT = await instructorHome.selectStartTimeNearCurrent(1);
+        await instructorHome.setEndTimeOneHourAfterStart(startTimeILT, "//input[contains(@class,'end time')]");
         
         console.log(`🔄 Assigning instructor to ILT class...`);
         await createCourse.selectInstructor(instructorUsername);
@@ -141,7 +144,7 @@ test.describe(`INS004_Verify_admin_able_to_create_ILT_VC_classes_and_assign_inst
         console.log(`📊 ========================================\n`);
     });
 
-    test(`Test 3: Create Virtual Class with instance and assign instructor`, async ({ adminHome, createCourse, editCourse }) => {
+    test(`Test 3: Create Virtual Class with instance and assign instructor`, async ({ adminHome, createCourse, editCourse, instructorHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Jagadish` },
             { type: `TestCase`, description: `INS004_TC003 - Create VC course and assign instructor` },
@@ -191,6 +194,10 @@ test.describe(`INS004_Verify_admin_able_to_create_ILT_VC_classes_and_assign_inst
         await createCourse.selectMeetingType(instructorUsername, vcCourseName, 1);
         await createCourse.typeAdditionalInfo();
         await createCourse.setMaxSeat();
+        // Open timepicker and select near-current start & end times for VC if applicable
+        await createCourse.click(createCourse.selectors.timeInput, "Start Time", "Input");
+        const startTimeVC = await instructorHome.selectStartTimeNearCurrent(1);
+        await instructorHome.setEndTimeOneHourAfterStart(startTimeVC, "//input[contains(@class,'end time')]");
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();

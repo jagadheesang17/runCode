@@ -84,11 +84,29 @@ test(`Creation of Certification and enroll the program course through API`, asyn
     await adminHome.loadAndLogin("CUSTOMERADMIN")
     await adminHome.menuButton();
     await adminHome.clickLearningMenu();
+
+    // Create the course first (to attach into certification structure)
+    await adminHome.clickCourseLink();
+    await createCourse.clickCreateCourse();
+    await createCourse.verifyCreateUserLabel("CREATE COURSE");
+    await createCourse.enter("course-title", courseName);
+    await createCourse.selectLanguage("English");
+    await createCourse.typeDescription(description);
+    await createCourse.contentLibrary();
+    await createCourse.clickCatalog();
+    await createCourse.clickSave();
+    await createCourse.clickProceed();
+    await createCourse.verifySuccessMessage();
+
+    // Now create Certification and attach the above course
     await adminHome.clickCertification();
     await learningPath.clickCreateCertification();
     await learningPath.title(title);
     await learningPath.description(description);
     await learningPath.language();
+    // Price and currency for paid certification
+    await learningPath.enterPrice();
+    await learningPath.clickCurrency();
     await learningPath.clickSave();
     await learningPath.clickProceedBtn();
     await learningPath.clickAddCourse();

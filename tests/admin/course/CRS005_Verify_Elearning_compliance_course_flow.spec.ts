@@ -32,7 +32,7 @@ test.describe(`Verify Elearning compliance course flow`, async () => {
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a new course by name :" + courseName);
-        await createCourse.selectDomainOption(URLConstants.portal1);
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.providerDropdown();
         await createCourse.clickregistrationEnds();
         await createCourse.selectCompliance();

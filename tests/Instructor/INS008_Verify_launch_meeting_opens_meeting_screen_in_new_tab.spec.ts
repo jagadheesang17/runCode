@@ -2,6 +2,7 @@ import { test } from "../../customFixtures/expertusFixture";
 import { Page } from "@playwright/test";
 import { FakerData, getCurrentTimeRoundedTo15 } from "../../utils/fakerUtils";
 import { readDataFromCSV } from "../../utils/csvUtil";
+import { create } from "domain";
 
 const vcCourseName = "VC_" + FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -77,7 +78,7 @@ test.describe(`INS008_Verify_launch_meeting_opens_meeting_screen_in_new_tab`, ()
         console.log(`========================================\n`);
     });
 
-    test(`Test 2: Create VC course with current time rounded to nearest 15 minutes`, async ({ adminHome, createCourse, editCourse }) => {
+    test(`Test 2: Create VC course with current time rounded to nearest 15 minutes`, async ({ adminHome, createCourse, editCourse, instructorHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Jagadish` },
             { type: `TestCase`, description: `INS008_TC002 - Create VC course with rounded time` },
@@ -119,9 +120,9 @@ test.describe(`INS008_Verify_launch_meeting_opens_meeting_screen_in_new_tab`, ()
         await createCourse.editcourse();
         await editCourse.clickTagMenu();
         await editCourse.selectTags();
-        await createCourse.clickCompletionCertificate();
-        await createCourse.clickCertificateCheckBox();
-        await createCourse.clickAdd();
+        // await createCourse.clickCompletionCertificate();
+        // await createCourse.clickCertificateCheckBox();
+        // await createCourse.clickAdd();
 
         console.log(`Adding Virtual Class instance with rounded time...`);
         await createCourse.addInstances();
@@ -135,6 +136,12 @@ test.describe(`INS008_Verify_launch_meeting_opens_meeting_screen_in_new_tab`, ()
         
         console.log(`Using selectMeetingTypeWithRoundedTime method...`);
         await createCourse.selectMeetingTypeWithRoundedTime(instructorUsername, vcCourseName, 1);
+        // Ensure start time is near-current 10–15 mins and set end time to +1 hour
+        await createCourse.click(createCourse.selectors.timeInput, "Start Time", "Input");
+        const startTimeVC = await instructorHome.selectStartTimeNearCurrent(1);
+        await instructorHome.setEndTimeOneHourAfterStart(startTimeVC, "//input[contains(@class,'end time')]");
+
+        await createCourse.setMaxSeat()
         
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();

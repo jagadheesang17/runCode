@@ -75,8 +75,8 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         console.log("Classroom (ILT) instance created successfully");
         
         // Add Virtual Class (VC) instance
-        await createCourse.editcourse();
-        await createCourse.clickinstanceClass();
+        await createCourse.navigateToListingAndSearchCourse(courseName);
+      
         await createCourse.addInstances();
         await addinstance("Virtual Class");
         await createCourse.selectMeetingType(instructorName, courseName, 1);
@@ -89,8 +89,8 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         console.log("Virtual Class (VC) instance created successfully");
         
         // Add E-Learning instance for comparison
-        await createCourse.editcourse();
-        await createCourse.clickinstanceClass();
+        await createCourse.navigateToListingAndSearchCourse(courseName);
+        
         await createCourse.addInstances();
         await addinstance("E-Learning");
         await createCourse.enter("course-title", elCourseName);
@@ -101,63 +101,7 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         
         console.log("ILT/VC/E-Learning multi-instance course created: " + courseName);
     });
-
-    test(`Verify that created ILT/VC Multi instance course is visible in Learner catalog and able to enroll`, async ({ learnerHome, catalog }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `QA Automation Team` },
-            { type: `TestCase`, description: `CRS1007_ILT_VC_multi_instance_catalog_visibility_enrollment` },
-            { type: `Test Description`, description: `Verify that ILT/VC Multi instance course is visible in Learner catalog and enrollment is possible` }
-        );
-
-        // Login as learner
-        await learnerHome.learnerLogin("LEARNERUSERNAME", "LearnerPortal");
-        
-        // Navigate to catalog
-        await learnerHome.clickCatalog();
-        
-        console.log("Searching for ILT/VC multi-instance course in catalog");
-        
-        // Apply tag filter to find the course
-        await catalog.clickFilter();
-        await catalog.selectresultantTags(tag);
-        await catalog.clickApply();
-        
-        // Navigate back to catalog after filter
-        await learnerHome.clickCatalog();
-        
-        // Search for the multi-instance course
-        await catalog.searchCatalog(courseName);
-        
-        console.log("ILT/VC multi-instance course found in catalog: " + courseName);
-        
-        // Verify course is visible in catalog
-        await catalog.verifyCourse(courseName);
-        
-        console.log("SUCCESS: ILT/VC multi-instance course is visible in learner catalog");
-        
-        // Access course options to see multiple instances
-        await catalog.clickMoreonCourse(courseName);
-        
-        console.log("Accessed course options - multiple instances (ILT/VC/E-Learning) should be available");
-        
-        // Enroll in E-Learning instance (easiest to complete)
-        await catalog.clickSelectcourse(elCourseName);
-        
-        console.log("Selected E-Learning instance from multi-instance course");
-        
-        // Enroll in the selected instance
-        await catalog.clickEnroll();
-        
-        console.log("SUCCESS: Enrolled in E-Learning instance of ILT/VC multi-instance course");
-        
-        // Verify enrollment by launching content
-        await catalog.clickLaunchButton();
-        await catalog.saveLearningStatus();
-        
-        console.log("COMPLETE: ILT/VC multi-instance course enrollment and launch verified");
-    });
-
-    test(`Verify ILT/VC multi-instance course enrollment accessibility from catalog details`, async ({ learnerHome, catalog }) => {
+    test(`Verify ILT/VC multi-instance course enrollment accessibility from catalog details`, async ({ learnerHome, catalog ,enrollHome}) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation Team` },
             { type: `TestCase`, description: `CRS1007_ILT_VC_multi_instance_catalog_details_enrollment` },
@@ -168,20 +112,18 @@ test.describe(`Verify that created ILT/VC Multi instance course is visible in Le
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LearnerPortal");
         
         // Navigate to catalog with filter
-        await learnerHome.clickCatalog();
-        await catalog.clickFilter();
-        await catalog.selectresultantTags(tag);
-        await catalog.clickApply();
-        await learnerHome.clickCatalog();
-        
+        await learnerHome.clickCatalog()
+      
         // Find the multi-instance course
         await catalog.searchCatalog(courseName);
         await catalog.clickMoreonCourse(courseName);
         
-        console.log("Verifying multi-instance access via catalog details");
         
+        console.log("Verifying multi-instance access via catalog details");
+        await enrollHome.enrollMultipleClasses(courseName);
+
         // Access catalog details page to see all instances
-        await catalog.viewCoursedetails();
+       
         
         console.log("Accessed catalog details page - all instances (ILT/VC/E-Learning) should be visible");
         

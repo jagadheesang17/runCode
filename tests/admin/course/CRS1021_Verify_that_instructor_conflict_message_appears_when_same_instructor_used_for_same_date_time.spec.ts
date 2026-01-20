@@ -8,6 +8,11 @@ const sessionName2 = "Session2" + " " + FakerData.getSession();
 const description = FakerData.getDescription()
 const instructorName = credentials.INSTRUCTORNAME.username;
 
+// Store date and time to reuse in second session for conflict testing
+let sessionDate: string;
+let sessionStartTime: string;
+let sessionEndTime: string;
+
 test.describe(`Verify_that_instructor_conflict_message_appears_when_same_instructor_used_for_same_date_time`, async () => {
     test.describe.configure({ mode: "serial" });
     
@@ -60,11 +65,18 @@ test.describe(`Verify_that_instructor_conflict_message_appears_when_same_instruc
         await createCourse.selectInstanceDeliveryType("Classroom");
         await createCourse.clickCreateInstance();
         await createCourse.enterSessionName(sessionName1);
-        await createCourse.enterDateValue(); // Sets specific date
-        await createCourse.startandEndTime(); // Sets specific start/end times
+        
+        // Generate and capture date/time values from first session
+        sessionDate = await createCourse.enterDateValue(); // Returns the date used
+        const timeValues = await createCourse.startandEndTime(); // Returns {startTime, endTime}
+        sessionStartTime = timeValues.startTime;
+        sessionEndTime = timeValues.endTime;
+        
         await createCourse.selectInstructor(instructorName); // Assign specific instructor
         await createCourse.selectLocation();
         await createCourse.setMaxSeat();
+        
+        console.log(`Session 1 scheduled: Date=${sessionDate}, Time=${sessionStartTime}-${sessionEndTime}`);
         await createCourse.clickCatalog();
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
@@ -87,17 +99,21 @@ test.describe(`Verify_that_instructor_conflict_message_appears_when_same_instruc
         await createCourse.clickEditIcon();
         await createCourse.addInstances();
         
-        // Attempt to create second session with same instructor and overlapping time
+        // Attempt to create second session with IDENTICAL instructor and IDENTICAL time
         await createCourse.selectInstanceDeliveryType("Classroom");
         await createCourse.clickCreateInstance();
         await createCourse.enterSessionName(sessionName2);
         
-        // Use same date and time as first session
-        await createCourse.enterDateValue(); // Same date as previous session
-        await createCourse.startandEndTime(); // Same time as previous session
-        await createCourse.selectInstructor(instructorName); // Same instructor - should trigger conflict
+        // Use EXACT SAME date and time as first session to trigger instructor conflict
+        await createCourse.enterDateValue(sessionDate); // Same date as session 1
+        await createCourse.startandEndTime(sessionStartTime, sessionEndTime); // Same times as session 1
+        await createCourse.selectInstructor(instructorName); // SAME instructor - should trigger conflict
         await createCourse.selectLocation();
         await createCourse.setMaxSeat();
+        
+        console.log(`Session 2 scheduled: Date=${sessionDate}, Time=${sessionStartTime}-${sessionEndTime}`);
+        console.log(`✓ Both sessions use IDENTICAL instructor (${instructorName}) at IDENTICAL date/time`);
+        console.log(`Expected: Instructor conflict validation should prevent creation`);
         
         // Check for instructor conflict during validation
         try {

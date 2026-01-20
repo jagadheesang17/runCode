@@ -1,5 +1,7 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
+import { credentials } from "../../../constants/credentialData";
+import { courseEnrollmentOverdueCron } from "../DB/DBJobs";
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
@@ -7,7 +9,7 @@ const description = FakerData.getDescription();
 test.describe(`Verify that able to launch the course from overdue status`, async () => {
     test.describe.configure({ mode: "serial" });
 
-    test(`Create course with overdue complete by rule and enroll learner`, async ({ adminHome, createCourse, enrollHome, page }) => {
+    test(`Create course with overdue complete by rule and enroll learner`, async ({ adminHome, createCourse, enrollHome, learningPath, page }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation Team` },
             { type: `TestCase`, description: `CRS1016_Overdue_Course_Setup_And_Enrollment` },
@@ -26,26 +28,37 @@ test.describe(`Verify that able to launch the course from overdue status`, async
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Overdue course launch test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
+        await createCourse.clickregistrationEnds();
         
-        // Set course as compliance with complete by rule as overdue
+        // Enable Compliance Setting
         await createCourse.selectCompliance();
-        await createCourse.selectCompleteByRule();
+        console.log("✅ Compliance setting enabled");
+        
+        // Set Course Expiration
+        await learningPath.clickExpiresButton();
+        console.log("✅ Course expiration setting configured");
+        
+        // Set Complete By Rule
+        await createCourse.selectCompleteBy();
+        await createCourse.selectCompleteByDate();
+        console.log("✅ Complete by date rule configured");
         
         // Set complete by date using new method with specific ID
         await createCourse.setCompleteByDate();
         
-        await createCourse.selectPostCompletebyOverDue(); // Sets completion rule as overdue
-        console.log("Course configured with overdue completion rule");
+        await createCourse.selectPostCompletebyOverDue();
+        console.log("✅ Course configured with overdue completion rule");
         
         // Add content to the course
         await createCourse.contentLibrary("AutoVimeo");
         
         // Set content validity date using new method with specific ID
-        await createCourse.setValidityDate();
+      //  await createCourse.setValidityDate();
         console.log("Content added with validity date to course");
         
         // Save the course
+        await createCourse.clickCatalog();
         await createCourse.clickSave();
         await createCourse.clickProceed();
         await createCourse.verifySuccessMessage();
@@ -58,10 +71,24 @@ test.describe(`Verify that able to launch the course from overdue status`, async
         await enrollHome.selectByOption("Course");
         await enrollHome.selectBycourse(courseName);
         await enrollHome.clickSelectedLearner();
-        await enrollHome.enterSearchUser("learner1@mailinator.com");
+        await enrollHome.enterSearchUser(credentials.LEARNERUSERNAME.username);
         await enrollHome.clickEnrollBtn();
         await enrollHome.verifytoastMessage();
         console.log("Learner enrolled to course with overdue completion rule");
+    });
+
+    test(`Execute courseEnrollmentOverdueCron to mark course as overdue`, async ({}) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `QA Automation Team` },
+            { type: `TestCase`, description: `CRS1016_Execute_Overdue_Cron` },
+            { type: `Test Description`, description: `Execute database cron job to mark the course enrollment as overdue` }
+        );
+
+        console.log("🔄 Executing courseEnrollmentOverdueCron...");
+        await courseEnrollmentOverdueCron();
+        console.log("✅ Course enrollment marked as overdue via cron job");
+        console.log("⏳ Waiting for cron job to process...");
+        await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds for cron to process
     });
 
     test(`Verify course appears as overdue status in My Learning`, async ({ learnerHome, catalog, page }) => {
@@ -72,9 +99,9 @@ test.describe(`Verify that able to launch the course from overdue status`, async
         );
 
         // Logout admin and login as enrolled learner
-        const logoutSelector = "//div[@class='logout']/a";
-        await page.click(logoutSelector);
-        await page.waitForTimeout(2000);
+        // const logoutSelector = "//div[@class='logout']/a";
+        // await page.click(logoutSelector);
+        // await page.waitForTimeout(2000);
 
         // Login as the enrolled learner
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");

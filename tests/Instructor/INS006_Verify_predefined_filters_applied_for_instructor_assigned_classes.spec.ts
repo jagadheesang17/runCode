@@ -112,9 +112,9 @@ test.describe(`INS006_Verify_predefined_filters_applied_for_instructor_assigned_
         await createCourse.editcourse();
         await editCourse.clickTagMenu();
         await editCourse.selectTags();
-        await createCourse.clickCompletionCertificate();
-        await createCourse.clickCertificateCheckBox();
-        await createCourse.clickAdd();
+        // await createCourse.clickCompletionCertificate();
+        // await createCourse.clickCertificateCheckBox();
+        // await createCourse.clickAdd();
 
         console.log(`Adding future scheduled ILT instance...`);
         await createCourse.addInstances();
@@ -187,9 +187,9 @@ test.describe(`INS006_Verify_predefined_filters_applied_for_instructor_assigned_
         await createCourse.editcourse();
         await editCourse.clickTagMenu();
         await editCourse.selectTags();
-        await createCourse.clickCompletionCertificate();
-        await createCourse.clickCertificateCheckBox();
-        await createCourse.clickAdd();
+        // await createCourse.clickCompletionCertificate();
+        // await createCourse.clickCertificateCheckBox();
+        // await createCourse.clickAdd();
 
         console.log(`Adding Virtual Class instance...`);
         await createCourse.addInstances();

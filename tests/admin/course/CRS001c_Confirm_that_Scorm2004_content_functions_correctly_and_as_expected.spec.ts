@@ -46,9 +46,7 @@ test.describe(`Confirm that Scorm2004 content functions correctly and as expecte
         await readContentHome.readPassed_FailedScrom2004();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
 
     })
 

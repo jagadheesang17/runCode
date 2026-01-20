@@ -23,7 +23,7 @@ test.describe(`Verify that able to enroll the course in single click launch from
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Single click enrollment course: " + description);
-      //  await createCourse.selectDomainOption("QA");
+       await createCourse.selectDomainOption("automationtenant");
         await createCourse.contentLibrary(); // Youtube content is attached here
         await createCourse.clickCatalog(); // Make course visible in catalog
         await createCourse.clickSave();

@@ -5,20 +5,22 @@ const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
 
 //If false qa will run,if its true automation environment will run
-export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction" | "automationtenant" = 'automationtenant';
+export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction" | "automationtenant" = 'qaProduction';
 export default defineConfig({
  timeout: 700000,  
   expect: { timeout: 10000 }, // 10 sec for assertions
   
  
   testDir: './tests',
+  // Broaden test discovery so admin/compliance and other specs are found
+  testMatch: ['**/tests/**/*.spec.ts'],
 //  globalSetup: require.resolve('./global-setup.ts'),
 
 
 
   fullyParallel: false,
   retries: 0,
-  workers: 1,
+  workers: 2,
   repeatEach: 0,
 
   reporter: [['html', { outputFolder: reportDir, open: 'always' }], ['line'], ["allure-playwright"]],
@@ -96,7 +98,8 @@ export default defineConfig({
         browserName: 'chromium', ...devices['Desktop Chromium'], channel: 'chrome', headless: false,
         viewport: null,
         launchOptions: {
-          slowMo: 150,
+          slowMo: 50,
+        
           args: ["--start-maximized", "--disable-web-security", "--incognito"]
         }
       }
@@ -130,7 +133,7 @@ export default defineConfig({
           ...devices['Desktop Chromium'],
           viewport: null,
           launchOptions: {
-            slowMo: 300,
+            slowMo: 50,
             args: ["--start-maximized"]
           }
         }
@@ -145,7 +148,7 @@ export default defineConfig({
           ...devices['Desktop Chromium'],
           viewport: null,
           launchOptions: {
-            slowMo: 300,
+            slowMo: 50,
             args: ["--start-maximized"]
           }
 

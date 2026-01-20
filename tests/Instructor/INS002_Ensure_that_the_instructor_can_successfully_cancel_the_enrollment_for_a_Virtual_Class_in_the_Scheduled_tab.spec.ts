@@ -97,7 +97,7 @@ test.describe(`Ensure_that_the_instructor_can_successfully_cancel_the_enrollment
         await instructorHome.clickApply("Scheduled");
         await instructorHome.entersearchField(courseName)
         await instructorHome.clickEnrollmentIcon(courseName);
-        await enrollHome.selectEnrollOrCancel("Canceled")
+        await enrollHome.selectEnrollOrCancel(courseName,"Canceled")
         await enrollHome.enterReasonAndSubmit();
         await enrollHome.verifytoastMessage()
     })

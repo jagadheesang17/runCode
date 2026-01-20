@@ -190,11 +190,11 @@ export async function courseExpiry_CronJob() {
         const formattedCurrentTime = format(currentTime, 'yyyy-MM-dd HH:mm:ss');
         console.log('📅 Formatted Current Time:', formattedCurrentTime);
         
-        // Create another separate date object for expired_on calculation - set to 1 day ago
+        // Create another separate date object for expired_on calculation - set to 2 days ago
         const expiredOnTime = new Date(currentTimeString);
-        expiredOnTime.setDate(expiredOnTime.getDate() - 1); // Set to 1 day ago (yesterday)
+        expiredOnTime.setDate(expiredOnTime.getDate() - 2); // Set to 2 days ago
         const formattedNewTime = format(expiredOnTime, 'yyyy-MM-dd HH:mm:ss');
-        console.log('📅 Setting expired_on to (1 day ago):', formattedNewTime);
+        console.log('📅 Setting expired_on to (2 days ago):', formattedNewTime);
         
         const updateCourseEnrollment = await dataBase.executeQuery(`UPDATE course_enrollment SET completion_date='${formattedPreviousDate}',expired_on='${formattedNewTime}' WHERE id='${idString}' AND tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}';`)
         console.log("💾 Course enrollment update result:", updateCourseEnrollment);
@@ -221,7 +221,7 @@ export async function courseExpiry_CronJob() {
         console.log("📋 Summary:");
         console.log(`   • Course Enrollment ID: ${idString}`);
         console.log(`   • Completion Date: ${formattedPreviousDate} (2 days ago)`);
-        console.log(`   • Expired On: ${formattedNewTime} (1 day ago)`);
+        console.log(`   • Expired On: ${formattedNewTime} (2 days ago)`);
         console.log(`   • Cron Status: Enabled and scheduled`);
 
             // If we reach here, the function completed successfully
@@ -343,18 +343,32 @@ async function courseEnrollmentOverdueCron() {
     const currentTimeString = currentTimeResult[0]['NOW()'];
     const currentTime = new Date(currentTimeString);
     console.log("Current Time : " + currentTime);
-    const newTime = (subDays(currentTime, 1));
-    const previousDate = format(newTime, 'yyyy-MM-dd');
-    console.log("Previous Date :" + previousDate);
-    let catalog_compliance = await dataBase.executeQuery(`UPDATE  catalog_compliance  SET  complete_date  = '${previousDate}' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' ORDER BY id desc limit 1;`);
+    
+    // Create separate date object for complete_date (2 days ago)
+    const completeDateTime = new Date(currentTimeString);
+    const completeDateResult = subDays(completeDateTime, 2);
+    const completeDateFormatted = format(completeDateResult, 'yyyy-MM-dd');
+    console.log("Complete Date (2 days ago):" + completeDateFormatted);
+    
+    // Create separate date object for register_date (2 days ago to ensure overdue)
+    const registerDateTime = new Date(currentTimeString);
+    const registerDateResult = subDays(registerDateTime, 2);
+    const registerDateFormatted = format(registerDateResult, 'yyyy-MM-dd');
+    console.log("Register Date (2 days ago):" + registerDateFormatted);
+    
+    let catalog_compliance = await dataBase.executeQuery(`UPDATE  catalog_compliance  SET  complete_date  = '${completeDateFormatted}' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' ORDER BY id desc limit 1;`);
     console.log(catalog_compliance);
-    let updateCourseEnrollment = await dataBase.executeQuery(`UPDATE course_enrollment  SET  register_date  = '${previousDate}' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' ORDER BY id desc limit 1;`);
+    let updateCourseEnrollment = await dataBase.executeQuery(`UPDATE course_enrollment  SET  register_date  = '${registerDateFormatted}' WHERE  tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' ORDER BY id desc limit 1;`);
     console.log(updateCourseEnrollment);
     await dataBase.executeQuery(`UPDATE cron_master SET  status  = '1' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Enrollment Updates'`);
-    const cronRunTime = new Date(currentTime.getTime() - 15 * 60 * 1000);
+    
+    // Create another separate date object for cron scheduling - use original currentTime
+    const cronRunTime = new Date(currentTimeString);
+    cronRunTime.setTime(cronRunTime.getTime() - 15 * 60 * 1000);
     const subTime = format(cronRunTime, 'yyyy-MM-dd HH:mm:ss');
     console.log('Formatted New Time (15 mins subtracted):', subTime);
-    let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Mark Course Enrollment Overdue';`);
+    
+    let cronDetails = await dataBase.executeQuery(`UPDATE cron_details SET status = '1', next_run= '${subTime}' ,current_status= 'waiting', previous_status = '' WHERE tenant_id='${tenant_ID}' AND portal_id ='${portal_ID}' AND name='Mark Course Enrollment Overdue/Incomplete';`);
     console.log(cronDetails);
 }
 

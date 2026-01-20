@@ -97,7 +97,7 @@ test.describe(`Ensure_that_a_delivered_ILT_Class_is_available_in_the_Completed_t
         await instructorHome.clickApply("Completed");
         await instructorHome.entersearchField(courseName)
         await instructorHome.clickEnrollmentIcon(courseName);
-        await enrollHome.selectEnrollOrCancel("Completed")
+        await enrollHome.selectEnrollOrCancel(courseName,"Completed")
         await enrollHome.enterReasonAndSubmit();
         await enrollHome.verifytoastMessage()
 

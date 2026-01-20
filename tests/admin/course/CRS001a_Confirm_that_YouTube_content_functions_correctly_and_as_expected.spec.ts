@@ -48,9 +48,7 @@ test.describe(`Confirm that YouTube content functions correctly and as expected.
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
     })
 
 })

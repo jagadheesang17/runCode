@@ -6,7 +6,7 @@ export enum credentialConstants {
    PASSWORD = "Welcome1@",
    CUSTOMERADMIN = "customadmin",
    LEARNERADMIN = "robretcollin@people.co",
-   INSTRUCTORNAME = "arivazhaganp",
+   INSTRUCTORNAME = "JagadishLearner",
    MANAGERUSERNAME = MANAGERNAME,
    LEARNERUSERNAME = "learneruser1",
    COMMERCEADMIN = "commerceadmin"

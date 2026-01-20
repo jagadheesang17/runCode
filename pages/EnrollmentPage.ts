@@ -12,7 +12,7 @@ export class EnrollmentPage extends AdminHomePage {
         ...this.selectors,
         manageEnrollement: `(//div[@id='wrapper-enrollment-action']//div)[1]`,
         enrollType: `//span[text()='Enroll']`,
-        searchcourseOrUser: `//input[contains(@id,'exp-search')]`,
+        searchcourseOrUser: `//input[contains(@id,'search')]`,
         courseList: `//div[contains(@id,'exp-search-lms')]//li`,
         courseListOpt: (index: number) => `(//div[contains(@id,'exp-search-lms')]//li)[${index}]`,
         userList: `(//div[contains(@id,'lms-scroll-results')]//li)`,
@@ -22,7 +22,7 @@ export class EnrollmentPage extends AdminHomePage {
         selectUser: `(//input[contains(@id,'selectedlearners')]/following::i)[2]`,
         enrollBtn: "//button[text()='Enroll']",
         toastMeassage: `//section[contains(@class,'lms-success-msg-wrapper')]//h3`,
-        enrollStatus: `(//div[contains(@id,'wrapper-enrollment-action')])[2]`,
+        enrollStatus: `(//button[contains(@data-id,'usr-enrollment-action')])[1]`,
         enrollORCancel: (data: string) => `//span[text()='${data}']`,
         reaonDesc: `//textarea[@id='check_box_msgsenrollmentviewstatususer']`,
         submitReason: `//button[text()='Submit']`,
@@ -162,6 +162,12 @@ export class EnrollmentPage extends AdminHomePage {
         enrollmentMenu: `//a[contains(@href,'enrollment')] | //span[text()='Enrollment'] | //span[text()='Enrollments']`,
         bulkOperationsMenu: `//a[contains(text(),'Bulk')] | //span[contains(text(),'Bulk')]`,
 
+        // Multiple class enrollment selectors
+        classSelectionIcon: `//i[contains(@class,'fa-duotone fa-circle icon')]`,
+        enrollButton: `//*[text()='Enroll']`,
+        enrolledStatus: `//span[text()='Enrolled']`,
+        myLearningLink: `//span[text()='My Learning']`,
+        myLearningSearchBox: `//input[@id='exp-searchenr-search-field']`,
 
     };
 
@@ -169,6 +175,28 @@ export class EnrollmentPage extends AdminHomePage {
     constructor(page: Page, context: BrowserContext) {
         super(page, context);
     }
+    async clickOnfirstCheckboxInEnrollmenPage(){
+        await this.validateElementVisibility(`(//label[contains(@for,'training')])[1]`, 'first CHKBOX');
+await this.click("(//label[contains(@for,'training')])[1]","first CHKBOX","Checkbox")
+}
+async clickOnMultipleLearner(){
+            await this.validateElementVisibility(`(//span[text()='Multiple Learner'])[1]`, 'Multiple Learner');
+await this.wait("minWait")
+await this.click("//span[text()='Multiple Learner']","Multiple Learner","Option")
+}
+
+async checkout(){
+    await this.wait("minWait")
+    await this.validateElementVisibility(this.selectors.clickCheckoutBtn, 'checkout')
+await this.click("//button[text()='checkout']","checkout","Button")
+}
+async clickLearnerchkboxByIndex(index:number){
+    await this.wait("minWait")
+    await this.validateElementVisibility(`(//label[contains(@for,'selectedlearners')])[${index}]`, 'learnerChkBox');
+    
+await this.click(`(//label[contains(@for,'selectedlearners')])[${index}]`,"learnerChkBox","chkbox")
+}
+
     async clickViewLearner() {
         await this.click(this.selectors.viewLearner, "View Learner", "Button")
     }
@@ -216,10 +244,28 @@ export class EnrollmentPage extends AdminHomePage {
         const index = await this.page.locator("//div[contains(@id,'lms-scroll-results')]//li").count();
         const randomIndex = Math.floor(Math.random() * index) + 1;
         await this.click(this.selectors.userListOpt(randomIndex), "Course", "Options")
-        await this.click(this.selectors.selectUser, "Select Course", "Radio button")
+        
+        // Try standard flow with timeout, fallback to alternative flow if it fails
+        try {
+            await this.page.waitForSelector(this.selectors.selectUser, { state: 'visible', timeout: 5000 });
+            await this.click(this.selectors.selectUser, "Select Course", "Radio button");
+        } catch (error) {
+            // Alternative flow: Use selectLearnerCheckboxAndSelect when radio button not available
+            console.log("Select User radio button not found within 5 seconds, using alternative selection flow");
+            await this.selectLearnerCheckboxAndSelect();
+        }
+    }
+    async selectDomainForCheckout(tenant:string){
+
+//await this.click(`//button[@data-id='instanceDeliveryType']` ,"Delivery Type Dropdown","Dropdown")
+// // await this.wait("minWait")
+// await this.click(`//span[text()='${tenant}']`  ,"Delivery Type Option","Option")
+await this.wait("minWait")
+await this.click (`//button[@id='instance-add']`,"Add Instance","Button")
     }
     async searchUser(data: string) {
         await this.wait("minWait")
+        await this.page.fill(this.selectors.searchcourseOrUser, "")
         await this.typeAndEnter(this.selectors.searchcourseOrUser, "Course Name", data)
     }
     async clickEnrollBtn() {
@@ -264,11 +310,17 @@ export class EnrollmentPage extends AdminHomePage {
         await this.wait('mediumWait');
     }
 
-    async selectEnrollOrCancel(data: string) {
-        await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown")
-        //await this.click(this.selectors.enrollORCancel(data).first(),"Enroll Status","Option")\
+    async selectEnrollOrCancel(courseName: string, status: string) {
+        await this.wait("minWait");
+        await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown");
         await this.wait("mediumWait");
-        await this.page.locator(this.selectors.enrollORCancel(data)).first().click({ force: true });
+        await this.page.locator(this.selectors.enrollORCancel(courseName)).first().click({ force: true });
+        await this.wait("minWait");
+        
+        // Select the status (Canceled, Completed, etc.)
+        await this.click(this.selectors.enrollStatus, "Enroll Status", "Dropdown");
+        await this.wait("mediumWait");
+        await this.page.locator(this.selectors.enrollORCancel(status)).first().click({ force: true });
         await this.wait("minWait");
     }
     async selectByOption(data: string) {
@@ -292,6 +344,30 @@ export class EnrollmentPage extends AdminHomePage {
         await this.click(this.selectors.selectTeamUser, "Select Team User", "Radio button")
         await this.validateElementVisibility(this.selectors.selectTeamUserBtn, "Select Team User Button");
         await this.click(this.selectors.selectTeamUserBtn, "Select Team User", "Button")
+    }
+
+    /**
+     * Change enrollment status for a specific course in learner's My Learning
+     * @param course - The course name to find
+     * @param status - The status to change to (e.g., 'Canceled', 'Completed')
+     */
+    async learnerCourseStatus(course: string, status: string) {
+        await this.wait("mediumWait");
+        
+        // Scroll to the course enrollment action button
+        const courseEnrollmentButton = `(//span[text()='${course}']/following::button[contains(@data-id,'usr-enrollment-action')])[1]`;
+        await this.page.locator(courseEnrollmentButton).scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+        
+        // Click the enrollment action dropdown
+        await this.click(courseEnrollmentButton, `Enrollment Action for ${course}`, "Button");
+        await this.wait("mediumWait");
+        
+        // Click the status option
+        const statusOptionSelector = `//a[@class='dropdown-item']//following::span[text()='${status}']`;
+        await this.page.locator(statusOptionSelector).last().click();
+        await this.wait("minWait");
+        console.log(`✓ Selected ${status} for course: ${course}`);
     }
     //Enrollment by manager
 
@@ -611,6 +687,29 @@ export class EnrollmentPage extends AdminHomePage {
         await this.wait("minWait");
         await this.page.locator(`//button[text()='Select Learners']`).click();
     }
+
+    /**
+     * Select learner checkbox and click enrollment icon in View/Update Status - Learner flow
+     * This method is used after enterSearchUser to access the learner's enrollment details
+     */
+    async selectLearnerCheckboxAndSelect() {
+        await this.wait("mediumWait");
+        
+        // Click the radio icon to select the learner
+        const radioIconSelector = "//label[contains(@for,'selectedlearners')]";
+        await this.page.waitForSelector(radioIconSelector, { state: 'visible', timeout: 10000 });
+        await this.page.locator(radioIconSelector).click();
+        await this.wait("minWait");
+        console.log("✓ Learner radio button clicked");
+        
+        // Click the Select button
+        const selectButtonSelector = "//button[text()='Select']";
+        await this.page.waitForSelector(selectButtonSelector, { state: 'visible', timeout: 5000 });
+        await this.page.locator(selectButtonSelector).click();
+        await this.wait("mediumWait");
+        console.log("✓ Select button clicked - Learner enrollment details opened");
+    }
+
     async selectSourceInstance(instanceName: string): Promise<void> {
         await this.wait("minWait");
         await this.click(this.selectors.sourceInstanceDropdown, "Source Instance", "Dropdown");
@@ -896,6 +995,12 @@ export class EnrollmentPage extends AdminHomePage {
         }
     }
 
+    async verifyNoResult(){
+        await this.wait('minWait');
+        await this.verification("//*[contains(text(),'No matching')]", "No matching result found.");
+
+    }
+
     // View/Update Status - Table Field Verification Methods
 
     /**
@@ -1094,6 +1199,8 @@ export class EnrollmentPage extends AdminHomePage {
         );
     }
 
+
+
     /**
      * Change learner status in View/Update Status page
      * @param username - The username to identify the learner row
@@ -1255,6 +1362,227 @@ export class EnrollmentPage extends AdminHomePage {
         } else {
             throw new Error(`Expected score to contain "${expectedScore}" but got "${cleanScore}"`);
         }
+    }
+
+    async verifyUserScore(username: string): Promise<number | null> {
+        await this.wait("minWait");
+        const scoreSelector = this.selectors.learnerScore(username);
+        
+        await this.validateElementVisibility(scoreSelector, `Score field for ${username}`);
+        
+        const scoreText = await this.page.locator(scoreSelector).textContent();
+        const cleanScore = scoreText?.trim() || '';
+        
+        const scoreMatch = cleanScore.match(/(\d+\.?\d*)/);
+        if (scoreMatch) {
+            const score = parseFloat(scoreMatch[1]);
+            console.log(`✅ Found score for ${username}: ${score}`);
+            return score;
+        }
+        
+        console.log(`⚠️ No numeric score found for ${username}, got: "${cleanScore}"`);
+        return null;
+    }
+
+    async verifyMultipleUserScores(usernames: string[]): Promise<{ [username: string]: number | null }> {
+        const results: { [username: string]: number | null } = {};
+        
+        for (const username of usernames) {
+            try {
+                const score = await this.verifyUserScore(username);
+                results[username] = score;
+            } catch (error) {
+                console.log(`⚠️ Error verifying score for ${username}: ${error}`);
+                results[username] = null;
+            }
+        }
+        
+        return results;
+    }
+
+    async verifyBulkEnrollmentSuccess(): Promise<void> {
+        await this.wait("mediumWait");
+        
+        const successSelectors = [
+            `//section[contains(@class,'lms-success')]//h3`,
+            `//div[contains(@class,'alert-success')]`,
+            `//span[contains(text(),'Success') or contains(text(),'success')]`,
+            `//h3[contains(text(),'Success') or contains(text(),'success')]`
+        ];
+        
+        let successFound = false;
+        for (const selector of successSelectors) {
+            const element = this.page.locator(selector);
+            if (await element.count() > 0) {
+                const text = await element.first().textContent();
+                console.log(`✅ Bulk enrollment success verified: ${text?.trim()}`);
+                successFound = true;
+                break;
+            }
+        }
+        
+        if (!successFound) {
+            throw new Error('Bulk enrollment success message not found');
+        }
+    }
+
+    async verifyBulkUploadErrorContains(expectedErrorKeywords: string[]): Promise<void> {
+        await this.wait("mediumWait");
+        
+        const errorSelectors = [
+            `//section[contains(@class,'lms-error')]//h3`,
+            `//div[contains(@class,'alert-danger')]`,
+            `//span[contains(@class,'error')]`,
+            `//div[contains(@class,'error-message')]`
+        ];
+        
+        let errorText = '';
+        for (const selector of errorSelectors) {
+            const element = this.page.locator(selector);
+            if (await element.count() > 0) {
+                errorText = (await element.first().textContent())?.trim().toLowerCase() || '';
+                if (errorText) break;
+            }
+        }
+        
+        if (!errorText) {
+            throw new Error('Expected error message not found');
+        }
+        
+        const matchedKeywords = expectedErrorKeywords.filter(keyword => 
+            errorText.includes(keyword.toLowerCase())
+        );
+        
+        if (matchedKeywords.length > 0) {
+            console.log(`✅ Bulk upload error verified. Found keywords: ${matchedKeywords.join(', ')}`);
+            console.log(`   Error message: ${errorText}`);
+        } else {
+            throw new Error(`Expected error to contain one of [${expectedErrorKeywords.join(', ')}] but got: ${errorText}`);
+        }
+    }
+
+    async verifyEnrollmentStatus(username: string, expectedStatus: string): Promise<void> {
+        await this.wait("minWait");
+        const statusSelector = this.selectors.learnerStatus(username);
+        
+        await this.validateElementVisibility(statusSelector, `Status field for ${username}`);
+        
+        const actualStatus = await this.page.locator(statusSelector).inputValue();
+        const cleanStatus = actualStatus?.trim() || '';
+        
+        if (cleanStatus.toLowerCase() === expectedStatus.toLowerCase()) {
+            console.log(`✅ Verified enrollment status for ${username}: ${cleanStatus}`);
+        } else {
+            throw new Error(`Expected status "${expectedStatus}" but got "${cleanStatus}" for ${username}`);
+        }
+    }
+
+    async uploadBulkEnrollmentFile(csvFilePath: string): Promise<void> {
+        await this.wait("minWait");
+        
+        const fileUploadSelectors = [
+            `//input[@type='file']`,
+            `//input[contains(@id,'file')]`,
+            `//input[contains(@class,'file')]`
+        ];
+        
+        let uploaded = false;
+        for (const selector of fileUploadSelectors) {
+            const element = this.page.locator(selector);
+            if (await element.count() > 0) {
+                await element.first().setInputFiles(csvFilePath);
+                console.log(`✅ Bulk enrollment file uploaded: ${csvFilePath}`);
+                uploaded = true;
+                await this.wait("mediumWait");
+                break;
+            }
+        }
+        
+        if (!uploaded) {
+            throw new Error('File upload input not found for bulk enrollment');
+        }
+    }
+
+    async enrollMultipleClasses(courseName: string): Promise<void> {
+        await this.wait("mediumWait");
+        
+        // Get total count of available classes
+        const totalClasses = await this.page.locator(this.selectors.classSelectionIcon).count();
+        console.log(`📊 Found ${totalClasses} classes available for enrollment`);
+        
+        if (totalClasses === 0) {
+            throw new Error("No classes found for enrollment");
+        }
+        
+        // Enroll in each class one by one
+        for (let i = 1; i <= totalClasses; i++) {
+            console.log(`\n🔄 Processing class ${i} of ${totalClasses}`);
+            
+            // Select the class icon (always select first icon as previous ones are enrolled)
+            await this.selectClass();
+            
+            // Click Enroll button
+            await this.clickEnrollButtonForClass();
+            
+            // Verify enrollment success
+            await this.verifyEnrolledStatus(i);
+            
+            // If not the last class, go back to My Learning and search course again
+            if (i < totalClasses) {
+                await this.navigateBackToMyLearning();
+                await this.searchCourseInMyLearning(courseName);
+            }
+        }
+        
+        console.log(`\n✅ Successfully enrolled in all ${totalClasses} classes`);
+    }
+
+    private async selectClass(): Promise<void> {
+        await this.wait("minWait");
+        const classIcon = `(${this.selectors.classSelectionIcon})[1]`;
+        await this.validateElementVisibility(classIcon, "Class Selection");
+        await this.click(classIcon, "Class", "Icon");
+        console.log(`   ✓ Class selected`);
+    }
+
+    private async clickEnrollButtonForClass(): Promise<void> {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.enrollButton, "Enroll Button");
+        await this.click(this.selectors.enrollButton, "Enroll", "Button");
+        console.log(`   ✓ Enroll button clicked`);
+        await this.wait("mediumWait");
+    }
+
+    private async verifyEnrolledStatus(classNumber: number): Promise<void> {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.enrolledStatus, "Enrolled Status");
+        const enrolledText = await this.page.locator(this.selectors.enrolledStatus).textContent();
+        
+        if (enrolledText?.includes("Enrolled")) {
+            console.log(`   ✅ Class ${classNumber} enrollment verified: ${enrolledText.trim()}`);
+        } else {
+            throw new Error(`Enrollment verification failed for class ${classNumber}`);
+        }
+    }
+
+    private async navigateBackToMyLearning(): Promise<void> {
+        await this.wait("minWait");
+        await this.validateElementVisibility(this.selectors.myLearningLink, "My Learning Link");
+        await this.click(this.selectors.myLearningLink, "My Learning", "Link");
+        console.log(`   ↩ Navigated back to My Learning`);
+        await this.wait("mediumWait");
+    }
+
+    private async searchCourseInMyLearning(courseName: string): Promise<void> {
+        await this.wait("minWait");
+        await this.typeAndEnter(this.selectors.myLearningSearchBox, "Course Name", courseName);
+        await this.wait("mediumWait");
+        
+        const courseLocator = `//h5[text()='${courseName}']`;
+        await this.validateElementVisibility(courseLocator, `Course: ${courseName}`);
+        await this.click(courseLocator, courseName, "Course");
+        console.log(`   🔍 Course "${courseName}" searched and selected in My Learning`);
+        await this.wait("mediumWait");
     }
 
 }

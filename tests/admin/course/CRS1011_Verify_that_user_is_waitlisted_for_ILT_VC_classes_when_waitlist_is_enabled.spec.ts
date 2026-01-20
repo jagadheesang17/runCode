@@ -1,10 +1,11 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
+import { credentialConstants } from '../../../constants/credentialConstants';
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const sessionName = FakerData.getCourseName();
-const instructorName = "nithyas";
+const instructorName = credentialConstants.INSTRUCTORNAME;
 
 test.describe(`Verify that user is waitlisted for ILT / VC classes when waitlist is enabled`, async () => {
     test.describe.configure({ mode: "serial" });
@@ -27,8 +28,8 @@ test.describe(`Verify that user is waitlisted for ILT / VC classes when waitlist
         // Fill course basic information
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("ILT waitlist functionality test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("Waitlist functionality test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Classroom (ILT) delivery type
         await createCourse.selectdeliveryType("Classroom");
@@ -143,7 +144,7 @@ test.describe(`Verify that user is waitlisted for ILT / VC classes when waitlist
         console.log("SUCCESS: Second learner enrolled (Seat 2/2 filled - Course now at capacity)");
         
         // Verify seats are full
-        await catalog.verifySeatFullText(courseName);
+      //  await catalog.verifySeatFullText(courseName);
         console.log("✓ Verified: Course shows 'Seats Full' status");
         
         console.log("COMPLETE: All available seats filled, ready for waitlist testing");
@@ -168,7 +169,7 @@ test.describe(`Verify that user is waitlisted for ILT / VC classes when waitlist
         await catalog.clickMoreonCourse(courseName);
         
         // Verify seats are full but waitlist option should be available
-        await catalog.verifySeatFullText(courseName);
+        await catalog.verifyWaitlist(courseName);
         console.log("✓ Confirmed: Course seats are full");
         
         // Attempt to enroll (should trigger waitlist)

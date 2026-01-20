@@ -61,7 +61,30 @@ export class CostcenterPage extends LearnerHomePage {
         await this.click(this.selectors.countryName(cityName), "city/Town", "Option");
         await this.type(this.selectors.cityTown, "CityTown", FakerData.randomCityName());
         await this.type(this.selectors.zipcode, "Zipcode", getPonumber())
+        await this.type("//label[text()='first name']//following::input[1]", "First Name", FakerData.getFirstName())
+        await this.type("//label[text()='last name']//following::input[1]", "Last Name", FakerData.getLastName())
+
     }
+    async calculateTax(){
+        await this.wait("mediumWait")
+        await this.validateElementVisibility("//button[text()='Calculate Tax']", "Calculate Tax Button")
+        await this.click("//button[text()='Calculate Tax']","Calculate Tax","Button")
+        await this.wait("mediumWait")
+    }
+
+    async orderApproval(){
+try {
+    await this.validateElementVisibility("//label[text()='Cost center:']//following::input[1]", "Cost Center Input")
+    await this.type("//label[text()='Cost center:']//following::input[1]", "name", "12")
+    await this.wait("minWait")
+} catch {
+    console.log("Cost center is not there")
+}
+await this.click("//label[@for='tCChecked']//preceding::i[contains(@class,'fad fa-square icon')]","Terms and Condition","Checkbox")
+await this.wait("minWait")
+await this.click("//button[text()='create order & approve']","Create Order & Approve","Button")
+await this.wait("minWait")
+}
 
    
 

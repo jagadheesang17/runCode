@@ -27,7 +27,7 @@ test.describe(`Verify that additional information displays correctly in learner 
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Course with additional information test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.contentLibrary("AutoVimeo");
         
     // Add additional information to the course (enable visibility and set content)

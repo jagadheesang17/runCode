@@ -7,13 +7,15 @@ let endPointURL = URLConstants.adminEndPointUrl
 
 async function generateOauthToken() {
     try {
-        const response = await postRequest(customAdminOuthData, endPointURL);        
-       // await assertResponse(response.status, 200);
-        if (response.data && response.data.access_token) {
-            return "Bearer " + response.data.access_token
-        } else {
-            throw new Error("Access token not found in response");
+        const response = await postRequest(customAdminOuthData, endPointURL);
+        // Some environments wrap payload as { data: { access_token } }, others as { access_token }
+        const token = response?.data?.access_token ?? response?.data?.data?.access_token;
+        if (token) {
+            return "Bearer " + token;
         }
+        // Provide better diagnostics for debugging
+        console.error("OAuth response payload:", JSON.stringify(response?.data));
+        throw new Error("Access token not found in response payload");
     } catch (error) {
         console.error("Failed to generate OAuth token:", error);
         throw error;

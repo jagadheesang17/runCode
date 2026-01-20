@@ -29,8 +29,9 @@ test.describe(`Verify that able to enroll only one instance of the Multi instanc
         // Fill course basic information
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("Multi-instance single enrollment restriction test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        
+        await createCourse.typeDescription("Multi-instance single enrollment test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Multi-Instance delivery type
         await createCourse.selectInstance();

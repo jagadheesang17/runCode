@@ -26,7 +26,7 @@ test.describe(`Verify that could not show in catalog course without thumbnail`, 
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Course without thumbnail test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.contentLibrary("AutoVimeo");
         console.log("Content added to course without thumbnail");
         
@@ -119,7 +119,7 @@ test.describe(`Verify that could not show in catalog course without thumbnail`, 
         console.log("Verified: Course without thumbnail catalog behavior checked");
     });
 
-    test.only(`Add thumbnail and verify course now appears properly in catalog`, async ({ adminHome, createCourse, learnerHome, catalog, page }) => {
+    test(`Add thumbnail and verify course now appears properly in catalog`, async ({ adminHome, createCourse, learnerHome, catalog, page }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation Team` },
             { type: `TestCase`, description: `CRS1018_Add_Thumbnail_Catalog_Visibility` },

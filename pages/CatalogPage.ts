@@ -204,6 +204,13 @@ export class CatalogPage extends LearnerHomePage {
         enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
         enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
 
+        // Learning History Status Verification
+        learningHistoryLink: `//div[text()='Learning History']`,
+        learningHistoryTab: (type: string) => `//a[text()='${type}']`,
+        learningHistoryCourseTab: (type: string) => `(//a[text()='${type}'])[2]`,
+        learningHistorySearchInput: `//input[@id='exp-searchlnr-search-field']`,
+        learningHistoryStatus: (courseName: string, status: string) => `//h5[text()='${courseName}']//following::div[contains(text(),'${status}')]`,
+
               };
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
@@ -1043,8 +1050,9 @@ async inProgress() {
     const completed = this.page.locator(this.selectors.completedVideo).last();
     try {
       await this.validateElementVisibility(
-        this.selectors.contentLabel,
-        "Content"
+      this.selectors.contentLabel,
+      "Content",
+      { timeout: 8000}
       );
       if (await content.isVisible({ timeout: 60000 })) {
         await content.scrollIntoViewIfNeeded();
@@ -1295,6 +1303,54 @@ async inProgress() {
     await this.wait("maxWait"); //Added by Arivu
     const completedCourseSelector = this.selectors.completedCourse(name);
     await this.mouseHover(completedCourseSelector, "Text");
+  }
+
+  /**
+   * Verify course/certification/learning path status in Learning History
+   * @param type - Type of learning item: "Course" | "Certification" | "Learning Path"
+   * @param courseName - Name of the course/certification/learning path
+   * @param status - Expected status: "Completed" | "Canceled"
+   */
+  async statusVerification(
+    type: "Course" | "Certification" | "Learning Path",
+    courseName: string,
+    status: "Completed" | "Canceled"
+  ) {
+    console.log(`🔍 Starting status verification for ${type}: "${courseName}" - Expected status: ${status}`);
+
+    // 1️⃣ Scroll & click Learning History
+    await this.page.locator(this.selectors.learningHistoryLink).scrollIntoViewIfNeeded();
+    await this.click(this.selectors.learningHistoryLink, "Learning History", "Link");
+    console.log("✅ Clicked Learning History");
+
+    // 2️⃣ Click tab based on type
+    if (type === "Course") {
+      await this.click(this.selectors.learningHistoryCourseTab(type), `${type} Tab`, "Tab");
+    } else {
+      await this.click(this.selectors.learningHistoryTab(type), `${type} Tab`, "Tab");
+    }
+    console.log(`✅ Clicked ${type} tab`);
+
+    // 3️⃣ Search by course / LP / certification name
+    await this.typeAndEnter(
+      this.selectors.learningHistorySearchInput,
+      "Learning History Search",
+      courseName
+    );
+    await this.wait("minWait");
+    console.log(`✅ Searched for: ${courseName}`);
+
+    // 4️⃣ Verify status for that item
+    await this.validateElementVisibility(
+      this.selectors.learningHistoryStatus(courseName, status),
+      `${type} Status: ${status}`
+    );
+    await expect(
+      this.page.locator(this.selectors.learningHistoryStatus(courseName, status))
+    ).toBeVisible();
+
+    console.log(`✅ ${type} → "${courseName}" status verified as ${status}`);
+    await this.click(`//h5[text()='${courseName}']`, "data", "type");
   }
 
   async verifyExpiredContent() {
@@ -1902,12 +1958,12 @@ async inProgress() {
     await this.verification(this.selectors.noSeatLeftPopupMsg, "No seat");
     await this.click(this.selectors.okBtn, "Ok", "Button");
   }
-  async verifySeatFullText(courseName: string) {
-    await this.wait("minWait");
-    await this.validateElementVisibility(
-      this.selectors.seatFullOnDetailsPage(courseName),
-      "Seat Full"
-    );
+    async verifySeatFullText(courseName: string) {
+      await this.wait("minWait");
+      await this.validateElementVisibility(
+        this.selectors.seatFullOnDetailsPage(courseName),
+        "Seat Full"
+      );
     await this.page
       .locator(this.selectors.selectCourseRadioBtn(courseName))
       .scrollIntoViewIfNeeded();
@@ -1918,6 +1974,21 @@ async inProgress() {
     await this.page
       .locator(this.selectors.selectCourseRadioBtn(courseName))
       .isDisabled();
+  }
+
+  async verifyWaitlist(courseName: string) {
+    await this.wait("minWait");
+    await this.validateElementVisibility(
+      this.selectors.seatFullOnDetailsPage(courseName),
+      "Waitlist"
+    );
+    await this.page
+      .locator(this.selectors.selectCourseRadioBtn(courseName))
+      .scrollIntoViewIfNeeded();
+    await this.verification(
+      this.selectors.seatFullOnDetailsPage(courseName),
+      "waitlist"
+    );
   }
   //for selecting second course in program module
   async clickOnNextCourse(data: string) {

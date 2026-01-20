@@ -63,6 +63,28 @@ export class LearnerHomePage extends LearnerLogin {
 
         instrctor: `//a/span[text()='Instructor']`,
 
+        // Alert more button selectors
+        alertIcon: `//i[@class='fa-duotone fa-exclamation-triangle']`,
+        alertsText: `(//div[text()='Alerts'])[1]`,
+        moreButton: `(//button[text()=' more'])[1]`,
+        aboutThisCourse: `//div[text()='About This Course']`,
+
+        // Announcement push-box selectors
+        announcementPushBox: `//div[@aria-label='Announcements']`,
+        announcementListItem: `(//div[contains(@class,'list-group-item')])[1]`,
+
+        // Language change selectors
+        languageButton: `//button[@data-id='lnr_language']`,
+        languageSearchInput: `//input[@aria-label='Search']`,
+        languageOption: (language: string) => `//span[text()='${language}']`,
+
+        // Cart verification selectors
+        shoppingCartIcon: `(//div[@aria-label='shopping cart'])`,
+        emptyCartMessage: `//div[text()='CART IS EMPTY. GO TO ']`,
+
+        // Catalog hyperlink selector
+        catalogHyperlink: `//a[text()=' CATALOG ']`,
+
 
     };
 
@@ -430,6 +452,198 @@ public async clickmyprofile()
 
 async verifyMappedOrganization(orgname:string,expectedOrgname:string){
     await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
+}
+
+async clickAlertMoreButton() {
+    console.log("🔔 Starting Alert More Button verification");
+    
+    // Step 1: Verify alert icon is visible
+    console.log("📝 Step 1: Verify alert icon is visible");
+    await this.validateElementVisibility(this.selectors.alertIcon, "Alert Icon");
+    const alertIcon = this.page.locator(this.selectors.alertIcon);
+    const isAlertIconVisible = await alertIcon.isVisible();
+    
+    if (!isAlertIconVisible) {
+        throw new Error("❌ Alert icon is not visible");
+    }
+    console.log("✅ Alert icon is visible");
+    
+    // Step 2: Click on alert icon
+    console.log("📝 Step 2: Click on alert icon");
+    await this.click(this.selectors.alertIcon, "Alert Icon", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Clicked on alert icon");
+    
+    // Step 3: Verify 'Alerts' text appears
+    console.log("📝 Step 3: Verify 'Alerts' text appears");
+    await this.validateElementVisibility(this.selectors.alertsText, "Alerts Text");
+    const alertsText = this.page.locator(this.selectors.alertsText);
+    const isAlertsTextVisible = await alertsText.isVisible();
+    
+    if (!isAlertsTextVisible) {
+        throw new Error("❌ 'Alerts' text is not visible after clicking alert icon");
+    }
+    console.log("✅ 'Alerts' text is visible");
+    
+    // Step 4: Check if 'more' button exists
+    console.log("📝 Step 4: Check if 'more' button is available");
+    const moreButton = this.page.locator(this.selectors.moreButton);
+    const isMoreButtonVisible = await moreButton.isVisible({ timeout: 5000 }).catch(() => false);
+    
+    if (!isMoreButtonVisible) {
+        console.log("⚠️ 'more' button is not available - no additional alerts to show");
+        throw new Error("❌ 'more' button is not there");
+    }
+    console.log("✅ 'more' button is visible");
+    
+    // Step 5: Click on 'more' button
+    console.log("📝 Step 5: Click on 'more' button");
+    await this.click(this.selectors.moreButton, "More Button", "Button");
+    await this.wait("mediumWait");
+    console.log("✅ Clicked on 'more' button");
+    
+    // Step 6: Verify 'About This Course' section appears
+    console.log("📝 Step 6: Verify 'About This Course' section appears after clicking 'more'");
+    await this.validateElementVisibility(this.selectors.aboutThisCourse, "About This Course");
+    const aboutThisCourse = this.page.locator(this.selectors.aboutThisCourse);
+    const isAboutThisCourseVisible = await aboutThisCourse.isVisible();
+    
+    if (!isAboutThisCourseVisible) {
+        throw new Error("❌ 'About This Course' section is not visible after clicking 'more' button");
+    }
+    console.log("✅ 'About This Course' section is visible");
+    
+    console.log("✅ Alert More Button verification completed successfully");
+}
+
+async verifyAnnouncementPushBox() {
+    console.log("📢 Starting Announcement push-box verification");
+    
+    // Step 1: Wait for and click on Announcements icon
+    console.log("📝 Step 1: Wait for Announcements icon and click");
+    await this.validateElementVisibility(this.selectors.announcementPushBox, "Announcements Icon");
+    await this.click(this.selectors.announcementPushBox, "Announcements", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Clicked on Announcements icon");
+    
+    // Step 2: Check if announcement list item appears
+    console.log("📝 Step 2: Verify announcement list item appears");
+    const announcementListItem = this.page.locator(this.selectors.announcementListItem);
+    const isAnnouncementVisible = await announcementListItem.isVisible({ timeout: 5000 }).catch(() => false);
+    
+    if (!isAnnouncementVisible) {
+        console.log("ℹ️ No announcements available - announcement list is empty");
+        return;
+    }
+    
+    console.log("✅ Announcement list item is visible");
+    console.log("✅ Announcements are available in the push-box");
+}
+
+async languageChangeVerification(language: string) {
+    console.log(`🌐 Starting language change verification for: ${language}`);
+    
+    // Step 1: Click on language button
+    console.log("📝 Step 1: Click on language button");
+    await this.validateElementVisibility(this.selectors.languageButton, "Language Button");
+    await this.click(this.selectors.languageButton, "Language", "Button");
+    await this.wait("minWait");
+    console.log("✅ Language dropdown opened");
+    
+    // Step 2: Search for the language
+    console.log(`📝 Step 2: Search for language: ${language}`);
+    await this.validateElementVisibility(this.selectors.languageSearchInput, "Language Search Input");
+    await this.type(this.selectors.languageSearchInput, "Language Search Input", language);
+    await this.wait("minWait");
+    console.log(`✅ Searched for language: ${language}`);
+    
+    // Step 3: Click on the language option
+    console.log(`📝 Step 3: Click on ${language} option`);
+    const languageSelector = this.selectors.languageOption(language);
+    await this.validateElementVisibility(languageSelector, `${language} Option`);
+    await this.click(languageSelector, language, "Language Option");
+    await this.wait("mediumWait");
+    console.log(`✅ Clicked on ${language} option`);
+    
+    // Step 4: Verify page language has changed
+    console.log("📝 Step 4: Verify page language has changed");
+    await this.page.waitForLoadState('load');
+    
+    // Get the current page language attribute
+    const htmlLangAttribute = await this.page.evaluate(() => document.documentElement.lang);
+    console.log(`📄 Current page language attribute: ${htmlLangAttribute}`);
+    
+    // Verify the language button now shows the selected language
+    const languageButton = this.page.locator(this.selectors.languageButton);
+    const buttonText = await languageButton.textContent();
+    console.log(`🔍 Language button text after change: ${buttonText?.trim()}`);
+    
+    if (buttonText?.includes(language)) {
+        console.log(`✅ Page language successfully changed to: ${language}`);
+    } else {
+        console.log(`⚠️ Language button shows: ${buttonText}, expected to contain: ${language}`);
+    }
+    
+    console.log("✅ Language change verification completed");
+}
+
+async emptyCartVerification() {
+    console.log("🛒 Starting empty cart verification");
+    
+    // Step 1: Click on shopping cart icon
+    console.log("📝 Step 1: Click on shopping cart icon");
+    await this.validateElementVisibility(this.selectors.shoppingCartIcon, "Shopping Cart Icon");
+    await this.click(this.selectors.shoppingCartIcon, "Shopping Cart", "Icon");
+    await this.wait("minWait");
+    console.log("✅ Clicked on shopping cart icon");
+    
+    // Step 2: Verify empty cart message is displayed
+    console.log("📝 Step 2: Verify 'CART IS EMPTY' message is displayed");
+    await this.validateElementVisibility(this.selectors.emptyCartMessage, "Empty Cart Message");
+    
+    const emptyCartElement = this.page.locator(this.selectors.emptyCartMessage);
+    const isVisible = await emptyCartElement.isVisible();
+    
+    if (isVisible) {
+        const messageText = await emptyCartElement.textContent();
+        console.log(`✅ Empty cart message verified: "${messageText?.trim()}"`);
+    } else {
+        throw new Error("❌ Empty cart message is not visible");
+    }
+    
+    console.log("✅ Empty cart verification completed successfully");
+}
+
+async catalogHyperlink() {
+    console.log("📚 Starting catalog hyperlink scroll verification");
+    
+    // Step 1: Capture scroll position before clicking
+    console.log("📝 Step 1: Capture scroll position before clicking catalog hyperlink");
+    const beforeScroll = await this.page.evaluate(() => window.scrollY);
+    console.log(`📍 Scroll position before click: ${beforeScroll}px`);
+    
+    // Step 2: Click on CATALOG hyperlink
+    console.log("📝 Step 2: Click on CATALOG hyperlink");
+    await this.validateElementVisibility(this.selectors.catalogHyperlink, "Catalog Hyperlink");
+    await this.click(this.selectors.catalogHyperlink, "CATALOG", "Hyperlink");
+    console.log("✅ Clicked on CATALOG hyperlink");
+    
+    // Step 3: Wait for scroll animation to complete
+    await this.wait("minWait");
+    
+    // Step 4: Capture scroll position after clicking
+    console.log("📝 Step 4: Verify page scrolled to catalog section");
+    const afterScroll = await this.page.evaluate(() => window.scrollY);
+    console.log(`📍 Scroll position after click: ${afterScroll}px`);
+    
+    // Step 5: Verify scroll position changed
+    if (afterScroll !== beforeScroll) {
+        console.log(`✅ Page scrolled successfully - Scroll changed by ${Math.abs(afterScroll - beforeScroll)}px`);
+    } else {
+        console.log("⚠️ Warning: Scroll position did not change");
+    }
+    
+    console.log("✅ Catalog hyperlink scroll verification completed");
 }
 
 }

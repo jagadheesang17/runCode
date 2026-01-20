@@ -24,7 +24,7 @@ test.describe(`Verify that the hidden in catalog course enrolled by admin is sho
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a hidden in catalog course: " + description);
-      //  await createCourse.selectDomainOption("QA");
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.contentLibrary(); // Youtube content is attached here
         await createCourse.clickHideinCatalog();
         await createCourse.clickSave();
@@ -88,7 +88,7 @@ test.describe(`Verify that the hidden in catalog course enrolled by admin is sho
         
         // Navigate to Catalog section
         await learnerHome.clickCatalog();
-        await catalog.mostRecent();
+        //await catalog.mostRecent();
         
         // Search for the hidden course in Catalog - should not be found
         await catalog.searchCatalog(courseName);

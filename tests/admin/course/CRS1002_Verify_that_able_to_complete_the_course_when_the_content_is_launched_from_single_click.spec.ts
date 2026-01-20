@@ -23,7 +23,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Single click completion test course: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.contentLibrary(); // Youtube content is attached here
         await createCourse.clickCatalog(); // Make course visible in catalog
         await createCourse.clickSave();
@@ -81,28 +81,19 @@ test.describe(`Verify that able to complete the course when the content is launc
         console.log("Content launched successfully from single-click pop-up");
         
         // Use same video playing method as CRS001a
-        await catalog.clickLaunchButton();
+        await catalog.playAndWaitForVideo();
         
         console.log("Video content played successfully until completion");
         
         // Save learning status after content completion
-        await catalog.saveLearningStatus();
+        await catalog.saveLearningStatusOnly();
         
         console.log("Learning status saved - content completion process initiated");
         
         // Navigate back to My Learning to verify completion
-        await catalog.clickMyLearning();
+        await catalog.clickDashboardLink();
         
-        // Verify the course shows as completed
-        await catalog.clickCompletedButton();
-        
-        console.log("Navigated to Completed courses section");
-        
-        // Search for the completed course
-        await catalog.searchMyLearning(courseName);
-        
-        // Verify the course appears in completed section
-        await catalog.verifyCompletedCourse(courseName);
+       await catalog.statusVerification("Course", courseName, "Completed");
         
         console.log("SUCCESS: Course completion verified - course appears in Completed section");
         
@@ -127,11 +118,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         
         // Navigate to My Learning - Completed section
         await learnerHome.clickMyLearning();
-        await catalog.clickCompletedButton();
-        
-        // Search for the completed course
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
         
         console.log("Found completed course in Completed section");
         
@@ -152,9 +139,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         
         // Verify course remains in completed section
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
         
         console.log("SUCCESS: Completed course re-launch via single-click verified");
         console.log("✓ Completed course found in Completed section");
@@ -185,7 +170,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         await catalog.launchContentFromMylearning();
         
         // Use same video playing method as CRS001a
-        await catalog.clickLaunchButton();
+       await catalog.playAndWaitForVideo();
         
         // Save learning status after content completion
         await catalog.saveLearningStatus();
@@ -194,9 +179,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         
         // Verify in Completed section
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
         
         console.log("Course verified in Completed section - progress tracking successful");
         
@@ -207,8 +190,7 @@ test.describe(`Verify that able to complete the course when the content is launc
         console.log("Course still visible in All courses section");
         
         await catalog.clickCompletedButton(); // Back to Completed
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
         
         console.log("COMPLETE: Progress tracking verification successful");
         console.log("✓ Single-click launch maintains proper progress tracking");

@@ -1,10 +1,11 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
+import { credentialConstants } from '../../../constants/credentialConstants';
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const sessionName = FakerData.getCourseName();
-const instructorName = "nithyas";
+const instructorName = credentialConstants.INSTRUCTORNAME;
 
 test.describe(`Verify that cannot save the ILT / VC course without filling seat max field`, async () => {
     test.describe.configure({ mode: "serial" });
@@ -27,8 +28,8 @@ test.describe(`Verify that cannot save the ILT / VC course without filling seat 
         // Fill course basic information
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("ILT seat max validation test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("ILT seat validation test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Classroom (ILT) delivery type
         await createCourse.selectdeliveryType("Classroom");
@@ -102,8 +103,8 @@ test.describe(`Verify that cannot save the ILT / VC course without filling seat 
         // Fill course basic information
         await createCourse.enter("course-title", courseName + "_VC");
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("VC seat max validation test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("Virtual Class seat validation test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Virtual Class delivery type
         await createCourse.selectdeliveryType("Virtual Class");
@@ -133,12 +134,7 @@ test.describe(`Verify that cannot save the ILT / VC course without filling seat 
         console.log("Navigated to Add Instance popup for Virtual Class");
         
         // Fill VC session details but intentionally skip seat max
-        await createCourse.enterSessionName(sessionName + "_VC");
-        await createCourse.enterDateValue();
-        await createCourse.startandEndTime(); // Using the same working method as ILT
-        await createCourse.vcSessionTimeZone("kolkata"); // Add timezone selection for Virtual Class
-        await createCourse.selectInstructor(instructorName);
-        await createCourse.typeAdditionalInfo();
+        await createCourse.selectMeetingType(instructorName, sessionName + "_VC", 1);
         // Skip setMaxSeat() - this is the validation test
         
         console.log("VC details filled but seat max field left empty");

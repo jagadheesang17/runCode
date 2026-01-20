@@ -1,11 +1,12 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
 import { credentials } from "../../../constants/credentialData";
+import { credentialConstants } from '../../../constants/credentialConstants';
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const sessionName = FakerData.getCourseName();
-const instructorName = "divyab";
+const instructorName = credentialConstants.INSTRUCTORNAME;
 
 test.describe(`Verify that waitlisted course is auto-enrolled when another user cancels the class`, async () => {
     test.describe.configure({ mode: "serial" });
@@ -29,7 +30,7 @@ test.describe(`Verify that waitlisted course is auto-enrolled when another user 
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Waitlist auto-enrollment when user cancels: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Classroom (ILT) delivery type
         await createCourse.selectdeliveryType("Classroom");
@@ -155,11 +156,12 @@ test.describe(`Verify that waitlisted course is auto-enrolled when another user 
         // Search for first learner and cancel their enrollment
         await enrollHome.enterSearchUser(credentials.LEARNERUSERNAME.username);
         // Click the learner checkbox and select
-        await enrollHome.selectLearnerCheckboxAndSelect();
+       // await enrollHome.selectLearnerCheckboxAndSelect();
 
         // Cancel the enrollment using the complete framework method
-        await enrollHome.selectEnrollOrCancel("Canceled");
+        await enrollHome.learnerCourseStatus(courseName,"Canceled");
         await enrollHome.enterReasonAndSubmit();
+        await enrollHome.saveBtn()
         await enrollHome.verifytoastMessage();
         console.log("SUCCESS: First learner's enrollment successfully canceled - seat freed up");
     });
@@ -176,11 +178,11 @@ test.describe(`Verify that waitlisted course is auto-enrolled when another user 
         await adminHome.menuButton();
         await adminHome.clickEnrollmentMenu();
         await adminHome.clickEnroll();
-        await enrollHome.selectBycourse(courseName);
+        await enrollHome.selectBycourse(courseName);    
         await enrollHome.clickSelectedLearner();
         
         // Verify second learner (previously waitlisted) is now enrolled
-        await enrollHome.enterSearchUser(credentials.LEARNERPORTAL_User.username);
+        await enrollHome.enterSearchUser("portal1user");
         
         console.log("Verifying: Waitlisted learner automatically enrolled after cancellation");
         

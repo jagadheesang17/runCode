@@ -26,7 +26,7 @@ test.describe(`Verify that Add Instance button should be enabled only after cour
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Add Instance button test course: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set delivery type as Classroom
         await createCourse.selectdeliveryType("Classroom");
@@ -139,9 +139,9 @@ test.describe(`Verify that Add Instance button should be enabled only after cour
             console.log("✓ VERIFIED: Add Instance button remains disabled even after selecting Classroom delivery");
         }
         
-        // Test 3: Complete course creation and verify button becomes enabled
+        // Complete course creation and verify button becomes enabled
         await createCourse.typeDescription("Button behavior test: " + description);
-        await createCourse.selectDomainOption("portal1");
+        await createCourse.selectDomainOption("automationtenant");
         await createCourse.clickCatalog();
         await createCourse.clickSave();
         await createCourse.clickProceed();
@@ -194,7 +194,7 @@ test.describe(`Verify that Add Instance button should be enabled only after cour
         await createCourse.enter("course-title", uxTestCourseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("UX test course: " + description);
-        await createCourse.selectDomainOption("portal2");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set delivery type as Classroom
         await createCourse.selectdeliveryType("Classroom");

@@ -30,7 +30,7 @@ test.describe(`Verify that for Virtual class delivery type only one instance can
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Multi-instance Virtual Class test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Multi-Instance delivery type
         await createCourse.selectInstance();

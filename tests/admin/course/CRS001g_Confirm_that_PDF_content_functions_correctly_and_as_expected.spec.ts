@@ -46,9 +46,7 @@ test.describe(`Confirm_that_PDF_content_functions_correctly_and_as_expected`, as
         await readContentHome.readPDFContent();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.statusVerification("Course", courseName, "Completed");
     })
 
 

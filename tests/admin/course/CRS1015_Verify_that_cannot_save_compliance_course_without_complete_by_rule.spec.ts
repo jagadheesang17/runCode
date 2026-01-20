@@ -25,8 +25,8 @@ test.describe(`Verify that cannot save compliance course without complete by rul
         // Fill course basic information
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("Compliance course validation test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("Compliance validation test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set course as compliance type
         await createCourse.selectCompliance();
@@ -83,8 +83,8 @@ test.describe(`Verify that cannot save compliance course without complete by rul
         // Fill course basic information
         await createCourse.enter("course-title", courseName + "_WithRule");
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("Compliance course with complete by rule: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("Compliance with complete by rule test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set course as compliance type
         await createCourse.selectCompliance();
@@ -135,7 +135,7 @@ test.describe(`Verify that cannot save compliance course without complete by rul
         await createCourse.enter("course-title", courseName + "_ValidationTest");
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Validation message test for compliance course");
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set as compliance course
         await createCourse.selectCompliance();

@@ -26,8 +26,8 @@ test.describe(`Verify that learner can enroll in the multi instance course from 
         // Fill course basic information
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription("Multi-instance enrollment test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.typeDescription("Multi-instance course test: " + description);
+        await createCourse.selectDomainOption("automationtenant");
         
         // Set delivery type as Classroom for multi-instance functionality
        // await createCourse.selectdeliveryType("Classroom");
@@ -114,7 +114,7 @@ test.describe(`Verify that learner can enroll in the multi instance course from 
         await catalog.clickCourseInMyLearning(courseName);
        // await catalog.launchContentFromMylearning();
       // await catalog.clickLaunchButton();
-        
+        await catalog.playAndWaitForVideo();
         await catalog.saveLearningStatus();
         
         console.log("COMPLETE: Multi-instance enrollment from catalog details page verified");

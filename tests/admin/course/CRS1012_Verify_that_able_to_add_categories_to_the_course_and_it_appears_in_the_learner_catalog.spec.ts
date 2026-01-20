@@ -27,7 +27,7 @@ test.describe(`Verify that able to add categories to the course and it appears i
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Category functionality test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Add category to the course - this is the key functionality
         selectedCategory = await createCourse.handleCategoryADropdown();

@@ -14,60 +14,28 @@ test.describe(`Verify that should not able to show in catalog the course when co
             { type: 'Test Description', description: "Verify that course should not be able to show in catalog when content is not attached" }
         );
 
-        // Step 1: Navigate to https://newprod.expertusoneqa.in/learner/newprod/
-        // Step 2: Enter the username: qanewprod@nomail.com
-        // Step 3: Enter the password: Welcome1@
         await adminHome.loadAndLogin("CUSTOMERADMIN");
-        
-        // Step 4: Click on the side menu
-        // Step 5: Select "Learning"
-        // Step 6: Click on "Course"
-        // Step 7: Click on "Create Course"
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.clickCourseLink();
         await createCourse.clickCreateCourse();
-        
-        // Verify course creation page is loaded
         await createCourse.verifyCreateUserLabel("CREATE COURSE");
         
-        // Step 8: Generate a random course title using Faker and enter it in the title field
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a test course without content: " + courseName);
+        await createCourse.selectDomainOption("automationtenant");
         
-        // Select domain - mandatory field
-        await createCourse.selectDomainOption("QA");
-        
-        // Step 9: Verify Show in Catalog behavior when no content is attached
-        console.log("Testing Show in Catalog functionality without content...");
-        
-        // Try to enable Show in Catalog - this should be allowed but save should be blocked
-        await createCourse.clickCatalog();
-        console.log("Show in Catalog option was clicked - now testing save validation");
-        
-        // Try to save the course - this should be blocked by validation
+        // Verify Show in Catalog radio button is disabled when no content is attached
         const page = createCourse.page;
+        const publishedCatalogRadio = page.locator("#publishedcatalog");
+        const isDisabled = await publishedCatalogRadio.isDisabled();
         
-        // Click save button and expect it to be blocked
-        await createCourse.click(createCourse.selectors.saveBtn, "Save", "Button");
-        
-        // Wait a moment for any validation to appear
-        await page.waitForTimeout(2000);
-        
-        // Check that we're still on create course page (save was blocked)
-        const createLabel = await page.locator("//h1[text()='Create Course']").isVisible({ timeout: 5000 });
-        const saveStillVisible = await page.locator(createCourse.selectors.saveBtn).isVisible();
-        
-        if (createLabel && saveStillVisible) {
-            console.log("SUCCESS: Course save properly blocked when no content is attached");
-            console.log("Validation working as expected - cannot save course with Show in Catalog enabled but no content");
+        if (isDisabled) {
+            console.log("✓ SUCCESS: Show in Catalog is disabled without content");
         } else {
-            throw new Error("FAIL: Course was saved without content, which should not be allowed");
+            throw new Error("FAIL: Show in Catalog should be disabled without content");
         }
-        
-        // Step 12: Verify that the show in catalog validation works correctly
-        console.log("Test completed - Show in Catalog validation is working as expected");
     });
 
     test(`Course Creation with content - Verify Show in Catalog works properly`, async ({ adminHome, createCourse }) => {
@@ -95,7 +63,7 @@ test.describe(`Verify that should not able to show in catalog the course when co
         await createCourse.typeDescription("This is a test course with content: " + courseNameWithContent);
         
         // Select domain
-        await createCourse.selectDomainOption("QA");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Attach content first
         console.log("Attaching content to the course...");

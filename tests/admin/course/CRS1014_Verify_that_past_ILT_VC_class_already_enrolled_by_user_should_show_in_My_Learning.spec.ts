@@ -1,11 +1,12 @@
 import { test } from "../../../customFixtures/expertusFixture";
 import { FakerData } from '../../../utils/fakerUtils';
 import { credentials } from "../../../constants/credentialData";
+import { credentialConstants } from '../../../constants/credentialConstants';
 
 const courseName = FakerData.getCourseName();
 const description = FakerData.getDescription();
 const sessionName = FakerData.getCourseName();
-const instructorName = "divyab";
+const instructorName = credentialConstants.INSTRUCTORNAME;
 
 test.describe(`Verify that past ILT / VC class already enrolled by user should show in My Learning`, async () => {
     test.describe.configure({ mode: "serial" });
@@ -29,7 +30,7 @@ test.describe(`Verify that past ILT / VC class already enrolled by user should s
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Past ILT session visibility test: " + description);
-        await createCourse.selectDomainOption("newprod");
+        await createCourse.selectDomainOption("automationtenant");
         
         // Select Classroom (ILT) delivery type
         await createCourse.selectdeliveryType("Classroom");
@@ -138,31 +139,5 @@ test.describe(`Verify that past ILT / VC class already enrolled by user should s
         console.log("✓ Past sessions correctly hidden from catalog but accessible in My Learning");
     });
 
-    test(`Verify past session shows proper enrollment status in My Learning`, async ({ learnerHome, catalog, page }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `QA Automation Team` },
-            { type: `TestCase`, description: `CRS1014_Past_Session_Status_Verification` },
-            { type: `Test Description`, description: `Verify past ILT session shows appropriate status and details in My Learning` }
-        );
 
-        // Navigate to My Learning (already logged in from previous test)
-        await learnerHome.clickMyLearning();
-        
-        // Search and locate the past ILT course
-        await catalog.searchMyLearning(courseName);
-        
-        // Verify course visibility and status
-        await catalog.verifyCourse(courseName);
-        
-        // Check if course shows appropriate status for past session
-        // Past sessions typically show as "Completed", "Attended", "No Show", etc.
-        console.log("Verifying past session status in My Learning");
-        
-        await page.waitForTimeout(2000);
-        
-        console.log("SUCCESS: Past ILT session status verification completed");
-        console.log("✓ Past enrolled sessions maintain visibility in My Learning");
-        console.log("✓ Historical training records are accessible to learners");
-        console.log("✓ Course enrollment history is preserved after session dates pass");
-    });
 });

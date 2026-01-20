@@ -82,6 +82,10 @@ export class AdminHomePage extends AdminLogin {
         //meta data library option
         metaLibOption: (data: string) => `//a[text()='${data}']`,
         dynamicShareableLinks: `//a[text()='Dynamic Shareable Links']`,
+        
+        // Domain verification selectors
+        goToDomainIcon: `//i[@aria-label='Go to domain']`,
+        domainMenuList: `//i[@aria-label='Go to domain']//following::ul[@aria-labelledby='learnermenu']`,
     
     }
     public async clickLearnerGroupLink() {
@@ -165,6 +169,41 @@ export class AdminHomePage extends AdminLogin {
     async clickAdminHome() {
         await this.click(this.selectors.adminhome, "Admin Home", "Link");
     }
+
+    async clickOnAdminHome() {
+        await this.validateElementVisibility(this.selectors.adminhome, "Admin Home");
+        await this.click(this.selectors.adminhome, "Admin Home", "Link");
+        console.log("✅ Clicked on Admin Home");
+    }
+
+    async gotodomainVerification() {
+        // Click on 'Go to domain' icon
+        await this.validateElementVisibility(this.selectors.goToDomainIcon, "Go to domain icon");
+        await this.click(this.selectors.goToDomainIcon, "Go to domain", "Icon");
+        console.log("✅ Clicked on 'Go to domain' icon");
+        
+        // Verify domain menu list is visible
+        await this.wait("minWait");
+        const menuList = this.page.locator(this.selectors.domainMenuList);
+        const isMenuVisible = await menuList.isVisible({ timeout: 5000 }).catch(() => false);
+        
+        if (isMenuVisible) {
+            console.log("✅ Domain menu list is visible");
+            
+            // Get all menu items and print them
+            const menuItems = await menuList.locator('li').allTextContents();
+            console.log("📋 Domain menu items:");
+            menuItems.forEach((item, index) => {
+                console.log(`   ${index + 1}. ${item.trim()}`);
+            });
+            
+            return menuItems;
+        } else {
+            console.log("❌ Domain menu list is NOT visible");
+            throw new Error("Domain menu list is not visible after clicking 'Go to domain' icon");
+        }
+    }
+
     public async isSignOut() {
         await this.validateElementVisibility(this.selectors.signOutLink, "Sign Out");
         await this.page.waitForLoadState('load');
@@ -187,6 +226,72 @@ export class AdminHomePage extends AdminLogin {
     public async clickInstructorLink() {
         await this.mouseHover(this.selectors.instructorLink, "Learning Path");
         await this.click(this.selectors.instructorLink, "Learning Path", "Button");
+    }
+
+    /**
+     * Verify Instructor Dashboard is accessible from Admin Home
+     * Steps:
+     * 1) Wait for `Admin Home`
+     * 2) Click `Admin Home`
+     * 3) Scroll to `Dashboard` header and assert it's visible
+     */
+    public async instructorDashboardVerification(): Promise<void> {
+        const adminHomeSelector = this.selectors.adminhome; // //span[text()='Admin Home']
+        const dashboardHeader = "//h1[text()='Dashboard']";
+
+        await this.wait("minWait");
+        await this.validateElementVisibility(adminHomeSelector, "Admin Home");
+        await this.click(adminHomeSelector, "Admin Home", "Link");
+        await this.wait("mediumWait");
+
+        const header = this.page.locator(dashboardHeader).first();
+        await header.scrollIntoViewIfNeeded();
+        await this.wait("minWait");
+
+        const isVisible = await header.isVisible().catch(() => false);
+        if (!isVisible) {
+            throw new Error("Dashboard header not visible on Admin Home page");
+        }
+        console.log("✅ Verified - Dashboard header is visible on Admin Home");
+    }
+
+    // Alias matching requested name (typo preserved for convenience)
+    public async instructordashboaedVerification(): Promise<void> {
+        await this.instructorDashboardVerification();
+    }
+
+    /**
+     * Verify four specific elements, retrieve their text, and log as titles
+     * Returns an object with the retrieved values
+     */
+    public async verifyInstructorsSessionAndLogPageTitles(): Promise<{ fieldTitle: string; language: string; code: string; seat: string; }> {
+        const selectors = {
+            fieldTitle: `//div[contains(@class,'field_title')]`,
+            language: `(//i[contains(@class,'fa-duotone fa-language')]//following::span[contains(@class,'text-capitalize')])[1]`,
+            code: `(//span[text()='CODE:']//following::span)[1]`,
+            seat: `(//i[contains(@class,'fa-duotone fa-chair-office icon')]/following::span)[2]`
+        };
+
+        // Verify and read text for each selector
+        await this.wait("minWait");
+
+        await this.validateElementVisibility(selectors.fieldTitle, "Field Title");
+        const fieldTitle = (await this.page.locator(selectors.fieldTitle).first().textContent())?.trim() || "";
+        console.log(`Field Title: ${fieldTitle}`);
+
+        await this.validateElementVisibility(selectors.language, "Language");
+        const language = (await this.page.locator(selectors.language).first().textContent())?.trim() || "";
+        console.log(`Language: ${language}`);
+
+        await this.validateElementVisibility(selectors.code, "Code");
+        const code = (await this.page.locator(selectors.code).first().textContent())?.trim() || "";
+        console.log(`Code: ${code}`);
+
+        await this.validateElementVisibility(selectors.seat, "Seat");
+        const seat = (await this.page.locator(selectors.seat).first().textContent())?.trim() || "";
+        console.log(`Seat: ${seat}`);
+
+        return { fieldTitle, language, code, seat };
     }
 
     public async menuButton() {

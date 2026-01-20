@@ -23,6 +23,7 @@ import * as path from "path";
 import { filePath } from "../data/MetadataLibraryData/filePathEnv";
 import { credentials } from "../constants/credentialData";
 import { da, th } from "@faker-js/faker";
+import { time } from "console";
 
 export class CoursePage extends AdminHomePage {
   public selectors = {
@@ -153,7 +154,7 @@ export class CoursePage extends AdminHomePage {
     editCourseBtn: "//a[text()='Edit Course']",
     //assessmentCheckbox: "//div[@id='sur_ass-lms-scroll-assessment-list']//i[contains(@class,'fa-duotone fa-square icon')]", -->The XPath has been changed on the product side. We updated it on 10/7/2024
     assessmentCheckbox:
-      "//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')]",
+      "(//div[contains(@id,'scroll-assessment-list')]//i[contains(@class,'fa-duotone fa-square icon')])[2]",
     addAssessmentBtn: "//button[text()='Add As Assessment']",
     categoryDropdown:
       "//div[@class='dropdown-menu show']//input[@type='search']",
@@ -416,13 +417,15 @@ export class CoursePage extends AdminHomePage {
     //Correct selectors based on actual page structure
     addedChecklistContainer: `//div[contains(text(),'Added Observation Checklist')]`,
     addedChecklistFullText: `(//div[contains(text(),'Added Observation Checklist')]/following::div[contains(text(),'|')])[1]`,
-    checklistEditIcon: `//i[@title='Edit']`,
+    checklistEditIcon: `(//i[@title='Edit'])`,
+    checklistEditButton: `(//i[@title='Edit']/ancestor::button[1])`,
     checklistSettingsButton: `//button[contains(@class,'btn') and not(text())]//i[contains(@class,'fa-')]`,
     checklistDeleteButton: `//i[contains(@class,'fa-trash') or @title='Delete']`,
     
     //Index-based selectors for multiple checklists
     checklistItemFullText: (index: number) => `(//div[contains(text(),'Added Observation Checklist')]/following::div[contains(text(),'|')])[${index}]`,
     checklistItemEditIcon: (index: number) => `(//i[@title='Edit'])[${index}]`,
+    checklistItemEditButton: (index: number) => `(//i[@title='Edit']/ancestor::button[1])[${index}]`,
     checklistItemSettingsButton: (index: number) => `(//button[contains(@class,'btn')]//following::i[contains(@class,'fa-')])[${index}]`,
     checklistItemDeleteButton: (index: number) => `(//i[contains(@class,'fa-trash')])[${index}]`,
 
@@ -1301,6 +1304,12 @@ export class CoursePage extends AdminHomePage {
     console.log("✅ Successfully added Observation Checklist to course");
   }
 
+
+  async clickeditchecklist() {    await this.wait("minWait");
+   await this.validateElementVisibility("//i[@title='Edit']", "Edit Checklist");
+    await this.click("//i[@title='Edit']", "Edit Checklist", "Icon");
+    
+  }
   //Verify checklist details in the list (name, ID, rule setting icon, delete option)
   async verifyChecklistDetails(index: number = 1): Promise<{
     hasName: boolean;
@@ -1589,12 +1598,34 @@ export class CoursePage extends AdminHomePage {
     console.log("✅ Successfully configured checklist rules with default settings");
   }
 
-  //Click Edit icon in Observation Checklist
-  async clickChecklistEditIcon() {
+  //Click Edit icon in Observation Checklist (robust: clicks the button ancestor if present)
+  async clickChecklistEditIcon(index: number = 1) {
     await this.wait("minWait");
-    await this.click(this.selectors.checklistEditIcon, "Edit Checklist", "Icon");
+    // Ensure the section is in view to avoid overlay issues
+    await this.page.locator("//div[contains(text(),'Added Observation Checklist')]")
+      .scrollIntoViewIfNeeded()
+      .catch(() => {});
+
+    // Prefer clicking the button ancestor of the icon
+    const editButton = this.page.locator(this.selectors.checklistItemEditButton(index));
+    const hasButton = (await editButton.count()) > 0 && (await editButton.first().isVisible());
+
+    if (hasButton) {
+      await editButton.first().scrollIntoViewIfNeeded();
+      await this.wait("minWait");
+      await editButton.first().click();
+      await this.wait("mediumWait");
+      console.log("✅ Clicked Edit button for Observation Checklist");
+      return;
+    }
+
+    // Fallback: click the icon directly (force to bypass non-interactive <i>)
+    const editIcon = this.page.locator(this.selectors.checklistItemEditIcon(index));
+    await editIcon.first().scrollIntoViewIfNeeded();
+    await this.wait("minWait");
+    await editIcon.first().click({ force: true });
     await this.wait("mediumWait");
-    console.log("✅ Clicked Edit icon in Observation Checklist");
+    console.log("✅ Clicked Edit icon for Observation Checklist (fallback)");
   }
 
   //Click Evaluator dropdown
@@ -1691,6 +1722,12 @@ export class CoursePage extends AdminHomePage {
       "Duration",
       Duration
     );
+  }
+
+  async clickOkButton(){ 
+    await this.wait("minWait");
+    await this.click(this.selectors.okButton, "Ok button", "Button");
+
   }
 
   //course Dedicated to TP:-
@@ -1880,7 +1917,7 @@ export class CoursePage extends AdminHomePage {
     const path = `../data/${videoContent}.mp4`;
     await this.mouseHover(this.selectors.uploadDiv, "upload");
     await this.wait("maxWait");
-    await this.uploadFile(this.selectors.uploadInput, path);
+    await this.page.locator(this.selectors.uploadInput).setInputFiles(path);
     /*  this.page.on('console', msg => {
              console.log(`Console Log: ${msg.text()}`);
          }); */
@@ -1900,7 +1937,7 @@ export class CoursePage extends AdminHomePage {
   async uploadCourseContent(fileName: string) {
     const path = `../data/${fileName}`;
     await this.mouseHover(this.selectors.uploadDiv, "upload");
-    await this.uploadFile(this.selectors.uploadInput, path);
+    await this.page.locator(this.selectors.uploadInput).setInputFiles(path);
     await this.wait("mediumWait");
     await this.validateElementVisibility(this.selectors.progress, "Loading");
     await this.validateElementVisibility(
@@ -1987,8 +2024,8 @@ export class CoursePage extends AdminHomePage {
   }
 
   async verifySuccessMessage() {
-    await this.wait("maxWait");
-    await this.wait("mediumWait");
+    // await this.wait("maxWait");
+   // await this.wait("mediumWait");
     await this.spinnerDisappear();
     await this.page.waitForSelector(this.selectors.successMessage, { timeout: 60000 });
     await this.verification(this.selectors.successMessage, "successfully");
@@ -2752,6 +2789,8 @@ export class CoursePage extends AdminHomePage {
 
   async selectLocation() {
     await this.wait("minWait");
+    await this.page.locator(this.selectors.locationSelection).waitFor({ state: 'visible', timeout: 5000 });
+    await this.page.locator(this.selectors.locationSelection).scrollIntoViewIfNeeded();
     await this.page.locator(this.selectors.locationSelection).scrollIntoViewIfNeeded(); 
     await this.click(
       this.selectors.locationSelection,
@@ -2781,9 +2820,10 @@ export class CoursePage extends AdminHomePage {
     await this.keyboardType(this.selectors.startDateInstanceIndex(1), date);
   }
 
-  async enterDateValue() {
-    const date = getRandomFutureDate();
+  async enterDateValue(dateValue?: string) {
+    const date = dateValue || getRandomFutureDate();
     await this.keyboardType(this.selectors.Date, date);
+    return date; // Return the date used
   }
 
   async enterpastDateValue() {
@@ -2826,7 +2866,36 @@ export class CoursePage extends AdminHomePage {
     );
   }
 
-  public async startandEndTime() {
+  public async startandEndTime(startTime?: string, endTime?: string) {
+    // If times are provided, use them directly
+    if (startTime && endTime) {
+      // Find and set start time
+      const timeInputSelectors = [
+        this.selectors.timeInput,
+        "//input[contains(@id,'starttime_sesstime_instance')]",
+        "//input[contains(@placeholder,'Start Time')]",
+        "//label[text()='Start Time']//following::input[1]"
+      ];
+      
+      for (const selector of timeInputSelectors) {
+        try {
+          const element = this.page.locator(selector);
+          if (await element.isVisible()) {
+            await element.click();
+            await this.wait("minWait");
+            await element.fill(startTime);
+            await this.page.keyboard.press('Tab'); // Move to end time
+            break;
+          }
+        } catch (error) {
+          continue;
+        }
+      }
+      
+      return { startTime, endTime };
+    }
+    
+    // Original logic for random time generation
     // Try multiple possible time input selectors
     const timeInputSelectors = [
       this.selectors.timeInput, // Generic selector
@@ -2868,6 +2937,15 @@ export class CoursePage extends AdminHomePage {
       now.setHours(now.getHours() + 2); // Add 2 hours
       let hours = now.getHours();
       const minutes = now.getMinutes();
+      
+      // Ensure time is before 11:00 PM (23:00)
+      if (hours >= 23 || (hours === 22 && minutes > 45)) {
+        // If time would be >= 11:00 PM, set to 10:00 AM instead
+        hours = 10;
+        now.setHours(10);
+        now.setMinutes(0);
+      }
+      
       const ampm = hours >= 12 ? "PM" : "AM";
       hours = hours % 12 || 12; // Convert to 12-hour format
       const roundedMinutes = Math.ceil(minutes / 15) * 15;
@@ -2945,16 +3023,9 @@ export class CoursePage extends AdminHomePage {
       }
     
 
-    /* const pickRandomTime = async () => {
-            const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
-            console.log(timeElements);
-            const randomIndex = Math.floor(Math.random() * timeElements) + 1;
-            return randomIndex;
-        };
-        const randomIndex = await pickRandomTime();
-        console.log("Random Index:", randomIndex);
-        await this.click(this.selectors.timeInput, "Start Time", "Button");
-        await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
+    // Return the time values used (extract from the fields or return defaults)
+    const generatedStartTime = getCurrentTimePlusTwoHours();
+    return { startTime: generatedStartTime, endTime: "" }; // Return times used
   }
   async waitList() {
     await this.type(this.selectors.waitlistInput, "WaitList", "4");
@@ -2965,8 +3036,16 @@ export class CoursePage extends AdminHomePage {
     await this.wait("minWait");
     await this.click(this.selectors.updateBtn, "update", "field");
     const locator = this.page.locator(this.selectors.willResolveLaterBtn);
-    await this.wait("mediumWait");
-
+    //await this.wait("mediumWait");
+try {
+  await this.wait("minWait");
+  const okButton = this.page.locator(this.selectors.okButton);
+  if (await okButton.isVisible({ timeout: 5000 })) {
+    await this.click(this.selectors.okButton, "Ok", "Button");
+  }
+} catch (error) {
+  console.log("The element is not visible: ");
+}
     try {
       // await this.validateElementVisibility(this.selectors.willResolveLaterBtn, "Resolve Later");
       await this.wait("mediumWait");
@@ -3360,7 +3439,7 @@ export class CoursePage extends AdminHomePage {
     const fileName = "sample";
     const path = `../data/${fileName}.pdf`;
     await this.mouseHover(this.selectors.uploadDiv, "upload");
-    await this.uploadFile(this.selectors.uploadInput, path);
+    await this.page.locator(this.selectors.uploadInput).setInputFiles(path);
     await this.validateElementVisibility(this.selectors.progress, "Loading");
     await this.validateElementVisibility(
       this.selectors.attachedContent(fileName),
@@ -3537,118 +3616,59 @@ export class CoursePage extends AdminHomePage {
     await this.click(this.selectors.image, "Gallery", "image");
   }
 
-  async selectMeetingType(
-    instructorName: string,
-    sessionName: string,
-    index: number
-  ) {
-    //  const sessiontype = this.page.locator(this.selectors.selectType);
-    // function getCurrentTimePlusTwoHours() {
-    //   const now = new Date();
-    //   now.setHours(now.getHours() + 2); // Add 2 hours
-    //   let hours = now.getHours();
-    //   const minutes = now.getMinutes();
-    //   const ampm = hours >= 12 ? "PM" : "AM";
-    //   hours = hours % 12 || 12; // Convert to 12-hour format
-    //   const roundedMinutes = Math.ceil(minutes / 15) * 15;
-    //   const formattedMinutes =
-    //     roundedMinutes === 60
-    //       ? "00"
-    //       : roundedMinutes.toString().padStart(2, "0");
-    //   if (roundedMinutes === 60) {
-    //     hours = (hours % 12) + 1;
-    //   }
-    //   return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    // }
-
-    // const targetTime = getCurrentTimePlusTwoHours();
-    // console.log("Current Time + 2 hours:", targetTime);
-
+  async selectMeetingType(instructorName: string, sessionName: string, index: number) {
     const country = "kolkata";
     const meetingUrl = FakerData.getMeetingUrl();
-    await this.click(
-      this.selectors.sessionTypeIndex(index),
-      "Session Type",
-      "dropdown"
-    );
-    await this.click(
-      this.selectors.otherMeetingIndex(index),
-      "other Meeting",
-      "Option"
-    );
-    await this.validateElementVisibility(
-      this.selectors.sessionNameIndex(index),
-      "Session Name"
-    );
-    await this.mouseHover(
-      this.selectors.sessionNameIndex(index),
-      "Session Name"
-    );
-    await this.type(
-      this.selectors.sessionNameIndex(index),
-      "Session Name",
-      sessionName
-    );
-    await this.click(
-      this.selectors.timeZoneIndex(index),
-      "TimeZone",
-      "Text Field"
-    );
+    
+    // Select session type as "Other Meeting"
+    await this.click(this.selectors.sessionTypeIndex(index), "Session Type", "dropdown");
+    await this.click(this.selectors.otherMeetingIndex(index), "other Meeting", "Option");
+    
+    // Enter session name
+    await this.validateElementVisibility(this.selectors.sessionNameIndex(index), "Session Name");
+    await this.mouseHover(this.selectors.sessionNameIndex(index), "Session Name");
+    await this.type(this.selectors.sessionNameIndex(index), "Session Name", sessionName);
+    
+    // Select timezone
+    await this.click(this.selectors.timeZoneIndex(index), "TimeZone", "Text Field");
     await this.type(this.selectors.timeZoneOption, "Time Zone", country);
     await this.mouseHover(this.selectors.indianTimezone, "Indian Time zone");
-    await this.click(
-      this.selectors.indianTimezone,
-      "Indian Timezone",
-      "Selected"
-    );
-    await this.typeAndEnter(
-      this.selectors.startDateInstanceIndex(index),
-      "Start Date",
-      gettomorrowDateFormatted()
-    );
-    // await this.click(
-    //   this.selectors.timeInputIndex(index),
-    //   "Start Time",
-    //   "Selected"
-    // );
-    //  await this.startandEndTime();
-
+    await this.click(this.selectors.indianTimezone, "Indian Timezone", "Selected");
+    
+    // Set start date
+    await this.typeAndEnter(this.selectors.startDateInstanceIndex(index), "Start Date", gettomorrowDateFormatted());
+    
+    // Set start time - Primary time selection
     await this.click(this.selectors.timeInput, "Start Time Input", "Input");
     await this.wait("minWait");
-    /* const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
-        console.log(list); */
-    function getCurrentTimePlusTwoHours() {
+    
+    const getCurrentTimePlusTwoHours = () => {
       const now = new Date();
-      now.setHours(now.getHours() + 1); // Add 2 hours
+      now.setHours(now.getHours() + 1);
       let hours = now.getHours();
       const minutes = now.getMinutes();
       const ampm = hours >= 12 ? "PM" : "AM";
-      hours = hours % 12 || 12; // Convert to 12-hour format
+      hours = hours % 12 || 12;
       const roundedMinutes = Math.ceil(minutes / 15) * 15;
-      const formattedMinutes =
-        roundedMinutes === 60
-          ? "00"
-          : roundedMinutes.toString().padStart(2, "0");
+      const formattedMinutes = roundedMinutes === 60 ? "00" : roundedMinutes.toString().padStart(2, "0");
+      
       if (roundedMinutes === 60) {
         hours = (hours % 12) + 1;
       }
+      
       return `${hours.toString().padStart(2, "0")}:${formattedMinutes} ${ampm}`;
-    }
-    async function selectNextAvailableTime() {
-      const list = await this.page
-        .locator("(//div[contains(@class,'timepicker')]//li)")
-        .allTextContents();
+    };
+    
+    const selectNextAvailableTime = async () => {
+      const list = await this.page.locator("(//div[contains(@class,'timepicker')]//li)").allTextContents();
       console.log(list);
+      
       const timeToSelect = getCurrentTimePlusTwoHours();
       console.log("Current Time + 2 hours:", timeToSelect);
-
-      // Use first() to avoid strict mode violation when multiple elements match
-      const timeLocator = this.page.locator(
-        `(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`
-      );
-
-      // Check if multiple elements exist and use first() to select the first match
+      
+      const timeLocator = this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${timeToSelect}'])`);
       const count = await timeLocator.count();
+      
       if (count > 1) {
         console.log(`Found ${count} elements with time ${timeToSelect}, selecting the first one`);
         await timeLocator.first().click();
@@ -3656,7 +3676,7 @@ export class CoursePage extends AdminHomePage {
         await timeLocator.click();
       } else {
         console.log(`Time ${timeToSelect} not found, trying fallback approach`);
-        // Fallback: find the closest available time
+        
         for (const time of list) {
           if (time >= timeToSelect) {
             console.log('Selecting closest available time:', time);
@@ -3665,66 +3685,37 @@ export class CoursePage extends AdminHomePage {
           }
         }
       }
-      /* for (const time of list) {
-                if (time >= timeToSelect) {
-                    console.log('Selecting time:', time);
-                    await this.page.locator(`(//div[contains(@class,'timepicker')]//li[text()='${time}'])`).click();
-                    break;
-                }
-            } */
-    }
-    await selectNextAvailableTime.call(this);
-
-    /* const pickRandomTime = async () => {
-            const timeElements = await this.page.locator("//div[contains(@class,'timepicker')]//li").count();
-            console.log(timeElements);
-            const randomIndex = Math.floor(Math.random() * timeElements) + 1;
-            return randomIndex;
-        };
-        const randomIndex = await pickRandomTime();
-        console.log("Random Index:", randomIndex);
-        await this.click(this.selectors.timeInput, "Start Time", "Button");
-        await this.click(this.selectors.chooseTimeOption(randomIndex), "Option", "Button"); */
-
-
-    await this.click(
-      this.selectors.timeInputIndex(index),
-      "Start Time",
-      "Selected"
-    );
+    };
     
-    // FIXED: Use static index 2 time selection as specified
+    await selectNextAvailableTime();
+    
+    // Set end time - Secondary time selection (static index 2)
+    await this.click(this.selectors.timeInputIndex(index), "Start Time", "Selected");
+    
     try {
       console.log("Setting time using static index 2 approach...");
       
-      // Click on start time field to open dropdown
       const startTimeField = this.page.locator("//input[contains(@id,'starttime_pair_time')]");
       
       if (await startTimeField.isVisible()) {
         console.log("Clicking start time field to open dropdown...");
         await startTimeField.click();
-        await this.wait("mediumWait"); // Wait for dropdown to appear
+        await this.wait("mediumWait");
         
-        // Wait for time options to appear
         await this.page.waitForSelector("//ul/li[contains(text(), 'AM') or contains(text(), 'PM')]", { timeout: 5000 });
         const timeOptions = await this.page.locator("//ul/li[contains(text(), 'AM') or contains(text(), 'PM')]").all();
         
         if (timeOptions.length > 2) {
-          // Use STATIC index 2 as specified
           const selectedOption = timeOptions[2];
           const selectedTime = await selectedOption.textContent();
           
           console.log(`Selecting START time at index 2: ${selectedTime}`);
-          
-          // Click on the option at index 2
           await selectedOption.click();
           await this.wait("mediumWait");
-          
           console.log(`✅ START time selected in selectMeetingType: ${selectedTime} (index: 2)`);
         } else {
           console.log("Not enough time options available (need at least 3 for index 2)");
           
-          // Fallback to original logic if not enough options
           if (timeOptions.length > 0) {
             const fallbackOption = timeOptions[0];
             const fallbackTime = await fallbackOption.textContent();
@@ -3735,13 +3726,11 @@ export class CoursePage extends AdminHomePage {
       } else {
         console.log("Start time field not visible, trying alternative selectors...");
         
-        // Fallback to timeInputIndex selector
         const timeInput = this.page.locator(this.selectors.timeInputIndex(index));
         if (await timeInput.isVisible()) {
           await timeInput.click();
           await this.wait("mediumWait");
           
-          // Try to find timepicker options with alternative selector
           const altTimeOptions = await this.page.locator("//ul[@class='ui-timepicker-list']//li").all();
           if (altTimeOptions.length > 2) {
             const selectedOption = altTimeOptions[2];
@@ -3751,41 +3740,20 @@ export class CoursePage extends AdminHomePage {
           }
         }
       }
-      
     } catch (error) {
       console.error("Fixed time setting failed:", error.message);
       console.log("Continuing with default behavior...");
     }
     
-    await this.type(
-      this.selectors.attendeeUrlIndex(index),
-      "Attendee url",
-      meetingUrl
-    );
-    await this.type(
-      this.selectors.presenterUrlIndex(index),
-      "Presenter url",
-      meetingUrl
-    );
-    await this.click(
-      this.selectors.instructorDropdownIndex(index),
-      "Select Instructor",
-      "DropDown"
-    );
-    await this.type(
-      this.selectors.instructorInput,
-      "Instructor Name",
-      instructorName
-    );
-    await this.mouseHover(
-      this.selectors.instructorOption(instructorName),
-      "Instructor Name"
-    );
-    await this.click(
-      this.selectors.instructorOption(instructorName),
-      "Instructor Name",
-      "Button"
-    );
+    // Set attendee and presenter URLs
+    await this.type(this.selectors.attendeeUrlIndex(index), "Attendee url", meetingUrl);
+    await this.type(this.selectors.presenterUrlIndex(index), "Presenter url", meetingUrl);
+    
+    // Select instructor
+    await this.click(this.selectors.instructorDropdownIndex(index), "Select Instructor", "DropDown");
+    await this.type(this.selectors.instructorInput, "Instructor Name", instructorName);
+    await this.mouseHover(this.selectors.instructorOption(instructorName), "Instructor Name");
+    await this.click(this.selectors.instructorOption(instructorName), "Instructor Name", "Button");
   }
 
   /**
@@ -4019,6 +3987,16 @@ export class CoursePage extends AdminHomePage {
       "Presenter url",
       FakerData.getMeetingUrl()
     );
+  }
+
+  // Set VC attendee URL for a given instance index
+  async setAttendeeUrlForIndex(index: number, url: string) {
+    await this.type(this.selectors.attendeeUrlIndex(index), "Attendee url", url);
+  }
+
+  // Set VC presenter URL for a given instance index
+  async setPresenterUrlForIndex(index: number, url: string) {
+    await this.type(this.selectors.presenterUrlIndex(index), "Presenter url", url);
   }
 
   async clickaddIcon() {

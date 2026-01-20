@@ -42,7 +42,7 @@ test.describe(`INS007_Verify_files_pushbox_displayed_when_files_icon_clicked`, (
         await createCourse.clickSave();
         await createCourse.clickProceed();
         await createCourse.verifySuccessMessage();
-
+await createCourse.editcourse();
         console.log(`Adding ILT instance...`);
         await createCourse.addInstances();
 

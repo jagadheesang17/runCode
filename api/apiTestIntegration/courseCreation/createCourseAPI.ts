@@ -124,31 +124,61 @@ const COMMON_HEADERS = {
 };
 
 async function searchContent(contentName: string): Promise<number> {
-  const params = new URLSearchParams({
-    textsearch: contentName,
-    status: 'published',
-    page: '1',
-    limit: '6',
-    'document_library[]': 'No',
-    uploaded_contents: '',
-    callFrom: 'courseContentLibrary',
-    search_type: 'title'
-});
-    const url = `${BASE_URL}/ajax/admin/manage/content/list?${params.toString()}`;
-  const response = await axios.get(url, {
-    headers: {
-      ...COMMON_HEADERS,
-      "referer": `${BASE_URL}/admin/learning/course/create`,
-    },
-    maxBodyLength: Infinity,
-  });
-    console.log(`\n*** SEARCH CONTENT RESPONSE ***`);
+  // Attempts 1-3: original strict filters with short waits (indexing)
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const strictParams = new URLSearchParams({
+      textsearch: contentName,
+      status: 'published',
+      page: '1',
+      limit: '10',
+      'document_library[]': 'No',
+      uploaded_contents: '',
+      callFrom: 'courseContentLibrary',
+      search_type: 'title',
+    });
+    const url = `${BASE_URL}/ajax/admin/manage/content/list?${strictParams.toString()}`;
+    const response = await axios.get(url, {
+      headers: {
+        ...COMMON_HEADERS,
+        referer: `${BASE_URL}/admin/learning/course/create`,
+      },
+      maxBodyLength: Infinity,
+      validateStatus: () => true,
+    });
+    console.log(`\n*** SEARCH CONTENT RESPONSE (strict attempt ${attempt}/3) ***`);
     console.log(`Status Code: ${response.status}`);
     console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
-if (response.status !== 200 || !Array.isArray(response.data) || response.data.length === 0 || !response.data[0]._id) {
-    throw new Error("Search Content failed");
-}
-return response.data[0]._id;
+    if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0 && response.data[0]._id) {
+      return response.data[0]._id;
+    }
+    // small wait to allow indexing
+    await new Promise(res => setTimeout(res, attempt * 500));
+  }
+
+  // Final attempt: relaxed filters
+  const relaxedParams = new URLSearchParams({
+    textsearch: contentName,
+    page: '1',
+    limit: '10',
+    search_type: 'title',
+  });
+  const relaxedUrl = `${BASE_URL}/ajax/admin/manage/content/list?${relaxedParams.toString()}`;
+  const relaxedResp = await axios.get(relaxedUrl, {
+    headers: {
+      ...COMMON_HEADERS,
+      referer: `${BASE_URL}/admin/learning/course/create`,
+    },
+    maxBodyLength: Infinity,
+    validateStatus: () => true,
+  });
+  console.log(`\n*** SEARCH CONTENT RESPONSE (relaxed attempt) ***`);
+  console.log(`Status Code: ${relaxedResp.status}`);
+  console.log(`Response Body: ${JSON.stringify(relaxedResp.data, null, 2)}\n`);
+  if (relaxedResp.status === 200 && Array.isArray(relaxedResp.data) && relaxedResp.data.length > 0 && relaxedResp.data[0]._id) {
+    return relaxedResp.data[0]._id;
+  }
+
+  throw new Error('Search Content failed');
 }
 
 async function listUploadedContent(contentId: number, uniqueId: string): Promise<void> {
