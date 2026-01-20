@@ -1,0 +1,114 @@
+import { test } from "../../../../customFixtures/expertusFixture";
+import { FakerData } from "../../../../utils/fakerUtils";
+import { URLConstants } from "../../../../constants/urlConstants";
+import { credentials } from "../../../../constants/credentialData";
+
+
+const prerequisiteCourse1 = FakerData.getCourseName();
+const mainCourseName = FakerData.getCourseName();
+const description = FakerData.getDescription()
+let tag: any;
+let title = FakerData.getCourseName();
+
+test.describe(`Verify_the_warning_message_when_the_learner_try_to_enroll_the_maincourse_before_did_not_complete_the_prerequisite_and_complete_maincourse_after_completing_the_course's_prerequisites`, async () => {
+    test.describe.configure({ mode: "serial" });
+    test(`Creation of main course with pre requisite`, async ({ adminHome, editCourse, createCourse }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Balasundar` },
+            { type: `TestCase`, description: `Creation of Single Instance Elearning with Youtube content` },
+            { type: `Test Description`, description: `Creation of Single Instance Elearning with Youtube content` }
+        );
+
+        await adminHome.loadAndLogin("CUSTOMERADMIN")
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        //Creation of prerequisite course 1
+        await adminHome.clickCourseLink();
+        await createCourse.clickCreateCourse();
+        await createCourse.verifyCreateUserLabel("CREATE COURSE");
+        await createCourse.enter("course-title", prerequisiteCourse1);
+        await createCourse.selectLanguage("English");
+        await createCourse.typeDescription("This is a new course by name :" + description);
+        await createCourse.contentLibrary();//Youtube content is attached here
+        await createCourse.clickCatalog();
+        await createCourse.clickSave();
+        await createCourse.clickProceed();
+        await createCourse.verifySuccessMessage();
+        //Creation of main course with single instance
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickCourseLink();
+        await createCourse.clickCreateCourse();
+        await createCourse.verifyCreateUserLabel("CREATE COURSE");
+        await createCourse.enter("course-title", mainCourseName);
+        await createCourse.selectLanguage("English");
+        await createCourse.typeDescription("This is a new course by name :" + description);
+        await createCourse.contentLibrary();//Youtube content is attached here
+        await createCourse.clickCatalog();
+        await createCourse.clickSave();
+        await createCourse.clickProceed();
+        await createCourse.verifySuccessMessage();
+        await createCourse.editcourse();
+        await editCourse.clickClose();
+        await editCourse.clickTagMenu();
+        tag = await editCourse.selectTags();
+        await editCourse.clickClose();
+        await createCourse.clickCourseOption("Prerequisite")
+        await createCourse.addSinglePrerequisiteCourse(prerequisiteCourse1);
+
+    })
+    let title = FakerData.getCourseName();
+
+
+
+
+    test(`Attaching the main course which having pre requisite to lp `, async ({ adminHome, learningPath, createCourse, editCourse, enrollHome, catalog }) => {
+
+        await adminHome.loadAndLogin("CUSTOMERADMIN")
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickLearningPath();
+        await learningPath.clickCreateLearningPath();
+        await learningPath.title(title);
+        await learningPath.description(description);
+        await learningPath.language();
+        await learningPath.clickSave();
+        await learningPath.clickProceedBtn();
+        await learningPath.clickAddCourse();
+        await learningPath.searchAndClickCourseCheckBox(mainCourseName);
+        await learningPath.clickAddSelectCourse();
+        await catalog.verifyThePopupMessageWhenCourseHavePrerequisite();
+
+        await learningPath.clickDetailTab();
+        await learningPath.clickCatalogBtn();
+        await learningPath.clickUpdateBtn();
+        await learningPath.verifySuccessMessage();
+
+
+
+
+    })
+
+    test(`Attaching the main course which having pre requisite to lp and verify the popup message when the learner try to enroll the main course without completing the prerequisite after enrolling the tp`, async ({ learnerHome, catalog }) => {
+        test.info().annotations.push(
+            { type: `Author`, description: `Tamilvanan` },
+            { type: `TestCase`, description: `Verify learner able to launch TP level Prerequisite course and  complete it` },
+            { type: `Test Description`, description: `Verify learner able to launch TP level Prerequisite course and  complete it` }
+
+        );
+
+
+        await learnerHome.learnerLogin("LEARNERUSERNAME", "LeanrerPortal");
+        await learnerHome.clickCatalog();
+        await catalog.searchCatalog(title);
+        await catalog.clickMoreonCourse(title)
+        await catalog.clickEnroll();
+        await catalog.verifyPopupMessageWithoutCompletingPrerequisiteFromLearnerSide();
+
+        await catalog.clickMainCourse(mainCourseName);
+        await catalog.clickMyLearning();
+        await catalog.clickCompletedButton();
+        await catalog.searchMyLearning(title)
+        await catalog.verifyTheCompletedTpFromMyLearning(mainCourseName);
+    })
+})

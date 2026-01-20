@@ -20,7 +20,7 @@ test.describe(`Confirm that Scorm2004 content functions correctly and as expecte
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("This is a new course by name :" + description);
-        await createCourse.contentLibrary('Passed-Failed-SCORM2004');
+        await createCourse.contentLibrary('Passed-Failed-SCORM2004')
         await createCourse.clickCatalog();
         await createCourse.clickSave();
         await createCourse.clickProceed();

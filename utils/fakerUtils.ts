@@ -37,6 +37,7 @@ export class FakerData {
 
     static getPinCode() {
         return faker.location.zipCode('######');
+        
     }
 
     static addressName(): string {
@@ -421,4 +422,13 @@ export function getRandomIns(): insData | any {
         console.error('Error in getRandomINS:', error.message);
         return null;
     }
+}
+export function percentage() {
+    const min = 10;
+    const max = 100;
+    const step = 5;
+    const range = Math.floor((max - min) / step) + 1;
+    const randomMultiple = Math.floor(Math.random() * range) * step + min;
+    return randomMultiple.toString();
+
 }

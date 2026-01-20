@@ -79,9 +79,9 @@ test.describe(`Verify_that_the_user_is_able_to_bookmark_the_course_complete_it_a
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatusBookmark();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName1);
-        await catalog.verifyCompletedCourse(courseName1);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName1);
+        await dashboard.vaidatVisibleCourse_Program(courseName1, "Completed");
     })
 
 

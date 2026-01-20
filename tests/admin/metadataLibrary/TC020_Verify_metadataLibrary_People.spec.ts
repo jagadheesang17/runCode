@@ -48,7 +48,7 @@ test(`verify that a employment type can be added under Metadata Library - People
 })
 
 
-test.only(`verify that a user type can be added under Metadata Library - People - User Type`, async ({ adminHome, metadatalibrary }) => {
+test(`verify that a user type can be added under Metadata Library - People - User Type`, async ({ adminHome, metadatalibrary }) => {
     test.info().annotations.push(
         { type: 'Author', description: 'Ajay Michael' },
         { type: 'TestCase', description: 'verify that a user type can be added under Metadata Library - People - User Type' },

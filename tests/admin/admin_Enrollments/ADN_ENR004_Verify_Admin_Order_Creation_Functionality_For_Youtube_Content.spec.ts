@@ -4,12 +4,12 @@ import { FakerData } from '../../../utils/fakerUtils';
 
 
 let createdCode: any
-const courseName = "EL"+" "+FakerData.getCourseName();
+const courseName = "EL" + " " + FakerData.getCourseName();
 const description = FakerData.getDescription()
 const price = FakerData.getPrice();
 test.describe(`Confirm that Admin Order creation functions correctly and as expected for YouTube content`, async () => {
     test.describe.configure({ mode: "serial" });
-    test(`Creation of Single Instance Elearning with Youtube content and Admin creates an order`, async ({ adminHome, costCenter,createCourse,enrollHome,contentHome }) => {
+    test(`Creation of Single Instance Elearning with Youtube content and Admin creates an order`, async ({ adminHome, costCenter, createCourse, enrollHome, contentHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Creation of Single Instance Elearning with Youtube content` },
@@ -24,7 +24,7 @@ test.describe(`Confirm that Admin Order creation functions correctly and as expe
         await createCourse.verifyCreateUserLabel("CREATE COURSE");
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
-        await createCourse.typeDescription(description); 
+        await createCourse.typeDescription(description);
         await createCourse.enterPrice(price)
         await createCourse.selectCurrency();
         await createCourse.contentLibrary()
@@ -50,7 +50,7 @@ test.describe(`Confirm that Admin Order creation functions correctly and as expe
         await enrollHome.orderSuccessMsg();
     })
 
-    test(`Confirm that YouTube content functions correctly and as expected`, async ({ learnerHome, catalog }) => {
+    test(`Confirm that YouTube content functions correctly and as expected`, async ({ learnerHome, catalog ,dashboard}) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Confirm that YouTube content functions correctly and as expected` },
@@ -62,10 +62,11 @@ test.describe(`Confirm that Admin Order creation functions correctly and as expe
         await catalog.clickCourseInMyLearning(courseName);
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
+        
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
     })
 
 })

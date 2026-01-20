@@ -1,24 +1,17 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createDepartment, updateDepartment } from "../../metaDataLibraryAPI";
 import { generateCode } from "../../../data/apiData/formData";
 
-let access_token: string;
 const departmentName = FakerData.getDepartmentName() + " " + "Dept";
 const updatedDepartmentName = FakerData.getDepartmentName() + " " + "Updated";
 const generatedcode = generateCode();
 
 
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
-
 test.describe('Update Department', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating Department through API', async () => {
-        await createDepartment(departmentName, generatedcode,{ Authorization: access_token });
+        await createDepartment(departmentName, generatedcode);
     });
     test(`Verify that a department can be added under Metadata Library`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(
@@ -38,7 +31,7 @@ test.describe('Update Department', () => {
 
     //Update Department
     test('Updating Department through API', async () => {
-        await updateDepartment(generatedcode,updatedDepartmentName, { Authorization: access_token });
+        await updateDepartment(generatedcode,updatedDepartmentName);
     });
 
     test(`Verify that a department can be updated under Metadata Library`, async ({ adminHome, metadatalibrary }) => {

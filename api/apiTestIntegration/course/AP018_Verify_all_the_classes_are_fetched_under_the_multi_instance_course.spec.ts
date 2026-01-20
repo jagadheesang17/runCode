@@ -1,5 +1,4 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { getInstanceCourseAPI, retrive_listofCourse } from "../../courseAPI";
 import { credentialConstants } from "../../../constants/credentialConstants";
 import { credentials } from "../../../constants/credentialData";
@@ -7,7 +6,6 @@ import { LearnerCoursePage } from "../../../pages/LearnerCoursePage";
 import { FakerData, getRandomSeat } from '../../../utils/fakerUtils';
 
 
-let access_token: string
 const courseName = FakerData.getCourseName();
 const sessionName = FakerData.getSession();
 const elCourseName = ("Elearning" + " " + FakerData.getCourseName());
@@ -16,11 +14,6 @@ const maxSeat = getRandomSeat()
 let tag: any
 const instructorName = credentials.INSTRUCTORNAME.username
 let createdCode:any
-
-test.beforeAll('Generate Access Tokken', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe(`TC053 Verify that course should be created as multiple instance when ILT or VC delivery type is choosed`, () => {
     test.describe.configure({ mode: "serial" });
@@ -97,7 +90,7 @@ test.describe('Test the Functionality of getInstanceCourse via API', () => {
             { type: `TestCase`, description: `Test the Functionality of getInstanceCourse via API` },
             { type: `Test Description`, description: `In the response ILT and Elearning classes should be fetched` }
         );
-        let listClasses = await getInstanceCourseAPI(createdCode,{ Authorization: access_token });
+        let listClasses = await getInstanceCourseAPI(createdCode);
         console.log(listClasses);
     });
 });

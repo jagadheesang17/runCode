@@ -55,7 +55,7 @@ test.describe(`Verify admin can update enrollment type from Mandatory to Optiona
             await enrollHome.clickEnrollButton();
         }
         console.log(`✅ All 3 users enrolled with Mandatory enrollment type`);
-        await enrollHome.selectEnrollmentOption("View/Update Status - Course/TP");
+        await enrollHome.selectEnrollmentOption("View/update Status - Course/TP");
 
         for (let i = 0; i < users.length; i++) {
             console.log(`🔍 Verifying User ${i + 1} (${users[i].username}) has Mandatory enrollment type`);
@@ -105,13 +105,14 @@ test.describe(`Verify admin can update enrollment type from Mandatory to Optiona
         console.log(`🔄 Changing User 1 (${users[0].username}) from Mandatory to Optional`);
         await enrollHome.changeEnrollmentType(users[0].username);
         
+        await enrollHome.clickviewUpdateEnrollmentBtn();
         // Change User 3 from Mandatory to Optional
         console.log(`🔄 Changing User 3 (${users[2].username}) from Mandatory to Optional`);
         await enrollHome.changeEnrollmentType(users[2].username);
         
         // User 2 remains Mandatory (no change)
         console.log(`ℹ️ User 2 (${users[1].username}) remains Mandatory (no change)`);
-        
+        await enrollHome.clickviewUpdateEnrollmentBtn();
         console.log(`🔍 Verifying enrollment types after update`);
         await enrollHome.verifyField("Enrollment Type", "Optional", users[0].username);  // User 1
         await enrollHome.verifyField("Enrollment Type", "Mandatory", users[1].username); // User 2

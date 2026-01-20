@@ -6,6 +6,7 @@ import { stat } from "fs";
 import { FakerData, generateCreditScore, getCurrentDateFormatted, getFutureDate, getFutureyear, getPastDate } from "../utils/fakerUtils";
 import { getDayOfYear } from "date-fns/fp/getDayOfYear";
 import { getYear } from "date-fns";
+import { Certificate } from 'crypto';
 
 export class ProfilePage extends LearnerHomePage {
     public selectors = {
@@ -121,6 +122,7 @@ export class ProfilePage extends LearnerHomePage {
         interestTitleOption: (index: number) => `(//input[@id='interests'])[${index}]`,
         addInterest: "(//label[text()='Interests']/following::i)[1]",
         externalTraining: "(//h5[text()='External Training']/following-sibling::i)[1]",
+        externalTrainingHeading: "//h5[@class='mb-0 h2_inactive' and text()='External Training']",
         verifyCertificate: "//span[text()='Verify Certificate By']",
         //  selectVerification: "//select[@id='selectedVerificationBy']",
         verifyBy: `//div[@id='wrapper-verify_by']`,
@@ -150,6 +152,8 @@ export class ProfilePage extends LearnerHomePage {
         dropdownOption: (data: string) => `//span[text()='${data}']`,
         addressInput: (label: string) => `(//label[contains(text(),'${label}')]/following::input[contains(@id,'addres')])[1]`,
         inputField: (name: string) => `//input[@id="${name}"]`,
+        approvalStatus: (certificate: string, status: string) => `(//span[text()='${certificate}']//following::span[text()='${status}'])[1]`,
+        deleteExternalTraining: (certificate: string) => `(//span[text()='${certificate}']//following::i[contains(@class,'trash')])[1]`,
 
 
     }
@@ -315,10 +319,10 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
-    async certificateVerificationbyManager(managerUser: string) {
+    async certificateVerificationbyManager(Certificate:string,managerUser: string) {
         await this.click(this.selectors.externalTraining, "External Training", "Icon");
         await this.click(this.selectors.addIcon, "Add", "Icon");
-        await this.type(this.selectors.titleField, "Title", FakerData.getcertificationTitle());
+        await this.type(this.selectors.titleField, "Title",Certificate);
         await this.type(this.selectors.issuedBy, "Issued By", FakerData.getOrganizationName());
         await this.type(this.selectors.certificateNumber, "Certificate Number", FakerData.getCertificationNumber());
         await this.typeAndEnter(this.selectors.completedOn, "Completed On", getCurrentDateFormatted());
@@ -333,7 +337,7 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
-    async certificateVerificationbyOther() {
+    async certificateVerificationbyOther(email:string) {
         await this.click(this.selectors.externalTraining, "External Training", "Icon");
         await this.click(this.selectors.addIcon, "Add", "Icon");
         await this.type(this.selectors.titleField, "Title", FakerData.getcertificationTitle());
@@ -347,7 +351,7 @@ export class ProfilePage extends LearnerHomePage {
         await this.click(this.selectors.verifyBy, "Manager/others", "Dropdown")
         await this.click(this.selectors.selectManger("Others"), "Other", "Option")
         await this.type(this.selectors.othersName, "Name", FakerData.getFirstName());
-        await this.type(this.selectors.emailId, "E-Mail", FakerData.getUserId())
+        await this.type(this.selectors.emailId, "E-Mail", email)
         await this.click(this.selectors.showToAllSkills, "Show To All", "Checkbox");
     }
 
@@ -645,6 +649,62 @@ export class ProfilePage extends LearnerHomePage {
         const selector = this.selectors.inputField(name);
         await this.type(selector, name, data);
     }
+
+    /**
+     * Verify external certificate approval status
+     * @param certificate - The certificate/training name to locate
+     * @param approved - The expected approval status (e.g., "Approved", "Rejected", "Pending")
+     */
+    async verifyExternalCertificateStatus(certificate: string, approved: string) {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.approvalStatus(certificate, approved),
+            `${approved} Status`
+        );
+          await this.wait("maxWait");
+        console.log(`✅ Verified: External certificate '${certificate}' has status '${approved}'`);
+    }
+
+    /**
+     * Delete external training certificate by certificate name
+     * @param certificate - Name of the certificate to delete
+     */
+    async deleteExternalTraining(certificate: string) {
+        await this.wait("maxWait");
+        console.log(`Attempting to delete external training certificate: '${certificate}'`);
+        await this.validateElementVisibility(this.selectors.deleteExternalTraining(certificate),`Delete icon for ${certificate}`);
+        await this.click(this.selectors.deleteExternalTraining(certificate),`Delete ${certificate}`,"Icon");
+        await this.wait("minWait");
+        console.log(`✅ Deleted external training certificate: '${certificate}'`);
+    }
+
+    /**
+     * Verify External Training section is visible in learner profile
+     */
+    async verifyExternalTrainingIsVisible() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.externalTrainingHeading,
+            "External Training Section"
+        );
+        console.log("✅ External Training section is visible in profile");
+    }
+
+    /**
+     * Verify External Training section is NOT visible in learner profile
+     */
+    async verifyExternalTrainingIsNotVisible() {
+        await this.wait("minWait");
+        const isVisible = await this.page.locator(this.selectors.externalTrainingHeading).isVisible();
+        
+        if (isVisible) {
+            throw new Error("❌ External Training section is visible but should not be!");
+        }
+        
+        console.log("✅ External Training section is NOT visible in profile (as expected)");
+    }
+
+     
 
 }
 

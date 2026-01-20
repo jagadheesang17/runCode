@@ -11,7 +11,7 @@ const username = FakerData.getUserId();
 
 test(`Create the organization with address`, async ({ adminHome, organization, CompletionCertification,createCourse,createUser }) => {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     );
@@ -49,11 +49,7 @@ test(`Create the organization with address`, async ({ adminHome, organization, C
 }})
 
 test(`Create a manager with address and Verify the organization's address inherited to the user after mapping on the user details page`, async ({ adminHome, createUser, createCourse }) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` },
-        { type: `Test Description`, description: `Verify_that_admin_able_to_create_and_set_direct_report_to_assigned_manager` }
-    );
+    
 
      const newData = {
         teamUser1: username
@@ -99,11 +95,7 @@ await createUser.clickRolesButton("Manager");
 }})
 
 test(`Verify the manager's address inherited to the user after mapping on the user details page`, async ({ adminHome, createUser ,createCourse}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+   
   
 
         await adminHome.loadAndLogin("CUSTOMERADMIN");

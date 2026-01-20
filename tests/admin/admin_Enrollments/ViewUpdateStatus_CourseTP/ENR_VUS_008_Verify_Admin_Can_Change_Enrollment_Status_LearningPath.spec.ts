@@ -84,14 +84,19 @@ test.describe(`Verify admin can change enrollment status for Learning Path`, () 
             { type: `TestCase`, description: `ENR_VUS_008 - Verify learner side Learning Path visibility` },
             { type: `Test Description`, description: `Login as all 3 users and verify the Learning Path is available in My Learning` }
         );
-
+        //same scenario is covering Dashboard - Cert/LP
         for (let i = 0; i < Math.min(users.length, 3); i++) {
             console.log(`\n🔄 Verifying for User ${i + 1}: ${users[i].username}`);
             await learnerHome.basicLogin(users[i].username, "DefaultPortal");
-            await learnerHome.clickMyLearning();
-            await catalog.searchCatalog(learningPathName);
-            await catalog.clickCourseInMyLearning(learningPathName);
-            console.log(`✅ User ${i + 1} can see the Learning Path in My Learning`);
+            // await learnerHome.clickMyLearning();
+            // await catalog.searchCatalog(learningPathName);
+            // await catalog.clickCourseInMyLearning(learningPathName);
+            // console.log(`✅ User ${i + 1} can see the Learning Path in My Learning`);
+            await dashboard.clickLearningPath_And_Certification();
+            // await dashboard.clickCertificationLink();
+            await dashboard.searchCertification(learningPathName);
+            await dashboard.verifyTheEnrolledCertification(learningPathName);
+            await dashboard.clickTitle(learningPathName);
             await createUser.clickLogOutButton();
         }
         

@@ -37,12 +37,49 @@ const dropdownOption = (data: string) => `//span[text()='${data}']`;
 const passwordAttemptErrMsg =
     `//span[text()='Your account has been temporarily locked after 3 unsuccessful login attempts. Please try again later.']`
 
- //Landing page verification
- const pageName = (data: string) => `(//h1[text()='${data}'])[1]`;
+//Landing page verification
+const pageName = (data: string) => `(//h1[text()='${data}'])[1]`;
 const myProfileCloseBtn = `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`;
 
 
 
+
+const clickAlertIcon = `//i[@class='fa-duotone fa-exclamation-triangle']`;
+
+const courseListing = (title: string) => `//span[text()='${title}']`;
+
+const clickLaunchButton = `//div[text()='Alerts']/following::i[@aria-label='Click to play']`;
+
+const clickINA = `(//h1[text()='My Dashboard']//following::div[text()='Items Need Attention'])[1]`;
+
+const clickLaunchTabInINA = `//a[contains(text(),'Launch')]`;
+
+const verifyTextInLaunchTab = `//p[@class='my-2 h1_inactive fw-lighter']`;
+
+const certificationInLaunchTab = `(//p[@class='h4_action_title_active mb-0'])[1]`;
+
+const clickLaunchButtonInINA = (title: string) => `(//p[text()='${title}']/following::span[text()='Launch'])[1]`;
+
+const certificationRemovedFromLaunchTab = (title: string) => `//p[text()='${title}']`;
+
+const clickshowAll = `//button[text()='Show All']`;
+
+// Forgot Password selectors
+const forgotPasswordLink = `//a[text()='Forgot Password?']`;
+const resetPasswordEmailInput = `//input[@id='email' or @placeholder='Enter your email']`;
+const sendResetLinkButton = `//button[text()='Send Reset Link' or text()='Submit']`;
+const newPasswordInput = `//input[@id='newPassword' or @placeholder='New Password']`;
+const confirmNewPasswordInput = `//input[@id='confirmPassword' or @placeholder='Confirm Password']`;
+const resetPasswordButton = `//button[text()='Reset Password']`;
+const passwordEyeIcon = `//i[contains(@class,'fa-eye')]`;
+const passwordInfoIcon = `//i[contains(@class,'fa-info-circle') or contains(@class,'fa-info')]`;
+const passwordPolicyPopup = `//div[contains(@class,'password-policy') or contains(text(),'Password Policy')]`;
+const passwordRequiredError = `//span[contains(text(),'Password is required') or contains(text(),'required')]`;
+const passwordMismatchError = `//span[contains(text(),'Passwords do not match') or contains(text(),'must match')]`;
+const sameAsOldPasswordError = `//span[contains(text(),'cannot be the same as the old password') or contains(text(),'same as old')]`;
+const sameAsUsernameError = `//span[contains(text(),'cannot be the same as your username') or contains(text(),'same as username')]`;
+const passwordPolicyError = `//span[contains(text(),'does not meet the password policy') or contains(text(),'password policy')]`;
+const passwordResetSuccessMsg = `//span[contains(text(),'Password has been reset successfully') or contains(text(),'reset successful')]`;
 
 export class LearnerLogin extends PlaywrightWrapper {
 
@@ -104,7 +141,7 @@ export class LearnerLogin extends PlaywrightWrapper {
     }
 
 
-     public async basicLogin(username: string, url: string) {
+    public async basicLogin(username: string, url: string) {
         const signIn = async () => {
             try {
                 await this.waitSelector(signInLocator);
@@ -151,7 +188,7 @@ export class LearnerLogin extends PlaywrightWrapper {
         }
     }
     //To verify the password policy,if the password is entered more than the configured value then it will throw an error message
-    public async passwordPolicyLogin(username: string,password:string,url: string) {
+    public async passwordPolicyLogin(username: string, password: string, url: string) {
         const signIn = async () => {
             try {
                 await this.waitSelector(signInLocator);
@@ -382,7 +419,7 @@ export class LearnerLogin extends PlaywrightWrapper {
     }
 
     public async DirectContentLogin(role: string) {
-    const { username, password } = credentials[role];
+        const { username, password } = credentials[role];
         await this.type(usernameSelector, "Username", username);
         await this.type(passwordSelector, "Password", password);
         await this.wait('minWait');
@@ -396,64 +433,231 @@ export class LearnerLogin extends PlaywrightWrapper {
         console.log(await this.page.title());
         await this.page.reload({ waitUntil: 'commit' });
         await this.wait('mediumWait');
-    } catch (error) {
+    } catch(error) {
         console.error(`Login attempt failed: ${error}`);
         throw error;
     }
 
-async verifyLandingPage(page:string) {
-    await this.wait("minWait");
-    await this.verification(pageName(page), page);
-}
+    async verifyLandingPage(page: string) {
+        await this.wait("minWait");
+        await this.verification(pageName(page), page);
+    }
 
-/**
- * Custom login method that accepts username, password, and url for bulk enrollment testing
- */
-public async customLogin(username: string, url: string, password: string = "Welcome1@") {
-    const signIn = async () => {
+    async clickAlertIcon() {
+        await this.validateElementVisibility(clickAlertIcon, "Alert Icon");
+        await this.click(clickAlertIcon, "Alert Icon", "Icon");
+
+    }
+    async verifyAndClickLaunchFromAlert(title: string) {
+        await this.page.locator(courseListing(title)).scrollIntoViewIfNeeded();
+
+        await this.verification(courseListing(title), title);
+
+        await this.click(clickLaunchButton, "Launch Button", "Button");
+    }
+
+    async clickINA() {
+        await this.validateElementVisibility(clickINA, "Items Need Attention");
+        await this.click(clickINA, "Items Need Attention", "Link");
+
+    }
+
+    async clickLaunchTabInINA(title: string) {
+        await this.validateElementVisibility(clickLaunchTabInINA, "Launch Tab");
+        await this.click(clickLaunchTabInINA, "Launch Tab", "Tab");
+        await this.verification(verifyTextInLaunchTab, "Your certification requires Re-Validate. Please complete the certification.")
+
+        await this.verification(certificationInLaunchTab, title)
+        await this.click(clickLaunchButtonInINA(title), "Launch Button", "Button");
+    }
+
+    async verifyTheCertificationRemovedAfterCompletion(title: string) {
+        // Verify the certification is removed from the Launch tab in INA after completion
+        await this.validateElementVisibility(clickLaunchTabInINA, "Launch Tab");
+        await this.click(clickLaunchTabInINA, "Launch Tab", "Tab");
+
+        // Verify certification is NOT present
+        const certificationLocator = this.page.locator(certificationRemovedFromLaunchTab(title));
+        const isVisible = await certificationLocator.isVisible().catch(() => false);
+
+        if (!isVisible) {
+            console.log(`✅ Verified: Certification "${title}" is removed from Launch tab in INA after completion`);
+        } else {
+            throw new Error(`❌ FAIL: Certification "${title}" is still present in Launch tab in INA. Expected it to be removed after completion.`);
+        }
+    }
+
+    async clickShowAll() {
+
+        await this.validateElementVisibility(clickshowAll, "Show All Button");
+        await this.click(clickshowAll, "Show All Button", "Button");
+
+    }
+
+    /**
+     * Verify user is logged out by checking Sign In button visibility
+     */
+    async verifyLoggedOut() {
+        await this.validateElementVisibility(signInLocator, "Sign In");
+        console.log(`✅ Verified: User is logged out successfully.`);
+    }
+
+    /**
+     * Click on an option in INA (Items Need Attention) section
+     * @param text - The text of the option to click
+     */
+    async clickINAOption(text: string) {
+        const inaOptionLocator = `//a[contains(text(),'${text}')]`;
+        await this.validateElementVisibility(inaOptionLocator, `INA Option: ${text}`);
+        await this.click(inaOptionLocator, `INA Option: ${text}`, "Link");
+    }
+
+    /**
+     * Verify course is present in INA (Items Need Attention) under Pending Requests
+     * @param text - The text/course name to verify
+     */
+    async verifyCourseInINA(text: string) {
+        const courseLocator = `//span//p[text()='${text}']`;
+        await this.validateElementVisibility(courseLocator, `Course in Pending Requests: ${text}`);
+        await this.verification(courseLocator, text);
+        console.log(`✅ Verified: Course "${text}" is present in Pending Requests under INA`);
+    }
+
+    /**
+     * Click on a course in INA (Items Need Attention) section
+     * @param text - The text/course name to click
+     */
+    async clickCourseInINA(text: string) {
+        await this.wait("minWait");
+        const courseMoreButtonLocator = `(//span//p[text()='${text}']//following::button[text()='more'])[1]`;
+        await this.validateElementVisibility(courseMoreButtonLocator, `More button for course: ${text}`);
+        await this.click(courseMoreButtonLocator, `More button for course: ${text}`, "Button");
+        console.log(`✅ Clicked more button for course "${text}" in INA`);
+    }
+
+    /**
+     * Custom login method that accepts username, password, and url for bulk enrollment testing
+     */
+    public async customLogin(username: string, url: string, password: string = "Welcome1@") {
+        const signIn = async () => {
+            try {
+                await this.waitSelector(signInLocator);
+                await this.wait('mediumWait');
+                await this.click(signInLocator, "Sign In button", "Button");
+            } catch (error) {
+                console.error(`Error during sign-in process: ${error}`);
+                throw error;
+            }
+        };
+
         try {
-            await this.waitSelector(signInLocator);
+            switch (url) {
+                case "Portal1": {
+                    await this.loadApp(URLConstants.learnerportal);
+                    break;
+                }
+                case "Portal2": {
+                    await this.loadApp(URLConstants.learnerportal2);
+                    break;
+                }
+                default:
+                    await this.loadApp(URLConstants.leanerURL);
+                    break;
+            }
+            await signIn();
+            await this.type(usernameSelector, "Username", username);
+            await this.type(passwordSelector, "Password", password);
+            await this.wait('minWait');
+            await this.click(signInButtonLocator, "Sign In button", "Button");
+            await this.page.waitForLoadState('domcontentloaded');
+            await this.waitSelector(logoutButtonLocator);
+            const logoutButton = this.page.locator(logoutButtonLocator);
+            await expect(logoutButton).toBeVisible({ timeout: 20000 });
+            console.log(`Custom login successful for user: ${username}`);
+            await this.wait('minWait')
+            console.log(await this.page.title());
+            await this.page.reload({ waitUntil: 'commit' });
             await this.wait('mediumWait');
-            await this.click(signInLocator, "Sign In button", "Button");
         } catch (error) {
-            console.error(`Error during sign-in process: ${error}`);
+            console.error(`Custom login attempt failed: ${error}`);
             throw error;
         }
-    };
+    }
 
-    try {
-        switch (url) {
-            case "Portal1": {
-                await this.loadApp(URLConstants.learnerportal);
-                break;
-            }
-            case "Portal2": {
-                await this.loadApp(URLConstants.learnerportal2);
-                break;
-            }
-            default:
-                await this.loadApp(URLConstants.leanerURL);
-                break;
-        }
-        await signIn();
+    /**
+     * Click Forgot Password link
+     */
+    async clickForgotPassword() {
+        await this.validateElementVisibility(forgotPasswordLink, "Forgot Password");
+        await this.click(forgotPasswordLink, "Forgot Password", "Link");
+        await this.wait("minWait");
+        console.log(`✅ Clicked Forgot Password link`);
+    }
+
+    /**
+     * Step 1: Verify invalid credentials error and handle it
+     */
+    async verifyInvalidCredentials(username: string, password: string) {
+        // Load default portal
+        await this.loadApp(URLConstants.leanerURL);
+        await this.wait('mediumWait');
+
+        // Click Sign In to open login modal
+        await this.waitSelector(signInLocator);
+        await this.click(signInLocator, "Sign In button", "Button");
+        await this.wait('mediumWait');
+
+        // Enter invalid username and password
         await this.type(usernameSelector, "Username", username);
         await this.type(passwordSelector, "Password", password);
+
+        // Click Sign In button with invalid credentials
+        await this.click(signInButtonLocator, "Sign In button", "Button");
+        const errorMessage = this.page.locator("//span[@id='error-txt']");
+        await errorMessage.waitFor({ state: 'visible', timeout: 10000 });
+        const errorText = await errorMessage.textContent();
+        console.log(`✅ Invalid credentials error message displayed: "${errorText}"`);
+    }
+
+    /**
+     * Step 2-4: Remove password, click sign in, and validate mandatory field error
+     */
+    async verifyPasswordFieldIsMandatory() {
+        // Step 2: Clear the password field (remove password)
+        await this.type(usernameSelector, "Username", "username");
         await this.wait('minWait');
         await this.click(signInButtonLocator, "Sign In button", "Button");
-        await this.page.waitForLoadState('domcontentloaded');
-        await this.waitSelector(logoutButtonLocator);
-        const logoutButton = this.page.locator(logoutButtonLocator);
-        await expect(logoutButton).toBeVisible({ timeout: 20000 });
-        console.log(`Custom login successful for user: ${username}`);
-        await this.wait('minWait')
-        console.log(await this.page.title());
-        await this.page.reload({ waitUntil: 'commit' });
-        await this.wait('mediumWait');
-    } catch (error) {
-        console.error(`Custom login attempt failed: ${error}`);
-        throw error;
-    }
-}
+        // Step 4: Wait for and validate mandatory field error message
+        const errorMessage = this.page.locator("//span[@id='error-txt']");
+        await errorMessage.waitFor({ state: 'visible', timeout: 10000 });
 
+        const errorText = await errorMessage.textContent();
+        console.log(`✅ Password field is mandatory - error message displayed: "${errorText}"`);
+    }
+
+    /**
+     * Verify eye icon for password visibility toggle
+     */
+    async verifyPasswordEyeIconExists() {
+        await this.validateElementVisibility(newPasswordInput, "New Password");
+        const eyeIcon = this.page.locator(passwordEyeIcon);
+        const isVisible = await eyeIcon.isVisible();
+
+        if (isVisible) {
+            console.log(`✅ Eye icon is displayed next to password field`);
+            return true;
+        } else {
+            throw new Error(`❌ FAIL: Eye icon not found next to password field`);
+        }
+    }
+
+    /**
+     * Click eye icon to toggle password visibility
+     */
+    async togglePasswordVisibility() {
+        await this.click(passwordEyeIcon, "Eye Icon", "Icon");
+        await this.wait("minWait");
+        console.log(` Toggled password visibility`);
+    }
 
 }

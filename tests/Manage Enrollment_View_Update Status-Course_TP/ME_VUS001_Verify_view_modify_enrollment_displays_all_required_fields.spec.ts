@@ -72,7 +72,7 @@ test.describe(`ME_VUS001_Verify_view_modify_enrollment_displays_all_required_fie
         await adminHome.clickEnrollmentMenu();
         await adminHome.clickviewUpdateStatusCourseTp();
         
-        console.log(`✅ Navigated to View/Update Status - Course/TP page`);
+        console.log(`✅ Navigated to View/update Status - Course/TP page`);
     });
 
     test(`Test 4: Search for the course and click View/Modify Enrollment`, async ({ enrollHome, page }) => {
@@ -334,7 +334,7 @@ test.describe(`ME_VUS001_Verify_view_modify_enrollment_displays_all_required_fie
         console.log(`\n📊 Test Flow:`);
         console.log(`   1. ✅ Created E-learning course`);
         console.log(`   2. ✅ Enrolled learner to the course`);
-        console.log(`   3. ✅ Navigated to View/Update Status - Course/TP`);
+        console.log(`   3. ✅ Navigated to View/update Status - Course/TP`);
         console.log(`   4. ✅ Searched course and clicked View/Modify Enrollment`);
         console.log(`   5. ✅ Verified all required column headers are displayed`);
         console.log(`   6. ✅ Verified enrolled learner is displayed in the list`);

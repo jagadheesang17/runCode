@@ -1,23 +1,16 @@
 import { test } from "@playwright/test";
 import { listSingleUser, userCreationWithGuid, updateCustomGuid } from "../../userAPI";
-import { generateOauthToken } from "../../accessToken";
 import { userCreationWithGuidData, updateCustomGuidData } from "../../../data/apiData/formData";
 import { FakerData } from "../../../utils/fakerUtils";
 import { assertResponse } from "../../../utils/verificationUtils";
 import { verifyUserGuidInDatabase } from "../../../tests/admin/DB/DBJobs";
 
 let generatingusername = FakerData.getUserId();
-let access_token: any;
 let createdUserId: any;
 let userId: any;
 let userName: any;
 let originalGuid: any;
 let updatedGuid: any;
-
-test.beforeAll('Generate Access Token', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Testing UpdateCustomGuid API Functionality', () => {
     test.describe.configure({ mode: 'serial' });
@@ -34,7 +27,7 @@ test.describe('Testing UpdateCustomGuid API Functionality', () => {
         console.log('User creation data with original GUID:', userData);
         console.log('Generated Original GUID:', originalGuid);
         
-        createdUserId = await userCreationWithGuid(userData, { Authorization: access_token });
+        createdUserId = await userCreationWithGuid(userData);
         console.log('Created User ID:', createdUserId);
     });
 
@@ -45,7 +38,7 @@ test.describe('Testing UpdateCustomGuid API Functionality', () => {
             { type: `Test Description`, description: `Verify the user was created successfully with initial GUID` }
         );
 
-        let userDetails: any = await listSingleUser(generatingusername, { Authorization: access_token });
+        let userDetails: any = await listSingleUser(generatingusername);
         [userId, userName] = userDetails;
         
         console.log('Retrieved User ID:', userId);
@@ -91,7 +84,7 @@ test.describe('Testing UpdateCustomGuid API Functionality', () => {
         const updateData = updateCustomGuidData(generatingusername, createdUserId, updatedGuid);
         console.log('Update GUID data:', updateData);
         
-        const updateResult = await updateCustomGuid(updateData, { Authorization: access_token });
+        const updateResult = await updateCustomGuid(updateData);
         console.log('Update GUID Result:', updateResult);
         
         // Verify the update was successful

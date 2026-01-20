@@ -58,6 +58,7 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
     learnerHome,
     catalog,
     readContentHome,
+    dashboard
   }) => {
     test.info().annotations.push(
       { type: `Author`, description: `Tamilvanan` },
@@ -75,8 +76,8 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
     await readContentHome.readTinCan();
     await catalog.saveLearningStatus();
     await catalog.clickMyLearning();
-    await catalog.clickCompletedButton();
-    await catalog.searchMyLearning(courseName);
-    await catalog.verifyCompletedCourse(courseName);
+    await dashboard.selectDashboardItems("Learning History");
+    await dashboard.learningHistoryCourseSearch(courseName);
+    await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
   });
 });

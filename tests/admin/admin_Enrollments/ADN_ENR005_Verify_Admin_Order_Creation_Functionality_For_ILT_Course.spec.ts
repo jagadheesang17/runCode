@@ -85,8 +85,8 @@ test.describe(`Confirm that Admin Order creation functions correctly and as expe
         );
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await catalog.clickMyLearning();
-        await catalog.searchMyLearning(instanceName);
-        await catalog.clickCourseInMyLearning(instanceName);
+        await catalog.searchMyLearning(courseName);
+        await catalog.clickCourseInMyLearning(courseName);
         await catalog.verifyStatus("Enrolled");
     })
 

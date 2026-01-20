@@ -25,7 +25,7 @@ let adminGroupsInAccess: string[] = [];
 test(`Creating the organization`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )
@@ -56,11 +56,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 
 test(`Verify the organization type after mapping to the user`, async ({ adminHome, createUser ,createCourse,adminRoleHome}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+   
     const csvFilePath = './data/US_address.csv';
     const data = await readDataFromCSV(csvFilePath);
 
@@ -108,12 +104,7 @@ test(`Verify the organization type after mapping to the user`, async ({ adminHom
 
 
     test(`Creating the admin group and mapping the created organization`, async ({ adminHome, editCourse, createUser, learnerHome, adminRoleHome, adminGroup, createCourse, contentHome, learnerGroup }) => {
-        test.info().annotations.push(
-            { type: `Author`, description: `Tamilvanan` },
-            { type: `TestCase`, description: `Creating user with seperate groups` },
-            { type: `Test Description`, description: `Creating user with seperate admin and learner groups` }
-    
-        );
+      
 
 
     //creating admin group

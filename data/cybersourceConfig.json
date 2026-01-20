@@ -1,0 +1,9 @@
+{
+  "paymentServer": "Test",
+  "merchantId": "expertusone_test",
+  "restAPIKey": "e9463b9d-566a-42a6-abd2-71dd6d4eda78",
+  "restAPISecretKey": "lKC1433DEDzyV97mvYP3d9wLpAmUwouesFoc4jpy+wc=",
+  "securedAcceptenceProfileId": "6233F334-9600-4B19-A1DC-D021E05CD2B4",
+  "securedAcceptenceSecretKey": "7d31c4fbce6141a7af9ebaaef1f5f39421f9c0151c224643817aa2071f15d23d84e6cecef13b4c1ab92b7df1f9136029ed0ecea96cdf47449faa7e91dcbda8940f1a46561f1b4a47960c427224d7e105344e2b69a9c94cb9874d04151a694b3c03ae35d2572043bfbd6d59ae43f6ea1ea598f31eb38c4e86ae51430bdb9e54f4",
+  "securedAcceptenceAccessKey": "ccd259ddea613114a5295c2cc349b2a2"
+}

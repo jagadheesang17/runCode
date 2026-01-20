@@ -5,8 +5,8 @@ import {GetContentLaunchURL} from "../../data/apiData/learner_formData";
 import { URLConstants } from "../../data/apiData/apiUtil";
 
 let endPointURL = URLConstants.learnerEndPointUrl
-export async function getContentLaunchURL(userName: string,course_code: any,authorization: any) {
-    let response = await postRequest(GetContentLaunchURL(course_code,userName), endPointURL, authorization);
+export async function getContentLaunchURL(userName: string,course_code: any) {
+    let response = await postRequest(GetContentLaunchURL(course_code,userName), endPointURL);
     console.log(response.data);
     await assertStatus(response.status, 200);
     await assertResponse(response.data.status, "success");

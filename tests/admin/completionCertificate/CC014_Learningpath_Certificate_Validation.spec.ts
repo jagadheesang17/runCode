@@ -34,7 +34,7 @@ test.describe('CC014 - Training Plan Learning Path Validation', () => {
         await CompletionCertification.clickCreateCompletionCertificate();
         await CompletionCertification.clickTemplateType();
         await CompletionCertification.title(certificateTitle);
-        await CompletionCertification.designCertificateWithHtml(description);
+        await CompletionCertification.designCertificate(description);
         await CompletionCertification.clickPublish();
         await CompletionCertification.clickProceed();
         await createCourse.verifySuccessMessage();

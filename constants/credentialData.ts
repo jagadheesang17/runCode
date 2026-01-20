@@ -106,8 +106,8 @@ switch (environmentSetup) {
   case "qa":
     credentials = {
       CUSTOMERADMIN: {
-        username: "arivazhaganp_42",
-        password: "Qwerty@123",
+        username: "newprod2@nomail.com",
+        password: "Welcome1@",
       },
       CUSTOMERADMIN1: {
         username: "qaadmin@nomail.com",
@@ -118,7 +118,7 @@ switch (environmentSetup) {
         password: "Qwerty@123",
       },
       INSTRUCTORNAME: {
-        username: "henry",
+        username: "autoins",
         password: "Welcome1@",
       },
       INSTRUCTOR2: {
@@ -130,8 +130,8 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "learner601",
-        password: "Welcome6@",
+        username: "selva1000",
+        password: "welcome",
       },
       COMMERCEADMIN: {
         username: "arivazhaganp_42",
@@ -216,7 +216,11 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       INSTRUCTORNAME: {
-        username: "JagadishLearner",
+        username: "autoins",
+        password: "Welcome1@",
+      },
+      INSTRUCTOR2: {
+        username: "divya",
         password: "Welcome1@",
       },
       MANAGERNAME: {
@@ -224,7 +228,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       LEARNERUSERNAME: {
-        username: "baiju",
+        username: "qateamlearners",
         password: "Welcome1@",
       },
       COMMERCEADMIN: {
@@ -286,12 +290,12 @@ switch (environmentSetup) {
         password1: "Welcome1@",
       },
       LearnerGroup1user: {
-        username: "arjun1",
-        password: "Welcome6@",
+        username: "arjun",
+        password: "Welcome1@",
       },
       LearnerGroup2user: {
-        username: "arjun2",
-        password: "Welcome6@",
+        username: "arjun",
+        password: "Welcome1@",
       },
     };
     break;

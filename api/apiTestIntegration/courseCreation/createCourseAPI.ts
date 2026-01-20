@@ -3,9 +3,34 @@ import { FakerData, getRandomFutureDate, getRandomPastDate } from '../../../util
 import fs from 'fs';
 import path from 'path';
 import { URLConstants } from '../../../constants/urlConstants';
+import { setupCourseCreation } from '../../../utils/cookieSetup';
 
 const BASE_URL = URLConstants.adminURL.replace('/backdoor', '');
-const SESSION_COOKIE = fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8').trim();
+
+// Helper to get fresh cookies every time
+function getSessionCookie(): string {
+  return fs.readFileSync(path.join(process.cwd(), 'data', 'cookies.txt'), 'utf-8').trim();
+}
+
+// Track last cookie refresh time
+let lastCookieRefresh = Date.now();
+const COOKIE_REFRESH_INTERVAL = 18 * 60 * 1000; // 18 minutes
+
+/**
+ * Refresh cookies if more than 18 minutes have passed
+ */
+async function refreshCookiesIfNeeded(): Promise<void> {
+  const now = Date.now();
+  const timeSinceRefresh = now - lastCookieRefresh;
+  
+  if (timeSinceRefresh >= COOKIE_REFRESH_INTERVAL) {
+    const minutesSinceRefresh = Math.floor(timeSinceRefresh / 60000);
+    console.log(`🔄 Cookies expired (${minutesSinceRefresh} mins). Refreshing...`);
+    await setupCourseCreation();
+    lastCookieRefresh = Date.now();
+    console.log('✅ Cookies refreshed');
+  }
+}
 
 const CURRENCY_MAP: { [key: string]: string } = {
   'us dollar': 'currency_001',
@@ -119,69 +144,50 @@ const COMMON_HEADERS = {
   "sec-fetch-site": "same-origin",
   "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
   // "Authorization": "Bearer ...",
-  "x-requested-with": "XMLHttpRequest",
-  "Cookie": SESSION_COOKIE,
+  "x-requested-with": "XMLHttpRequest"
 };
 
+// Helper to get headers with fresh cookie
+function getHeaders(referer?: string) {
+  const headers: any = {
+    ...COMMON_HEADERS,
+    "Cookie": getSessionCookie()
+  };
+  if (referer) headers["referer"] = referer;
+  return headers;
+}
+
 async function searchContent(contentName: string): Promise<number> {
-  // Attempts 1-3: original strict filters with short waits (indexing)
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    const strictParams = new URLSearchParams({
-      textsearch: contentName,
-      status: 'published',
-      page: '1',
-      limit: '10',
-      'document_library[]': 'No',
-      uploaded_contents: '',
-      callFrom: 'courseContentLibrary',
-      search_type: 'title',
-    });
-    const url = `${BASE_URL}/ajax/admin/manage/content/list?${strictParams.toString()}`;
-    const response = await axios.get(url, {
-      headers: {
-        ...COMMON_HEADERS,
-        referer: `${BASE_URL}/admin/learning/course/create`,
-      },
-      maxBodyLength: Infinity,
-      validateStatus: () => true,
-    });
-    console.log(`\n*** SEARCH CONTENT RESPONSE (strict attempt ${attempt}/3) ***`);
-    console.log(`Status Code: ${response.status}`);
-    console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
-    if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0 && response.data[0]._id) {
-      return response.data[0]._id;
-    }
-    // small wait to allow indexing
-    await new Promise(res => setTimeout(res, attempt * 500));
-  }
-
-  // Final attempt: relaxed filters
-  const relaxedParams = new URLSearchParams({
+  const params = new URLSearchParams({
     textsearch: contentName,
+    status: 'published',
     page: '1',
-    limit: '10',
-    search_type: 'title',
+    limit: '6',
+    'document_library[]': 'No',
+    uploaded_contents: '',
+    callFrom: 'courseContentLibrary',
+    search_type: 'title'
   });
-  const relaxedUrl = `${BASE_URL}/ajax/admin/manage/content/list?${relaxedParams.toString()}`;
-  const relaxedResp = await axios.get(relaxedUrl, {
-    headers: {
-      ...COMMON_HEADERS,
-      referer: `${BASE_URL}/admin/learning/course/create`,
-    },
+  
+  const url = `${BASE_URL}/ajax/admin/manage/content/list?${params.toString()}`;
+  const response = await axios.get(url, {
+    headers: getHeaders(`${BASE_URL}/admin/learning/course/create`),
     maxBodyLength: Infinity,
-    validateStatus: () => true,
   });
-  console.log(`\n*** SEARCH CONTENT RESPONSE (relaxed attempt) ***`);
-  console.log(`Status Code: ${relaxedResp.status}`);
-  console.log(`Response Body: ${JSON.stringify(relaxedResp.data, null, 2)}\n`);
-  if (relaxedResp.status === 200 && Array.isArray(relaxedResp.data) && relaxedResp.data.length > 0 && relaxedResp.data[0]._id) {
-    return relaxedResp.data[0]._id;
+  
+  console.log(`\n*** SEARCH CONTENT RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
+  if (response.status !== 200 || !Array.isArray(response.data) || response.data.length === 0 || !response.data[0]._id) {
+    throw new Error("Search Content failed");
   }
-
-  throw new Error('Search Content failed');
+  
+  return response.data[0]._id;
 }
 
 async function listUploadedContent(contentId: number, uniqueId: string): Promise<void> {
+  // Single request with content_ids (matching working Postman request)
   const formData = new URLSearchParams();
   formData.append("create_course_unique_id", uniqueId);
   formData.append("content_ids", contentId.toString());
@@ -203,7 +209,8 @@ async function listUploadedContent(contentId: number, uniqueId: string): Promise
 
   console.log(`\n*** UPLOAD CONTENT RESPONSE ***`);
   console.log(`Status Code: ${response.status}`);
-  // console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  // Don't log response body as it may not be needed
+  
   if (response.status !== 200) {
     throw new Error("Upload Content failed");
   }
@@ -257,6 +264,7 @@ async function createCourse(
   status: string,
   instances: string,
   sub_type: string,
+  contentId: number,
   price?: string,
   currency?: string
 ): Promise<{ course_id: number; catalog_id: number }> {
@@ -267,7 +275,6 @@ async function createCourse(
   if (price && price.trim() !== "") {
     priceValue = price.trim();
     
-    // If price is provided, currency is required
     if (!currency || currency.trim() === "") {
       throw new Error("Currency is required when price is provided");
     }
@@ -277,7 +284,10 @@ async function createCourse(
     console.log(`   Price: ${priceValue}`);
     console.log(`   Currency: ${currency} → ${currencyCode}\n`);
   }
+
+  // Build formData exactly as Postman request
   const formData = new URLSearchParams();
+  formData.append("single_registration", "1");
   formData.append("changedFields", "[]");
   formData.append("skipconflictValidation", "false");
   formData.append("description", `<p>${description}</p>`);
@@ -288,7 +298,7 @@ async function createCourse(
   formData.append("language", "lang_00002");
   formData.append("old_course_languages", "");
   formData.append("language_name", "English");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8");
   formData.append("old_portals", "");
   formData.append("provider_id", "4");
   formData.append("categorys", "");
@@ -297,7 +307,7 @@ async function createCourse(
   formData.append("currency_type", currencyCode);
   formData.append("max_seat", "");
   formData.append("old_max_seat", "undefined");
-  formData.append("contact_support", "automationtenant@nomail.com");
+  formData.append("contact_support", "Ashly58@gmail.com");
   formData.append("duration", "");
   formData.append("instances", instances);
   formData.append("type", "course");
@@ -316,12 +326,11 @@ async function createCourse(
   formData.append("catalog_id", "null");
   formData.append("categoryflag", "false");
   formData.append("status", status);
-  formData.append("single_registration", "undefined");
   formData.append("enforce_sequence", "0");
   formData.append("content_validity_type", "");
   formData.append("content_validity_date", "");
   formData.append("content_validity_days", "");
-  formData.append("content", "28");
+  formData.append("content", contentId.toString());
   formData.append("endpoints", "[]");
   formData.append("complianceExists", "0");
   formData.append("is_compliance", "0");
@@ -335,7 +344,7 @@ async function createCourse(
   formData.append("complete_days", "");
   formData.append("min_seat", "");
   formData.append("expiry_data", '{\r\n  "expiry_type": "",\r\n  "specific_date": "",\r\n  "completion_date": {},\r\n  "anniversary_date": {}\r\n}');
-  formData.append("thumbnail", '{"filename":{"square":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628094606-4d3b34cf-sq.png","width":120,"height":120},"thumb":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628094606-4d3b34cf-th.png","width":144,"height":93},"2small":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/06/28/20240628094606-4d3b34cf-2s.png","width":240,"height":155},"xsmall":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628094606-4d3b34cf-xs.png","width":432,"height":279},"small":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628094606-4d3b34cf-sm.png","width":576,"height":373},"medium":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/06/28/20240628094606-4d3b34cf.png","width":"642","height":"416"},"large":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/06/28/20240628094606-4d3b34cf.png","width":"642","height":"416"},"xlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/06/28/20240628094606-4d3b34cf.png","width":"642","height":"416"},"xxlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/06/28/20240628094606-4d3b34cf.png","width":"642","height":"416"}}}');
+  formData.append("thumbnail", '{"filename":{"square":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628110724-367460c8-sq.jpg","width":120,"height":120},"thumb":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628110724-367460c8-th.jpg","width":144,"height":82},"2small":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/06/28/20240628110724-367460c8-2s.jpg","width":240,"height":137},"xsmall":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628110724-367460c8-xs.jpg","width":432,"height":246},"small":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628110724-367460c8-sm.jpg","width":576,"height":329},"medium":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/06/28/20240628110724-367460c8-me.jpg","width":792,"height":452},"large":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/06/28/20240628110724-367460c8-la.jpg","width":1008,"height":576},"xlarge":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/06/28/20240628110724-367460c8-xl.jpg","width":1224,"height":699},"xxlarge":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/06/28/20240628110724-367460c8-xx.jpg","width":1656,"height":946}}}');
   formData.append("is_primary", "1");
   formData.append("is_single", "1");
   formData.append("course_view", "1");
@@ -359,9 +368,11 @@ async function createCourse(
   console.log(`\n*** CREATE COURSE CATALOG RESPONSE ***`);
   console.log(`Status Code: ${response.status}`);
   console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
   if (response.status !== 200 || !response.data.course_id || !response.data.catalog_id) {
     throw new Error("Create Course failed");
   }
+  
   return { course_id: response.data.course_id, catalog_id: response.data.catalog_id };
 }
 
@@ -403,7 +414,7 @@ async function createClassroomCourse(
   formData.append("language", "lang_00002");
   formData.append("old_course_languages", "");
   formData.append("language_name", "English");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8");
   formData.append("old_portals", "");
   formData.append("provider_id", "4");
   formData.append("categorys", "");
@@ -490,13 +501,15 @@ async function createAccessGroupMapping(
   catalog_id: number,
   status: string
 ): Promise<void> {
-  const formData = new URLSearchParams();
+  // Use FormData for multipart/form-data (same as UI)
+  const FormDataNode = require('form-data');
+  const formData = new FormDataNode();
   formData.append("entity_id", course_id.toString());
   formData.append("catalog_id", catalog_id.toString());
   formData.append("entity_type", "course");
   formData.append("status", status);
   formData.append("is_compliance", "0");
-  formData.append("portals", "5");
+  formData.append("portals", "5,7,8"); // Multiple portals like UI
 
   try {
     const response = await axios.post(
@@ -505,9 +518,10 @@ async function createAccessGroupMapping(
       {
         headers: {
           ...COMMON_HEADERS,
+          ...formData.getHeaders(), // Get proper multipart headers with boundary
+          "Cookie": getSessionCookie(), // Include session cookies
           "origin": `${BASE_URL}`,
           "referer": `${BASE_URL}/admin/learning/course/create`,
-          "content-type": "application/x-www-form-urlencoded",
         },
         maxBodyLength: Infinity,
       }
@@ -515,13 +529,34 @@ async function createAccessGroupMapping(
 
     console.log(`\n*** CREATE ACCESS GROUP MAPPING RESPONSE ***`);
     console.log(`Status Code: ${response.status}`);
-    console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+    console.log(`Response: ${JSON.stringify(response.data, null, 2)}\n`);
+    
     if (response.status !== 200 || response.data.result !== "success") {
       console.warn("⚠️ Access Group Mapping failed but continuing...");
     }
   } catch (error: any) {
-    console.warn("⚠️ Access Group Mapping API failed - this is optional, continuing...");
-    console.warn(`Error: ${error.message}`);
+    console.warn("\n⚠️ Access Group Mapping API failed - this is optional, continuing...");
+    console.warn(`Error Message: ${error.message}`);
+    
+    // Print full error response details
+    if (error.response) {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR RESPONSE ***`);
+      console.warn(`Status Code: ${error.response.status}`);
+      console.warn(`Status Text: ${error.response.statusText}`);
+      console.warn(`Response Headers: ${JSON.stringify(error.response.headers, null, 2)}`);
+      console.warn(`Response Body: ${JSON.stringify(error.response.data, null, 2)}`);
+    } else if (error.request) {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR - NO RESPONSE ***`);
+      console.warn(`Request made but no response received`);
+    } else {
+      console.warn(`\n*** ACCESS GROUP MAPPING ERROR - REQUEST SETUP ***`);
+      console.warn(`Error setting up request: ${error.message}`);
+    }
+    
+    console.warn(`\n*** REQUEST PAYLOAD ***`);
+    console.warn(`Entity ID: ${course_id}, Catalog ID: ${catalog_id}, Status: ${status}`);
+    console.warn(`FormData sent with portals: 5,7,8\n`);
+    
     // Don't throw error - access group mapping is optional
   }
 }
@@ -560,16 +595,20 @@ async function addClassroomInstances(
       end_time: "",
       instructors: [],
       location: {},
-      maxSeat: "",
+      maxSeat: "50",
       wailtList: "",
       isStatusChecked: true
     });
     
     // Actual session data
+    // When instanceCount = 1, API uses course name without suffix
+    // When instanceCount > 1, API uses "courseName instance 1", "instance 2", etc.
+    const instanceName = instanceCount === 1 ? courseName : `${courseName} instance ${i + 1}`;
+    
     sessionList.push({
       Id: 0,
       code: "",
-      name: `${courseName} instance ${i + 1}`,
+      name: instanceName,
       start_date: startDate,
       end_date: "",
       days: [],
@@ -577,7 +616,7 @@ async function addClassroomInstances(
       end_time: endTime,
       instructors: [],
       location: location,
-      maxSeat: "12",
+      maxSeat: "45",
       wailtList: "",
       isStatusChecked: i === instanceCount - 1, // Last instance checked
       disableStatusCheckbox: i === 0, // First instance disabled
@@ -652,10 +691,13 @@ export async function createCourseAPI(
   price?: string,
   currency?: string
 ): Promise<string> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
   const uniqueId = Date.now().toString();
   const contentId = await searchContent(content);
   await listUploadedContent(contentId, uniqueId);
-  const { course_id, catalog_id } = await createCourse(courseName, uniqueId, status, instances, sub_type, price, currency);
+  const { course_id, catalog_id } = await createCourse(courseName, uniqueId, status, instances, sub_type, contentId, price, currency);
   await createAccessGroupMapping(course_id, catalog_id, status);
   return courseName;
 }
@@ -678,6 +720,9 @@ export async function createILTMultiInstance(
   price?: string,
   currency?: string
 ): Promise<string[]> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
   console.log(`\n🎓 Creating Classroom Multi-Instance Course: ${courseName}`);
   console.log(`📊 Instance Count: ${instanceCount}`);
   console.log(`📅 Date Type: ${dateType}\n`);
@@ -697,10 +742,16 @@ export async function createILTMultiInstance(
   
   await addClassroomInstances(course_id, courseName, instanceCount, status, dateType);
   
-  // Generate instance names array
+  // Generate instance names array based on actual API behavior:
+  // - Single instance (1): API returns course name without suffix
+  // - Multiple instances (2+): API returns "courseName instance 1", "instance 2", etc.
   const instanceNames: string[] = [];
-  for (let i = 0; i < instanceCount; i++) {
-    instanceNames.push(`${courseName} instance ${i + 1}`);
+  if (instanceCount === 1) {
+    instanceNames.push(courseName);
+  } else {
+    for (let i = 0; i < instanceCount; i++) {
+      instanceNames.push(`${courseName} instance ${i + 1}`);
+    }
   }
   
   console.log(`\n✅ Successfully created Classroom Multi-Instance Course: ${courseName}`);
@@ -712,4 +763,416 @@ export async function createILTMultiInstance(
   console.log();
   
   return instanceNames;
+}
+
+/**
+ * Create Virtual Classroom Course (Multi-Instance)
+ */
+async function createVirtualClassroomCourse(
+  courseName: string,
+  uniqueId: string,
+  status: string,
+  price?: string,
+  currency?: string
+): Promise<{ course_id: number; catalog_id: number }> {
+  let priceValue = "";
+  let currencyCode = "";
+  
+  if (price && price.trim() !== "") {
+    priceValue = price.trim();
+    
+    if (!currency || currency.trim() === "") {
+      throw new Error("Currency is required when price is provided");
+    }
+    
+    currencyCode = getCurrencyCode(currency);
+    console.log(`\n💰 Price Configuration:`);
+    console.log(`   Price: ${priceValue}`);
+    console.log(`   Currency: ${currency} → ${currencyCode}\n`);
+  }
+
+  const formData = new URLSearchParams();
+  formData.append("changedFields", "[]");
+  formData.append("skipconflictValidation", "false");
+  formData.append("description", `<p>${description}</p>`);
+  formData.append("master_title", courseName);
+  formData.append("master_code", "");
+  formData.append("title", courseName);
+  formData.append("code", "");
+  formData.append("language", "lang_00002");
+  formData.append("old_course_languages", "");
+  formData.append("language_name", "English");
+  formData.append("portals", "5,7,8");
+  formData.append("old_portals", "");
+  formData.append("provider_id", "4");
+  formData.append("categorys", "");
+  formData.append("price", priceValue);
+  formData.append("old_course_price", "");
+  formData.append("currency_type", currencyCode);
+  formData.append("max_seat", "");
+  formData.append("old_max_seat", "undefined");
+  formData.append("contact_support", "automationtenant@nomail.com");
+  formData.append("duration", "");
+  formData.append("instances", "multiple");
+  formData.append("type", "course");
+  formData.append("sub_type", "virtual-class");
+  formData.append("old_sub_type", "");
+  formData.append("old_course_title", "");
+  formData.append("overdue_status", "");
+  formData.append("waitlist_seat", "");
+  formData.append("registration_end_on", "");
+  formData.append("additional_info", "");
+  formData.append("addn_catalog_show", "0");
+  formData.append("addn_notify_show", "0");
+  formData.append("discussion", "");
+  formData.append("published_on", "");
+  formData.append("no_of_instance", "1");
+  formData.append("catalog_id", "null");
+  formData.append("categoryflag", "false");
+  formData.append("status", status);
+  formData.append("virtualClass_details", "[]");
+  formData.append("is_recurring", "0");
+  formData.append("session_list", "[]");
+  formData.append("complianceExists", "0");
+  formData.append("is_compliance", "0");
+  formData.append("compliance_validity", "");
+  formData.append("validity_date", "");
+  formData.append("validity_days", "");
+  formData.append("complete_by_rule", "0");
+  formData.append("complete_by", "date");
+  formData.append("complete_by_date", "");
+  formData.append("exceeds_deadline_status", "incomplete");
+  formData.append("complete_days", "");
+  formData.append("min_seat", "");
+  formData.append("expiry_data", '{\r\n  "expiry_type": "",\r\n  "specific_date": "",\r\n  "completion_date": {},\r\n  "anniversary_date": {}\r\n}');
+  formData.append("thumbnail", '{"filename":{"square":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-sq.png","width":120,"height":120},"thumb":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-th.png","width":144,"height":81},"2small":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/07/03/20240703061636-dedf890d-2s.png","width":240,"height":135},"xsmall":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-xs.png","width":432,"height":243},"small":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-sm.png","width":576,"height":324},"medium":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-me.png","width":792,"height":445},"large":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/07/03/20240703061636-dedf890d-la.png","width":1008,"height":567},"xlarge":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-xl.png","width":1224,"height":688},"xxlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703061636-dedf890d.png","width":"1280","height":"720"}}}');
+  formData.append("is_primary", "1");
+  formData.append("is_single", "0");
+  formData.append("course_view", "1");
+  formData.append("class_view", "0");
+  formData.append("create_course_unique_id", uniqueId);
+
+  const response = await axios.post(
+    `${BASE_URL}/ajax/admin/learning/catalog/create`,
+    formData,
+    {
+      headers: {
+        ...COMMON_HEADERS,
+        "origin": `${BASE_URL}`,
+        "referer": `${BASE_URL}/admin/learning/course/create`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      maxBodyLength: Infinity,
+    }
+  );
+
+  console.log(`\n*** CREATE VIRTUAL CLASSROOM COURSE RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
+  if (response.status !== 200 || !response.data.course_id || !response.data.catalog_id) {
+    console.error("❌ Create Virtual Classroom Course failed!");
+    console.error(`Full Response Data:`);
+    console.error(JSON.stringify(response.data, null, 2));
+    throw new Error("Create Virtual Classroom Course failed - no course_id or catalog_id returned");
+  }
+  
+  if (response.data.result === "error") {
+    console.warn("⚠️ API returned result: 'error' but course was created (course_id: " + response.data.course_id + ")");
+  }
+  
+  return { course_id: response.data.course_id, catalog_id: response.data.catalog_id };
+}
+
+/**
+ * Create Virtual Classroom Instance
+ */
+async function createVCInstance(
+  course_id: number,
+  courseName: string,
+  instanceCount: number
+): Promise<number[]> {
+  const instanceData = {
+    createInstanceCount: instanceCount,
+    deliveryType: "virtual-class",
+    access: true,
+    accessSettings: true,
+    assessment: true,
+    businessRule: true,
+    observationCheckList: true,
+    category: true,
+    ceu: true,
+    files: true,
+    survey: true,
+    tags: true,
+    certificate: true,
+    esignature: true,
+    instanceClassName: courseName
+  };
+
+  console.log(`\n📤 Creating ${instanceCount} VC Instance(s) - Bulk API Call`);
+  console.log(`   Course ID: ${course_id}`);
+  console.log(`   Instance Count: ${instanceCount}`);
+  console.log(`   Base Name sent to API: "${courseName}"`);
+  console.log(`   (API will create ${instanceCount} instance(s) with this base name)\n`);
+
+  const formData = new URLSearchParams();
+  formData.append("id", course_id.toString());
+  formData.append("createInstanceCount", instanceCount.toString());
+  formData.append("deliveryType", "virtual-class");
+  formData.append("instanceData", JSON.stringify(instanceData));
+  formData.append("is_recurring", "0");
+
+  const response = await axios.post(
+    `${BASE_URL}/ajax/admin/learning/catalog/create_instance`,
+    formData,
+    {
+      headers: {
+        ...COMMON_HEADERS,
+        "origin": `${BASE_URL}`,
+        "referer": `${BASE_URL}/admin/learning/course/edit`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      maxBodyLength: Infinity,
+    }
+  );
+
+  console.log(`\n*** CREATE VC INSTANCE RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}`);
+  
+  // Log what titles the API actually returned
+  if (response.data.result_arr && Array.isArray(response.data.result_arr)) {
+    console.log(`\n📊 API Response - Instance Titles Created:`);
+    response.data.result_arr.forEach((item: any, index: number) => {
+      console.log(`   Instance ${index + 1}: ID=${item.id}, Title="${item.title}"`);
+    });
+  }
+  console.log();
+  
+  if (response.status !== 200 || response.data.result !== "success") {
+    throw new Error("Create VC Instance failed");
+  }
+
+  // Extract instance IDs from result_arr
+  const instanceIds: number[] = response.data.result_arr.map((item: any) => item.id);
+  return instanceIds;
+}
+
+/**
+ * Update Virtual Classroom Instance with session details
+ */
+async function updateVCInstance(
+  instance_id: number,
+  catalog_id: number,
+  courseName: string,
+  courseCode: string,
+  sessionName: string,
+  dateType: string = "future",
+  status: string = "published"
+): Promise<void> {
+  const startDate = dateType.toLowerCase() === "pastclass" 
+    ? getRandomPastDate() 
+    : getRandomFutureDate();
+  const startTime = getRandomTime();
+  const endTime = getEndTime(startTime);
+
+  const sessionDetails = [{
+    session_course_id: 0,
+    Id: 0,
+    is_recurring: 0,
+    vc_meeting_type: "6",
+    name: sessionName,
+    start_date: startDate,
+    end_date: "",
+    days: [],
+    start_time: startTime,
+    end_time: endTime,
+    instructors: [],
+    location: "",
+    audio_setting: [],
+    join_before_host: "",
+    timezone: {
+      id: 303,
+      code: "tmz_0303",
+      name: "(GMT+05:30) Indian Standard Time/Kolkata",
+      gmt_area: "Asia/Kolkata"
+    },
+    vcDays: "",
+    disableFields: false,
+    sessionTypeField: false,
+    activateSavesession: false,
+    attendee_url: "https://docs.google.com/",
+    presenter_url: "https://docs.google.com/",
+    hostname: "",
+    TZname: ""
+  }];
+
+  const formData = new URLSearchParams();
+  formData.append("changedFields", '["new_session_details"]');
+  formData.append("skipconflictValidation", "false");
+  formData.append("description", `<p>${description}</p>`);
+  formData.append("master_title", courseName);
+  formData.append("master_code", courseCode);
+  formData.append("title", courseName);
+  formData.append("code", courseCode);
+  formData.append("language", "lang_00002");
+  formData.append("old_course_languages", "lang_00002");
+  formData.append("language_name", "English");
+  formData.append("portals", "5,7,8");
+  formData.append("old_portals", "5");
+  formData.append("provider_id", "4");
+  formData.append("categorys", "");
+  formData.append("price", "0.00");
+  formData.append("old_course_price", "0.00");
+  formData.append("currency_type", "");
+  formData.append("max_seat", "50");
+  formData.append("old_max_seat", "50");
+  formData.append("contact_support", "automationtenant@nomail.com");
+  formData.append("duration", "60");
+  formData.append("instances", "multiple");
+  formData.append("type", "course");
+  formData.append("sub_type", "virtual-class");
+  formData.append("old_sub_type", "virtual-class");
+  formData.append("old_course_title", courseName);
+  formData.append("overdue_status", "");
+  formData.append("waitlist_seat", "");
+  formData.append("registration_end_on", "");
+  formData.append("additional_info", "");
+  formData.append("addn_catalog_show", "0");
+  formData.append("addn_notify_show", "0");
+  formData.append("discussion", "");
+  formData.append("published_on", new Date().toISOString().slice(0, 19).replace('T', ' '));
+  formData.append("no_of_instance", "0");
+  formData.append("catalog_id", catalog_id.toString());
+  formData.append("categoryflag", "false");
+  formData.append("status", status);
+  formData.append("virtualClass_details", JSON.stringify(sessionDetails));
+  formData.append("is_recurring", "0");
+  formData.append("session_list", JSON.stringify(sessionDetails));
+  formData.append("complianceExists", "0");
+  formData.append("is_compliance", "0");
+  formData.append("compliance_validity", "");
+  formData.append("validity_date", "");
+  formData.append("validity_days", "");
+  formData.append("complete_by_rule", "0");
+  formData.append("complete_by", "date");
+  formData.append("complete_by_date", "");
+  formData.append("exceeds_deadline_status", "incomplete");
+  formData.append("complete_days", "");
+  formData.append("min_seat", "");
+  formData.append("expiry_data", '{\r\n  "expiry_type": "",\r\n  "specific_date": "",\r\n  "completion_date": {},\r\n  "anniversary_date": {}\r\n}');
+  formData.append("is_primary", "0");
+  formData.append("course_view", "0");
+  formData.append("is_single", "0");
+  formData.append("thumbnail", '{"filename":{"square":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-sq.png","width":120,"height":120},"thumb":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-th.png","width":144,"height":81},"2small":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/07/03/20240703061636-dedf890d-2s.png","width":240,"height":135},"xsmall":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-xs.png","width":432,"height":243},"small":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-sm.png","width":576,"height":324},"medium":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-me.png","width":792,"height":445},"large":{"url":"http://gallery.expertusoneqa.com/i.php?/upload/admin/2024/07/03/20240703061636-dedf890d-la.png","width":1008,"height":567},"xlarge":{"url":"http://gallery.expertusoneqa.com/_data/i/upload/admin/2024/07/03/20240703061636-dedf890d-xl.png","width":1224,"height":688},"xxlarge":{"url":"http://gallery.expertusoneqa.com/upload/admin/2024/07/03/20240703061636-dedf890d.png","width":"1280","height":"720"}}}');
+  formData.append("id", instance_id.toString());
+  formData.append("cancel_reason", "");
+  formData.append("parent_catalog_status", "1");
+
+  const response = await axios.post(
+    `${BASE_URL}/ajax/admin/learning/catalog/update`,
+    formData,
+    {
+      headers: {
+        ...COMMON_HEADERS,
+        "origin": `${BASE_URL}`,
+        "referer": `${BASE_URL}/admin/learning/course/edit`,
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      maxBodyLength: Infinity,
+    }
+  );
+
+  console.log(`\n*** UPDATE VC INSTANCE RESPONSE ***`);
+  console.log(`Status Code: ${response.status}`);
+  console.log(`Response Body: ${JSON.stringify(response.data, null, 2)}\n`);
+  
+  if (response.status !== 200) {
+    throw new Error("Update VC Instance failed");
+  }
+}
+
+/**
+ * Create Virtual Classroom Multi-Instance Course
+ * @param courseName - Name of the virtual classroom course
+ * @param status - Course status (default: "published")
+ * @param instanceCount - Number of instances to create (default: 1)
+ * @param dateType - Date type for instances: "future" (default) or "pastclass" for past dates
+ * @param price - Optional price for the course
+ * @param currency - Optional currency (required if price is provided)
+ * @returns Instance name as string if instanceCount is 1, array of instance names if instanceCount > 1
+ */
+export async function createVCMultiInstance(
+  courseName: string,
+  status = "published",
+  instanceCount = 1,
+  dateType: string = "future",
+  price?: string,
+  currency?: string
+): Promise<string | string[]> {
+  // Auto-refresh cookies if 18+ minutes old
+  await refreshCookiesIfNeeded();
+  
+  console.log(`\n🎥 Creating Virtual Classroom Course: ${courseName}`);
+  console.log(`📊 Instance Count: ${instanceCount}`);
+  console.log(`📅 Date Type: ${dateType}\n`);
+  
+  const uniqueId = Date.now().toString();
+  
+  // Step 1: Create Virtual Classroom Course
+  const { course_id, catalog_id } = await createVirtualClassroomCourse(
+    courseName,
+    uniqueId,
+    status,
+    price,
+    currency
+  );
+  
+  // Step 2: Create Access Group Mapping
+  await createAccessGroupMapping(course_id, catalog_id, status);
+  
+  // Step 3: Create all instances in ONE bulk API call
+  const instanceIds = await createVCInstance(course_id, courseName, instanceCount);
+  
+  // Step 4: Update each instance with session details
+  const instanceNames: string[] = [];
+  
+  for (let i = 0; i < instanceIds.length; i++) {
+    const sessionName = instanceCount === 1 ? `${courseName} Session` : `${courseName} Session ${i + 1}`;
+    const courseCode = `CLS-VC-${String(instanceIds[i]).padStart(5, '0')}`;
+    
+    // Instance title to send in update API
+    const instanceTitle = instanceCount === 1 ? courseName : `${courseName} instance ${i + 1}`;
+    
+    console.log(`\n📝 Updating VC Instance ${i + 1}/${instanceCount}:`);
+    console.log(`   Instance ID: ${instanceIds[i]}`);
+    console.log(`   Title being sent to API: "${instanceTitle}"`);
+    console.log(`   Code: ${courseCode}`);
+    console.log(`   Session Name: "${sessionName}"`);
+    
+    await updateVCInstance(
+      instanceIds[i],
+      catalog_id,
+      instanceTitle,
+      courseCode,
+      sessionName,
+      dateType,
+      status
+    );
+    
+    // Store the instance name that was sent to update API
+    instanceNames.push(instanceTitle);
+  }
+  
+  console.log(`\n✅ Successfully created Virtual Classroom Course: ${courseName}`);
+  console.log(`   Course ID: ${course_id}`);
+  console.log(`   Catalog ID: ${catalog_id}`);
+  console.log(`   Instances Created: ${instanceCount}`);
+  console.log(`   Instance Names:`, instanceNames);
+  console.log(`   Date Type: ${dateType}`);
+  console.log();
+  
+  // Return string if single instance, array if multiple
+  return instanceCount === 1 ? instanceNames[0] : instanceNames;
 }

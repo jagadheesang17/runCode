@@ -1,12 +1,10 @@
 import { test } from "@playwright/test";
 import { userCreation } from "../../../api/userAPI";
-import { generateOauthToken } from "../../../api/accessToken";
 import { userCreationData } from "../../../data/apiData/formData";
 import { FakerData } from "../../../utils/fakerUtils";
 import * as fs from 'fs';
 import * as path from 'path';
 
-let access_token: any;
 let createdUserId: any;
 let generatingusername: string;
 let certificateUserData: any;
@@ -22,15 +20,14 @@ test.describe('CC000 - Create Certificate Test User', () => {
         );
 
         // Generate OAuth token
-        access_token = await generateOauthToken();
-        console.log('✅ Access Token generated');
+        console.log('✅ Access Token will be auto-generated');
 
         generatingusername = FakerData.getUserId();
         console.log(`🔄 Creating user with username: ${generatingusername}`);
 
         const userData = userCreationData(generatingusername);
         
-        createdUserId = await userCreation(userData, { Authorization: access_token });
+        createdUserId = await userCreation(userData);
         console.log(`✅ User created with ID: ${createdUserId}`);
 
         certificateUserData = {

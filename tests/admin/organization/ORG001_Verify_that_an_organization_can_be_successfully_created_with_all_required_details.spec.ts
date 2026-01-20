@@ -8,7 +8,7 @@ const OrgName2 = FakerData.getOrganizationName()
 test(`Verify that an organization can be successfully created and updated`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )

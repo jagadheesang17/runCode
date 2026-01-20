@@ -1,18 +1,11 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { generateCode, getListCategory } from "../../../data/apiData/formData";
 import { listCategory } from "../../metaDataLibraryAPI";
 import { FakerData } from "../../../utils/fakerUtils";
 
 let code: any;
-let access_token: string;
 let categoryCode: any;
 let order="new-old"
-test.beforeAll('Generate Access Tokken', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
-
    const categoryName: any = "API" + FakerData.getCategory();
     test(`Ensure that a new category can be created successfully`, async ({ adminHome, createCourse,metadatalibrary }) => {
         test.info().annotations.push(
@@ -37,7 +30,7 @@ test.beforeAll('Generate Access Tokken', async () => {
 
 
 test('List of Category', async () => {
-    categoryCode = await listCategory(order,{ Authorization: access_token });
+    categoryCode = await listCategory(order);
 });
 
 

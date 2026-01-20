@@ -5,16 +5,15 @@ const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
 
 //If false qa will run,if its true automation environment will run
-export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction" | "automationtenant" = 'qaProduction';
+export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction"  = 'qaProduction';
 export default defineConfig({
  timeout: 700000,  
   expect: { timeout: 10000 }, // 10 sec for assertions
+
   
- 
+
   testDir: './tests',
-  // Broaden test discovery so admin/compliance and other specs are found
-  testMatch: ['**/tests/**/*.spec.ts'],
-//  globalSetup: require.resolve('./global-setup.ts'),
+  globalSetup: require.resolve('./global-setup.ts'),
 
 
 
@@ -35,43 +34,43 @@ export default defineConfig({
     bypassCSP: true,
   },
 
-  //  // testMatch: [
-  // //   '*/tests/admin/adminGroups_CustomerAdminGroupUserCreation/**/*.spec.ts',
-  // //   '*/tests/admin/adminGroups_addinguserstodefaultAdminGroups/**/*.spec.ts',
-  // //   '*/tests/admin/adminGroups2/**/*.spec.ts',
-  // //  '*/tests/admin/customrolecreation/**/*.spec.ts',
-  // //   // '*/tests/admin/metadataLibrary/**/*.spec.ts',
-  // //   '*/tests/admin/location/**/*.spec.ts',
-  // // '*/tests/admin/admin_Enrollments/**/*.spec.ts',
-  // //   '*/tests/admin/completionCertificate/**/*.spec.ts',
-  // //   '*/tests/admin/assessment/**/*.spec.ts',
-  // //   '*/tests/admin/survey/**/*.spec.ts',
-  // //   '*/tests/admin/content/**/*.spec.ts',
-  // //     '*/tests/admin/organization/**/*.spec.ts',
-  // //  '*/tests/admin/peoplemodule_user/**/*.spec.ts',
-  // //   '*/tests/admin/quickaccess/**/*.spec.ts',
-  // //   '*/tests/admin/communication/**/*.spec.ts',
-  // //   '*/tests/admin/learnerGroup/**/*.spec.ts',
-  // // '*/tests/admin/announcement/**/*.spec.ts',
-  // // '*/tests/admin/course/**/*.spec.ts',
-  // // '*/tests/admin/banner/**/*.spec.ts',
-  // // '*/tests/admin/dynamic_Shareable_Links/**/*.spec.ts',
-  // // '*/tests/admin/trainingPlan/**/*.spec.ts',
-  // //   '*/tests/admin/managerApproval/**/*.spec.ts',
-  // //   '*/tests/admin/dedicatedToTP/**/*.spec.ts',
-  //     '*/tests/Collaboration-Hub/**/*.spec.ts',
-  // //     '*/tests/LearnerSide/**/*.spec.ts',
-  // //     '*/tests/Instructor/**/*.spec.ts',
-  // //     '*/tests/LearnerProfile/**/*.spec.ts',
-  // //    '*/tests/ReEnroll/**/*.spec.ts',
-  // //   '*/tests/EnrollmentByManager/**/*.spec.ts',
-  // //    '*/tests/dynamic_Shareable_Links/**/*.spec.ts', 
-  // //   // '*/tests/Terms_and_Conditions/**/*.spec.ts',  
-  // //   // '*/tests/SSO/**/*.spec.ts',
-  // //   '*/api/apiTestIntegration/**/*.spec.ts',
-  // //   '*/tests/organization/**/*.spec.ts',
-  // //   '*/tests/admin/address_inheritance/**/*.spec.ts',
-//
+//    // testMatch: [
+//   //   '*/tests/admin/adminGroups_CustomerAdminGroupUserCreation/**/*.spec.ts',
+//   //   '*/tests/admin/adminGroups_addinguserstodefaultAdminGroups/**/*.spec.ts',
+//   //   '*/tests/admin/adminGroups2/**/*.spec.ts',
+//   //  '*/tests/admin/customrolecreation/**/*.spec.ts',
+//   //   // '*/tests/admin/metadataLibrary/**/*.spec.ts',
+//   //   '*/tests/admin/location/**/*.spec.ts',
+//   // '*/tests/admin/admin_Enrollments/**/*.spec.ts',
+//   //   '*/tests/admin/completionCertificate/**/*.spec.ts',
+//   //   '*/tests/admin/assessment/**/*.spec.ts',
+//   //   '*/tests/admin/survey/**/*.spec.ts',
+//   //   '*/tests/admin/content/**/*.spec.ts',
+//   //     '*/tests/admin/organization/**/*.spec.ts',
+//   //  '*/tests/admin/peoplemodule_user/**/*.spec.ts',
+//   //   '*/tests/admin/quickaccess/**/*.spec.ts',
+//   //   '*/tests/admin/communication/**/*.spec.ts',
+//   //   '*/tests/admin/learnerGroup/**/*.spec.ts',
+//   // '*/tests/admin/announcement/**/*.spec.ts',
+//   // '*/tests/admin/course/**/*.spec.ts',
+//   // '*/tests/admin/banner/**/*.spec.ts',
+//   // '*/tests/admin/dynamic_Shareable_Links/**/*.spec.ts',
+//   // '*/tests/admin/trainingPlan/**/*.spec.ts',
+//   //   '*/tests/admin/managerApproval/**/*.spec.ts',
+//   //   '*/tests/admin/dedicatedToTP/**/*.spec.ts',
+//       '*/tests/Collaboration-Hub/**/*.spec.ts',
+//   //     '*/tests/LearnerSide/**/*.spec.ts',
+//   //     '*/tests/Instructor/**/*.spec.ts',
+//   //     '*/tests/LearnerProfile/**/*.spec.ts',
+//   //    '*/tests/ReEnroll/**/*.spec.ts',
+//   //   '*/tests/EnrollmentByManager/**/*.spec.ts',
+//   //    '*/tests/dynamic_Shareable_Links/**/*.spec.ts', 
+//   //   // '*/tests/Terms_and_Conditions/**/*.spec.ts',  
+//   //   // '*/tests/SSO/**/*.spec.ts',
+//   //   '*/api/apiTestIntegration/**/*.spec.ts',
+//   //   '*/tests/organization/**/*.spec.ts',
+//   //   '*/tests/admin/address_inheritance/**/*.spec.ts',
+
 // // ],
   projects: [
     /* {

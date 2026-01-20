@@ -4,6 +4,7 @@ import { FakerData, getCurrentDateFormatted } from "../utils/fakerUtils";
 import { getRandomItemFromFile } from "../utils/jsonDataHandler";
 import { AdminHomePage } from "./AdminHomePage";
 import { BrowserContext, expect, Locator, Page } from "@playwright/test";
+import { format } from "path";
 
 export class EditCoursePage extends AdminHomePage {
 
@@ -66,10 +67,27 @@ export class EditCoursePage extends AdminHomePage {
         blockingAlertMessage: `//div[contains(@class,'alert') and contains(@class,'mandatory')]//span[contains(text(),'cannot be performed')]`,
         blockingAlertCloseBtn: `//div[@class='msg-close-btn']`,
         saveBtn: `//button[text()='Save']`,
-        enrollments:`//span[contains(@id,'crs-enrol-attr')]`,
-        enrollmentEntry:`(//table[contains(@class,'viewupdate-status')]//tr)[2]`,
-        selectInstance:`//div[text()='Single Instance/Class']`,
-        multiInstance :`//span[text()='Multi Instance/Class']`,
+        enrollments: `//span[contains(@id,'crs-enrol-attr')]`,
+        enrollmentEntry: `(//table[contains(@class,'viewupdate-status')]//tr)[2]`,
+        selectInstance: `//div[text()='Single Instance/Class']`,
+        multiInstance: `//span[text()='Multi Instance/Class']`,
+
+        //For Discount
+        selectDiscountDropdown: `//input[@id='select_discount-filter-field']`,
+        enterDiscount: `//input[@id='select_discount']`,
+        discountValue: `(//input[@id='select_discount']//following::li)[1]`,
+        domainDropdown: (domainName: string) => `(//span[text()='${domainName}']//following::button[contains(@data-id,'domain')])[1]`,
+        domainDropdownValues: `//footer//following::li//span[@class='text']`,
+        selectDiscountOptionRadioBtn: (option: string) => `//span[contains(text(),'${option}')]//preceding-sibling::i[contains(@class,'fa-circle')]`,
+        discountOptionSelected: (option: string) => `//span[text()='${option} of All']//preceding-sibling::i[contains(@class,'fa-dot-circle')]`,
+
+        //Allow learners to enroll again
+        allowLearnersEnrollAgainUnchecked: `//span[text()='Allow learners to enroll again']//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        allowLearnersEnrollAgainChecked: `//span[text()='Allow learners to enroll again']//preceding-sibling::i[contains(@class,'fa-square-check')]`,
+
+        checkRevalidateInCertitfcation: `//span[text()='check to enable certification re-validation']/preceding::i[contains(@class,'square icon')]`,
+        volumeDisc: (discount: string) => `(//span[text()='${discount}'])`,
+        formatedDisc:(code: string,percentage: string) =>`//li[text()='${code} | VOLUME DISCOUNT | ${percentage}%']`
     };
 
     constructor(page: Page, context: BrowserContext) {
@@ -252,6 +270,13 @@ export class EditCoursePage extends AdminHomePage {
         expect(booleanChk).toBeFalsy();
     }
 
+    async clickUpdate() {
+        await this.wait('mediumWait')
+        await this.click(this.selectors.updateBtn, "Update", "Button")
+        await this.wait('mediumWait')
+    }
+
+
     // Dedicated to Training Plan Methods
     /**
      * Check Dedicated to Training Plan checkbox
@@ -261,21 +286,21 @@ export class EditCoursePage extends AdminHomePage {
         await this.wait('minWait');
         const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
         const icons = this.page.locator(containerSelector);
-        
+
         // Check if checkbox is checked by looking at which icon is visible
         // When checked: first icon (fa-square-check) is visible
         // When unchecked: second icon (fa-square) is visible
         const firstIconVisible = await icons.first().isVisible();
         const secondIconVisible = await icons.nth(1).isVisible();
-        
+
         const isChecked = firstIconVisible && !secondIconVisible;
-        
+
         console.log(`📝 Enable (${level} Level) - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
-        
+
         if (!isChecked) {
             await this.validateElementVisibility(this.selectors.dedicatedToTPLabel, "Dedicated to TP Checkbox");
             await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
-            
+
             if (level === "Course") {
                 // Course level: Handle warning message
                 await this.wait('maxWait');
@@ -284,7 +309,7 @@ export class EditCoursePage extends AdminHomePage {
                 console.log("✅ Validated Dedicated to TP warning message: Course will be hidden from catalog");
                 await this.click(this.selectors.okBtnTag, "OK", "Button");
             }
-            
+
             // Click Save button
             await this.wait('minWait');
             await this.click(this.selectors.saveBtn, "Save", "Button");
@@ -302,19 +327,19 @@ export class EditCoursePage extends AdminHomePage {
         await this.wait('minWait');
         const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
         const icons = this.page.locator(containerSelector);
-        
+
         // Check if checkbox is checked by looking at which icon is visible
         const firstIconVisible = await icons.first().isVisible();
         const secondIconVisible = await icons.nth(1).isVisible();
-        
+
         const isChecked = firstIconVisible && !secondIconVisible;
-        
+
         console.log(`📝 Disable (${level} Level) - Initial state - First icon visible: ${firstIconVisible}, Second icon visible: ${secondIconVisible}, Checked: ${isChecked}`);
-        
+
         if (isChecked) {
             // Uncheck the checkbox
             await this.click(this.selectors.dedicatedToTPLabel, "Dedicated to Training Plan", "Checkbox");
-            
+
             if (level === "Course") {
                 // Course level: Handle warning message
                 await this.wait('minWait');
@@ -322,12 +347,12 @@ export class EditCoursePage extends AdminHomePage {
                 await this.verification(this.selectors.warningMessage, expectedMessage);
                 await this.click(this.selectors.okBtnTag, "OK", "Button");
             }
-            
+
             // Click Save button
             await this.wait('minWait');
             await this.click(this.selectors.saveBtn, "Save", "Button");
             await this.wait('minWait');
-            
+
             console.log(`✅ Disabled Dedicated to Training Plan at ${level} level`);
             return true;
         } else {
@@ -340,12 +365,12 @@ export class EditCoursePage extends AdminHomePage {
         await this.wait('minWait');
         const containerSelector = `//span[text()='Dedicated to Training Plan']/preceding-sibling::i`;
         const icons = this.page.locator(containerSelector);
-        
+
         // Check which icon is visible to determine checked state
         const firstIconVisible = await icons.first().isVisible();
         const secondIconVisible = await icons.nth(1).isVisible();
         const isChecked = firstIconVisible && !secondIconVisible;
-        
+
         console.log(`ℹ️ Dedicated to TP checked state: ${isChecked}`);
         return isChecked;
     }
@@ -355,8 +380,8 @@ export class EditCoursePage extends AdminHomePage {
         const checkbox = this.page.locator(this.selectors.dedicatedToTPCheckbox);
         const isDisabled = await checkbox.evaluate((el: HTMLElement) => {
             // Check if element or its parent has disabled class/attribute
-            return el.classList.contains('disabled') || el.hasAttribute('disabled') || 
-                   (el.parentElement?.classList.contains('disabled') ?? false);
+            return el.classList.contains('disabled') || el.hasAttribute('disabled') ||
+                (el.parentElement?.classList.contains('disabled') ?? false);
         });
         console.log(`ℹ️ Dedicated to TP disabled state: ${isDisabled}`);
         return isDisabled;
@@ -378,26 +403,26 @@ export class EditCoursePage extends AdminHomePage {
      */
     async verifyDedicatedToCheckBox(enableState: "Enabled" | "Disabled", checkedState: "Checked" | "Unchecked"): Promise<void> {
         await this.wait('minWait');
-        
+
         const checkboxInput = this.page.locator(`//input[@id='dedicated-to-tp']`);
         const checkedIcon = this.page.locator(`//label[@for='dedicated-to-tp']//i[contains(@class,'fa-square-check')]`);
         const uncheckedIcon = this.page.locator(`//label[@for='dedicated-to-tp']//i[contains(@class,'fa-square') and not(contains(@class,'fa-square-check'))]`);
-        
+
         // Verify Enabled/Disabled state
         const isDisabled = await checkboxInput.isDisabled();
         const actualEnableState = isDisabled ? "Disabled" : "Enabled";
-        
+
         if (actualEnableState !== enableState) {
             throw new Error(`❌ Dedicated to TP checkbox enable state mismatch! Expected: ${enableState}, Actual: ${actualEnableState}`);
         }
         console.log(`✅ Verified - Dedicated to TP checkbox is ${enableState}`);
-        
+
         // Verify Checked/Unchecked state
         const isCheckedIconVisible = await checkedIcon.isVisible();
         const isUncheckedIconVisible = await uncheckedIcon.isVisible();
-        
+
         let actualCheckedState: "Checked" | "Unchecked";
-        
+
         if (isCheckedIconVisible && !isUncheckedIconVisible) {
             actualCheckedState = "Checked";
         } else if (!isCheckedIconVisible && isUncheckedIconVisible) {
@@ -405,12 +430,12 @@ export class EditCoursePage extends AdminHomePage {
         } else {
             throw new Error(`❌ Checkbox state is ambiguous! Checked icon visible: ${isCheckedIconVisible}, Unchecked icon visible: ${isUncheckedIconVisible}`);
         }
-        
+
         if (actualCheckedState !== checkedState) {
             throw new Error(`❌ Dedicated to TP checkbox checked state mismatch! Expected: ${checkedState}, Actual: ${actualCheckedState}`);
         }
         console.log(`✅ Verified - Dedicated to TP checkbox is ${checkedState}`);
-        
+
         console.log(`🎯 Final Verification: Checkbox is ${actualEnableState} and ${actualCheckedState}`);
     }
 
@@ -424,7 +449,7 @@ export class EditCoursePage extends AdminHomePage {
         const enrollmentRowSelector = this.selectors.enrollmentEntry;
         await this.validateElementVisibility(enrollmentRowSelector, "New enrollment entry");
         const isVisible = await this.page.locator(enrollmentRowSelector).isVisible();
-        
+
         if (isVisible) {
             console.log("✅ Verified - New enrollment entry has been added in the enrollments table");
             return true;
@@ -438,4 +463,190 @@ export class EditCoursePage extends AdminHomePage {
         await this.click(this.selectors.selectInstance, "instance", "Button")
         await this.click(this.selectors.multiInstance, "Multi instance", "Button")
     }
+
+    //For Discount
+    async selectDiscountOption(discount: string, option?: string,) {
+        await this.validateElementVisibility(this.selectors.selectDiscountDropdown, "Discount Dropdown");
+        await this.click(this.selectors.selectDiscountDropdown, "Discounts", "Dropdown");
+        await this.typeAndEnter(this.selectors.enterDiscount, "Input Field", discount);
+        await this.wait('minWait');
+        await this.click(this.selectors.discountValue, "Discount", "Value");
+        await this.click(this.selectors.discountValue, "Discount", "Value");
+        await this.wait('minWait');
+        await this.page.mouse.wheel(0, 100);
+        await this.click(this.selectors.selectDiscountOptionRadioBtn(option), "Discount Option", "Value");
+        await this.click(this.selectors.saveButton, "Single registration", "Save Button")
+        await this.wait('minWait');
+
+    }
+    async verifyDiscountApplied(discountName: string, domainName: string) {
+        // Click the domain dropdown
+        await this.click(this.selectors.domainDropdown(domainName), `${domainName} Domain Dropdown`, "Dropdown");
+        // Wait for dropdown values to be visible
+        await this.page.waitForSelector(this.selectors.domainDropdownValues, { state: 'visible' });
+        // Get all discount names
+        const discountElements = await this.page.$$(this.selectors.domainDropdownValues);
+        const discountNames = [];
+        for (const element of discountElements) {
+            const text = await element.textContent();
+            if (text) {
+                discountNames.push(text.trim());
+            }
+        }
+        // Check if the created discount is present
+        const isDiscountApplied = discountNames.includes(discountName);
+        expect(isDiscountApplied).toBeTruthy();
+        if (isDiscountApplied) {
+            console.log(`Discount '${discountName}' is applied.`);
+        } else {
+            console.log(`Discount '${discountName}' is NOT applied.`);
+        }
+    }
+
+    async verifyDiscountDefaultSelection(expectedOption: "Minimum" | "Maximum" | "Combine") {
+        await this.wait("mediumWait");
+        await this.page.mouse.wheel(0, 100);
+        await this.wait("minWait");
+
+        const selector = this.selectors.discountOptionSelected(expectedOption);
+        const isSelected = await this.page.locator(selector).isVisible();
+
+        if (isSelected) {
+            console.log(`✅ Verified: ${expectedOption} of All is selected by default on course page (matches site admin config)`);
+        } else {
+            throw new Error(`❌ Expected ${expectedOption} of All to be selected by default, but it is not`);
+        }
+
+        return isSelected;
+    }
+
+
+    //Allow learners to enroll again - In Course Business Rules
+    async verifyAllowLearnersEnrollAgain(shouldBeUnchecked: boolean = true) {
+        await this.wait("mediumWait");
+
+        try {
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+
+            const isUnchecked = await this.page.locator(uncheckedSelector).isVisible();
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+
+            if (shouldBeUnchecked) {
+                if (isUnchecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again' is UNCHECKED in Course Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again' to be UNCHECKED but it is CHECKED");
+                    return false;
+                }
+            } else {
+                if (isChecked) {
+                    console.log("✅ Verified - 'Allow learners to enroll again' is CHECKED in Course Business Rules");
+                    return true;
+                } else {
+                    console.log("❌ Expected 'Allow learners to enroll again' to be CHECKED but it is UNCHECKED");
+                    return false;
+                }
+            }
+        } catch (error) {
+            console.log("❌ Error verifying 'Allow learners to enroll again' checkbox:", error);
+            return false;
+        }
+    }
+
+    async checkAllowLearnersEnrollAgain() {
+        await this.wait("mediumWait");
+
+        try {
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+
+            const isUnchecked = await this.page.locator(uncheckedSelector).isVisible();
+
+            if (isUnchecked) {
+                console.log("🔄 Checking 'Allow learners to enroll again' checkbox...");
+                await this.click(uncheckedSelector, "Allow learners to enroll again", "Checkbox");
+                await this.click(this.selectors.saveButton, "Save", "Button");
+                await this.wait("mediumWait");
+                await this.verification(this.selectors.verifyChanges, "successfully");
+                console.log("✅ 'Allow learners to enroll again' has been checked");
+            } else {
+                console.log("✅ 'Allow learners to enroll again' is already checked");
+            }
+        } catch (error) {
+            console.log("❌ Error checking 'Allow learners to enroll again':", error);
+        }
+    }
+
+    async uncheckAllowLearnersEnrollAgain() {
+        await this.wait("mediumWait");
+
+        try {
+            const checkedSelector = this.selectors.allowLearnersEnrollAgainChecked;
+            const uncheckedSelector = this.selectors.allowLearnersEnrollAgainUnchecked;
+
+            const isChecked = await this.page.locator(checkedSelector).isVisible();
+
+            if (isChecked) {
+                console.log("🔄 Unchecking 'Allow learners to enroll again' checkbox...");
+                await this.click(checkedSelector, "Allow learners to enroll again", "Checkbox");
+                await this.click(this.selectors.saveButton, "Save", "Button");
+                await this.wait("mediumWait");
+                await this.verification(this.selectors.verifyChanges, "successfully");
+                console.log("✅ 'Allow learners to enroll again' has been unchecked");
+            } else {
+                console.log("✅ 'Allow learners to enroll again' is already unchecked");
+            }
+        } catch (error) {
+            console.log("❌ Error unchecking 'Allow learners to enroll again':", error);
+        }
+    }
+    async verifyVolumeDiscount(discountName: string) {
+        await this.wait('mediumWait');
+        const volumeDiscountElement = this.page.locator(this.selectors.volumeDisc(discountName));
+        const isVisible = await volumeDiscountElement.isVisible({ timeout: 5000 }).catch(() => false);
+
+        if (isVisible) {
+            await this.verification(this.selectors.volumeDisc(discountName), discountName);
+            console.log(`✅ Volume discount '${discountName}' is displayed`);
+            return true;
+        } else {
+            console.log(`⚠️ Volume discount '${discountName}' is NOT displayed (may be expired or unavailable)`);
+            return false;
+        }
+    }
+    async verifyDiscountDefaultSelect() {
+        await this.wait('mediumWait');
+        const defaultOption = await this.page.locator(this.selectors.selectDiscountDropdown);
+        const isVisible = await defaultOption.isVisible();
+        if (isVisible) {
+            console.log(`Default discount is 'select' as expected.`);
+        }
+    }
+    async verifyVolumeDiscounts(discountName: string) {
+        await this.validateElementVisibility(this.selectors.selectDiscountDropdown, "Discount Dropdown");
+        await this.click(this.selectors.selectDiscountDropdown, "Discounts", "Dropdown");
+        await this.typeAndEnter(this.selectors.enterDiscount, "Input Field", discountName);
+        await this.wait('mediumWait');
+        const volumeDiscountElement = this.page.locator(this.selectors.volumeDisc(discountName));
+        const isVisible = await volumeDiscountElement.isVisible({ timeout: 5000 }).catch(() => false);
+
+        if (isVisible) {
+            await this.verification(this.selectors.volumeDisc(discountName), discountName);
+
+            console.log(`✅ Volume discount '${discountName}' is displayed`);
+            return true;
+        } else {
+            console.log(`⚠️ Volume discount '${discountName}' is NOT displayed (may be expired or unavailable)`);
+            return false;
+        }
+    }
+    async verifyFormatedDiscount(code: string,percentage: string) 
+    {
+        await this.validateElementVisibility(this.selectors.formatedDisc(code,percentage), "Formatted Discount");
+        await this.verification(this.selectors.formatedDisc(code,percentage), `${code} | VOLUME DISCOUNT | ${percentage}%`);
+        console.log(`✅ Verified - Formatted discount '${code} | VOLUME DISCOUNT | ${percentage}%' is displayed correctly`);
+    }
+
 }

@@ -89,7 +89,7 @@ test(`Verify that the user can enable and disable a currency in the currency lis
     await adminHome.meta_ECommerce();
     //verify disable the currency
     await metadatalibrary.toggleSwitchInCurrency(currencyName,"disable")
-    await metadatalibrary.currencyList();
+    await metadatalibrary.currencyList()    ;
     //verify whether that disabled currency is not present in course page
     await adminHome.menuButton();
     await adminHome.clickLearningMenu();

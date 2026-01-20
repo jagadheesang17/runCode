@@ -10,7 +10,7 @@ import { FakerData } from '../../../utils/fakerUtils';
  test(`Verify the action icon when there is no child organization and no active users under the parent organization`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )  

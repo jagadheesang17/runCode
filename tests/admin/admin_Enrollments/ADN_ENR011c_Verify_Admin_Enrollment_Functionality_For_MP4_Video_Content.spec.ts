@@ -4,10 +4,10 @@ import { FakerData } from '../../../utils/fakerUtils';
 
 let courseName = FakerData.getCourseName();
 const description = FakerData.getDescription()
-let createdCode:any
+let createdCode: any
 test.describe(`Confirm that Admin enrollments functions correctly and as expected for videomp4 content`, async () => {
     test.describe.configure({ mode: "serial" });
-    test(`Create course for Single Instance`, async ({ adminHome, createCourse,contentHome,enrollHome }) => {
+    test(`Create course for Single Instance`, async ({ adminHome, createCourse, contentHome, enrollHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Creation of Single Instance Elearning with videomp4 content` },
@@ -42,7 +42,7 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
     })
 
 
-    test(`Confirm that videomp4 content functions correctly and as expected`, async ({ learnerHome, catalog, readContentHome }) => {
+    test(`Confirm that videomp4 content functions correctly and as expected`, async ({ learnerHome, catalog, dashboard }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Confirm that videomp4 content functions correctly and as expected` },
@@ -51,14 +51,14 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await catalog.clickMyLearning();
         await catalog.searchMyLearning(courseName);
-       // await catalog.verifyEnrolledCourseByCODE(createdCode);
-                await catalog.clickCourseInMyLearning(courseName);
+        // await catalog.verifyEnrolledCourseByCODE(createdCode);
+        await catalog.clickCourseInMyLearning(courseName);
         await catalog.clickLaunchButton();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
 
     })
 

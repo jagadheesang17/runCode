@@ -1,5 +1,4 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createEquipment } from "../../metaDataLibraryAPI";
 import { generateCode } from "../../../data/apiData/formData";
@@ -16,7 +15,7 @@ test.beforeAll('Generate Access Token', async () => {
 test.describe('Creation of Equipment', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating Equipment through API', async () => {
-        await createEquipment(equipmentName, { Authorization: access_token });
+        await createEquipment(equipmentName);
     });
     test(`Verify that equipment can be added under Metadata Library`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(

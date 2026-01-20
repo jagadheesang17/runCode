@@ -23,7 +23,7 @@ test.describe(`TC019_Verify_metadataLibrary_Learning.spec.ts`, async () => {
     })
 
     const providerName = FakerData.getCategory();
-    test.only(`Ensure that a new provider can be created successfully`, async ({ adminHome, metadatalibrary }) => {
+    test(`Ensure that a new provider can be created successfully`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(
             { type: 'Author', description: 'Ajay Michael' },
             { type: 'TestCase', description: 'Ensure that a new provider can be created successfully' },

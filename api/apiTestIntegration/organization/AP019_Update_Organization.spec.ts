@@ -1,18 +1,11 @@
 import { test } from '../../../customFixtures/expertusFixture';
-import { generateOauthToken } from "../../accessToken";
 import { createOrganization, editOrganization, listOrganization } from "../../organizationAPI";
 import { FakerData } from "../../../utils/fakerUtils";
 
 
 const OrgName =   ("Org" + " " + FakerData.getOrganizationName());
-let access_token: string
 let createdCode: any
 let description: any
-
-test.beforeAll('Generate Access Tokken', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe(`Update organizations through API`, async () => {
     test.describe.configure({ mode: 'serial' });    
@@ -44,8 +37,7 @@ test.describe(`Update organizations through API`, async () => {
     
         test('Update the created Organization', async () => {
     
-       const access_token = await generateOauthToken();
-        description=await editOrganization(createdCode,{ Authorization: access_token });
+        description=await editOrganization(createdCode);
         console.log(description)
         });
 

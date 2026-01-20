@@ -42,7 +42,7 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
     })
 
 
-    test(`Confirm that Scorm1.2 content functions correctly and as expected`, async ({ learnerHome, catalog, readContentHome }) => {
+    test(`Confirm that Scorm1.2 content functions correctly and as expected`, async ({ learnerHome, catalog, readContentHome,dashboard }) => {
         test.info().annotations.push(
             { type: `Author`, description: `Tamilvanan` },
             { type: `TestCase`, description: `Confirm that Scorm1.2 content functions correctly and as expected` },
@@ -56,9 +56,10 @@ test.describe(`Confirm that Admin enrollments functions correctly and as expecte
         await readContentHome.Completed_Incomplete_SCORM12();
         await catalog.saveLearningStatus();
         await catalog.clickMyLearning();
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
 
     })
 

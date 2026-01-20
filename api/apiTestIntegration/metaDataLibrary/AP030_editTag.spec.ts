@@ -1,21 +1,14 @@
 import { test } from "../../../customFixtures/expertusFixture";
-import { generateOauthToken } from "../../accessToken";
 import { FakerData } from "../../../utils/fakerUtils";
 import { createTag, editTag } from "../../metaDataLibraryAPI";
 
-let access_token: string;
 const tagName = FakerData.getTagNames()+" "+"Tag";
 const updatedTagName = FakerData.getTagNames()+" "+"Tag";
-
-test.beforeAll('Generate Access Tokken', async () => {
-    access_token = await generateOauthToken();
-    console.log('Access Token:', access_token);
-});
 
 test.describe('Creation of Tag', () => {
     test.describe.configure({ mode: "serial" });
     test('Creating Tag through API', async () => {
-        await createTag(tagName, { Authorization: access_token });
+        await createTag(tagName);
     });
     test(`Verify that a tags can be added under Metadata Library - Learning - Tags`, async ({ adminHome, metadatalibrary }) => {
         test.info().annotations.push(

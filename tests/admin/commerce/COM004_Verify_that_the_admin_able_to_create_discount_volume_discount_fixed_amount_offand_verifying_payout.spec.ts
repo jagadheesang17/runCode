@@ -1,0 +1,112 @@
+
+import { test } from "../../../customFixtures/expertusFixture";
+import { FakerData } from "../../../utils/fakerUtils";
+import { generateCode } from "../../../data/apiData/formData";
+import { URLConstants } from "../../../constants/urlConstants";
+import { credentials } from "../../../constants/credentialData";
+const courseName = FakerData.getCourseName();
+const discountName = FakerData.getTagNames() + " " + "Discounts";
+const description = FakerData.getDescription();
+const price = FakerData.getPrice();
+const code = "DIS-" + generateCode();
+let dicountValue: any
+
+test.describe.configure({ mode: "serial" });
+test(`Verify that the admin able to create volume discount with fixed amount off`, async ({ adminHome, commercehome, createCourse, discount, SurveyAssessment }) => {
+    test.info().annotations.push(
+        { type: `Author`, description: `Tamilvanan` },
+        { type: `TestCase`, description: `verify that the admin able to create discount` },
+        { type: `Test Description`, description: `verify that the admin able to create discount` }
+    );
+    await adminHome.loadAndLogin("COMMERCEADMIN")
+    await adminHome.menuButton();
+    await adminHome.clickCommerceMenu();
+    await commercehome.clickCommerceOption("Discount");
+    await discount.clickCreateDiscount();
+    await discount.selectVolumeDiscount();
+    await createCourse.enter("name", discountName);
+    await discount.enterDiscountDescription(description);
+    await createCourse.enter("code", code);
+    await discount.enterValidity();
+    dicountValue = await discount.setDiscountRules("Fixed Amount Off", "Volume");
+    console.log(dicountValue);
+    await SurveyAssessment.clickPublish();
+    await createCourse.clickProceed();
+})
+test(`Creating paid EL course and adding discount`, async ({ createCourse, adminHome, editCourse }) => {
+    test.info().annotations.push(
+        { type: `Author`, description: `Tamilvanan` },
+        { type: `TestCase`, description: `Creating paid EL course and adding discount` },
+        { type: `Test Description`, description: `Creating paid EL course and adding discount` }
+    );
+
+    await adminHome.loadAndLogin("SUPERADMIN")
+    await adminHome.clickMenu("Course");
+    await createCourse.verifyCreateUserLabel("CREATE COURSE");
+    await createCourse.enter("course-title", courseName);
+    await createCourse.selectLanguage("English");
+    await createCourse.typeDescription(description);
+    await createCourse.handleCategoryADropdown();
+    await createCourse.enterPrice(price)
+    await createCourse.selectCurrency();
+    await createCourse.contentLibrary()
+    await createCourse.clickCatalog();
+    await createCourse.clickSave();
+    await createCourse.clickProceed();
+    await createCourse.verifySuccessMessage();
+    await createCourse.editcourse();
+    await createCourse.clickCourseOption("Discount")
+    await editCourse.selectDiscountOption();
+    await createCourse.clickDetailButton();
+    await createCourse.clickCatalog();
+    await createCourse.clickUpdate();
+    await createCourse.verifySuccessMessage();
+})
+
+test(`Admin create the multiple order`, async ({ adminHome,createUser, costCenter, enrollHome }) => {
+
+    test.info().annotations.push(
+        { type: `Author`, description: `Tamilvanan` },
+        { type: `TestCase`, description: `Admin create the multiple order` },
+        { type: `Test Description`, description: `Admin create the multiple order` }
+
+    );
+    await adminHome.loadAndLogin("SUPERADMIN")
+    await adminHome.menuButton()
+    await adminHome.clickEnrollmentMenu();
+    await adminHome.clickEnroll();
+    await enrollHome.manageEnrollment("Create Order")
+    await enrollHome.clickMultipleOrderRadioBtn();
+    await enrollHome.selectCourse_TPForMultiOrder(courseName)
+    await enrollHome.clickSelectedLearner();
+    await enrollHome.enterSearchUserForMultiOrder(credentials.LEARNERUSERNAME.username)
+    await enrollHome.enterSearchUserForMultiOrder(credentials.TEAMUSER1.username)
+    await enrollHome.enterSearchUserForMultiOrder(credentials.TEAMUSER2.username)
+    await enrollHome.clickCheckoutButton();
+   // await costCenter.verifyDiscountValue()
+    await costCenter.enterUserContactDetails()  
+    await costCenter.billingDetails("United States", "Alaska")
+    await enrollHome.clickCalculateTaxButton()
+    await enrollHome.paymentMethod("Cost center");
+    await costCenter.fillCostCenterInput();
+    await costCenter.clickTermsandCondition();
+    await enrollHome.clickApproveOrder()
+    await enrollHome.orderSuccessMsg();
+
+})
+
+test(`Commerce side Verification`, async ({ adminHome, costCenter, createCourse, commercehome }) => {
+    test.info().annotations.push(
+        { type: `Author`, description: `Tamilvanan` },
+        { type: `TestCase`, description: `Commerce side order verification ` },
+        { type: `Test Description`, description: `Verify that order has confirmed by admin` }
+    );
+    await adminHome.loadAndLogin("COMMERCEADMIN")
+    await adminHome.menuButton();
+    await adminHome.clickCommerceMenu();
+    await commercehome.clickOrder();
+    await commercehome.approveOrder();
+    await commercehome.verifySuccessMessage();
+})
+
+//})

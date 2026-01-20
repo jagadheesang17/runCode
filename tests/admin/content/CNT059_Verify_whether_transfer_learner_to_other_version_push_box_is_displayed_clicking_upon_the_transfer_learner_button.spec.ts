@@ -4,7 +4,7 @@ import { credentials } from "../../../constants/credentialData";
 
 const courseName = FakerData.getRandomTitle();
 const title = FakerData.getRandomTitle();
-test.only(`Verify whether transfer learner to other version push box is displayed clicking upon the transfer learner button`, async ({ adminHome, contentHome, bannerHome, createCourse, enrollHome }) => {
+test(`Verify whether transfer learner to other version push box is displayed clicking upon the transfer learner button`, async ({ adminHome, contentHome, bannerHome, createCourse, enrollHome }) => {
     test.info().annotations.push(
         { type: `Author`, description: `Divya` },
         { type: `TestCase`, description: `Verfiy whether transfer learner to other version button is enabled only when Content is associated to the class, Learners are enrolled in the class and Content has more than one version` },

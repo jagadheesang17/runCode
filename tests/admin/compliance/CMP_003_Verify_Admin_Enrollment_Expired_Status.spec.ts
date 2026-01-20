@@ -27,59 +27,59 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
 
         // Step 1: Login as Customer Admin
         await adminHome.loadAndLogin("CUSTOMERADMIN");
-        
+
         // Step 2: Navigate to Course Creation
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.clickCourseLink();
         await createCourse.clickCreateCourse();
-        
+
         // Step 3: Create Basic Course Information
         await createCourse.verifyCreateUserLabel("CREATE COURSE");
         await createCourse.enter("course-title", courseName);
         await createCourse.selectLanguage("English");
         await createCourse.typeDescription("Compliance course with expiry: " + description);
-        
+
         // Step 4: Set Portal and Provider (if needed)
         await createCourse.selectDomainOption(URLConstants.portal1);
         await createCourse.providerDropdown();
-        
+
         // Step 5: Set Registration End Date
         await createCourse.clickregistrationEnds();
-        
+
         // Step 6: Enable Compliance Setting
         await createCourse.selectCompliance();
         console.log("✅ Compliance setting enabled");
-        
+
         // Step 7: Set Course Expiration (Critical for expiry testing)
         await learningPath.clickExpiresButton();
         console.log("✅ Course expiration setting configured");
-        
+
         // Step 8: Set Complete By Date (This will be manipulated by cron job)
         await createCourse.selectCompleteBy();
         await createCourse.selectCompleteByDate();
         console.log("✅ Complete by date rule configured - this will be used for expiry");
-        
+
         // Step 9: Attach Content
         await createCourse.contentLibrary();
-        
+
         // Step 10: Save Course Initially
         await createCourse.clickCatalog();
         await createCourse.clickSave();
-        
+
         // Step 11: Modify Access for Specific User/Group
         await createCourse.modifyTheAccess();
         await createCourse.clickAccessButton();
         await createCourse.specificLearnerGroupSelection(URLConstants.LearnerGroup1);
         await createCourse.addSingleLearnerGroup(user);
         await createCourse.saveAccessButton();
-        
+
         // Step 12: Close Access Settings and Update Course
         await editCourse.clickClose();
         await createCourse.typeDescription("Compliance course with expiry functionality: " + description);
         await createCourse.clickUpdate();
         await createCourse.verifySuccessMessage();
-        
+
         console.log(`🎉 Successfully created compliance course: ${courseName}`);
         console.log(`📋 Course Features:`);
         console.log(`   • Compliance: Enabled`);
@@ -89,7 +89,7 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
         console.log(`   • Ready for expiry cron job testing`);
     });
 
-    test(`Step 2: Enroll Learner and Complete Course Content`, async ({ learnerHome, catalog, adminHome, enrollHome }) => {
+    test(`Step 2: Enroll Learner and Complete Course Content`, async ({ learnerHome, catalog, adminHome, enrollHome, dashboard }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Automation` },
             { type: `TestCase`, description: `Enroll Learner and Complete Course Content` },
@@ -111,27 +111,28 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
         // Step 2: Learner Login and Course Completion
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         console.log(`👤 Logged in as learner: ${user}`);
-        
+
         // Step 3: Navigate to My Learning
         await learnerHome.clickMyLearning();
         console.log(`📚 Navigated to My Learning section`);
-        
+
         // Step 4: Search for Compliance Course
         await catalog.searchMyLearning(courseName);
         console.log(`🔍 Found compliance course: ${courseName}`);
         await catalog.launchContentFromMylearning();
         console.log(`🚀 Launched compliance course content`);
-        
+
         // Step 6: Complete Course Content (using new improved method)
         await catalog.completeCourseContent();
         console.log(`💾 Completed course content using enhanced completion method`);
         await catalog.wait("mediumWait")
         // Step 7: Verify Course Completion
-        await catalog.clickCompletedButton();
-        await catalog.searchMyLearning(courseName);
-        await catalog.verifyCompletedCourse(courseName);
+        await catalog.clickMyLearning();
+        await dashboard.selectDashboardItems("Learning History");
+        await dashboard.learningHistoryCourseSearch(courseName);
+        await dashboard.vaidatVisibleCourse_Program(courseName, "Completed");
         console.log(`✅ Verified course completion status`);
-        
+
         console.log(`🎯 Course Completion Summary:`);
         console.log(`   • Learner: ${user}`);
         console.log(`   • Course: ${courseName}`);
@@ -155,10 +156,10 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
         console.log(`   • Result: Makes course appear as overdue/expired`);
         console.log(`   • Cron Master: Updates 'Expired notification to end users'`);
         console.log(`   • Cron Details: Updates 'Expire Courses with Past Validity'`);
-        
+
         // Execute the cron job to make course expired
         await courseExpiry_CronJob();
-        
+
         console.log(`✅ Compliance course expiry cron job executed successfully`);
         console.log(`📅 Course completion_date has been set to previous date`);
         console.log(`🔄 Course enrollment expired_on timestamp updated`);
@@ -178,23 +179,22 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
         // Step 1: Login as Learner
         await learnerHome.learnerLogin("LEARNERUSERNAME", "LeanrerPortal");
         console.log(`👤 Logged in as learner to verify compliance course expiry`);
-        
+
         // Step 2: Navigate to My Learning
         await learnerHome.clickMyLearning();
         console.log(`📚 Navigated to My Learning section`);
- await catalog.clickCompletedButton();
+        await catalog.clickCompletedButton();
         // Step 3: Search for Compliance Course
         await catalog.searchMyLearning(courseName);
         console.log(`🔍 Searching for expired compliance course: ${courseName}`);
-        
-        // Step 4: Verify Overdue Status (course should now be overdue despite being completed)
-       await catalog.clickCourseInMyLearning(courseName)
 
-    await catalog.verifyExpiredCourse(courseName)
+        await catalog.clickCourseInMyLearning(courseName)
+
+        await catalog.verifyExpiredCourse(courseName)
 
 
         console.log(`📋 Confirmed: Course details show overdue status`);
-        
+
         console.log(`🎯 Compliance Course Expiry Verification Summary:`);
         console.log(`   • Course Name: ${courseName}`);
         console.log(`   • Original Status: COMPLETED ✅`);
@@ -205,7 +205,7 @@ test.describe(`CMP_002: Verify Compliance Course Expiry Flow`, () => {
         console.log(`   • Compliance Flow: Working as expected ✅`);
         console.log(`🏁 Compliance course expiry flow completed successfully!`);
     });
-test(`Step 4: Verify Enrollment Status in E-Learning Course`, async ({ adminHome, createCourse, catalog,enrollHome }) => {
+    test(`Step 4: Verify Enrollment Status in E-Learning Course`, async ({ adminHome, createCourse, catalog, enrollHome }) => {
         test.info().annotations.push(
             { type: `Author`, description: `QA Team` },
             { type: `TestCase`, description: `BLK_ENR_002_Step4: Verification` },
@@ -219,20 +219,20 @@ test(`Step 4: Verify Enrollment Status in E-Learning Course`, async ({ adminHome
 
         // Search for the created E-learning course
         await createCourse.catalogSearch(courseName);
-        
+
         // Click edit icon on the course
         await createCourse.clickEditIcon();
-        
+
         // Click enrollments in the course page 
         await createCourse.clickEnrollmentInCoursePage();
 
-       await catalog.verifyExpiredCourse(courseName)
-        
+        await catalog.verifyExpiredCourse(courseName)
+
         // // Verify both users are enrolled - using page locators to check enrollment status
         // await enrollHome.page.waitForSelector(`text=${testUsers[0].username}`, { timeout: 10000 });
         // await enrollHome.page.waitForSelector(`text=${testUsers[1].username}`, { timeout: 10000 });
-        
-      //  console.log(`✅ E-Learning course enrollment verification completed for users: ${testUsers[0].username}, ${testUsers[1].username}`);
+
+        //  console.log(`✅ E-Learning course enrollment verification completed for users: ${testUsers[0].username}, ${testUsers[1].username}`);
     });
-   
+
 });

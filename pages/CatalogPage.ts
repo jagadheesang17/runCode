@@ -9,209 +9,262 @@ import { th } from "@faker-js/faker";
 
 export class CatalogPage extends LearnerHomePage {
   public selectors = {
-        ...this.selectors,
-        searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
-        searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
-        mostRecentMenuItem: `//div[text()="Most Recent"]`,
-        createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
-        moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
-        enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
-        courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
-        selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
-        enrollButton: `//span[text()='Enroll']`,
-        requestApproval: `//span[text()='Request approval']`,
-        approvalcostcenter: `//input[@id='cc']`,
-        submitRequest: `//button[text()='Submit request']`,
-        closeBtn: `(//button[text()='Close'])[1]`,
-        //launchButton:`//button[text()="Launch Content"]`,
-        completedButton: `//a[contains(text(),"Completed")]`,
-        completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
-        filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
-        // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
-        searchButton:`//input[contains(@id,'catalog_search')]`,
-        // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
+    ...this.selectors,
+    searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+    searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+    mostRecentMenuItem: `//div[text()="Most Recent"]`,
+    createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+    moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+    enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+    courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+    selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+    enrollButton: `//span[text()='Enroll']`,
+    requestApproval: `//span[text()='Request approval']`,
+    approvalcostcenter: `//input[@id='cc']`,
+    submitRequest: `//button[text()='Submit request']`,
+    closeBtn: `(//button[text()='Close'])[1]`,
+    managerApprovalRequiredIcon: (courseName: string) => `(//div[text()='${courseName}']//following::i[@aria-label='Manager Approval Required'])[1]`,
+    selectManagerDropdown: `//label[@for='selectManager']//following::button[@data-id='selectManager']`,
+    selectManagerOption: (managerName: string) => `(//label[@for='selectManager']//following::span[contains(text(),'${managerName}')])[1]`,
+    requestSentPopup: `//span//b[text()='Your request has been sent! ']`,
+    approvedSuccessPopup: `//span//b[text()='Approved Successfully! ']`,
+    //launchButton:`//button[text()="Launch Content"]`,
+    completedButton: `//a[contains(text(),"Completed")]`,
+    completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+    filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+    // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+    searchButton: `//input[contains(@id,'catalog_search')]`,
+    // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
+    // searchInput: `//input[@id="exp-searchcatalog-search-field"]`,
+    // searchlearningInput: `//input[@id="exp-searchenr-search-field"]`,
+    // mostRecentMenuItem: `//div[text()="Most Recent"]`,
+    // createdCourse: ` //div[text()='Most Recent']/following::li[1]`,
+    // moreButton: (course: string) => `(//div[text()="${course}"]/following::a/i)[1]`,
+    // enrollIcon: `//div[text()='Most Recent']//following::i[contains(@class,'tooltipIcon fa-duotone')][1]`,
+    // courseToEnroll: (course: string) => `//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')]`,
+    // selectCourse: (course: string, index: number) => `(//span[text()='${course}']//following::i[contains(@class,'fa-circle icon')])[${index}]`,
+    // enrollButton: `//span[text()='Enroll']`,
+    // requestApproval: `//span[text()='Request approval']`,
+    // approvalcostcenter: `//input[@id='cc']`,
+    // submitRequest: `//button[text()='Submit request']`,
+    // closeBtn: `(//button[text()='Close'])[1]`,
+    // //launchButton:`//button[text()="Launch Content"]`,
+    // completedButton: `//a[contains(text(),"Completed")]`,
+    // completedCourse: (name: string) => `(//*[text()="${name}"])[1]`,
+    // filterField: `//h1[text()='Catalog']/following::div[text()='Filters']`,
+    // // searchButton: `(//span[text()='Tags']/following::div[text()='Select'])[1]`,
+    // searchButton: `//input[contains(@id,'catalog_search')]`,
+    // // selectTagnames: `//div[contains(@class,'dropdown-menu show')]//input`,
 
-        selectTagnames:`//input[@id='catalog_search_tags']`,
-        // reultantTagname: (tagname: string) => `//a[contains(@class,'dropdown-item active')]//span[text()='${tagname}']`,
-        resultantTagname:(tagname: string) =>`//li[text()='${tagname}']`,
-        applyButton: `//button[text()='Apply']`,
-        viewCourseDetails: `//button[text()='View Course Details']`,
-        launchButton: `(//div//i[@aria-label='Click to play'])[1]`,
-        saveLearningStatus: "//button[text()='Save Learning Status']",
-        verificationEnrollment: "//span[text()='View Certificate']",
-        unsupportMedia: "//div[contains(text(), 'The media could not be loaded')]",
-        posterElement: `//button[@class='vjs-big-play-button']//span[1]`,
-        viewCertificationDetailsBtn: "//button[text()='View Certification Details']",
-        viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
-        viewCertificateBtn: "(//i[@aria-label='View Certificate'])[1]",
-        okBtn: "//button[text()='Ok']",
-        downloadPdfBtn: "(//i[contains(@class,'download')])[1]",
-        certificateModal: "//div[contains(@class,'modal-dialog modal-xl')]",
-        addToCart: `//span[text()='Add to cart']`,
-        contentLaunchBtn: "//button//span[text()='Launch']",
-        contentsLabel: "//button[text()='Save Learning Status']//following::span[contains(text(),'Content')]",
-        completedVideo: "//span[text()='100%']",
-        expiredContent: "//span[text()='Expired']",
-        recertifyBtn: "//span[text()='Recertify']",
-        shoppingCardIcon: "//div[@aria-label='shopping cart']//i[contains(@class,'cart-shopping')]",
-        addedToCartBtn: "//span[text()='Added to Cart']",
-        proceedToCheckoutBtn: "//button[text()=' Proceed to checkout']",
-        resultNotFound: `(//div[@id='most_recent']/following::div[text()='No results found.'])[1]`,
-        checkBox: `//i[contains(@class,'fa-circle icon') ]`,
-        RadioBtn: `//i[contains(@class,'fa-square icon')]`,
-        assessmentDropdown: `[id^='wrapper-ques'] button[data-bs-toggle='dropdown']`,
-        questionInput: `div[class='question-wrapper'] input[type=text]`,
-        starIcon: `//i[contains(@class,'fa-star icon')]`,
-        submitMyAnswerBtn: `div[class^='pagination-wrapper'] span:text-is('Submit my Answers')`,
-        submitSurveyBtn: `div[class^='pagination-wrapper'] span:text-is('submit survey')`,
-        filterDeliverytype: (delivery: string) => `//span[text()='${delivery}']/preceding-sibling::i[1]`,
-        multiInstancefilter: `(//div[text()='Filters'])[1]`,
-        clickPlayIcon: `(//a[contains(@class,'launch-content')])[1]`,
-        //doneBtn: `//span[text()='done']`, --> Element has been changed (06/08/2024)
-        //doneBtn: `//button[text()='Done']`,
-        doneBtn: `//i[contains(@class,'fa-circle-check icon')]//following::button[text()='Done']`,
-        //recievedScore: `//span[text()='Score:']//parent::div`, Element has been changed (06/08/2024)
-        //recievedScore: `//div[contains(text(),'Score:')]`
-        recievedScore: `//i[contains(@class,'fa-circle-check icon')]//following::div[contains(text(),'Score:')]`,
-        surveyPlayBtn: "//i[contains(@class,'fa-file-edit')]//parent::div//following-sibling::div//i",
-        noCertificate: "//span[text()='Completion certificate not attached to this training.']",
-        certificateCloseIcon: "//i[contains(@class,'pointer ms-auto')]",
-        secondaryCourse: (course: string) => `//div[contains(text(),'${course}')]`,
-        completePreviousContent: "//div[contains(text(),'You need to complete the previous content')]",
-        enforceSequenceErrorMessage: "//div[text()='You need to complete the previous content to launch this content.']",
-        recommendationLink: `//a[text()='Recommendations']`,
-        verifyRecommendCourse: (course: string) => `//div[text()='${course}']`,
-        overDueText: "//*[text()='Overdue']",
-        contentLabel: `//span[contains(text(),'Content')]`,
-        surveyDoneButton: `//div[text()='Thank you for completing the survey.']/following::button[text()='Done']`,
+    selectTagnames: `//input[@id='catalog_search_tags']`,
+    // reultantTagname: (tagname: string) => `//a[contains(@class,'dropdown-item active')]//span[text()='${tagname}']`,
+    resultantTagname: (tagname: string) => `//li[text()='${tagname}']`,
+    applyButton: `//button[text()='Apply']`,
+    viewCourseDetails: `//button[text()='View Course Details']`,
+    launchButton: `(//div//i[@aria-label='Click to play'])[1]`,
+    saveLearningStatus: "//button[text()='Save Learning Status']",
+    verificationEnrollment: "//span[text()='View Certificate']",
+    unsupportMedia: "//div[contains(text(), 'The media could not be loaded')]",
+    posterElement: `//button[@class='vjs-big-play-button']//span[1]`,
+    viewCertificationDetailsBtn: "//button[text()='View Certification Details']",
+    viewlearningPathDetailsBtn: "//button[text()='View Learning Path Details']",
+    viewCertificateBtn: "(//i[@aria-label='View Certificate'])[1]",
+    okBtn: "//button[text()='Ok']",
+    OKBtnFromPopup: `//button[text()='OK']`,
+    downloadPdfBtn: "(//i[contains(@class,'download')])[1]",
+    certificateModal: "//div[contains(@class,'modal-dialog modal-xl')]",
+    addToCart: `//span[text()='Add to cart']`,
+    contentLaunchBtn: "//button//span[text()='Launch']",
+    contentsLabel: "//button[text()='Save Learning Status']//following::span[contains(text(),'Content')]",
+    completedVideo: "(//span[text()='100%'])[1]",
+    expiredContent: "//span[text()='Expired']",
+    recertifyBtn: "//span[text()='Recertify']",
+    shoppingCardIcon: "//div[@aria-label='shopping cart']//i[contains(@class,'cart-shopping')]",
+    addedToCartBtn: "//span[text()='Added to Cart']",
+    proceedToCheckoutBtn: "//button[text()=' Proceed to checkout']",
+    resultNotFound: `(//div[@id='most_recent']/following::div[text()='No results found.'])[1]`,
+    checkBox: `//i[contains(@class,'fa-circle icon') ]`,
+    RadioBtn: `//i[contains(@class,'fa-square icon')]`,
+    assessmentDropdown: `[id^='wrapper-ques'] button[data-bs-toggle='dropdown']`,
+    questionInput: `div[class='question-wrapper'] input[type=text]`,
+    starIcon: `//i[contains(@class,'fa-star icon')]`,
+    submitMyAnswerBtn: `div[class^='pagination-wrapper'] span:text-is('Submit my Answers')`,
+    submitSurveyBtn: `div[class^='pagination-wrapper'] span:text-is('submit survey')`,
+    filterDeliverytype: (delivery: string) => `//span[text()='${delivery}']/preceding-sibling::i[1]`,
+    multiInstancefilter: `(//div[text()='Filters'])[1]`,
+    clickPlayIcon: `(//a[contains(@class,'launch-content')])[1]`,
+    //doneBtn: `//span[text()='done']`, --> Element has been changed (06/08/2024)
+    //doneBtn: `//button[text()='Done']`,
+    doneBtn: `//i[contains(@class,'fa-circle-check icon')]//following::button[text()='Done']`,
+    //recievedScore: `//span[text()='Score:']//parent::div`, Element has been changed (06/08/2024)
+    //recievedScore: `//div[contains(text(),'Score:')]`
+    recievedScore: `//i[contains(@class,'fa-circle-check icon')]//following::div[contains(text(),'Score:')]`,
+    surveyPlayBtn: "//i[contains(@class,'fa-file-edit')]//parent::div//following-sibling::div//i",
+    noCertificate: "//span[text()='Completion certificate not attached to this training.']",
+    certificateCloseIcon: "//i[contains(@class,'pointer ms-auto')]",
+    secondaryCourse: (course: string) => `//div[contains(text(),'${course}')]`,
+    completePreviousContent: "//div[contains(text(),'You need to complete the previous content')]",
+    enforceSequenceErrorMessage: "//div[text()='You need to complete the previous content to launch this content.']",
+    recommendationLink: `//a[text()='Recommendations']`,
+    verifyRecommendCourse: (course: string) => `//div[text()='${course}']`,
+    overDueText: "//*[text()='Overdue']",
+    contentLabel: `//span[contains(text(),'Content')]`,
+    surveyDoneButton: `//div[text()='Thank you for completing the survey.']/following::button[text()='Done']`,
 
-        //Negative Assessment 
-        negAnsDoneButton: `//div[text()="Sorry! You didn't pass the assessment."]//following::button[text()='Done']`,
+    //Negative Assessment 
+    negAnsDoneButton: `//div[text()="Sorry! You didn't pass the assessment."]//following::button[text()='Done']`,
 
-        //TP-Reenroll
-        reenrollbutton: `//span[text()='re-enroll']`,
-        incompleteText: `//*[text()='Incomplete']`, //Arivu is changed from span to *
-        tpCompletedText: `//span[text()='Completed']`,
-        tpPreAssbutton: `//span[text()='Pre Assessment ']//parent::div//span[text()='Launch']`,
-        tpPostAssbutton: `//span[text()='Assessment/Survey ']//parent::div//span[text()='Launch']`,
-        tpCourseExpandIcon: `//i[contains(@class,'fa-chevron-down fa')]`,
+    //TP-Reenroll
+    reenrollbutton: `//span[text()='re-enroll']`,
+    incompleteText: `//*[text()='Incomplete']`, //Arivu is changed from span to *
+    tpCompletedText: `//span[text()='Completed']`,
+    tpPreAssbutton: `//span[text()='Pre Assessment ']//parent::div//span[text()='Launch']`,
+    tpPostAssbutton: `//span[text()='Assessment/Survey ']//parent::div//span[text()='Launch']`,
+    tpCourseExpandIcon: `//i[contains(@class,'fa-chevron-down fa')]`,
 
-        // Catalog-No results found message:-
-        noResultFound_MostRecent: `//div[@id='most_recent']//div[text()='No results found.']`,
+    // Catalog-No results found message:-
+    noResultFound_MostRecent: `//div[@id='most_recent']//div[text()='No results found.']`,
 
-        //Survey 
-        textareaInput: `textarea[class^='form-control']`,
-        sumbitSurveyBtn: `//span[text()='submit survey']`,
+    //Survey 
+    textareaInput: `textarea[class^='form-control']`,
+    sumbitSurveyBtn: `//span[text()='submit survey']`,
 
-        //TP Course Filter:-
-        clickTPCourseFilter: `//div[text()='Filters']`,
-        clickTPCourseDeliveryFilter: (data: string) => `(//span[text()='${data}']//preceding-sibling::i)[2]`,
-        clickTPCourseApplyButton: `//button[text()='Apply']`,
-        selectTPCourse: `//div[contains(text(),'Seats')]//following::div[contains(@class,'custom-radio')]`,
-        clickTPSelectedCourseRegisterButton: `//button[contains(text(),'Enroll')]`,
+    //TP Course Filter:-
+    clickTPCourseFilter: `//div[text()='Filters']`,
+    clickTPCourseDeliveryFilter: (data: string) => `(//span[text()='${data}']//preceding-sibling::i)[2]`,
+    clickTPCourseApplyButton: `//button[text()='Apply']`,
+    selectTPCourse: `//div[contains(text(),'Seats')]//following::div[contains(@class,'custom-radio')]`,
+    clickTPSelectedCourseRegisterButton: `//button[contains(text(),'Enroll')]`,
 
-        toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,
-        //completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
-        enrolledCourseCode: `//span[contains(text(),'code:')]/following-sibling::span`,
+    toCompleteORCompleteEnrolledCourse: `(//*[(@id='carousel-completed' or @id='carousel-tocomplete')]//h5[starts-with(@class, 'card-title')])[1]`,//completeEnrolledCourse: `#carousel-completed h5[class^='card-title']`,
+    enrolledCourseCode: `//span[contains(text(),'code:')]/following-sibling::span`,
 
-        //Video Content:-
-        endVideoTime: `//span[text()='0:00' and @class='vjs-remaining-time-display']`,
+    //Video Content:-
+    endVideoTime: `//span[text()='0:00' and @class='vjs-remaining-time-display']`,
 
-        //MyLearning:-
-        noResultFound: `//div[text()='No results found.']`,
-        courseIncompleteText: `//div[text()='In complete']`,
-        mylearningViewClassDetails: (clsTitle: string) => `(//h5[text()='${clsTitle}'])`, //To navigate to class details
-        mandatoryText: `//div[text()='Mandatory']`,
-        contentPlayBtn: `(//i[@aria-label='Click to play'])[1]`,
+    //MyLearning:-
+    noResultFound: `//div[text()='No results found.']`,
+    courseIncompleteText: `//div[text()='In complete']`,
+    mylearningViewClassDetails: (clsTitle: string) => `(//h5[text()='${clsTitle}'])`, //To navigate to class details
+    mandatoryText: `//div[text()='Mandatory']`,
+    contentPlayBtn: `(//i[@aria-label='Click to play'])[1]`,
 
-        //admin enrollments:-
-        noResultFound_Mylearning: `//div[text()='No results found.']`,
+    //admin enrollments:-
+    noResultFound_Mylearning: `//div[text()='No results found.']`,
 
-        //myLearningClassCancel:-
-        mylearningClassCancel: ` //span[text()='Cancel Enrollment']`,
-        mylearningcancelreason: `//input[@id='cancel_reason']`,
-        mylearningyesbutton: `//button[text()='Yes']`,
-        mylearningcancelverification: `//span[text()='Canceled']`,
-        mandatoryAlertMessage: `//span[text()='This training is Mandatory and cannot be canceled']`,
+    //myLearningClassCancel:-
+    mylearningClassCancel: ` //span[text()='Cancel Enrollment']`,
+    mylearningcancelreason: `//input[@id='cancel_reason']`,
+    mylearningyesbutton: `//button[text()='Yes']`,
+    mylearningcancelverification: `//span[text()='Canceled']`,
+    mandatoryAlertMessage: `//span[text()='This training is Mandatory and cannot be canceled']`,
 
-        //myLearningChangeClass:-
-        mylearningChangeClass: `//span[text()='Change Class/Instance']`,
+    //myLearningChangeClass:-
+    mylearningChangeClass: `//span[text()='Change Class/Instance']`,
 
-        //click course on details page for prerequisite
-        clickCourseDetailsPage: (course: string) => `//span[contains(@class,'field_title') and text()='${course}']`,
+    //click course on details page for prerequisite
+    clickCourseDetailsPage: (course: string) => `//span[contains(@class,'field_title') and text()='${course}']`,
 
-        //Confirmation popup for Equivalence course
-        confimationPopupEql: (option: string) => `//span[contains(text(),'You have been granted completion')]//following::button[text()='${option}']`,
-        grantedMessageForEql: `//span[@class='rawtxt']//span[2]`,
+    //Confirmation popup for Equivalence course
+    confimationPopupEql: (option: string) => `//span[contains(text(),'You have been granted completion')]//following::button[text()='${option}']`,
+    grantedMessageForEql: `//span[@class='rawtxt']//span[2]`,
 
-        //Prerequisite mandatory message
-        prerequisiteMandatoryMessage: `//div[contains(@class,'ustify-content-center information_text')]//span`,
+    //Prerequisite mandatory message
+    prerequisiteMandatoryMessage: `//div[contains(@class,'ustify-content-center information_text')]//span`,
 
-        //Optional courses
-        optionalCourseLabel: `//div[text()='Optional']`,
-        firstOptionalCourse: `(//div[text()='Optional'])[1]`,
-        optionalCourseRadioButton: `//div[text()='Optional']//following::div[contains(@class,'custom-radio')]`,
-        enrollButtonLP: `//button[contains(text(),'Enroll')]`,
+    //Optional courses
+    optionalCourseLabel: `//div[text()='Optional']`,
+    firstOptionalCourse: `(//div[text()='Optional'])[1]`,
+    optionalCourseRadioButton: `//div[text()='Optional']//following::div[contains(@class,'custom-radio')]`,
+    enrollButtonLP: `//button[contains(text(),'Enroll')]`,
 
-        //verify thumbnail img
-        thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
+    prerequisiteMandatoryMessageFromAdminSide: `//div[contains(@class,'align-items-center justify-content-center text')]//span`,
+    //verify thumbnail img
+    thumbnailImgSrc: `//div[contains(@class,'card-body')]//img`,
 
-        //content play based on name
-        contentPlay: (contentName: string) => `(//div[text()='${contentName}']//following::i[@aria-label='Click to play'])[1]`,
-        statusOnDetailsPage: `//div[contains(@class,'card-header')]//span`,
+    //content play based on name
+    contentPlay: (contentName: string) => `(//div[text()='${contentName}']//following::i[@aria-label='Click to play'])[1]`,
+    statusOnDetailsPage: `//div[contains(@class,'card-header')]//span`,
 
-        //verifyTPOverallProgress:-
-        tpOverallProgressPercentage: `(//div[text()='About This Course']//following::span[contains(@class,'progress__value')])[1]`,
+    //verifyTPOverallProgress:-
+    tpOverallProgressPercentage: `(//div[text()='About This Course']//following::span[contains(@class,'progress__value')])[1]`,
 
-        //To verify TP course status whether completed/incompleted
-        tpCourseStatus: (data: string, status: string) => `(//span[contains(text(),'${data}')]//following::div[text()='${status}'])[1]`,
+    //To verify TP course status whether completed/incompleted
+    tpCourseStatus: (data: string, status: string) => `(//span[contains(text(),'${data}')]//following::div[text()='${status}'])[1]`,
 
-        //Verifying attached content progress value in course details page
-        contentProgressValue: (data: string) => `(//div[text()='${data}']//following::span[contains(@class,'progress__value')])[1]`,
+    //Verifying attached content progress value in course details page
+    contentProgressValue: (data: string) => `(//div[text()='${data}']//following::span[contains(@class,'progress__value')])[1]`,
 
-        //catalog items
-        learnWithinMins: `//div[text()="Learn within 30 mins"]`,
-        watchItAgain: `//div[text()="Watch it again"]`,
-        //verifyContentValdity
-        ContentExpireCheck: `//span[text()=" can no longer be launched as the validity has expired or there are no attempts left."]`,
+    //catalog items
+    learnWithinMins: `//div[text()="Learn within 30 mins"]`,
+    watchItAgain: `//div[text()="Watch it again"]`,
+    //verifyContentValdity
+    ContentExpireCheck: `//span[text()=" can no longer be launched as the validity has expired or there are no attempts left."]`,
 
-        //Bookmark Functionality:-
-        specificContentBookmark: (clsName: string) => `//div[text()='${clsName}']/following::i[contains(@id,'bookmark')]`,
-        // classBookmark:`//div[@id='enrolled_catalog']//span/i[@aria-label='Bookmark']`
-        classBookmark: (clsName: string) => `(//span[text()='${clsName}']//following::i[contains(@aria-label,'Bookmark')])[1]`,
+    //Bookmark Functionality:-
+    specificContentBookmark: (clsName: string) => `//div[text()='${clsName}']/following::i[contains(@id,'bookmark')]`,
+    // classBookmark:`//div[@id='enrolled_catalog']//span/i[@aria-label='Bookmark']`
+    classBookmark: (clsName: string) => `(//span[text()='${clsName}']//following::i[contains(@aria-label,'Bookmark')])[1]`,
 
-        //Verifying no seats left message on leaner side
-        noSeatLeftPopupMsg: `//div[contains(@class,'information_text')]//span`,
-        seatFullOnDetailsPage: (courseName: string) => `(//span[text()='${courseName}']//following::span[contains(@class,'rawtxt ')])[1]`,
-        selectCourseRadioBtn: (courseName: string) => `(//span[text()='${courseName}']//following::div[contains(@class,'custom-radio')])[1]`,
-        //for selecting second course in program module
-        clickNextCourse: (data: string) => `//span[contains(text(),'${data}')]`,
-        //recurring session creation
-        sessionConflictPopup: `//span[contains(text(),'Session has conflict')]`,
+    //Verifying no seats left message on leaner side
+    noSeatLeftPopupMsg: `//div[contains(@class,'information_text')]//span`,
+    seatFullOnDetailsPage: (courseName: string) => `(//span[text()='${courseName}']//following::span[contains(@class,'rawtxt ')])[1]`,
+    selectCourseRadioBtn: (courseName: string) => `(//span[text()='${courseName}']//following::div[contains(@class,'custom-radio')])[1]`,
+    //for selecting second course in program module
+    clickNextCourse: (data: string) => `//span[contains(text(),'${data}')]`,
+    //recurring session creation
+    sessionConflictPopup: `//span[contains(text(),'Session has conflict')]`,
 
-        DCLNotEnrolledMessage: "//span[contains(text(), 'You are not enrolled in the class')]",
+    DCLNotEnrolledMessage: "//span[contains(text(), 'You are not enrolled in the class')]",
 
-            clickCourse:(data: string) =>`(//div[text()='${data}'])[1]`,
+    clickCourse: (data: string) => `(//div[text()='${data}'])[1]`,
 
-            costcenterValue:`//input[@id='cc']`,
+    costcenterValue: `//input[@id='cc']`,
 
-            // Verify label selector for any text verification
+    prerequisiteWarningText: `//span[@class='ms-2']`,
+
+    clickPrerequisite: (prerequisitename: string) => `//div[text()='modules/courses']/following::span[text()='${prerequisitename}']`,
+    clickMainCourse: (coursename: string) => `(//span[contains(text(),'${coursename}')])[1]`,
+
+    verifyCompletedMaincourse: (maincourse: string) => `//h5[text()='${maincourse}']`,
+
+    popupMessageTpWhenHavePrereq: `//span[contains(text(),'Prerequisite training(s) need to be completed')]`,
+
+    verifyPopupWhenCourseHavePrerequisiteWhileAdding: `//span[text()='Course(s) added have Prerequisites Associated with them. These Prerequisites have also been added to the Training Structure. You can remove the Prerequisite Course by clicking on the delete icon']`,
+
+    score: `//div[contains(text(),'assessment.')]/following-sibling::div[contains(@class,'mb')]`,
+    section2: `//*[text()='Section 2'] | //li//*[contains(text(),'Section 2')]`,
+
+    retakeAssessmentBtn: `//button[text()='Retake']`,
+
+    reviewAssessmentBtn: `//span[text()='review']`,
+
+    answerFeedbackText: `//div[@class='rawtxt text-capitalize']`,
+
+    ceuUnitOnDetailsPage: `(//div[text()='Continuing Education Units (CEU)']/following::span[@class='me-3'])[2]`,
+
+    surveyLaunchBtn: `//span[text()='Launch']`,
+
+    // Verify label selector for any text verification
     verifyLabel: (text: string) => `//div[text()='${text}']`,
-            closeCertificateIcon:`//div[contains(@class,'modal-header')]/i`,
+    closeCertificateIcon: `//div[contains(@class,'modal-header')]/i`,
 
-        // Dedicated to TP selectors
-        dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
-        enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
-        enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
+    // Dedicated to TP selectors
+    dedicatedToTPMessage: `//div[contains(text(),'dedicated to training plan') or contains(text(),'Dedicated to Training Plan')]`,
+    enrollButtonDisabled: `//button[@disabled and contains(text(),'Enroll')]`,
+    enrollButtonHidden: `//button[contains(text(),'Enroll') and contains(@style,'display: none')]`,
+    ML_learningpathAndcertification: `//a[text()='Learning Path and Certification']`,
+    addToPlaylist: (content: string) => `//div[text()='${content}']//following::i[contains(@class,'fa-list')]`,
+    createNewPlayList:`//span[text()='Create-New-Playlist']`,
+    existingPlayList:`//span[text()='Add to existing Playlist']`, 
+    playlistNameInput:`#playlistname`,
+    saveBtn:`//button[text()='Save']`,
+    selectPlayList: (playlistName: string) => `(//div[text()='${playlistName}']//following::i)[1]`,
+    closePlayListIcon: `//i[contains(@class,'ms-auto fa-swap-opacity')]`,
+    contentAlreadyAddedMessage: `//div[contains(@class,'information_text')]//span[contains(text(),'already included in the playlist')]`,
 
-        // Learning History Status Verification
-        learningHistoryLink: `//div[text()='Learning History']`,
-        learningHistoryTab: (type: string) => `//a[text()='${type}']`,
-        learningHistoryCourseTab: (type: string) => `(//a[text()='${type}'])[2]`,
-        learningHistorySearchInput: `//input[@id='exp-searchlnr-search-field']`,
-        learningHistoryStatus: (courseName: string, status: string) => `//h5[text()='${courseName}']//following::div[contains(text(),'${status}')]`,
 
-              };
+  };
   constructor(page: Page, context: BrowserContext) {
     super(page, context);
   }
@@ -296,7 +349,7 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   //Verifying attached content progress value in course details page
-  async verifyContentProgressValue(contentName: string, progress: string) {
+  async verifyContentProgressValue(contentName: string, progress?: string) {
     await this.wait("minWait");
     await this.verification(
       this.selectors.contentProgressValue(contentName),
@@ -357,6 +410,67 @@ export class CatalogPage extends LearnerHomePage {
       );
     }
   }
+
+  public async verifyPrerequisiteMandatoryMessageFromAdmin(data?: string) {
+    if (data == "Training Plan") {
+      await this.verification(
+        this.selectors.prerequisiteMandatoryMessageFromAdminSide,
+        `Enrollment to "" for the selected learners cannot be done due to the following reason: "Prerequisite training(s) need to be completed".`
+      );
+      await this.click(
+        this.selectors.OKBtnFromPopup,
+        "Prerequisite Mandatory Message",
+        "Button"
+      );
+    } else {
+      await this.verification(
+        this.selectors.prerequisiteMandatoryMessageFromAdminSide,
+        `Enrollment to "" for the selected learners cannot be done due to the following reason: "Prerequisite training(s) need to be completed".`
+      );
+      await this.click(
+        this.selectors.OKBtnFromPopup,
+        "Prerequisite Mandatory Message",
+        "Button"
+      );
+    }
+  }
+
+
+  async verifyPopupMessageWithoutCompletingPrerequisite() {
+    const verifyPrereqMsg = this.page.locator(this.selectors.popupMessageTpWhenHavePrereq);
+    if (await verifyPrereqMsg.isVisible()) {
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
+    }
+    else {
+      console.log("No prerequisite popup message displayed/the prerequisite is already completed");
+    }
+
+  }
+
+  async verifyThePopupMessageWhenCourseHavePrerequisite() {
+    const verifyPopupWhenCourseHavePrereq = this.page.locator(this.selectors.verifyPopupWhenCourseHavePrerequisiteWhileAdding);
+    if (await verifyPopupWhenCourseHavePrereq.isVisible()) {
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
+    }
+    else {
+      console.log("No popup message displayed while adding the course with prerequisite");
+    }
+  }
+
+  async verifyPopupMessageWithoutCompletingPrerequisiteFromLearnerSide() {
+    const popupMessage = this.page.locator(this.selectors.prerequisiteMandatoryMessageFromAdminSide);
+    if (await popupMessage.isVisible()) {
+      await this.validateElementVisibility(this.selectors.OKBtnFromPopup, "OK Button From Popup");
+      await this.click(this.selectors.OKBtnFromPopup, "OK Button From Popup", "Button");
+    }
+    else {
+      console.log("No popup message displayed while adding the course with prerequisite without completing prerequisite");
+    }
+  }
+
+
 
   //To register Prereq/Equilance course from the course details page.
   public async clickCourseOnDetailsPage(courseName: string) {
@@ -653,49 +767,49 @@ export class CatalogPage extends LearnerHomePage {
   async clickSelectcourse(course: string) {
     const maxRetries = 3;
     const retryDelay = 2000; // 2 seconds
-    
+
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`🔄 Attempt ${attempt}/${maxRetries} - Selecting course instance for: ${course}`);
-        
+
         await this.wait("mediumWait");
         await this.spinnerDisappear();
-        
+
         // Wait for page to stabilize
         await this.page.waitForLoadState('domcontentloaded');
-        
+
         // Strategy 1: Try with exact course name
         const exactCourseResult = await this.trySelectExactCourse(course);
         if (exactCourseResult) {
           console.log(`✅ Successfully selected course instance on attempt ${attempt}`);
           return;
         }
-        
+
         // Strategy 2: Try with generic selectable instances
         const genericResult = await this.trySelectGenericInstance();
         if (genericResult) {
           console.log(`✅ Successfully selected generic instance on attempt ${attempt}`);
           return;
         }
-        
+
         // Strategy 3: Try with alternative selectors
         const alternativeResult = await this.tryAlternativeSelectors(course);
         if (alternativeResult) {
           console.log(`✅ Successfully selected using alternative selector on attempt ${attempt}`);
           return;
         }
-        
+
         // If we reach here, this attempt failed
         if (attempt < maxRetries) {
           console.log(`⚠️ Attempt ${attempt} failed, retrying in ${retryDelay}ms...`);
           await this.page.waitForTimeout(retryDelay);
-          
+
           // Refresh the page state before retry
           await this.page.reload();
           await this.wait("mediumWait");
           await this.spinnerDisappear();
         }
-        
+
       } catch (error) {
         console.log(`❌ Error on attempt ${attempt}: ${error.message}`);
         if (attempt < maxRetries) {
@@ -704,7 +818,7 @@ export class CatalogPage extends LearnerHomePage {
         }
       }
     }
-    
+
     // All attempts failed
     console.log(`❌ Failed to select course instance after ${maxRetries} attempts for: ${course}`);
     throw new Error(`Unable to select course instance for "${course}" after ${maxRetries} attempts`);
@@ -716,34 +830,34 @@ export class CatalogPage extends LearnerHomePage {
   private async trySelectExactCourse(course: string): Promise<boolean> {
     try {
       // Wait for the selector with a reasonable timeout
-      await this.page.waitForSelector(this.selectors.courseToEnroll(course), { 
-        timeout: 5000 
+      await this.page.waitForSelector(this.selectors.courseToEnroll(course), {
+        timeout: 5000
       });
-      
+
       const count = await this.page
         .locator(this.selectors.courseToEnroll(course))
         .count();
-      
+
       console.log(`Found ${count} instances with exact course name: ${course}`);
-      
+
       if (count > 0) {
         // Select a random instance or first one
         const selectedIndex = Math.floor(Math.random() * count) + 1;
         await this.wait("minWait");
-        
+
         const instanceSelector = this.selectors.selectCourse(course, selectedIndex);
         await this.page.locator(instanceSelector).waitFor({ state: 'visible', timeout: 5000 });
-        
+
         await this.click(
           instanceSelector,
           `Course Instance ${selectedIndex}: ${course}`,
           "Checkbox"
         );
-        
+
         console.log(`✓ Selected instance ${selectedIndex} of course: ${course}`);
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.log(`Strategy 1 failed: ${error.message}`);
@@ -757,18 +871,18 @@ export class CatalogPage extends LearnerHomePage {
   private async trySelectGenericInstance(): Promise<boolean> {
     try {
       console.log("Trying generic instance selection...");
-      
+
       const genericSelectors = [
         `//i[contains(@class,'fa-circle icon') and not(contains(@class, 'disabled'))]`,
         `//i[contains(@class,'fa-circle icon')]`,
         `//input[@type='radio' and not(@disabled)]//following-sibling::i`,
         `//div[contains(@class,'custom-radio')]//i`
       ];
-      
+
       for (const selector of genericSelectors) {
         const count = await this.page.locator(selector).count();
         console.log(`Found ${count} instances with selector: ${selector}`);
-        
+
         if (count > 0) {
           // Check if the first instance is clickable
           const firstInstance = this.page.locator(`(${selector})[1]`);
@@ -783,7 +897,7 @@ export class CatalogPage extends LearnerHomePage {
           }
         }
       }
-      
+
       return false;
     } catch (error) {
       console.log(`Strategy 2 failed: ${error.message}`);
@@ -797,7 +911,7 @@ export class CatalogPage extends LearnerHomePage {
   private async tryAlternativeSelectors(course: string): Promise<boolean> {
     try {
       console.log("Trying alternative selectors...");
-      
+
       // Alternative selectors for course selection
       const alternativeSelectors = [
         `//span[contains(text(),'${course}')]//ancestor::div[contains(@class,'card')]//i[contains(@class,'fa-circle')]`,
@@ -806,7 +920,7 @@ export class CatalogPage extends LearnerHomePage {
         `//*[contains(text(),'${course}')]//ancestor::*[contains(@class,'course')]//i[contains(@class,'icon')]`,
         `//label[contains(text(),'${course}')]//i`
       ];
-      
+
       for (const selector of alternativeSelectors) {
         try {
           const elements = await this.page.locator(selector).all();
@@ -823,7 +937,7 @@ export class CatalogPage extends LearnerHomePage {
           continue;
         }
       }
-      
+
       return false;
     } catch (error) {
       console.log(`Strategy 3 failed: ${error.message}`);
@@ -851,23 +965,23 @@ export class CatalogPage extends LearnerHomePage {
    */
   async clickFirstOptionalCourseAndEnroll() {
     console.log(`🔄 Looking for optional courses to enroll`);
-    
+
     await this.wait("minWait");
-    
+
     // First click on the first optional course element
     const firstOptionalCourse = this.page.locator(this.selectors.firstOptionalCourse);
     const optionalCourseCount = await firstOptionalCourse.count();
-    
+
     if (optionalCourseCount > 0) {
       console.log(`Found ${optionalCourseCount} optional course(s)`);
-      
+
       // Step 1: Click the first optional course
       await firstOptionalCourse.scrollIntoViewIfNeeded();
       await this.wait("minWait");
       await firstOptionalCourse.click();
       await this.wait("minWait");
       console.log(`✅ Clicked on first optional course`);
-      
+
       // Step 2: Click the radio button to select the first optional course
       const radioButton = this.page.locator(this.selectors.optionalCourseRadioButton).first();
       await radioButton.scrollIntoViewIfNeeded();
@@ -875,7 +989,7 @@ export class CatalogPage extends LearnerHomePage {
       await radioButton.click();
       await this.wait("minWait");
       console.log(`✅ Selected first optional course via radio button`);
-      
+
       // Step 3: Click the enroll button
       const enrollButton = this.page.locator(this.selectors.enrollButtonLP);
       await enrollButton.scrollIntoViewIfNeeded();
@@ -884,7 +998,7 @@ export class CatalogPage extends LearnerHomePage {
       await this.wait("minWait");
       await this.spinnerDisappear();
       console.log(`✅ Clicked enroll button for optional course`);
-      
+
       console.log(`✅ Successfully enrolled in first optional course`);
     } else {
       console.log(`⚠️ No optional courses found`);
@@ -912,7 +1026,7 @@ export class CatalogPage extends LearnerHomePage {
   }
 
   async submitRequest() {
-        await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.click(this.selectors.submitRequest, "Submit Request", "Button");
     await this.click(this.selectors.closeBtn, "Close", "Button");
   }
 
@@ -931,6 +1045,67 @@ export class CatalogPage extends LearnerHomePage {
     await this.click(this.selectors.closeBtn, "Close", "Button");
   }
 
+  /**
+   * Click Manager Approval Required icon for a specific course
+   * @param courseName - The name of the course
+   */
+  async clickManagerApprovalRequiredIcon(courseName: string) {
+    await this.validateElementVisibility(
+      this.selectors.managerApprovalRequiredIcon(courseName),
+      "Manager Approval Required Icon"
+    );
+    await this.click(
+      this.selectors.managerApprovalRequiredIcon(courseName),
+      "Manager Approval Required",
+      "Icon"
+    );
+  }
+
+  /**
+   * Select manager on Request Approval popup
+   * @param managerName - The name of the manager to select
+   */
+  async selectManagerOnRequestApprovalPopup(managerName: string) {
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.selectManagerDropdown,
+      "Select Manager",
+      "Dropdown"
+    );
+    await this.wait("minWait");
+    await this.click(
+      this.selectors.selectManagerOption(managerName),
+      managerName,
+      "Option"
+    );
+  }
+
+  /**
+   * Submit request and verify success popup
+   */
+  async submitRequestAndVerify() {
+    await this.click(this.selectors.submitRequest, "Submit Request", "Button");
+    await this.wait("minWait");
+    await this.verification(
+      this.selectors.requestSentPopup,
+      "Your request has been sent!"
+    );
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
+
+  /**
+   * Verify approved successfully popup and close
+   */
+  async verifyApprovedSuccessfully() {
+    await this.wait("minWait");
+    await this.verification(
+      this.selectors.approvedSuccessPopup,
+      "Approved Successfully! "
+    );
+    await this.click(this.selectors.closeBtn, "Close", "Button");
+  }
+
+
   async clickRecertify() {
     await this.validateElementVisibility(
       this.selectors.recertifyBtn,
@@ -941,11 +1116,13 @@ export class CatalogPage extends LearnerHomePage {
       this.selectors.viewCertificateBtn,
       "View Certificate"
     );
-    await this.page
-      .locator(this.selectors.completedVideo)
-      .scrollIntoViewIfNeeded({ timeout: 5000 });
-    await this.wait("mediumWait");
+    // await this.page
+    //   .locator(this.selectors.completedVideo)
+    //   .scrollIntoViewIfNeeded({ timeout: 5000 });
+    // await this.wait("mediumWait");
   }
+
+
 
   //Recertification button click:-
   async clickRecertifyButton() {
@@ -956,7 +1133,9 @@ export class CatalogPage extends LearnerHomePage {
     await this.click(this.selectors.recertifyBtn, "Recertify", "Button");
     //await this.page.waitForTimeout(20000)
     await this.wait("maxWait");
-    await this.page.reload(); //Added by Arivu temporarily to avoid the error "Recertification button is not clickable"
+    await this.wait("maxWait");
+
+    // await this.page.reload(); //Added by Arivu temporarily to avoid the error "Recertification button is not clickable"
     await this.page.waitForLoadState("load");
   }
   // async clickLaunchButton() {
@@ -998,26 +1177,26 @@ export class CatalogPage extends LearnerHomePage {
     await this.page.click(playButton, { force: true });
     await this.page.waitForTimeout(20000);
   }
-async inProgress() {
-  await this.page.waitForLoadState("load");
-  await this.spinnerDisappear();
+  async inProgress() {
+    await this.page.waitForLoadState("load");
+    await this.spinnerDisappear();
 
-  let content = this.page.locator(this.selectors.contentLabel);
-  if (await content.isVisible({ timeout: 20000 })) {
-    await content.scrollIntoViewIfNeeded();
+    let content = this.page.locator(this.selectors.contentLabel);
+    if (await content.isVisible({ timeout: 20000 })) {
+      await content.scrollIntoViewIfNeeded();
+    }
+
+    const playButton = this.page.locator("//button[@title='Play Video']");
+    await playButton.waitFor({ state: "visible", timeout: 20000 });
+
+    // FIRST attempt – normal click
+    await playButton.click({ force: true });
+    await this.page.waitForTimeout(5000);
+
+    await this.page.locator(this.selectors.saveLearningStatus).click();
+    await this.wait("mediumWait");
+
   }
-
-  const playButton = this.page.locator("//button[@title='Play Video']");
-  await playButton.waitFor({ state: "visible", timeout: 20000 });
-
-  // FIRST attempt – normal click
-  await playButton.click({ force: true });
-  await this.page.waitForTimeout(5000);
-
-  await this.page.locator(this.selectors.saveLearningStatus).click();
-  await this.wait("mediumWait");
-
-}
 
 
   async clickSecondaryCourse(course: string, text?: string) {
@@ -1041,6 +1220,7 @@ async inProgress() {
 
   async saveLearningStatus() {
     await this.click(this.selectors.saveLearningStatus, "save", "button");
+
     //await this.validateElementVisibility(this.selectors.verificationEnrollment, "button");
     await this.spinnerDisappear();
     await this.page.keyboard.press("PageDown");
@@ -1061,6 +1241,8 @@ async inProgress() {
       if (await completed.isVisible()) {
         await completed.scrollIntoViewIfNeeded();
         console.log("The Video Has Completed");
+        await this.wait("minWait");
+        await this.click(this.selectors.saveLearningStatus, "save", "button");
       } else {
         await this.clickLaunchButton();
         await this.saveLearningStatus();
@@ -1121,14 +1303,14 @@ async inProgress() {
     try {
       // First try to play and wait for video completion
       await this.playAndWaitForVideo();
-      
+
       // Then save the learning status
       await this.saveLearningStatusOnly();
-      
+
       console.log("✓ Course content completed successfully");
     } catch (error) {
       console.log("ℹ INFO: Content completion - may require manual interaction or different content type");
-      
+
       // Fallback: just save learning status
       await this.saveLearningStatusOnly();
     }
@@ -1142,19 +1324,19 @@ async inProgress() {
   async completePostAssessment(assessmentName: string) {
     try {
       console.log(`🎯 Starting post-assessment workflow for: ${assessmentName}`);
-      
+
       // Step 1: Launch the post-assessment using dynamic selector
       await this.launchPostAssessment(assessmentName);
 
       await this.wait("maxWait");
 
-      
+
       // Step 2: Complete assessment questions
       await this.writeContent();
-      
+
       // Step 3: Submit assessment answers
       await this.submitMyAnswer();
-      
+
       console.log(`✅ Post-assessment completed successfully: ${assessmentName}`);
     } catch (error) {
       console.log(`⚠ Warning: Post-assessment completion encountered issues for "${assessmentName}": ${error.message}`);
@@ -1189,7 +1371,7 @@ async inProgress() {
       } catch (error) {
         console.log(`⚠️ Dynamic selector failed for assessment: ${assessmentName}`);
       }
-      
+
       // Alternative strategy: Try variations of the assessment name pattern
       const alternativeSelectors = [
         `(//span[contains(text(),'${assessmentName}')]//following::i)[1]`,
@@ -1198,7 +1380,7 @@ async inProgress() {
         `(//div[contains(text(),'${assessmentName.substring(0, 20)}')]//following::i)[1]`, // First 20 chars in case of truncation
         `//div[contains(text(),'${assessmentName}')]//parent::div//following-sibling::div//i`
       ];
-      
+
       console.log(`🔄 Trying alternative selectors for assessment: ${assessmentName}`);
       for (const selector of alternativeSelectors) {
         try {
@@ -1213,7 +1395,7 @@ async inProgress() {
           continue; // Try next selector
         }
       }
-      
+
       // Fallback strategy: Use generic selectors if specific assessment not found
       console.log(`🔄 Trying fallback generic selectors...`);
       const fallbackSelectors = [
@@ -1223,7 +1405,7 @@ async inProgress() {
         "//span[contains(text(),'Survey')]//parent::div//span[text()='Launch']",
         "//i[contains(@class,'fa-file')]//parent::div//following-sibling::div//i"
       ];
-      
+
       for (const selector of fallbackSelectors) {
         try {
           const element = this.page.locator(selector);
@@ -1237,9 +1419,9 @@ async inProgress() {
           continue;
         }
       }
-      
+
       throw new Error(`No post-assessment launch button found for: ${assessmentName}`);
-      
+
     } catch (error) {
       console.log(`❌ Error launching post-assessment "${assessmentName}": ${error.message}`);
       throw error;
@@ -1254,6 +1436,8 @@ async inProgress() {
   }
 
   async searchMyLearning(data: string) {
+    await this.wait("minWait");
+    await this.page.locator(this.selectors.searchlearningInput).scrollIntoViewIfNeeded();
     const searchSelector = this.selectors.searchlearningInput;
     await this.typeAndEnter(searchSelector, "Search Field", data);
     //await this.keyboardAction(searchSelector, "Enter", "Input", "Search Field");
@@ -1304,53 +1488,22 @@ async inProgress() {
     const completedCourseSelector = this.selectors.completedCourse(name);
     await this.mouseHover(completedCourseSelector, "Text");
   }
-
-  /**
-   * Verify course/certification/learning path status in Learning History
-   * @param type - Type of learning item: "Course" | "Certification" | "Learning Path"
-   * @param courseName - Name of the course/certification/learning path
-   * @param status - Expected status: "Completed" | "Canceled"
-   */
-  async statusVerification(
-    type: "Course" | "Certification" | "Learning Path",
-    courseName: string,
-    status: "Completed" | "Canceled"
-  ) {
-    console.log(`🔍 Starting status verification for ${type}: "${courseName}" - Expected status: ${status}`);
-
-    // 1️⃣ Scroll & click Learning History
-    await this.page.locator(this.selectors.learningHistoryLink).scrollIntoViewIfNeeded();
-    await this.click(this.selectors.learningHistoryLink, "Learning History", "Link");
-    console.log("✅ Clicked Learning History");
-
-    // 2️⃣ Click tab based on type
-    if (type === "Course") {
-      await this.click(this.selectors.learningHistoryCourseTab(type), `${type} Tab`, "Tab");
-    } else {
-      await this.click(this.selectors.learningHistoryTab(type), `${type} Tab`, "Tab");
-    }
-    console.log(`✅ Clicked ${type} tab`);
-
-    // 3️⃣ Search by course / LP / certification name
-    await this.typeAndEnter(
-      this.selectors.learningHistorySearchInput,
-      "Learning History Search",
-      courseName
-    );
+  async clickEnrollAgain() {
     await this.wait("minWait");
-    console.log(`✅ Searched for: ${courseName}`);
+    await this.page.locator("//button[text()='Enroll Again']").click();
+    await this.wait("mediumWait");
+  }
 
-    // 4️⃣ Verify status for that item
-    await this.validateElementVisibility(
-      this.selectors.learningHistoryStatus(courseName, status),
-      `${type} Status: ${status}`
-    );
-    await expect(
-      this.page.locator(this.selectors.learningHistoryStatus(courseName, status))
-    ).toBeVisible();
+  async verifyCourseNotVisibleInCatalog(courseName: string) {
+    const courseSelector = `(//div[@id='learner_catalog']//span[text()='${courseName}'])[1]`;
+    await expect(this.page.locator(courseSelector)).not.toBeVisible();
+  }
 
-    console.log(`✅ ${type} → "${courseName}" status verified as ${status}`);
-    await this.click(`//h5[text()='${courseName}']`, "data", "type");
+  async verifyRecertifyButtonNotVisible() {
+    await this.wait("minWait");
+    const recertifyButton = this.page.locator(this.selectors.recertifyBtn);
+    await expect(recertifyButton).not.toBeVisible();
+    console.log("✅ Verified: Recertify button is not visible");
   }
 
   async verifyExpiredContent() {
@@ -1492,7 +1645,7 @@ async inProgress() {
   }
 
   async clickViewCertificate() {
-     await this.page.locator(this.selectors.viewCertificateBtn).scrollIntoViewIfNeeded()
+    await this.page.locator(this.selectors.viewCertificateBtn).scrollIntoViewIfNeeded()
     await this.mouseHover(
       this.selectors.viewCertificateBtn,
       "View Certificate"
@@ -1524,7 +1677,7 @@ async inProgress() {
     } else {
       throw new Error(`❌ Learner name "${learnerName}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
     }
-    
+
     // Verify training title is visible in certificate
     const titleVisible = modalText.includes(trainingTitle);
     if (titleVisible) {
@@ -1532,7 +1685,7 @@ async inProgress() {
     } else {
       throw new Error(`❌ Training title "${trainingTitle}" not found in certificate. Certificate contains: ${modalText.substring(0, 200)}`);
     }
-    
+
     console.log("✅ Certificate content validated successfully");
   }
 
@@ -1542,23 +1695,23 @@ async inProgress() {
       this.selectors.downloadPdfBtn,
       "Download as PDF Button"
     );
-    
+
     const [download] = await Promise.all([
       this.page.waitForEvent('download'),
       this.click(this.selectors.downloadPdfBtn, "Download as PDF", "Button")
     ]);
-    
+
     const fileName = download.suggestedFilename();
     const downloadPath = `test-results/${fileName}`;
     await download.saveAs(downloadPath);
-    
+
     console.log(`✅ Certificate PDF downloaded: ${fileName}`);
     return downloadPath;
   }
 
   async verifyPDFFile(pdfPath: string) {
     const fs = require('fs');
-    
+
     if (!fs.existsSync(pdfPath)) {
       throw new Error(`❌ PDF file not found at: ${pdfPath}`);
     }
@@ -1709,6 +1862,9 @@ async inProgress() {
     }
   }
 
+
+
+
   public async negativeWriteContent() {
     await this.wait("mediumWait");
     let checkBox = this.page.locator(this.selectors.checkBox);
@@ -1780,11 +1936,11 @@ async inProgress() {
         for (let index = 0; index < 1; index++) {
           await starIcon.nth(randomIndex1).click();
           await this.wait("minWait");
+        }
       }
     }
-  }
 
-}
+  }
   async clickSubmitSurvey() {
     let submitSurvey = this.page.locator(this.selectors.sumbitSurveyBtn);
     if (await submitSurvey.isVisible()) {
@@ -1994,7 +2150,7 @@ async inProgress() {
   async clickOnNextCourse(data: string) {
     await this.wait("minWait");
     //const courseName=data.toLowerCase()
-      await this.page
+    await this.page
       .locator(this.selectors.clickNextCourse(data))
       .scrollIntoViewIfNeeded();
     await this.click(
@@ -2011,23 +2167,23 @@ async inProgress() {
    */
   async verifyEnforceSequenceErrorMessage() {
     console.log(`🔄 Verifying enforce sequence error message`);
-    
+
     await this.wait("minWait");
     const errorMessage = this.page.locator(this.selectors.enforceSequenceErrorMessage);
-    
+
     await this.validateElementVisibility(
       this.selectors.enforceSequenceErrorMessage,
       "Enforce Sequence Error Message"
     );
-    
+
     const messageText = await errorMessage.innerText();
     console.log(`📋 Error message displayed: "${messageText}"`);
-    
+
     await this.verification(
       this.selectors.enforceSequenceErrorMessage,
       "You need to complete the previous content to launch this content."
     );
-    
+
     console.log(`✅ Enforce sequence error message verified successfully`);
   }
 
@@ -2052,7 +2208,7 @@ async inProgress() {
   async clickCourseInMyLearning(coursename: string) {
     await this.wait("minWait");
     await this.click(
-      this.selectors.toCompleteORCompleteEnrolledCourse,
+      this.selectors.verifyCompletedMaincourse(coursename),
       coursename,
       "Link"
     );
@@ -2063,7 +2219,7 @@ async inProgress() {
   async verifyExpiredCourse(coursename: string) {
     await this.wait("minWait");
     console.log(`🔍 Verifying expired status for course: ${coursename}`);
-    
+
     // // First, navigate to the course details
     // await this.click(
     //   this.selectors.toCompleteORCompleteEnrolledCourse,
@@ -2071,20 +2227,20 @@ async inProgress() {
     //   "Link"
     // );
     // await this.spinnerDisappear();
-    
+
     // Wait for page to load and verify expired status
     // await this.wait("mediumWait");
-    
+
     // Check for expired status indicator
     const expiredSelector = `//span[text()='Expired']`;
-    
+
     try {
       await this.validateElementVisibility(expiredSelector, "Expired Status");
       await this.verification(expiredSelector, "Expired");
       console.log(`✅ Course "${coursename}" verified as Expired`);
     } catch (error) {
       console.log(`❌ Course "${coursename}" does not show Expired status`);
-      
+
       // Additional check for overdue status as fallback
       try {
         await this.validateElementVisibility(this.selectors.overDueText, "Overdue Status");
@@ -2101,7 +2257,7 @@ async inProgress() {
   async navigateToCourseDetails(courseName: string) {
     await this.wait("minWait");
     await this.spinnerDisappear();
-    
+
     // Multiple selectors to try for course title
     const courseSelectors = [
       `//span[text()='${courseName}']`,
@@ -2111,7 +2267,7 @@ async inProgress() {
       `//*[contains(text(),'${courseName}')]`,
       `//span[contains(text(),'${courseName}')]`
     ];
-    
+
     for (const selector of courseSelectors) {
       try {
         console.log(`Trying selector: ${selector}`);
@@ -2125,19 +2281,19 @@ async inProgress() {
         continue;
       }
     }
-    
+
     // If all selectors fail, let's debug what's actually on the page
     console.log("All selectors failed. Debugging available elements...");
-    
+
     // Check what course elements are actually present
     const debugSelectors = [
       "//span[contains(@class, 'card-title') or contains(@class, 'title')]",
-      "//div[contains(@class, 'card-title') or contains(@class, 'title')]", 
+      "//div[contains(@class, 'card-title') or contains(@class, 'title')]",
       "//h5[contains(@class, 'card-title')]",
       "//*[contains(@class, 'course')]",
       "//span[contains(text(), 'Feed') or contains(text(), 'Input') or contains(text(), 'Wireless')]"
     ];
-    
+
     for (const debugSelector of debugSelectors) {
       try {
         const elements = await this.page.locator(debugSelector).all();
@@ -2150,10 +2306,26 @@ async inProgress() {
         console.log(`Debug selector failed: ${debugSelector}`);
       }
     }
-    
+
     throw new Error(`Unable to navigate to course details for: ${courseName}. Course may not be visible in catalog.`);
   }
 
+  async verifyCContentTitle(title: string) {
+    await this.wait("mediumWait");
+    await this.page.mouse.wheel(0, 300);
+    console.log("Title:", title);
+    let titleText = await this.page.locator(`//div[text()='${title}']`).innerText();
+    title = title.toUpperCase();
+    console.log("Title:", title);
+    console.log("Title Text:", titleText);
+    expect(title).toContain(titleText);
+  }
+
+  async verifyContentVersion(version: any) {
+    const versionText = await this.page.locator(`//i[@aria-label='Version']/following::span[text()='${version}']`).innerText();
+    console.log("Version Text:", versionText);
+    expect(version).toContain(versionText);
+  }
   //DCL verification msg
 
   async dclmesageVerification() {
@@ -2197,28 +2369,28 @@ async inProgress() {
    * Verify that a course has been added to wishlist
    * @param courseName - Name of the course to verify
    */
-async verifyAddedToWishlist(courseName: string) {
-  await this.wait("mediumWait");
-  try {
-    const addedIcon = this.page.locator(this.selectors.addedToWishlist);
-    await this.page.reload();
+  async verifyAddedToWishlist(courseName: string) {
     await this.wait("mediumWait");
-    if (await addedIcon.isVisible()) {
-      console.log(`Course "${courseName}" successfully added to wishlist`);
-    } else {
-      // Wait and check again after reload, as UI may take time to update
+    try {
+      const addedIcon = this.page.locator(this.selectors.addedToWishlist);
+      await this.page.reload();
       await this.wait("mediumWait");
-      if (await addedIcon.isVisible({ timeout: 5000 })) {
-        console.log(`Course "${courseName}" successfully added to wishlist (after wait)`);
+      if (await addedIcon.isVisible()) {
+        console.log(`Course "${courseName}" successfully added to wishlist`);
       } else {
-        console.log(`Course "${courseName}" not added to wishlist`);
+        // Wait and check again after reload, as UI may take time to update
+        await this.wait("mediumWait");
+        if (await addedIcon.isVisible({ timeout: 5000 })) {
+          console.log(`Course "${courseName}" successfully added to wishlist (after wait)`);
+        } else {
+          console.log(`Course "${courseName}" not added to wishlist`);
+        }
       }
+    } catch (error) {
+      console.error(`Error verifying added to wishlist for "${courseName}": ${error}`);
+      throw error;
     }
-  } catch (error) {
-    console.error(`Error verifying added to wishlist for "${courseName}": ${error}`);
-    throw error;
   }
-}
 
 
   /**
@@ -2232,14 +2404,14 @@ async verifyAddedToWishlist(courseName: string) {
       await this.click(this.selectors.wishlistSection, "Wishlist Section", "Link");
       await this.wait("mediumWait");
       await this.spinnerDisappear();
-      
+
       // Search for the course in wishlist
       const searchInput = this.page.locator(this.selectors.searchInput);
       if (await searchInput.isVisible()) {
         await this.typeAndEnter(this.selectors.searchInput, "Search in Wishlist", courseName);
         await this.wait("mediumWait");
       }
-      
+
       // Verify course is present in wishlist
       await this.validateElementVisibility(
         this.selectors.wishlistVerification(courseName),
@@ -2274,21 +2446,21 @@ async verifyAddedToWishlist(courseName: string) {
    */
   async verifyremoveWishlistTraining(courseName: string) {
     await this.wait("mediumWait");
-  try {
-    const addedIcon = this.page.locator(this.selectors.addedToWishlist);
-    await expect(addedIcon).not.toBeVisible();
-    console.log(`Course "${courseName}" successfully removed from wishlist`);
-  } catch (error) {
-    console.error(`Error verifying removed from wishlist for "${courseName}": ${error}`);
-    throw error;
-  }
+    try {
+      const addedIcon = this.page.locator(this.selectors.addedToWishlist);
+      await expect(addedIcon).not.toBeVisible();
+      console.log(`Course "${courseName}" successfully removed from wishlist`);
+    } catch (error) {
+      console.error(`Error verifying removed from wishlist for "${courseName}": ${error}`);
+      throw error;
+    }
   }
 
   async verifyEnrollmentSuccess() {
 
-    await this.page.waitForSelector("//button[text()='Save Learning Status']", { 
-      state: 'visible', 
-      timeout: 30000 
+    await this.page.waitForSelector("//button[text()='Save Learning Status']", {
+      state: 'visible',
+      timeout: 30000
     });
     await this.validateElementVisibility(
       this.selectors.saveLearningStatus,
@@ -2340,9 +2512,246 @@ async verifyAddedToWishlist(courseName: string) {
     }
   }
 
-   async verifyCostCentrerInApprovalPopup(value: string) {
-        await this.verificationInputValue(this.selectors.costcenterValue,value);
+  async verifyCostCentrerInApprovalPopup(value: string) {
+    await this.verificationInputValue(this.selectors.costcenterValue, value);
+  }
+
+
+  async verifyPrerequisiteWarningForCourseInTP(prerequisitename: string) {
+    await this.wait("mediumWait");
+
+    const prerequisiteWarning = this.page.locator(this.selectors.prerequisiteWarningText);
+    try {
+      await this.wait("mediumWait");
+      await prerequisiteWarning.isVisible();
+      console.log("Prerequisite warning is displayed for this course");
+
+      await this.click(this.selectors.clickPrerequisite(prerequisitename), "prerequisite", "course");
+
+
     }
+    catch (error) {
+      console.log("No prerequisite warning for this course");
+    }
+
+
+  }
+  async clickMainCourse(coursename: string) {
+    await this.wait("mediumWait");
+    await this.click(this.selectors.clickMainCourse(coursename), "Main Course", "course");
+  }
+
+  async verifyTheCompletedTpFromMyLearning(maincourse: string) {
+    await this.verification(this.selectors.verifyCompletedMaincourse(maincourse), "Completed");
+  }
+
+
+
+  async enrollCourseByClickRadioAndEnrollButton(courseName: string) {
+    await this.click(this.selectors.selectCourseRadioBtn(courseName), "Select Course Radio Button", "Radio Button");
+    await this.click(this.selectors.enrollButton, "Enroll Button", "Button");
+    await this.spinnerDisappear();
+    await this.wait("maxWait")
+  }
+
+  async getScore() {
+    const scoreStored = await this.page.locator(this.selectors.score).innerText();
+    console.log('Raw score text:', scoreStored);
+
+    // Extract only numbers from the text
+    const match = scoreStored.match(/\d+/);
+    const score = match ? Number(match[0]) : NaN;
+
+    console.log('Extracted score:', score);
+    return score;
+  }
+
+  /**
+   * Verify assessment result by calculating percentage from actual marks
+   * @param actualScore - Learner's actual score from assessment
+   * @param totalMarks - Total marks of all questions in the assessment
+   * @param passPercentage - Required pass percentage from assessment configuration
+   * @param expectedResult - Expected result: "Pass" or "Fail"
+   */
+  async verifyAssessmentResult(
+    actualScore: number,
+    totalMarks: number,
+    passPercentage: number,
+    expectedResult: "Pass" | "Fail"
+  ): Promise<void> {
+    // Calculate achieved percentage
+    const achievedPercentage = (actualScore / totalMarks) * 100;
+
+    // Determine pass or fail based on pass percentage
+    const actualResult = achievedPercentage >= passPercentage ? "Pass" : "Fail";
+
+    console.log(`\n========== Assessment Result Verification ==========`);
+    console.log(`Learner's Actual Score: ${actualScore}`);
+    console.log(`Total Marks: ${totalMarks}`);
+    console.log(`Achieved Percentage: ${achievedPercentage.toFixed(2)}%`);
+    console.log(`Required Pass Percentage: ${passPercentage}%`);
+    console.log(`Actual Result: ${actualResult}`);
+    console.log(`Expected Result: ${expectedResult}`);
+
+    if (actualResult === expectedResult) {
+      console.log(`✅ PASS: Assessment result is ${actualResult} as expected!`);
+    } else {
+      throw new Error(
+        `❌ FAIL: Expected ${expectedResult} but got ${actualResult}\n` +
+        `Score: ${actualScore}/${totalMarks} = ${achievedPercentage.toFixed(2)}%`
+      );
+    }
+    console.log(`====================================================\n`);
+  }
+
+
+  /**
+   * Verify that specific question names are displayed in the assessment
+   * @param questionNames - Array of question names to verify
+   * @param assessmentType - Type of assessment (e.g., "Pre-Assessment", "Post-Assessment")
+   */
+  async verifyAssessmentQuestions(questionNames: string[], assessmentType: string): Promise<void> {
+    await this.wait("mediumWait");
+    console.log(`\n========== Verifying ${assessmentType} Questions ==========`);
+
+    // Wait for any dynamic content to load
+    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => { });
+    await this.page.waitForTimeout(1000); // Additional wait for content rendering
+
+    const pageContent = await this.page.content();
+    let allQuestionsFound = true;
+
+    for (let i = 0; i < questionNames.length; i++) {
+      const questionName = questionNames[i];
+
+      // Check if question text is present in the page
+      const isPresent = pageContent.includes(questionName);
+
+      if (isPresent) {
+        console.log(`✅ Question ${i + 1} found: "${questionName}"`);
+      } else {
+        console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
+        allQuestionsFound = false;
+      }
+    }
+
+    if (allQuestionsFound) {
+      console.log(`\n✅ ${assessmentType}: All ${questionNames.length} questions are displayed!`);
+    } else {
+      throw new Error(`${assessmentType}: Some questions are missing!`);
+    }
+
+    console.log("==============================================\n");
+  }
+
+  async verifySurveyQuestions(questionNames: string[]): Promise<void> {
+    await this.wait("mediumWait");
+    console.log(`\n========== Verifying ${questionNames} Questions ==========`);
+
+    // Wait for any dynamic content to load
+    await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => { });
+    await this.page.waitForTimeout(1000); // Additional wait for content rendering
+
+    const pageContent = await this.page.content();
+    let allQuestionsFound = true;
+
+    for (let i = 0; i < questionNames.length; i++) {
+      const questionName = questionNames[i];
+
+      // Check if question text is present in the page
+      const isPresent = pageContent.includes(questionName);
+
+      if (isPresent) {
+        console.log(`✅ Question ${i + 1} found: "${questionName}"`);
+      } else {
+        console.log(`❌ Question ${i + 1} NOT found: "${questionName}"`);
+        allQuestionsFound = false;
+      }
+    }
+
+    if (allQuestionsFound) {
+      console.log(`\n✅ ${questionNames}: All ${questionNames.length} questions are displayed!`);
+    } else {
+      throw new Error(`${questionNames}: Some questions are missing!`);
+    }
+
+    console.log("==============================================\n");
+  }
+
+
+
+  async clickSection2() {
+
+    await this.wait("minWait"); // Wait for Section 1 to complete
+    // await this.spinnerDisappear(); // Wait for any loading spinners
+    await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
+    await this.page.locator("//span[text()='Assessment/Survey ']").click();
+    // // Wait for Section 2 to be clickable
+    // await this.page.waitForSelector(this.selectors.section2, { state: 'visible', timeout: 10000 });
+    // await this.validateElementVisibility(this.selectors.section2,"Section 2");
+
+    // Scroll into view and click
+    //await this.page.locator(this.selectors.section2).scrollIntoViewIfNeeded();
+    await this.click(this.selectors.section2, "Section 2", "Section");
+
+    // Wait for Section 2 content to load
+    await this.wait("mediumWait");
+    await this.spinnerDisappear();
+  }
+
+  async retakeAssessment() {
+    await this.validateElementVisibility(this.selectors.retakeAssessmentBtn, "Retake Assessment");
+    await this.click(this.selectors.retakeAssessmentBtn, "Retake Assessment", "Button");
+  }
+
+  async reviewAssessment() {
+    await this.click(this.selectors.reviewAssessmentBtn, "Review Assessment", "Button");
+  }
+
+  async verifyAnswerFeedback(expectedFeedback: string) {
+    await this.verification(this.selectors.answerFeedbackText, expectedFeedback);
+  }
+
+
+  async verifyUpdatedCEUUnitFromDetailsPage(expectedCEU: string) {
+    await this.verification(this.selectors.ceuUnitOnDetailsPage, expectedCEU);
+  }
+
+  async clickSurveyLaunchButton() {
+    await this.mouseHover(this.selectors.surveyLaunchBtn, "Launch Survey");
+    await this.click(this.selectors.surveyLaunchBtn, "Launch Survey", "Button");
+    await this.spinnerDisappear();
+  }
+
+  async clickAssessmentSurvey() {
+    await this.page.locator("//span[text()='Assessment/Survey ']").scrollIntoViewIfNeeded();
+    await this.page.locator("//span[text()='Assessment/Survey ']").click();
+
+  }
+  async clickDoneButton() {
+    await this.validateElementVisibility(this.selectors.doneBtn, "Done Button");
+    await this.click(this.selectors.doneBtn, "Done", "Button");
+  }
+  async verifyStatusWhenConsiderForCompletionIsChecked() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.statusOnDetailsPage,
+      "Course Status"
+    );
+
+    // Get the actual status from the page
+    const element = this.page.locator(this.selectors.statusOnDetailsPage).nth(0);
+    const actualStatus = await element.innerText();
+    console.log(`Actual Course Status: ${actualStatus}`);
+
+    // When "Consider for Completion" is checked, course status should remain "In Progress"
+    // It should NOT be "Completed" even after finishing the content
+    if (actualStatus.toLowerCase().includes("completed")) {
+      throw new Error(`Failed: Course status is "${actualStatus}" but should be "In Progress" when "Consider for Completion" is checked for survey`);
+    }
+
+    await this.verification(this.selectors.statusOnDetailsPage, "In Progress");
+  }
 
   async closeCertificate() {
     await this.wait("minWait");
@@ -2356,7 +2765,7 @@ async verifyAddedToWishlist(courseName: string) {
       "Button"
     );
     await this.page.waitForLoadState("load");
-    }
+  }
 
   async verifyNoCertificateAvailable() {
     await this.wait("minWait");
@@ -2375,7 +2784,7 @@ async verifyAddedToWishlist(courseName: string) {
   async getDedicatedToTPMessage(): Promise<string> {
     await this.wait('minWait');
     const messageSelector = this.selectors.dedicatedToTPMessage;
-    
+
     try {
       await this.validateElementVisibility(messageSelector, "Dedicated to TP Message");
       const messageText = await this.getInnerText(messageSelector);
@@ -2396,5 +2805,86 @@ async verifyAddedToWishlist(courseName: string) {
     }
   }
 
-}
+  async clickMyLearning_LPAndCertification() {
+    await this.wait("maxWait");
+    await this.validateElementVisibility(
+      this.selectors.ML_learningpathAndcertification,
+      "LearningPath and Certification"
+    );
+    await this.wait("maxWait");
+    await this.click(
+      this.selectors.ML_learningpathAndcertification,
+      "LearningPath and Certification",
+      "Button"
+    );
+  }
 
+  /**
+   * Add content to playlist - tries to add to existing playlist first,
+   * if not available, creates a new playlist
+   * @param playlistName - The name of the playlist
+   */
+  async addtoplayLilst(content: string, playlistName: string) {
+    await this.wait("mediumWait");
+    await this.page.locator(this.selectors.addToPlaylist(content)).scrollIntoViewIfNeeded();
+    await this.validateElementVisibility(this.selectors.addToPlaylist(content), "Add to Playlist Button");
+    await this.click(this.selectors.addToPlaylist(content), "Add to Playlist", "Button");
+    await this.wait("minWait");
+    
+    // Step 2: Click existing playlist option
+    await this.wait("minWait");
+    await this.validateElementVisibility(this.selectors.existingPlayList, "Existing Playlist Option");
+    await this.click(this.selectors.existingPlayList, "Add to existing Playlist", "Option");
+    await this.wait("minWait");
+    
+    // Step 3: Try to select the playlist
+    const playlistSelector = this.selectors.selectPlayList(playlistName);
+    const playlistExists = await this.page.locator(playlistSelector).isVisible({ timeout: 5000 }).catch(() => false);
+    
+    if (playlistExists) {
+      console.log(`✅ Playlist '${playlistName}' found, selecting it`);
+      await this.click(playlistSelector, `Select Playlist: ${playlistName}`, "Icon");
+      await this.wait("minWait");
+      await this.click(this.selectors.saveBtn, "Save", "Button");
+      await this.wait("mediumWait");
+      await this.spinnerDisappear();
+      
+      // Check if content is already added to playlist
+      const alreadyAddedMessage = this.page.locator(this.selectors.contentAlreadyAddedMessage);
+      const isAlreadyAdded = await alreadyAddedMessage.isVisible({ timeout: 3000 }).catch(() => false);
+      
+      if (isAlreadyAdded) {
+        const messageText = await alreadyAddedMessage.innerText();
+        console.log(`⚠️ ${messageText}`);
+        await this.verification(this.selectors.contentAlreadyAddedMessage, "already included in the playlist");
+        await this.click(this.selectors.okBtn, "OK", "Button");
+        console.log(`ℹ️ Content was already in playlist '${playlistName}' - exiting function`);
+        return; // Exit function if content already added
+      } else {
+        await this.click(this.selectors.okBtn, "OK", "Button");
+        console.log(`✅ Content added to playlist '${playlistName}' successfully`);
+      }
+    } else {
+      // Playlist doesn't exist, close and create new
+      console.log(`⚠️ Playlist '${playlistName}' not found, creating new playlist`);
+      await this.click(this.selectors.closePlayListIcon, "Close", "Button");
+      await this.wait("minWait");
+      
+      // Click add to playlist again
+      await this.validateElementVisibility(this.selectors.addToPlaylist(content), "Add to Playlist Button");
+      await this.wait("minWait");
+      await this.click(this.selectors.addToPlaylist(content), "Add to Playlist", "Button");      
+      await this.validateElementVisibility(this.selectors.createNewPlayList, "Create New Playlist Option");
+      await this.click(this.selectors.createNewPlayList, "Create New Playlist", "Option");
+      await this.wait("minWait");
+      await this.type(this.selectors.playlistNameInput, "Playlist Name", playlistName);
+      await this.click(this.selectors.saveBtn, "Save Playlist", "Button");
+      await this.wait("mediumWait");
+      await this.spinnerDisappear();
+      await this.click(this.selectors.okBtn, "OK", "Button");
+      await this.wait("minWait");
+      console.log(`✅ Content added to new playlist '${playlistName}' successfully`);
+    }
+  }
+
+} 

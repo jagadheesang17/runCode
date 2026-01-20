@@ -35,10 +35,13 @@ export class LearnerHomePage extends LearnerLogin {
         proceedBtn: `//button[text()='Proceed']`,
         verifyOrder: `//div[contains(@class,'information_text ')]`,
         searchfield: `//input[@id='exp-searchapproval-search-field']`,
+        searchResultDropdown: (programName: string) => `//li[@class='dropdown-item text-wrap p-2 d-block' and @role='button' and text()='${programName}']`,
 
         //CH:-
         sortBy: `//button[@data-id='exp-sortapproval-sort']`,
-        newlyListed: `//a[@id='bs-select-1-2']//span[text()='Newly Listed']`,
+        usernameElement: (certificate: string) => `(//span[text()='${certificate}']//following::span)[1]`,
+        viewCertificateIconAfterUsername: (certificate: string, username: string) => `(//span[text()='${certificate}']//following::span[contains(text(),'${username}')]//following::i)[1]`,
+        newlyListed: `(//footer//following::span[text()='Newly Listed'])[1]`,
         mapprovalSelectCountryInput: `(//div[@class='bs-searchbox']//input)[2]`,
         mapprovalSelectStateInput: `(//div[@class='bs-searchbox']//input)[3]`,
         dropdownOption: (data: string) => `//span[text()='${data}']`,
@@ -50,19 +53,42 @@ export class LearnerHomePage extends LearnerLogin {
         privacypopupContent: `//iframe[contains(@src,'privacy')]`,
         scrollBar: `//div[@id='gridSystemModal']//div[@class='lmsfilterscroll background_1']`,
         agreeBtn: `//button[text()='Agree']`,
+        denyBtn: `//button[text()='Deny']`,
         closebtn: `//div[contains(@class,'modal-header d-flex ')]//following-sibling::i`,
         //For QR scanning code reading user profile
         myprofilebutton: `//span[text()='My Profile']`,
-        qrLocator:'//img[@class="img-fluid usr-prof-qrcodeimage modal_img my-2"]',
-        qrImagePath:'data/finalimage.png',
-        userEmail:'//div[text()="Email :"]/following-sibling::div[1]',
-        userphone:'//div[text()="Phone :"]/following-sibling::div[1]',
-        selectAdmin:`//span[text()='Admin']`,
+        qrLocator: '//img[@class="img-fluid usr-prof-qrcodeimage modal_img my-2"]',
+        qrImagePath: 'data/finalimage.png',
+        userEmail: '//div[text()="Email :"]/following-sibling::div[1]',
+        userphone: '//div[text()="Phone :"]/following-sibling::div[1]',
+        selectAdmin: `//span[text()='Admin']`,
 
-        organizationInProfile:(orgname:string)=>`//h4[text()='${orgname} ']`,
+        organizationInProfile: (orgname: string) => `//h4[text()='${orgname} ']`,
 
         instrctor: `//a/span[text()='Instructor']`,
 
+        // Profile tabs
+        preferencesTab: `//a[contains(@class,'nav-link') and text()='preferences']`,
+        detailsTab: `//a[contains(@class,'nav-link') and text()='Details']`,
+        oneProfileTab: `//a[contains(@class,'nav-link') and text()='ONE-Profile']`,
+        ordersTab: `//a[contains(@class,'nav-link') and text()='Orders']`,
+
+        // Terms and Privacy Policy hyperlinks in preferences
+        termsAndConditionsLink: `//a[text()='TERMS & CONDITIONS']`,
+        privacyPolicyLink: `//a[text()='Privacy Policy']`,
+        profileSettings: `(//div[@id='accountsetttings'])[1]`,
+        approveBtn: `//button[text()='Approve']`,
+        reasonInputBox: `#reason_for_rejection`,
+        rejectBtn: `//button[text()='Reject']`,
+        
+        //Approval Success Modal
+        approvalSuccessModal: `//div[@class='modal-content bg-transparent border-0']`,
+        approvalSuccessMessage: `//span/p/b[text()='Approved Successfully! ']`,
+        approvalModalCloseBtn: `//button[@class='btn button_negative_active me-3 rounded-0' and text()='Close']`,
+        
+        //Rejection Success Modal
+        rejectionSuccessMessage: `//b[text()='Rejected Successfully! ']`,
+        certificateName:`#ext_certificate`
         // Alert more button selectors
         alertIcon: `//i[@class='fa-duotone fa-exclamation-triangle']`,
         alertsText: `(//div[text()='Alerts'])[1]`,
@@ -277,7 +303,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.click(this.selectors.collaborationHub, "CH", "Option");
         await this.spinnerDisappear();
     }
-     async selectAdmin() {
+    async selectAdmin() {
         await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
         await this.validateElementVisibility(this.selectors.selectAdmin, "Admin")
         await this.click(this.selectors.selectAdmin, "Admin", "Option");
@@ -290,7 +316,7 @@ export class LearnerHomePage extends LearnerLogin {
         await this.wait("mediumWait")
         await this.click(this.selectors.sortBy, "My Approval Request Dropdown", "SortBy")
         await this.wait("minWait")
-        await this.mouseHoverandClick(this.selectors.newlyListed, this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
+        await this.click(this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
         //  await this.click(this.selectors.newlyListed, "My Approval Request Dropdown", "Dropdown")
         await this.click(this.selectors.approveTick(courseName), "Approve Course", "Icon")
     }
@@ -323,6 +349,17 @@ export class LearnerHomePage extends LearnerLogin {
         await this.wait('mediumWait')
     }
 
+    /**
+     * Search for external training program in approval requests
+     * @param programName - Name of the external training program to search
+     */
+    async searchExternalTraining(programName: string) {
+        await this.type(this.selectors.searchfield, "External Training Search", programName);
+        await this.wait('minWait');
+        await this.click(this.selectors.searchResultDropdown(programName), programName, "Dropdown Item");
+        await this.wait('minWait');
+    }
+
     async proceedAndVerify() {
         await this.click(this.selectors.proceedBtn, "Proceed", "Button"),
             await this.wait("mediumWait")
@@ -350,7 +387,7 @@ export class LearnerHomePage extends LearnerLogin {
     // }
 
     //Terms and Conditions
-    async termsAndConditionScroll() {
+    async termsAndConditionScroll(action: string = "agree") {
         const element = this.page.locator(`//div[@class='container-fluid bd-example-row']/div[1]/div`).first();
         const box = await element.boundingBox();
         if (box) {
@@ -383,18 +420,26 @@ export class LearnerHomePage extends LearnerLogin {
         await this.page.mouse.move(0, 456);
         await this.page.mouse.up();
         await this.wait("minWait")
-        await this.validateElementVisibility(this.selectors.agreeBtn, "Agree");
-        await this.mouseHover(this.selectors.agreeBtn, "Agree");
-        await this.click(this.selectors.agreeBtn, "Agree", "Button");
-        await this.click(this.selectors.closebtn, "Close", "Button");
+
+        if (action.toLowerCase() === "deny") {
+            await this.validateElementVisibility(this.selectors.denyBtn, "Deny");
+            await this.mouseHover(this.selectors.denyBtn, "Deny");
+            await this.click(this.selectors.denyBtn, "Deny", "Button");
+        } else {
+            await this.validateElementVisibility(this.selectors.agreeBtn, "Agree");
+            await this.mouseHover(this.selectors.agreeBtn, "Agree");
+            await this.click(this.selectors.agreeBtn, "Agree", "Button");
+            await this.verifyPreferencesTabActive();
+            await this.click(this.selectors.closebtn, "Close", "Button");
+        }
         await this.wait('minWait');
+        console.log(` Successfully performed terms and conditions action: ${action}`);
     }
 
     //For QR scanning code reading user profile
-public async clickmyprofile()
-    {
-        await this.mouseHover(this.selectors.myprofilebutton, "bulkupload");
-        await this.click(this.selectors.myprofilebutton, "bulkupload", "Button");
+    public async clickmyprofile() {
+        await this.mouseHover(this.selectors.myprofilebutton, "My profile");
+        await this.click(this.selectors.myprofilebutton, "My profile", "Button");
         await this.wait('maxWait')
     }
 
@@ -427,22 +472,22 @@ public async clickmyprofile()
         //console.log("User information needs to be updated.");
         if (QR_Decoded_email !== expectedEmail) {
             console.log(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
-        //throw new Error(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
+            //throw new Error(`Email mismatch! Expected: ${expectedEmail}, Found: ${QR_Decoded_email}`);
+        }
+        if (QR_Decoded_phone !== expectedPhone) {
+            console.log(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+            //throw new Error(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+        }
+        console.log("User email and phone match the expected values.");
     }
-    if (QR_Decoded_phone !== expectedPhone) {
-        console.log(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
-        //throw new Error(`Phone number mismatch! Expected: ${expectedPhone}, Found: ${QR_Decoded_phone}`);
+
+    async launchDCL(url: string) {
+        await this.wait("minWait");
+        await this.loadApp(url);
+        await this.wait("mediumWait");
     }
-    console.log("User email and phone match the expected values.");
-      }
 
-      async launchDCL(url:string){
-    await this.wait("minWait");
-    await this.loadApp(url);
-    await this.wait("mediumWait");
- }
-
- async selectInstructor() {
+    async selectInstructor() {
         await this.click(this.selectors.adminmenuIcon, "Admin Menu", "Icon")
         await this.validateElementVisibility(this.selectors.instrctor, "Instructor")
         await this.click(this.selectors.instrctor, "Instructor", "Option");
@@ -450,200 +495,8 @@ public async clickmyprofile()
     }
 
 
-async verifyMappedOrganization(orgname:string,expectedOrgname:string){
-    await this.verification(this.selectors.organizationInProfile(orgname),expectedOrgname);
-}
-
-async clickAlertMoreButton() {
-    console.log("🔔 Starting Alert More Button verification");
-    
-    // Step 1: Verify alert icon is visible
-    console.log("📝 Step 1: Verify alert icon is visible");
-    await this.validateElementVisibility(this.selectors.alertIcon, "Alert Icon");
-    const alertIcon = this.page.locator(this.selectors.alertIcon);
-    const isAlertIconVisible = await alertIcon.isVisible();
-    
-    if (!isAlertIconVisible) {
-        throw new Error("❌ Alert icon is not visible");
+    async verifyMappedOrganization(orgname: string, expectedOrgname: string) {
+        await this.verification(this.selectors.organizationInProfile(orgname), expectedOrgname);
     }
-    console.log("✅ Alert icon is visible");
-    
-    // Step 2: Click on alert icon
-    console.log("📝 Step 2: Click on alert icon");
-    await this.click(this.selectors.alertIcon, "Alert Icon", "Icon");
-    await this.wait("minWait");
-    console.log("✅ Clicked on alert icon");
-    
-    // Step 3: Verify 'Alerts' text appears
-    console.log("📝 Step 3: Verify 'Alerts' text appears");
-    await this.validateElementVisibility(this.selectors.alertsText, "Alerts Text");
-    const alertsText = this.page.locator(this.selectors.alertsText);
-    const isAlertsTextVisible = await alertsText.isVisible();
-    
-    if (!isAlertsTextVisible) {
-        throw new Error("❌ 'Alerts' text is not visible after clicking alert icon");
-    }
-    console.log("✅ 'Alerts' text is visible");
-    
-    // Step 4: Check if 'more' button exists
-    console.log("📝 Step 4: Check if 'more' button is available");
-    const moreButton = this.page.locator(this.selectors.moreButton);
-    const isMoreButtonVisible = await moreButton.isVisible({ timeout: 5000 }).catch(() => false);
-    
-    if (!isMoreButtonVisible) {
-        console.log("⚠️ 'more' button is not available - no additional alerts to show");
-        throw new Error("❌ 'more' button is not there");
-    }
-    console.log("✅ 'more' button is visible");
-    
-    // Step 5: Click on 'more' button
-    console.log("📝 Step 5: Click on 'more' button");
-    await this.click(this.selectors.moreButton, "More Button", "Button");
-    await this.wait("mediumWait");
-    console.log("✅ Clicked on 'more' button");
-    
-    // Step 6: Verify 'About This Course' section appears
-    console.log("📝 Step 6: Verify 'About This Course' section appears after clicking 'more'");
-    await this.validateElementVisibility(this.selectors.aboutThisCourse, "About This Course");
-    const aboutThisCourse = this.page.locator(this.selectors.aboutThisCourse);
-    const isAboutThisCourseVisible = await aboutThisCourse.isVisible();
-    
-    if (!isAboutThisCourseVisible) {
-        throw new Error("❌ 'About This Course' section is not visible after clicking 'more' button");
-    }
-    console.log("✅ 'About This Course' section is visible");
-    
-    console.log("✅ Alert More Button verification completed successfully");
-}
-
-async verifyAnnouncementPushBox() {
-    console.log("📢 Starting Announcement push-box verification");
-    
-    // Step 1: Wait for and click on Announcements icon
-    console.log("📝 Step 1: Wait for Announcements icon and click");
-    await this.validateElementVisibility(this.selectors.announcementPushBox, "Announcements Icon");
-    await this.click(this.selectors.announcementPushBox, "Announcements", "Icon");
-    await this.wait("minWait");
-    console.log("✅ Clicked on Announcements icon");
-    
-    // Step 2: Check if announcement list item appears
-    console.log("📝 Step 2: Verify announcement list item appears");
-    const announcementListItem = this.page.locator(this.selectors.announcementListItem);
-    const isAnnouncementVisible = await announcementListItem.isVisible({ timeout: 5000 }).catch(() => false);
-    
-    if (!isAnnouncementVisible) {
-        console.log("ℹ️ No announcements available - announcement list is empty");
-        return;
-    }
-    
-    console.log("✅ Announcement list item is visible");
-    console.log("✅ Announcements are available in the push-box");
-}
-
-async languageChangeVerification(language: string) {
-    console.log(`🌐 Starting language change verification for: ${language}`);
-    
-    // Step 1: Click on language button
-    console.log("📝 Step 1: Click on language button");
-    await this.validateElementVisibility(this.selectors.languageButton, "Language Button");
-    await this.click(this.selectors.languageButton, "Language", "Button");
-    await this.wait("minWait");
-    console.log("✅ Language dropdown opened");
-    
-    // Step 2: Search for the language
-    console.log(`📝 Step 2: Search for language: ${language}`);
-    await this.validateElementVisibility(this.selectors.languageSearchInput, "Language Search Input");
-    await this.type(this.selectors.languageSearchInput, "Language Search Input", language);
-    await this.wait("minWait");
-    console.log(`✅ Searched for language: ${language}`);
-    
-    // Step 3: Click on the language option
-    console.log(`📝 Step 3: Click on ${language} option`);
-    const languageSelector = this.selectors.languageOption(language);
-    await this.validateElementVisibility(languageSelector, `${language} Option`);
-    await this.click(languageSelector, language, "Language Option");
-    await this.wait("mediumWait");
-    console.log(`✅ Clicked on ${language} option`);
-    
-    // Step 4: Verify page language has changed
-    console.log("📝 Step 4: Verify page language has changed");
-    await this.page.waitForLoadState('load');
-    
-    // Get the current page language attribute
-    const htmlLangAttribute = await this.page.evaluate(() => document.documentElement.lang);
-    console.log(`📄 Current page language attribute: ${htmlLangAttribute}`);
-    
-    // Verify the language button now shows the selected language
-    const languageButton = this.page.locator(this.selectors.languageButton);
-    const buttonText = await languageButton.textContent();
-    console.log(`🔍 Language button text after change: ${buttonText?.trim()}`);
-    
-    if (buttonText?.includes(language)) {
-        console.log(`✅ Page language successfully changed to: ${language}`);
-    } else {
-        console.log(`⚠️ Language button shows: ${buttonText}, expected to contain: ${language}`);
-    }
-    
-    console.log("✅ Language change verification completed");
-}
-
-async emptyCartVerification() {
-    console.log("🛒 Starting empty cart verification");
-    
-    // Step 1: Click on shopping cart icon
-    console.log("📝 Step 1: Click on shopping cart icon");
-    await this.validateElementVisibility(this.selectors.shoppingCartIcon, "Shopping Cart Icon");
-    await this.click(this.selectors.shoppingCartIcon, "Shopping Cart", "Icon");
-    await this.wait("minWait");
-    console.log("✅ Clicked on shopping cart icon");
-    
-    // Step 2: Verify empty cart message is displayed
-    console.log("📝 Step 2: Verify 'CART IS EMPTY' message is displayed");
-    await this.validateElementVisibility(this.selectors.emptyCartMessage, "Empty Cart Message");
-    
-    const emptyCartElement = this.page.locator(this.selectors.emptyCartMessage);
-    const isVisible = await emptyCartElement.isVisible();
-    
-    if (isVisible) {
-        const messageText = await emptyCartElement.textContent();
-        console.log(`✅ Empty cart message verified: "${messageText?.trim()}"`);
-    } else {
-        throw new Error("❌ Empty cart message is not visible");
-    }
-    
-    console.log("✅ Empty cart verification completed successfully");
-}
-
-async catalogHyperlink() {
-    console.log("📚 Starting catalog hyperlink scroll verification");
-    
-    // Step 1: Capture scroll position before clicking
-    console.log("📝 Step 1: Capture scroll position before clicking catalog hyperlink");
-    const beforeScroll = await this.page.evaluate(() => window.scrollY);
-    console.log(`📍 Scroll position before click: ${beforeScroll}px`);
-    
-    // Step 2: Click on CATALOG hyperlink
-    console.log("📝 Step 2: Click on CATALOG hyperlink");
-    await this.validateElementVisibility(this.selectors.catalogHyperlink, "Catalog Hyperlink");
-    await this.click(this.selectors.catalogHyperlink, "CATALOG", "Hyperlink");
-    console.log("✅ Clicked on CATALOG hyperlink");
-    
-    // Step 3: Wait for scroll animation to complete
-    await this.wait("minWait");
-    
-    // Step 4: Capture scroll position after clicking
-    console.log("📝 Step 4: Verify page scrolled to catalog section");
-    const afterScroll = await this.page.evaluate(() => window.scrollY);
-    console.log(`📍 Scroll position after click: ${afterScroll}px`);
-    
-    // Step 5: Verify scroll position changed
-    if (afterScroll !== beforeScroll) {
-        console.log(`✅ Page scrolled successfully - Scroll changed by ${Math.abs(afterScroll - beforeScroll)}px`);
-    } else {
-        console.log("⚠️ Warning: Scroll position did not change");
-    }
-    
-    console.log("✅ Catalog hyperlink scroll verification completed");
-}
 
 }

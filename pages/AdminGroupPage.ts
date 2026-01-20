@@ -78,6 +78,12 @@ export class AdminGroupPage extends PlaywrightWrapper {
         validityTillDate: `//input[@placeholder="MM/DD/YYYY"]`,
         editbtn:`//a[@aria-label="Edit"]`,
 
+         //adding org to admin group
+        clickOrgLink: `//label[text()='Organization ']//following::i[contains(@class,'fa-arrow-up')]`,
+        orgTreeScrollDown: `//div[@id='OrgTreeModal']//div[contains(@class,'lmsfilterscroll background_1')]`,
+        orgTree: `//div[@id='OrgTreeModal']//ul[@class='folder-tree']`,
+        okBtn: `//button[text()='OK']`,
+
     }
 
     constructor(page: Page, context: BrowserContext) {
@@ -711,5 +717,31 @@ export class AdminGroupPage extends PlaywrightWrapper {
             console.log("Activate button is disabled as expected");
         }
     }
+
+
+        //adding organization to admin group
+        async selectOrg(orgName: string) {
+            await this.wait("minWait");
+            await this.click(this.selectors.clickOrgLink, "Organization", "Link");
+            //     await this.page.locator("//span[@class='ms-2 information_text']").first().hover();
+            //     const orgTree = this.page.locator("//div[@id='OrgTreeModal']//div[contains(@class,'lmsfilterscroll background_1')]")
+            //     for(let i=0;i<=4;i++){
+            //     await orgTree.hover({ force: true, position: { x: 0, y: 0 } })
+            //     await this.page.mouse.down();
+            //     await this.page.mouse.move(0, 456);
+            //     await this.page.mouse.up();
+            // }
+
+            const popupLocator = this.page.locator("//div[@id='OrgTreeModal']//ul[@class='folder-tree']");
+            await popupLocator.hover();
+            for (let i = 0; i<50; i++) {
+                await this.page.mouse.wheel(0, 2000);
+                await this.page.waitForTimeout(1000);
+                await this.page.mouse.wheel(0, -10);
+            }
+            const orgCheckBox=this.page.locator(`//span[text()='${orgName}']//preceding::label[contains(@class,'custom-control-label')]//i`).last();
+            await orgCheckBox.click();
+            await this.click(this.selectors.okBtn, "OK", "Button");
+        }
 
 }

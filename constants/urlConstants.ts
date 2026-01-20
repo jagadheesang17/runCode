@@ -44,12 +44,12 @@ switch (environmentSetup) {
         break;
     case "qa":
         URLConstants = {
-            adminURL: "https://qa.expertusoneqa.com/backdoor",
-            leanerURL: "https://qa.expertusoneqa.com/learner/qa/",
-            learnerportal: "https://qa.expertusoneqa.com/learner/qaagleenew/",
-            learnerportal2: "https://qa.expertusoneqa.com/learner/portal8/",
-            portal1: "qa",
-            portal2: "qaagleenew",
+            adminURL: "https://newprod2.expertusoneqa.in/backdoor",
+            leanerURL: "https://newprod2.expertusoneqa.in/learner/newprod2/",
+            learnerportal: "https://newprod2.expertusoneqa.in/learner/domain1/",
+            learnerportal2: "https://newprod2.expertusoneqa.in/learner/portal8/",
+            portal1: "newprod2",
+            portal2: "domain1",
             portal3: "portal8",
             LearnerGroup1: "New Auto LG1_42",
             LearnerGroup2: "New Auto LG2_42",

@@ -30,6 +30,7 @@ test.describe(`Verify admin can change enrollment status for Certification`, () 
             { type: `Test Description`, description: `Create ILT multi-instance course, add to Certification and enroll 3 learners` }
         );
 
+        
         console.log(`🔄 Creating ILT Multi-Instance course: ${courseName}`);
         await createILTMultiInstance(courseName, "published", 2, "pastclass");
         console.log(`✅ ILT Multi-Instance course created: ${courseName}`);
@@ -94,11 +95,19 @@ test.describe(`Verify admin can change enrollment status for Certification`, () 
         for (let i = 0; i < Math.min(users.length, 3); i++) {
             console.log(`\n🔄 Verifying for User ${i + 1}: ${users[i].username}`);
             await learnerHome.basicLogin(users[i].username, "DefaultPortal");
-            await learnerHome.clickMyLearning();
-            await catalog.searchCatalog(certificationName);
+            // await learnerHome.clickMyLearning();
+            // await catalog.searchCatalog(certificationName);
+            // await dashboard.searchCertification(certificationName);
+            // await catalog.clickViewCertificationDetails();
+            // console.log(`✅ User ${i + 1} can see the Certification in My Learning`);
+            await dashboard.clickLearningPath_And_Certification();
+            await dashboard.clickCertificationLink();
             await dashboard.searchCertification(certificationName);
-            await catalog.clickViewCertificationDetails();
-            console.log(`✅ User ${i + 1} can see the Certification in My Learning`);
+            await dashboard.verifyTheEnrolledCertification(certificationName);
+            await dashboard.clickTitle(certificationName);
+
+
+
             await createUser.clickLogOutButton();
         }
         

@@ -8,8 +8,8 @@ let endPointURL = URLConstants.adminEndPointUrl
 let description= FakerData.getDescription();
 
 
-export async function createOrganization(orgName: string, code: string, authorization: any) {
-    const response = await postRequest(createOrganizations(orgName, code), endPointURL, authorization);
+export async function createOrganization(orgName: string, code: string) {
+    const response = await postRequest(createOrganizations(orgName, code), endPointURL);
 
     console.log("Full response:", response.data);
 
@@ -23,8 +23,8 @@ export async function createOrganization(orgName: string, code: string, authoriz
 }
 
 
-export async function listOrganization(orgName: string, authorization: any) {
-    const response = await postRequest(listofOrganization(orgName), endPointURL, authorization);
+export async function listOrganization(orgName: string) {
+    const response = await postRequest(listofOrganization(orgName), endPointURL);
     console.log("Full response:", JSON.stringify(response.data, null, 2));
 
     await assertStatus(response.status, 200);
@@ -40,14 +40,14 @@ export async function listOrganization(orgName: string, authorization: any) {
 }
 
 
-export async function listOrganizationData(authorization: any) {
-  let response = await postRequest(listofOrganizationData, endPointURL, authorization);
+export async function listOrganizationData() {
+  let response = await postRequest(listofOrganizationData, endPointURL);
   console.log(response.data.data);
   await assertStatus(response.status, 200);
 }
 
-export async function editOrganization(orgCode: string, authorization: any) {
-  let response = await postRequest(updateOrganizations(orgCode,description), endPointURL, authorization);
+export async function editOrganization(orgCode: string) {
+  let response = await postRequest(updateOrganizations(orgCode,description), endPointURL);
   console.log(response.data.data);
   await assertStatus(response.status, 200);
   return description

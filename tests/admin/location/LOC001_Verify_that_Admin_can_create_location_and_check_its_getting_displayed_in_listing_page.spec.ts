@@ -26,7 +26,7 @@ test(`Verify that Admin can create location and check its getting displayed in l
         await location.enterState(state);
         await location.enterTimezone(timezone);
         await location.enterCity(city);
-        await location.enterZipcode(zipcode);
+        await location.enterZipcode(zipcode)
         await location.clickPublishButton();
         await location.clickProceed();
         await location.verify_successfullMessage()

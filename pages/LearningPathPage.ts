@@ -4,6 +4,7 @@ import { AdminHomePage } from "./AdminHomePage";
 
 import { FakerData, getCurrentDateFormatted, gettomorrowDateFormatted } from "../utils/fakerUtils";
 import { create } from "domain";
+import { FilterUtils } from "../utils/filterUtils";
 
 export class LearningPathPage extends AdminHomePage {
 
@@ -51,7 +52,7 @@ export class LearningPathPage extends AdminHomePage {
         recertCompleteByRuleBtn: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by-rule']",
         recertCompleteByRuleYesOption: "//label[contains(text(),'Recertification')]//following::span[text()='Yes']",
         recertCompleteByDropdown: "//label[contains(text(),'Recertification')]//following::button[@data-id='program-recert-complete-by']",
-        recertCompleteByDateOption: "//label[contains(text(),'Recertification')]//following::span[text()='Date']",
+        recertCompleteByDateOption: "(//label[contains(text(),'Recertification')]//following::span[text()='Date'])[2]",
         recertCompleteByDaysFromEnrollmentOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from enrollment']",
         recertCompleteByDaysFromHireOption: "//label[contains(text(),'Recertification')]//following::span[text()='Days from hire']",
         recertCompleteDaysInput: "//label[contains(text(),'Recertification')]//following::input[@id='program-recert-complete-days']",
@@ -117,6 +118,7 @@ export class LearningPathPage extends AdminHomePage {
         moduleEditIcon: `//div[contains(text(),'module')]//preceding::i[@aria-label='Edit']`,
         moduleNameInput: `//input[contains(@id,'module_name_text')]`,
         moduleUpdateIcon: `//i[@aria-label='Update']`,
+        updateCEU:`//i[@class='fa-duotone fa-pen pointer icon_14_1']`,
 
         //Attaching the different course to the recertification module:-
         // Choose Course Manually:-
@@ -140,21 +142,50 @@ export class LearningPathPage extends AdminHomePage {
         addVersionBtn: `//button[text()='Add Version']`,
         unselectAllCheckbox: `//span[text()='Unselect All']//preceding::i[contains(@class,'fa-square-check')]`,
         versionFormLabels: `//span[contains(@class,'form-label')]`,
-        versionCheckbox: (label: string) => `//span[contains(@class,'form-label') and contains(text(),'${label}')]//preceding::i[contains(@class,'fa-square icon')]`,
+        versionCheckbox: (label: string) => `//span[contains(@class,'form-label') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
         createVersionBtn: `//button[text()='Create']`,
         versionLabel: (versionNumber: string) => `//span[text()='Version: ${versionNumber}']`,
         yesBtn: `//button[text()='Yes']`,
         publishConfirmationMessage: `//b[text()='This action cannot be reversed. Are you sure you want to publish this Training plan?']`,
         publishVersionMessage: `//span[contains(text(),'By publishing this new version of the training plan, the previous version will become inactive. New enrollments will be allowed only to the new version, however you can transfer the previous enrollments to the new version from enrollments page.')]`,
         versionHistoryTitle: (version: string, title: string) => `//div[text()='Version: ${version}']//preceding::div[@title='${title}']`,
+        
+        // Enroll Again popup selectors
+        enrollAgainPopupMessage: "//div[text()='The following courses can't be added to the learning path since it doesn't allow Enroll Again.']",
+        enrollAgainPopupCourseName: (courseName: string) => `//footer//following::div[text()='${courseName}']`,
+        enrollAgainPopupOKButton: "//footer//following::button[text()='OK']",
+        
+        // Recertification Enroll Again popup selectors
+        recertEnrollAgainPopupMessage: "//div[text()='The following courses cannot be added to the re-certification because they do not support the enroll again functionality.']",
         versionEyeIcon: (title: string) => `//div[@title='${title}']//following::i[contains(@class,'fa-duotone pointer')]`,
         transferEnrollmentsBtn: `//button[text()='Transfer Enrollments']`,
         selectAllLearnersCheckbox: `//label[contains(@for,'selectalllearners')]`,
         transferLearnersBtn: `//button[text()='Transfer Learners']`,
         transferConfirmationMessage: `//span[text()='Transferring the learner to the new training will remove the enrollment of the existing training? Are you sure you want to transfer the selected learners?']`,
-        editIconTP:(title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Edit')])[1]`
+        editIconTP:(title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Edit')])[1]`,
+        
+        // Clone Learning Path selectors
+        cloneIcon: (title: string) => `(//div[text()='${title}']//following::div[contains(@aria-label,'Copy')])[1]`,
+        cloneFormLabels: `//span[@class='ms-1 rawtxt']`,
+        cloneUnselectAllCheckbox: `//span[text()='Unselect All']//preceding::i[contains(@class,'fa-square-check')]`,
+        clonePopupCheckbox: (label: string) => `//span[contains(@class,'ms-1 rawtxt') and contains(text(),'${label}')]//preceding-sibling::i[contains(@class,'fa-square icon')]`,
+        createCopyBtn: `//button[text()='Create Copy']`,
+        enrollments:`(//span[text()='Enrollments'])[2]`,
+                saveRevalidate:`(//button[text()='Save'])[1]`,
+
+                ceuCheckbox:`//i[@class='fa-duotone fa-square icon_16_1']`,
+                addedCEU:`(//div[text()='Select']/following::span[@data-bs-toggle='tooltip'])[1]`,
+
+                updateCEUUnit:`//input[@class='form-control form_field_active w-75']`,
+                clickTickIcon:`//i[@class='fa-duotone fa-check icon_14_1']`,
+                //Attaching the different course to the recertification module:-
+        // Choose Course Manually:-
+        checkRevalidateInCertification:`//span[text()='check to enable certification re-validation']/preceding::i[contains(@class,'square icon')]`,
+                saveButton2: `(//button[text()='Save'])[1]`,
+    
     };
 
+	
     //Adding course manually to the recertification module:-
     async addCourseManually() {
         await this.validateElementVisibility(this.selectors.addCourseManually, "Add Course Manually");
@@ -199,6 +230,8 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.daysLocator, "Day", "DD Value")
     }
 
+/*************  ✨ Windsurf Command ⭐  *************/
+/*******  86c2f0e0-0dd5-4aa4-bd32-4a295dec8349  *******/
     async clickReCertExpiresButton() {
         await this.wait("minWait");
         await this.page.locator(this.selectors.recertExpiresBtn).scrollIntoViewIfNeeded();
@@ -249,11 +282,11 @@ export class LearningPathPage extends AdminHomePage {
             // Select Specific Date option
             await this.click(this.selectors.specificDateLocator, "Specific Date", "Option");
             await this.wait("minWait");
-
             // Enter tomorrow's date
             const tomorrowDate = gettomorrowDateFormatted();
-            await this.type(this.selectors.validityDateInput, "Validity Date", tomorrowDate);
+            await this.typeAndEnter(this.selectors.validityDateInput, "Validity Date", tomorrowDate);
             console.log(`✅ Set Specific Date: ${tomorrowDate}`);
+             await this.wait("minWait");
 
         } else if (expiryType === "Anniversary Date") {
             // Select Anniversary Date option
@@ -463,9 +496,10 @@ export class LearningPathPage extends AdminHomePage {
     }
 
     async searchAndClickCourseCheckBox(data: string) {
-        //await this.typeAndEnter(this.selectors.addCourseSearchInput, "Course Serach Input", data) --> changed in new update('16/07/2024')
+      //  await this.typeAndEnter(this.selectors.addCourseSearchInput, "Course Serach Input", data) --> changed in new update('16/07/2024')
         //"//input[contains(@id,'program-structure-title-search')]"
         const addCourseInput = this.page.locator(this.selectors.addCourseSearchInput).last();
+        await addCourseInput.fill(''); // Clear any existing text
         await addCourseInput.focus(),
             await this.page.keyboard.type(data, { delay: 800 })
         await this.page.keyboard.press('Enter');
@@ -481,8 +515,8 @@ export class LearningPathPage extends AdminHomePage {
         // await this.click(this.selectors.checkBox(randomNumber), "Add Course CheckBox", "ChexkBox");
     }
 
-    async enterPrice() {
-        await this.type(this.selectors.price, "price", FakerData.getPrice());
+    async enterPrice(priceValue: string = FakerData.getPrice()) {
+        await this.type(this.selectors.price, "price", priceValue);
     }
     async clickAddSelectCourse() {
         await this.click(this.selectors.addSelectedCourseBtn, "Add Select Course", "Button");
@@ -707,6 +741,21 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.editLearningPathBtn, "Edit Learning Path", "Button");
     }
 
+    /**
+     * Verify if Manager Approval tab is visible
+     * @returns Promise<boolean> - true if visible, false if not visible
+     */
+    async managerApprovalVisible(): Promise<boolean> {
+        await this.wait("minWait");
+        try {
+            const isVisible = await this.page.locator("//span[text()='Manager Approval']").isVisible();
+            return isVisible;
+        } catch (error) {
+            console.log("Error checking Manager Approval tab visibility:", error);
+            return false;
+        }
+    }
+
     async clickAndSelectCompliance() {
         await this.mouseHover(this.selectors.complianceBtn, "Compliance");
         await this.click(this.selectors.complianceBtn, "Compliance", "Button");
@@ -736,7 +785,7 @@ export class LearningPathPage extends AdminHomePage {
             await this.click(this.selectors.recertCompleteByDateOption, "Date", "Option");
             await this.wait("minWait");
             const tomorrowDate = gettomorrowDateFormatted();
-            await this.type(this.selectors.recertCompleteByDateInput, "Recertification Complete By Date", tomorrowDate);
+            await this.typeAndEnter(this.selectors.recertCompleteByDateInput, "Recertification Complete By Date", tomorrowDate);
             console.log(`✅ Set recertification complete by Date: ${tomorrowDate}`);
         } else if (completeByType === "Days from enrollment") {
             await this.click(this.selectors.recertCompleteByDaysFromEnrollmentOption, "Days from enrollment", "Option");
@@ -770,6 +819,7 @@ export class LearningPathPage extends AdminHomePage {
             const isVisible = await this.page.locator(this.selectors.copyFromCertificationPath).isVisible();
             if (isVisible) {
                 console.log(`✅ Copy from certification path is default, clicking Save`);
+                await this.wait("minWait");
                 await this.click(this.selectors.saveButton, "Save Button", "Button");
             }
         } else if (method === "Add Courses Manually") {
@@ -789,6 +839,7 @@ export class LearningPathPage extends AdminHomePage {
         await this.wait('mediumWait');
         const inner = await this.getInnerText("//label[text()='CODE']/parent::div");
         console.log(inner);
+        return inner;
 
         /*   let codeValue = await this.fetchattribute(this.selectors.codeInput, "placeholder");
           console.log(codeValue); */
@@ -833,6 +884,17 @@ export class LearningPathPage extends AdminHomePage {
         const modalLocator = "//div[contains(text(),'Please choose your preferred method')]";
         await this.waitForElementHidden(modalLocator, "Recertification modal");
      //   await this.verification(this.selectors.verifyRecertificationCourse(data), data);
+    }
+
+    async saveRecertificationMultipleCourses(courses: string[]) {
+        await this.mouseHover(this.selectors.recertificationSaveBtn, "Save");
+        await this.click(this.selectors.recertificationSaveBtn, "Save", "Button");
+        
+        for (const course of courses) {
+            await this.verification(this.selectors.verifyRecertificationCourse(course), course);
+            console.log(`✅ Verified recertification course: ${course}`);
+        }
+        console.log(`✅ Successfully verified ${courses.length} recertification courses`);
     }
 
     async registractionEnds() {
@@ -1137,5 +1199,223 @@ export class LearningPathPage extends AdminHomePage {
         await this.click(this.selectors.editIconTP(lpName), `Edit Icon for ${lpName}`, "Icon");
         await this.wait("minWait");
         console.log(`✅ Clicked edit icon for Learning Path: ${lpName}`);
+    }
+
+    // Clone Learning Path methods
+    async clickCloneIcon(lpTitle: string) {
+        await this.wait("minWait");
+        await this.click(this.selectors.cloneIcon(lpTitle), `Clone Icon for ${lpTitle}`, "Icon");
+        await this.wait("minWait");
+        console.log(`✅ Clicked clone icon for Learning Path: ${lpTitle}`);
+    }
+
+
+    async unselectAllCloneOptions() {
+        await this.click(this.selectors.cloneUnselectAllCheckbox, "Unselect All", "Checkbox");
+        await this.wait("minWait");
+        console.log("✅ Unselected all clone options");
+    }
+
+    async getCloneFormLabels(): Promise<string[]> {
+        const labels = await this.page.locator(this.selectors.cloneFormLabels).allTextContents();
+        console.log("📋 Available clone form labels:", labels);
+        return labels;
+    }
+
+    async selectCloneOption(label: string) {
+        await this.click(this.selectors.clonePopupCheckbox(label), label, "Checkbox");
+        await this.wait("minWait");
+        console.log(`✅ Selected clone option: ${label}`);
+    }
+
+    async clickCreateCopy() {
+        await this.click(this.selectors.createCopyBtn, "Create Copy", "Button");
+        await this.wait("maxWait");
+        await this.spinnerDisappear();
+        console.log("✅ Clicked Create Copy button");
+    }
+
+    async verifyClonedTitle(originalTitle: string) {
+        const expectedClonedTitle = `${originalTitle}_Copy`;
+        const titleLocator = `//input[@id='program-title']`;
+        await this.validateElementVisibility(titleLocator, "Title Input");
+        
+        // Get the actual value from the input field
+        const actualTitle = await this.page.locator(titleLocator).inputValue();
+        
+        if (actualTitle === expectedClonedTitle) {
+            console.log(`✅ Verified cloned title: ${expectedClonedTitle}`);
+        } else {
+            throw new Error(`❌ Title mismatch! Expected: "${expectedClonedTitle}", but got: "${actualTitle}"`);
+        }
+        return actualTitle;
+    }
+    public async clickEnrollmentsButton(){
+        await this.wait("minWait");
+
+        await this.click(this.selectors.enrollments, "Enrollments Button", "Button");
+    }
+    async checkRevalidateInCertification(){
+        await this.validateElementVisibility(this.selectors.checkRevalidateInCertitfcation, "Re-validate in Certification")
+        await this.click(this.selectors.checkRevalidateInCertitfcation, "Re-validate in Certification", "Checkbox")
+        await this.wait('minWait');
+        await this.click(this.selectors.saveButton2, "Save", "Button")
+        await this.wait('minWait');
+    }
+
+    async verifyEnrollAgainPopupMessage() {
+        await this.wait("minWait");
+        await this.validateElementVisibility(
+            this.selectors.enrollAgainPopupMessage,
+            "Enroll Again Popup Message"
+        );
+        console.log("✅ Verified enroll again popup message is visible");
+    }
+
+    async verifyEnrollAgainPopupCourseName(courseName: string) {
+        await this.wait("minWait");
+        const courseNameLocator = this.selectors.enrollAgainPopupCourseName(courseName);
+        await this.validateElementVisibility(
+            courseNameLocator,
+            `Course Name: ${courseName} in popup`
+        );
+        console.log(`✅ Verified course name '${courseName}' in popup`);
+    }
+
+    async clickEnrollAgainPopupOK() {
+        await this.wait("minWait");
+        await this.click(
+            this.selectors.enrollAgainPopupOKButton,
+            "OK Button",
+            "Button"
+        );
+        await this.wait("minWait");
+        console.log("✅ Clicked OK button on enroll again popup");
+    }
+
+    async verifyRecertEnrollAgainPopupMessage() {
+        await this.validateElementVisibility(
+            this.selectors.recertEnrollAgainPopupMessage,
+            "Recertification Enroll Again Popup Message"
+        );
+        console.log("✅ Verified recertification enroll again popup message is visible");
+    }
+
+    async verifyRecertEnrollAgainPopupCourseName(courseName: string) {
+        const courseNameLocator = this.selectors.enrollAgainPopupCourseName(courseName);
+        await this.validateElementVisibility(
+            courseNameLocator,
+            `Course Name: ${courseName} in recert popup`
+        );
+        console.log(`✅ Verified course name '${courseName}' in recertification popup`);
+    }
+
+    async clickRecertEnrollAgainPopupOK() {
+        await this.click(
+            this.selectors.enrollAgainPopupOKButton,
+            "OK Button",
+            "Button"
+        );
+        await this.wait("minWait");
+        console.log("✅ Clicked OK button on recertification enroll again popup");
+    }
+
+    /**
+     * Apply Learning Path filters with optional parameters
+     * @param filters - Object containing optional filter parameters
+     * @param filters.category - Category filter value (searchable dropdown)
+     * @param filters.currency - Currency filter value (searchable dropdown)
+     * @param filters.language - Language filter value (searchable dropdown)
+     * @param filters.tags - Tags filter value (searchable dropdown)
+     * @param filters.provider - Provider filter value (searchable dropdown)
+     * @param filters.status - Status filter value (without search dropdown)
+     * @param filters.priceMin - Minimum price (text field)
+     * @param filters.priceMax - Maximum price (text field)
+     * @param filters.code - CODE filter value (search filter)
+     * @param filters.course - Course filter value (search filter)
+     */
+    async applyLearningPathFilters(filters: {
+        category?: string;
+        currency?: string;
+        language?: string;
+        tags?: string;
+        provider?: string;
+        status?: string;
+        priceMin?: string;
+        priceMax?: string;
+        code?: string;
+        course?: string;
+    } = {}) {
+        const filterUtils = new FilterUtils(this.page, this.context);
+
+        // Click filter icon to open filters
+        await filterUtils.clickFilterIcon();
+        await this.wait("minWait");
+        console.log("🔍 Opened Learning Path filters");
+
+        // Apply Category filter (searchable dropdown)
+        if (filters.category) {
+            await filterUtils.applySearchableDropdownFilter("Category", filters.category);
+            console.log(`✅ Applied Category filter: ${filters.category}`);
+        }
+
+        // Apply Currency filter (searchable dropdown)
+        if (filters.currency) {
+            await filterUtils.applySearchableDropdownFilter("Currency", filters.currency);
+            console.log(`✅ Applied Currency filter: ${filters.currency}`);
+        }
+
+        // Apply Language filter (searchable dropdown)
+        if (filters.language) {
+            await filterUtils.applySearchableDropdownFilter("Language", filters.language);
+            console.log(`✅ Applied Language filter: ${filters.language}`);
+        }
+
+        // Apply Tags filter (searchable dropdown)
+        if (filters.tags) {
+            await filterUtils.applySearchableDropdownFilter("Tags", filters.tags);
+            console.log(`✅ Applied Tags filter: ${filters.tags}`);
+        }
+
+        // Apply Provider filter (searchable dropdown)
+        if (filters.provider) {
+            await filterUtils.applySearchableDropdownFilter("Provider", filters.provider);
+            console.log(`✅ Applied Provider filter: ${filters.provider}`);
+        }
+
+        // Apply Status filter (without search dropdown)
+        if (filters.status) {
+            await filterUtils.applyDefaultDropdownFilter("Status", filters.status);
+            console.log(`✅ Applied Status filter: ${filters.status}`);
+        }
+
+        // Apply Price Min filter (text field)
+        if (filters.priceMin) {
+            await filterUtils.applyTextFieldFilter("Price Min", filters.priceMin);
+            console.log(`✅ Applied Price Min filter: ${filters.priceMin}`);
+        }
+
+        // Apply Price Max filter (text field)
+        if (filters.priceMax) {
+            await filterUtils.applyTextFieldFilter("Price Max", filters.priceMax);
+            console.log(`✅ Applied Price Max filter: ${filters.priceMax}`);
+        }
+
+        // Apply CODE filter (search filter)
+        if (filters.code) {
+            await filterUtils.searchAndSelectValue("CODE", filters.code);
+            console.log(`✅ Applied CODE filter: ${filters.code}`);
+        }
+
+        // Apply Course filter (search filter)
+        if (filters.course) {
+            await filterUtils.searchAndSelectValue("Course", filters.course);
+            console.log(`✅ Applied Course filter: ${filters.course}`);
+        }
+
+        // Click Apply button
+        await filterUtils.clickApplyFilter();
+        await this.wait("mediumWait");
+        console.log("✅ Applied all Learning Path filters");
     }
 }

@@ -9,7 +9,7 @@ const OrgName = FakerData.getOrganizationName()+"org"
 test(`Creating the organization`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
     test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
+        { type: `Author`, description: `Balasundar` },
         { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
         { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
     )
@@ -40,11 +40,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 
  test(`Verify the organization type after mapping to the user`, async ({ adminHome, createUser ,createCourse}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+    
     const csvFilePath = './data/US_address.csv';
     const data = await readDataFromCSV(csvFilePath);
 
@@ -78,11 +74,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 test(`Verify that an organization can be successfully suspend and activated from listingpage`, async ({ adminHome, organization, CompletionCertification,createCourse }) => 
     {
-    test.info().annotations.push(
-        { type: `Author`, description: `Vidya` },
-        { type: `TestCase`, description: `Verify that an organization can be successfully created with all required details` },
-        { type: `Test Description`, description: `Verify that an organization can be successfully created with all required details` }
-    )
+  
 
   
 await adminHome.loadAndLogin("CUSTOMERADMIN");
@@ -104,11 +96,7 @@ await adminHome.loadAndLogin("CUSTOMERADMIN");
 
 
 test(`Verify the organization after suspended by the admin`, async ({ adminHome, createUser ,createCourse}) => {
-    test.info().annotations.push(
-        { type: `Author`, description: `Tamilvanan` },
-        { type: `TestCase`, description: `Verify that user address validation functionality working as expected` },
-        { type: `Test Description`, description: `Creating the user and verifying user address validation functionality working as expected` }
-    );   
+    
     const csvFilePath = './data/US_address.csv';
     const data = await readDataFromCSV(csvFilePath);
 
