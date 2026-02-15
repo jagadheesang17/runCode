@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          npx playwright test tests/admin/course/CRS_001_Verify_Course_Cancellation_Option_For_ILT_VC_ELearning.spec.ts \
+          xvfb-run --auto-servernum --server-args="-screen 0 1920x1080x24" npx playwright test tests/admin/course/CRS_001_Verify_Course_Cancellation_Option_For_ILT_VC_ELearning.spec.ts \
             tests/admin/course/CRS_002_Verify_Course_Completion_For_Past_ILT_VC_Classes.spec.ts \
             tests/admin/course/CRS_003_Verify_Observation_Checklist_For_ELearning_Course.spec.ts \
             tests/admin/course/CRS_004_Verify_Observation_Checklist_NOT_Visible_When_Disabled.spec.ts \
@@ -49,10 +49,11 @@ jobs:
             tests/admin/course/CRS_Verify_pre_assessment_attachment_and_launch_functionality.spec.ts \
             tests/admin/course/CRS_Verify_survey_becomes_mandatory_when_consider_for_completion_selected.spec.ts \
             tests/admin/course/CRS_Verify_survey_link_copy_and_launch_functionality.spec.ts \
-            --project=chrome
+            --project=chrome --headed
         continue-on-error: true
         env:
           CI: true
+          DISPLAY: ':99'
 
       - name: Generate Allure Report
         if: always()
