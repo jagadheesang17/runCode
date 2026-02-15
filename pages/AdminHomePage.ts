@@ -61,7 +61,7 @@ export class AdminHomePage extends AdminLogin {
         adminRolemenu: `//a[text()='Admin Role']`,
         siteAdminMenu: `//span[text()='Site Admin']`,
         learnerConfigLink: `//a[text()='Learner Configuration']`,
-        siteSettingsLink: `//a[text()='Site Settings']`,
+        siteSettingsLink: `//*[text()='Site Setting']`,
         adminConfigLink: `//a[text()='Admin Configuration']`,
         enrollmentsLink: `//i[@data-bs-target="#Enrollments-content"]`,
         commerceLink: `//i[@data-bs-target="#Commerce-content"]`,
@@ -169,27 +169,22 @@ export class AdminHomePage extends AdminLogin {
         try {
             console.log(`🔐 Loading admin home page for ${role}...`);
             
-            // Try to load cookies from cookies.txt first (only for CUSTOMERADMIN)
-            const cookiesLoaded = await this.loadCookiesFromFile(role);
+            // Cookie loading disabled - perform direct login
+            // const cookiesLoaded = await this.loadCookiesFromFile(role);
             
-            if (cookiesLoaded) {
-                // Navigate to admin page with cookies
-                await this.page.goto(AdminLogin.pageUrl, { waitUntil: 'domcontentloaded' });
-                await this.wait("minWait");
-                
-                // Verify if cookies are still valid
-                const cookiesValid = await this.verifyCookiesValid();
-                
-                if (cookiesValid) {
-                    console.log(`✅ Successfully authenticated using cookies for ${role}`);
-                    return;
-                }
-                
-                console.log(`⚠️ Cookies expired (10min inactivity timeout), performing fresh login for ${role}...`);
-            }
+            // if (cookiesLoaded) {
+            //     await this.page.goto(AdminLogin.pageUrl, { waitUntil: 'domcontentloaded' });
+            //     await this.wait("minWait");
+            //     const cookiesValid = await this.verifyCookiesValid();
+            //     if (cookiesValid) {
+            //         console.log(`✅ Successfully authenticated using cookies for ${role}`);
+            //         return;
+            //     }
+            //     console.log(`⚠️ Cookies expired (10min inactivity timeout), performing fresh login for ${role}...`);
+            // }
             
-            // If cookies don't exist or are invalid, perform regular login
-            console.log(`🔑 Performing regular login for ${role}...`);
+            // Direct login without cookie checks
+            console.log(`🔑 Performing direct login for ${role}...`);
             await this.page.goto(AdminLogin.pageUrl);
             await this.adminLogin(role);
             await this.wait("minWait");
@@ -931,11 +926,11 @@ ${textContent}
     }
 
     ///Site Admin////
-    public async siteAdmin() {
+    public async sitesettings() {
         await this.wait("minWait");
-        await this.page.locator(this.selectors.siteAdminMenu).scrollIntoViewIfNeeded();
-        await this.validateElementVisibility(this.selectors.siteAdminMenu, "Site Admin");
-        await this.click(this.selectors.siteAdminMenu, "Site Admin", "Button");
+        await this.page.locator(this.selectors.siteSettingsLink).scrollIntoViewIfNeeded();
+        await this.validateElementVisibility(this.selectors.siteSettingsLink, "Site Admin");
+        await this.click(this.selectors.siteSettingsLink, "Site Admin", "Button");
     }
 
     public async siteAdmin_learnerconfig() {

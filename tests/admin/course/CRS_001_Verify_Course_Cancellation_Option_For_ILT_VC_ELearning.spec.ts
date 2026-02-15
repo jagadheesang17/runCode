@@ -76,6 +76,7 @@ test.describe(`CRS_001: Verify Course Cancellation Option Availability`, () => {
         await createCourse.editcourse();
         await createCourse.wait("mediumWait");
         console.log(`📝 Opened course in edit mode`);
+    //    await createCourse.clickEditInstance();
 
         // Verify Cancel button is available
         const cancelButtonExists = await createCourse.verifyCancelButtonExists();

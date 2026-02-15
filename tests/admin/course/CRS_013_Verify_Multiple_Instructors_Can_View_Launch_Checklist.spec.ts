@@ -23,50 +23,6 @@ test.describe.serial("CRS_013 - Verify Multiple Instructors Can View and Launch 
     let instructor1: string;
     let instructor2: string;
 
-    test("Step 1: Enable Observation Checklist in Admin Configuration", async ({ adminHome, siteAdmin }) => {
-        test.info().annotations.push(
-            { type: 'Author', description: 'QA Automation' },
-            { type: 'TestCase', description: 'CRS_013_Step1_Enable_Observation_Checklist' },
-            { type: 'Test Description', description: 'Navigate to Admin Configuration and enable Observation Checklist (QuestionPro) if not already enabled' }
-        );
-
-        console.log("📋 Test Objective: Enable Observation Checklist in Admin Configuration");
-
-        // Login as admin
-        await adminHome.loadAndLogin("CUSTOMERADMIN");
-        console.log("✅ Logged in as CUSTOMERADMIN");
-
-        // Navigate to Site Admin > Admin Configuration
-        await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await siteAdmin.adminConfiguration();
-        console.log("✅ Navigated to Admin Configuration");
-
-        // Click on Admin site configuration tab
-        await siteAdmin.clickAdminSiteConfiguration();
-
-        // Verify Observation Checklist option is visible
-        const isVisible = await siteAdmin.verifyObservationChecklistInAdminConfig();
-        if (!isVisible) {
-            test.skip(true, "Observation Checklist feature is not available in this environment - skipping remaining tests");
-            return;
-        }
-
-        // Check if already enabled, if not enable it
-        const isEnabled = await siteAdmin.isObservationChecklistEnabled();
-        
-        if (!isEnabled) {
-            await siteAdmin.enableObservationChecklist();
-            console.log("✅ Observation Checklist has been enabled");
-        } else {
-            console.log("✅ Observation Checklist is already enabled - proceeding to next step");
-        }
-
-        // Reload the page to apply changes
-        await siteAdmin.page.reload();
-        await siteAdmin.wait("mediumWait");
-        console.log("✅ Page reloaded successfully");
-    });
 
     test("Step 2: Create E-Learning Course", async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
@@ -123,7 +79,7 @@ test.describe.serial("CRS_013 - Verify Multiple Instructors Can View and Launch 
         console.log(`✅ Created E-Learning course: ${courseName}`);
     });
 
-    test("Step 3: Add Observation Checklist to Course", async ({ adminHome, createCourse }) => {
+    test("Step 3: Add Observation Checklist to Course", async ({ adminHome,siteAdmin, createCourse }) => {
         test.info().annotations.push(
             { type: 'Author', description: 'QA Automation' },
             { type: 'TestCase', description: 'CRS_013_Step3_Add_Observation_Checklist' },
@@ -148,10 +104,26 @@ test.describe.serial("CRS_013 - Verify Multiple Instructors Can View and Launch 
         await createCourse.wait("mediumWait");
         console.log("✅ Opened course in edit mode");
 
-        // Verify Observation Checklist button exists
         const observationChecklistExists = await createCourse.verifyObservationChecklistButtonExists();
-        if (!observationChecklistExists) {
-            throw new Error("Observation Checklist button is not visible - cannot proceed with test");
+        
+        if (observationChecklistExists) {
+            console.log("✅ SUCCESS: Observation Checklist button IS available for E-Learning course");
+        } else {
+            console.log("⚠️ Observation Checklist button NOT found - attempting to enable from Site Settings...");
+            await siteAdmin.enableObservationChecklistFromSiteSettings();
+
+               
+        await adminHome.menuButton();
+        await adminHome.clickLearningMenu();
+        await adminHome.clickCourseLink();
+        
+        await createCourse.searchCourse(courseName);
+        console.log(`🔍 Searched for course: ${courseName}`);
+
+        // Click edit icon to open course
+        await createCourse.clickEditIcon();
+        await createCourse.wait("mediumWait");
+        console.log("✅ Opened course in edit mode");
         }
 
         // Add Observation Checklist to course
@@ -162,12 +134,13 @@ test.describe.serial("CRS_013 - Verify Multiple Instructors Can View and Launch 
         await createCourse.wait("mediumWait");
     });
 
-    test("Step 4: Select Multiple Instructors as Evaluators for Observation Checklist", async ({ adminHome, createCourse }) => {
+    test("Step 4: Select Multiple Instructors as Evaluators for Observation Checklist", async ({ adminHome,siteAdmin, createCourse }) => {
         test.info().annotations.push(
             { type: 'Author', description: 'QA Automation' },
             { type: 'TestCase', description: 'CRS_013_Step4_Select_Multiple_Evaluators' },
             { type: 'Test Description', description: 'Select multiple instructors as evaluators for the observation checklist' }
         );
+      
 
         console.log("📋 Test Objective: Select multiple instructors as evaluators");
         console.log(`👥 Evaluator 1: ${instructor1}`);
@@ -180,6 +153,8 @@ test.describe.serial("CRS_013 - Verify Multiple Instructors Can View and Launch 
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.clickCourseLink();
+
+  
         
         await createCourse.searchCourse(courseName);
         console.log(`🔍 Searched for course: ${courseName}`);

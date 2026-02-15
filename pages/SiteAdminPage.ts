@@ -129,6 +129,9 @@ export class SiteAdminPage extends AdminHomePage {
         observationChecklistLabel: `//label[@for='mod_admn_quespro_input']`,
         observationChecklistToggleOn: `//label[@for='mod_admn_quespro_input']//i[contains(@class,'fa-toggle-on')]`,
         observationChecklistToggleOff: `//label[@for='mod_admn_quespro_input']//i[contains(@class,'fa-toggle-off')]`,
+        tenantSettingLink: `//a[text()='Tenant Setting']`,
+        configurationTab: `//button[@id='nav-home-tab-configuration']`,
+        observationChecklistSpanInConfig: `//span[text()='Observation Checklist (QuestionPro)']`,
  disabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-off icon_26_1']`,
         enabledAddressInheritance:`//span[text()='Address Inheritance And Emergency Contact']/preceding-sibling::i[@class='fa-duotone fa-toggle-on icon_26_1']`,
 
@@ -548,6 +551,90 @@ export class SiteAdminPage extends AdminHomePage {
         }
         else{
             console.log("Inherit Address and Emergency Contact are already checked");
+        }
+    }
+
+    // Enable Observation Checklist from Site Settings > Tenant Settings > Configuration
+    async enableObservationChecklistFromSiteSettings() {
+        try {
+            console.log("🔄 Navigating to Site Settings to enable Observation Checklist...");
+            
+            // Click menu button to open navigation
+            await this.menuButton();
+            await this.wait("minWait");
+            
+            // Click Site Settings
+            await this.sitesettings();
+            await this.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await this.click(this.selectors.tenantSettingLink, "Tenant Setting", "Link");
+            await this.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await this.click(this.selectors.configurationTab, "Configuration Tab", "Tab");
+            await this.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
+            
+            // Click Observation Checklist (QuestionPro) span to enable
+            await this.page.locator(this.selectors.observationChecklistSpanInConfig).scrollIntoViewIfNeeded();
+            await this.wait("minWait");
+            await this.click(this.selectors.observationChecklistSpanInConfig, "Observation Checklist (QuestionPro)", "Toggle");
+            await this.wait("mediumWait");
+            console.log("✅ Enabled Observation Checklist from Configuration");
+            
+            // Reload the page to apply changes
+            await this.page.reload();
+            await this.wait("mediumWait");
+            console.log("✅ Page reloaded to apply Observation Checklist settings");
+            
+            return true;
+        } catch (error) {
+            console.log("❌ Error enabling Observation Checklist from Site Settings:", error);
+            return false;
+        }
+    }
+
+    // Disable Observation Checklist from Site Settings > Tenant Settings > Configuration
+    async disableObservationChecklistFromSiteSettings() {
+        try {
+            console.log("🔄 Navigating to Site Settings to disable Observation Checklist...");
+            
+            // Click menu button to open navigation
+            await this.menuButton();
+            await this.wait("minWait");
+            
+            // Click Site Settings
+            await this.sitesettings();
+            await this.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await this.click(this.selectors.tenantSettingLink, "Tenant Setting", "Link");
+            await this.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await this.click(this.selectors.configurationTab, "Configuration Tab", "Tab");
+            await this.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
+            
+            // Click Observation Checklist (QuestionPro) span to disable
+            await this.page.locator(this.selectors.observationChecklistSpanInConfig).scrollIntoViewIfNeeded();
+            await this.wait("minWait");
+            await this.click(this.selectors.observationChecklistSpanInConfig, "Observation Checklist (QuestionPro)", "Toggle");
+            await this.wait("mediumWait");
+            console.log("✅ Disabled Observation Checklist from Configuration");
+            
+            // Reload the page to apply changes
+            await this.page.reload();
+            await this.wait("mediumWait");
+            console.log("✅ Page reloaded to apply Observation Checklist settings");
+            
+            return true;
+        } catch (error) {
+            console.log("❌ Error disabling Observation Checklist from Site Settings:", error);
+            return false;
         }
     }
 

@@ -22,8 +22,19 @@ test.describe(`Verify that the admin cannot edit the price/currency of the class
         await adminHome.loadAndLogin("SUPERADMIN");
         await adminHome.isSignOut();
         await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await adminHome.siteAdmin_Adminconfig();
+        await adminHome.siteSettings();
+            await adminHome.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await adminHome.click("//a[text()='Tenant Setting']", "Tenant Setting", "Link");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await adminHome.click("//button[@id='nav-home-tab-configuration']", "Configuration Tab", "Tab");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
+        
         await siteAdmin.clickBusinessRulesEditIcon();
         
         // Enable Price Override in admin configuration (CHECK it so it's available at course level)
@@ -229,8 +240,18 @@ test.describe(`Verify that the admin cannot edit the price/currency of the class
         await adminHome.loadAndLogin("SUPERADMIN");
         await adminHome.isSignOut();
         await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await adminHome.siteAdmin_Adminconfig();
+              await adminHome.siteSettings();
+            await adminHome.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await adminHome.click("//a[text()='Tenant Setting']", "Tenant Setting", "Link");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await adminHome.click("//button[@id='nav-home-tab-configuration']", "Configuration Tab", "Tab");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
         await siteAdmin.clickBusinessRulesEditIcon();
         
         // Re-enable Price Override after testing

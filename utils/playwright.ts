@@ -150,8 +150,23 @@ export abstract class PlaywrightWrapper {
     * @returns {Promise<string>} - The title of the page.
     */
     async getTitle(): Promise<string> {
-        await this.page.waitForLoadState('load');
-        return await this.page.title();
+        try {
+            await this.page.waitForLoadState('load', { timeout: 30000 });
+            await this.page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+            // Add small delay to ensure navigation is complete
+            await this.page.waitForTimeout(500);
+            return await this.page.title();
+        } catch (error) {
+            console.log("⚠️ Error getting page title, retrying...");
+            // Retry once after waiting
+            await this.page.waitForTimeout(1000);
+            try {
+                return await this.page.title();
+            } catch (retryError) {
+                console.log("❌ Failed to get page title after retry");
+                return "";
+            }
+        }
     }
 
     /**

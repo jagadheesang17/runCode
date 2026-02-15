@@ -17,6 +17,9 @@ switch (environmentSetup) {
         case "dev":
             dbName = "dev_database_config";
             break;
+        case "branded":
+            dbName = "qa_production_database_config";
+            break;
     default:
         throw new Error(`Invalid environment setup: ${environmentSetup}`);
 }

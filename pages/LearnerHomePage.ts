@@ -88,7 +88,7 @@ export class LearnerHomePage extends LearnerLogin {
         
         //Rejection Success Modal
         rejectionSuccessMessage: `//b[text()='Rejected Successfully! ']`,
-        certificateName:`#ext_certificate`
+        certificateName:`#ext_certificate`,
         // Alert more button selectors
         alertIcon: `//i[@class='fa-duotone fa-exclamation-triangle']`,
         alertsText: `(//div[text()='Alerts'])[1]`,
@@ -156,6 +156,22 @@ export class LearnerHomePage extends LearnerLogin {
         await this.click(this.selectors.myLearningLink, "My Learning", "Link");
         await this.page.waitForLoadState('load');
     }
+ public async clickToComplete() {
+        await this.validateElementVisibility("//a[contains(text(),'To complete')]", "Link");
+        // await this.mouseHover(this.selectors.myDashboardLink, "Link");
+        await this.click("//a[contains(text(),'To complete')]", "To Complete", "Link");
+ }
+
+  public async searchandclickOnToComplete(CRS) {
+        await this.validateElementVisibility(" //input[@id='exp-searchenr-search-field']", "Link");
+        // await this.mouseHover(this.selectors.myDashboardLink, "Link");
+        await this.typeAndEnter(" //input[@id='exp-searchenr-search-field']", "Enter", "Search Field", CRS);
+        await this.wait("mediumWait");
+        await this.click(`//div[contains(text(),'${CRS}')]`, "To Complete", "Link");
+        await this.page.waitForLoadState('load');
+ }
+ 
+
     public async clickDashboardLink() {
         await this.validateElementVisibility(this.selectors.myDashboardLink, "Link");
         // await this.mouseHover(this.selectors.myDashboardLink, "Link");

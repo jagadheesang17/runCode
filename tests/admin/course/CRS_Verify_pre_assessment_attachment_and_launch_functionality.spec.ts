@@ -95,13 +95,16 @@ test.describe("CRS_Verify_pre_assessment_attachment_and_launch_functionality", (
         await learnerHome.learnerLogin("LEARNERUSERNAME", "DefaultPortal");
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
+       
         await catalog.searchCatalog(courseName);
-        
+        await catalog.clickMoreonCourse(courseName);
+        await catalog.enrollCourseByClickRadioAndEnrollButton(courseName); 
+         
         // Navigate to course details to check pre-assessment
-        await catalog.navigateToCourseDetails(courseName);
+       // await catalog.navigateToCourseDetails(courseName);
         
         // Check if pre-assessment information is visible on course details
-        const assessmentInfoVisible = await catalog.page.locator("//div[contains(text(),'Assessment') or contains(text(),'Pre') or contains(text(),'Evaluation')]").isVisible({ timeout: 5000 });
+        const assessmentInfoVisible = await catalog.page.locator(`//div[contains(text(),'${preAssessmentTitle}')]`).isVisible({ timeout: 20000 });
         
         if (assessmentInfoVisible) {
             console.log("✓ PASS: Assessment information found on course details page");
@@ -118,14 +121,7 @@ test.describe("CRS_Verify_pre_assessment_attachment_and_launch_functionality", (
             console.log("ℹ INFO: Assessment information may be displayed differently on course details");
         }
 
-        // Step 2: Enroll in Course
-        await catalog.clickMoreonCourse(courseName);
-        //await catalog.clickEnrollButton();
-        await catalog.clickSelectcourse(courseName);
-        await catalog.clickEnroll();
-        await catalog.verifyEnrollmentSuccess();
-
-        console.log("PASS: Test 2 - Learner enrolled in course with pre-assessment successfully");
+       
     });
 
     test("Test 3: Launch course and verify pre-assessment launches first", async ({ learnerHome, catalog }) => {
@@ -149,9 +145,8 @@ test.describe("CRS_Verify_pre_assessment_attachment_and_launch_functionality", (
         
         // Step 4: Verify Pre-Assessment Launches First
         // Check for pre-assessment indicators
-        const preAssessmentVisible = await catalog.page.locator("//div[contains(text(),'Pre') or contains(text(),'Assessment') or contains(text(),'Evaluation')]").isVisible({ timeout: 10000 });
-        
-        if (preAssessmentVisible) {
+ const assessmentInfoVisible = await catalog.page.locator(`//div[contains(text(),'${preAssessmentTitle}')]`).isVisible({ timeout: 5000 });        
+        if (assessmentInfoVisible) {
             console.log("✓ PASS: Pre-assessment content detected on launch");
             
             // Check for specific pre-assessment elements

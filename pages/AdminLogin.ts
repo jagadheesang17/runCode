@@ -116,24 +116,25 @@ export class AdminLogin extends PlaywrightWrapper {
     public async adminLogin(role: string) {
         const { username, password } = credentials[role];
         console.log("Starting admin login process...");
+        await this.page.click("//span[text()='Sign In']")
         //await this.page.goto(AdminLogin.pageUrl); ----
         await this.clearAndType("#username", "Username", username);
         // Clear existing value and type password
         await this.clearAndType("#password", "Password", password);
         console.log("Clicking Sign In button...");
         // Wait for sign in button to be stable and clickable
-        const signInButton = this.page.locator("//button[contains(text(),'SIGN')]");
-        await signInButton.waitFor({ state: 'visible' });
-        await signInButton.waitFor({ state: 'attached' });
-        await this.page.waitForLoadState('networkidle');
+        const signInButton = this.page.locator("//button[contains(text(),'Sign In')]");
+        // await signInButton.waitFor({ state: 'visible' });
+        // await signInButton.waitFor({ state: 'attached' });
+         await signInButton.click({ timeout: 10000 });
         
         // Click sign in button with retry mechanism
-        try {
-            await signInButton.click({ timeout: 10000 });
-        } catch (error) {
-            console.log("First click failed, trying alternative selector...");
-            await this.page.locator("button[type='submit']").click({ timeout: 10000 });
-        }
+        // try {
+        //     await signInButton.click({ timeout: 10000 });
+        // } catch (error) {
+        //     console.log("First click failed, trying alternative selector...");
+        //     await this.page.locator("button[type='submit']").click({ timeout: 10000 });
+        // }
         
         await this.wait('minWait');
         /*    const logoutButton = this.page.locator("//div[@class='logout']");

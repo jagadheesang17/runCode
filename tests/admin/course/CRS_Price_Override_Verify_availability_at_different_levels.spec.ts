@@ -20,8 +20,18 @@ test.describe(`Verify Price Override availability at Admin, Course and Instance 
         await adminHome.loadAndLogin("SUPERADMIN");
         await adminHome.isSignOut();
         await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await adminHome.siteAdmin_Adminconfig();
+               await adminHome.siteSettings();
+            await adminHome.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await adminHome.click("//a[text()='Tenant Setting']", "Tenant Setting", "Link");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await adminHome.click("//button[@id='nav-home-tab-configuration']", "Configuration Tab", "Tab");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
         await siteAdmin.clickBusinessRulesEditIcon();
         
         // Verify Price Override in Admin Business Rules

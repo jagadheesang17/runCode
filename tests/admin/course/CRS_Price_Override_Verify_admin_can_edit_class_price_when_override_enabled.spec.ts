@@ -22,8 +22,20 @@ test.describe(`Verify that the admin can edit the price of the class when the Pr
         await adminHome.loadAndLogin("SUPERADMIN");
         await adminHome.isSignOut();
         await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await adminHome.siteAdmin_Adminconfig();
+         await adminHome.wait("mediumWait");
+                await adminHome.siteSettings();
+            await adminHome.wait("mediumWait");
+            
+            // Click Tenant Setting link
+            await adminHome.click("//a[text()='Tenant Setting']", "Tenant Setting", "Link");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Navigated to Tenant Settings");
+            
+            // Click Configuration tab
+            await adminHome.click("//button[@id='nav-home-tab-configuration']", "Configuration Tab", "Tab");
+            await adminHome.wait("mediumWait");
+            console.log("✅ Opened Configuration tab");
+        
         await siteAdmin.clickBusinessRulesEditIcon();
         
         // This method will check current state and only enable if it's OFF
@@ -83,7 +95,10 @@ test.describe(`Verify that the admin can edit the price of the class when the Pr
         await adminHome.menuButton();
         await adminHome.clickLearningMenu();
         await adminHome.clickCourseLink();
-        
+        let courseName= "Classroom Online Firewall Copy"
+        const instructorName = credentials.INSTRUCTORNAME.username;
+        const coursePrice = FakerData.getPrice();
+const instancePrice = "150"; 
         // Search for the created course in the listing
         await createCourse.wait("mediumWait");
         await createCourse.click("//input[@placeholder='Search']", "Course Search Field", "Textbox");
@@ -107,10 +122,12 @@ test.describe(`Verify that the admin can edit the price of the class when the Pr
         
         // Set up the instance with instructor, location, and schedule
         await createCourse.enterSessionName("Price Override Test Session");
+              await createCourse.startandEndTime();
         await createCourse.selectInstructor(instructorName);
+   
         await createCourse.selectLocation();
         await createCourse.enterDateValue();
-        await createCourse.startandEndTime();
+       
         
         // Set seat maximum for the instance
         await createCourse.setSeatsMax("1");
@@ -129,19 +146,19 @@ test.describe(`Verify that the admin can edit the price of the class when the Pr
         console.log("✅ Show in Catalog enabled for the instance");
         await createCourse.clickUpdate();
 
-        await createCourse.page.locator("//*[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='ok']").click();
+       // await createCourse.page.locator("//*[translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')='ok']").click();
         
-        // Click on "Resolve Later" button if it appears
-        await createCourse.wait("mediumWait");
-        try {
-            const resolveLaterBtn = createCourse.page.locator("//footer//following::button[text()='No, will resolve later']");
-            if (await resolveLaterBtn.isVisible({ timeout: 5000 })) {
-                await resolveLaterBtn.click();
-                console.log("✅ Clicked 'Resolve Later' button");
-            }
-        } catch (error) {
-            console.log("Resolve Later button not visible or not needed");
-        }
+        // // Click on "Resolve Later" button if it appears
+        // await createCourse.wait("mediumWait");
+        // try {
+        //     const resolveLaterBtn = createCourse.page.locator("//footer//following::button[text()='No, will resolve later']");
+        //     if (await resolveLaterBtn.isVisible({ timeout: 5000 })) {
+        //         await resolveLaterBtn.click();
+        //         console.log("✅ Clicked 'Resolve Later' button");
+        //     }
+        // } catch (error) {
+        //     console.log("Resolve Later button not visible or not needed");
+        // }
         
         // Add longer wait before checking success message
         await createCourse.wait("minWait");

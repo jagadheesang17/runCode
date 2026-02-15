@@ -81,10 +81,12 @@ test.describe("CRS1030: Verify survey becomes mandatory when 'Consider For Compl
         await learnerHome.clickCatalog();
         await catalog.mostRecent();
         await catalog.searchCatalog(courseName);
-        await catalog.navigateToCourseDetails(courseName);
-        await catalog.clickSelectcourse(courseName);
-        await catalog.clickEnroll();
-        await catalog.verifyEnrollmentSuccess();
+        await catalog.clickMoreonCourse(courseName);
+        await catalog.enrollCourseByClickRadioAndEnrollButton(courseName);
+        await catalog.completeCourseContent()
+        await catalog.saveLearningStatus();
+        await catalog.wait("mediumWait")
+
 
         // Step 2: Verify course incomplete without survey
         await learnerHome.clickMyLearning();
@@ -106,7 +108,9 @@ test.describe("CRS1030: Verify survey becomes mandatory when 'Consider For Compl
 
         // Step 3: Complete the mandatory survey
         await learnerHome.clickMyLearning();
-        await catalog.clickLaunchButton();
+       await learnerHome.clickToComplete();
+       await learnerHome.searchandclickOnToComplete(courseName)
+        await  catalog.surveyPlayButton();
         
         // Complete survey if visible
         await catalog.writeContent();
@@ -115,6 +119,7 @@ test.describe("CRS1030: Verify survey becomes mandatory when 'Consider For Compl
 
         // Step 4: Verify course completion after survey
         await learnerHome.clickMyLearning();
+        
         await catalog.clickCompletedButton();
         await catalog.validateElementVisibility(
             `//div[contains(text(),'${courseName}')]`,

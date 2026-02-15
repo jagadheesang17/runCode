@@ -82,4 +82,24 @@ switch (environmentSetup) {
             EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg",
             }
             break;
+    case "branded":
+        URLConstants = {
+            adminURL: "https://dbsfeature.expertusoneqa.com/",
+            leanerURL: "https://dbsfeature.expertusoneqa.com/learner/dbsfeature/",
+            learnerportal: "https://dbsfeature.expertusoneqa.com/learner/portal1/",
+            learnerportal2: "https://dbsfeature.expertusoneqa.com/learner/portal2/",
+            portal1: "dbsfeature",
+            portal2: "portal1",
+            portal3: "portal2",
+            LearnerGroup1: "AutoLG1",
+            LearnerGroup2: "AutoLG2",
+            creditCardNumber: "4111111111111111",
+            cardExpiryDate: "10/27",
+            cVV: "111",
+            USPS_Client_Id:"ScI6WsAHlUa6YC27zLRbQ0otldGLFdGG",
+            USPS_Client_Secret:"AG0WP7HYj4a00VXh",
+            USPS_API_URL:"https://api-cat.usps.com/",
+            EasyPost_API_Key:"EZTK507eedb9b0d14160837c7513d7462d84YnEE9NZqer80LS1xPq0irg"
+        }
+        break;
 }

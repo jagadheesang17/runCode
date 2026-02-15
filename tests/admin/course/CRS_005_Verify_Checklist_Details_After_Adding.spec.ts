@@ -20,54 +20,11 @@ test.describe.serial("CRS_005 - Verify Checklist Details After Adding", () => {
     let courseName: string;
     let description: string;
 
-    test("Step 1: Enable Observation Checklist in Admin Configuration", async ({ adminHome, siteAdmin }) => {
+    test("Step 1: Create E-Learning Course and Check Observation Checklist", async ({ adminHome, siteAdmin, createCourse }) => {
         test.info().annotations.push(
             { type: 'Author', description: 'AI Generated' },
-            { type: 'TestCase', description: 'CRS_005_Step1_Enable_Observation_Checklist' },
-            { type: 'Test Description', description: 'Navigate to Admin Configuration and enable Observation Checklist (QuestionPro) if not already enabled' }
-        );
-
-        // Login as admin
-        await adminHome.loadAndLogin("CUSTOMERADMIN");
-        console.log("✅ Logged in as CUSTOMERADMIN");
-
-        // Navigate to Site Admin > Admin Configuration
-        await adminHome.menuButton();
-        await adminHome.siteAdmin();
-        await siteAdmin.adminConfiguration();
-        console.log("✅ Navigated to Admin Configuration");
-
-        // Click on Admin site configuration tab
-        await siteAdmin.clickAdminSiteConfiguration();
-
-        // Verify Observation Checklist option is visible
-        const isVisible = await siteAdmin.verifyObservationChecklistInAdminConfig();
-        if (!isVisible) {
-            test.skip(true, "Observation Checklist feature is not available in this environment - skipping remaining tests");
-            return;
-        }
-
-        // Check if already enabled, if not enable it
-        const isEnabled = await siteAdmin.isObservationChecklistEnabled();
-        
-        if (!isEnabled) {
-            await siteAdmin.enableObservationChecklist();
-            console.log("✅ Observation Checklist has been enabled");
-        } else {
-            console.log("✅ Observation Checklist is already enabled - proceeding to next step");
-        }
-
-        // Reload the page to apply changes
-        await siteAdmin.page.reload();
-        await siteAdmin.wait("mediumWait");
-        console.log("✅ Page reloaded successfully");
-    });
-
-    test("Step 2: Create E-Learning Course", async ({ adminHome, createCourse }) => {
-        test.info().annotations.push(
-            { type: 'Author', description: 'AI Generated' },
-            { type: 'TestCase', description: 'CRS_005_Step2_Create_ELearning_Course' },
-            { type: 'Test Description', description: 'Create an E-Learning course for adding observation checklist' }
+            { type: 'TestCase', description: 'CRS_005_Step1_Create_Course_And_Check_Checklist' },
+            { type: 'Test Description', description: 'Create an E-Learning course and verify Observation Checklist button is available' }
         );
 
         // Generate test data
@@ -105,12 +62,56 @@ test.describe.serial("CRS_005 - Verify Checklist Details After Adding", () => {
         await createCourse.clickProceed();
         await createCourse.verifySuccessMessage();
         console.log(`✅ Created E-Learning course: ${courseName}`);
+
+        // Wait for course creation to complete
+        await createCourse.wait("mediumWait");
+
+        // Navigate to edit course view to check for Observation Checklist button
+        await createCourse.editcourse();
+        await createCourse.wait("mediumWait");
+        console.log("📝 Opened course in edit mode");
+
+        // Check if Observation Checklist button exists
+        const observationChecklistExists = await createCourse.verifyObservationChecklistButtonExists();
+        
+        if (observationChecklistExists) {
+            console.log("✅ Observation Checklist button IS available - proceeding to add checklist");
+        } else {
+            console.log("⚠️ Observation Checklist button NOT found - enabling from Site Settings...");
+            
+            // Enable Observation Checklist from Site Settings
+            const enabled = await siteAdmin.enableObservationChecklistFromSiteSettings();
+            
+            if (enabled) {
+                console.log("✅ Observation Checklist enabled from Site Settings");
+                
+                // Navigate back to the course
+                await adminHome.menuButton();
+                await adminHome.clickLearningMenu();
+                await adminHome.clickCourseLink();
+                await createCourse.searchCourse(courseName);
+                await createCourse.clickEditIcon();
+                await createCourse.wait("mediumWait");
+                
+                // Verify again
+                const checklistExistsAfterEnable = await createCourse.verifyObservationChecklistButtonExists();
+                if (checklistExistsAfterEnable) {
+                    console.log("✅ Observation Checklist button is now available");
+                } else {
+                    console.log("❌ FAILED: Observation Checklist button still not available after enabling");
+                    throw new Error("Observation Checklist button should be available after enabling from Site Settings");
+                }
+            } else {
+                console.log("❌ FAILED: Could not enable Observation Checklist from Site Settings");
+                throw new Error("Failed to enable Observation Checklist from Site Settings");
+            }
+        }
     });
 
-    test("Step 3: Add Observation Checklist and Verify Details", async ({ adminHome, createCourse }) => {
+    test("Step 2: Add Observation Checklist and Verify Details", async ({ adminHome, createCourse }) => {
         test.info().annotations.push(
             { type: 'Author', description: 'AI Generated' },
-            { type: 'TestCase', description: 'CRS_005_Step3_Add_And_Verify_Checklist_Details' },
+            { type: 'TestCase', description: 'CRS_005_Step2_Add_And_Verify_Checklist_Details' },
             { type: 'Test Description', description: 'Add observation checklist to course and verify all details (name, ID, rule setting icon, delete icon) are displayed' }
         );
 

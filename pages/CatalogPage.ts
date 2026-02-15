@@ -317,6 +317,19 @@ export class CatalogPage extends LearnerHomePage {
     );
   }
 
+  async statusVerification(type,course,status){
+    await this.validateElementVisibility("//a[contains(text(),'Completed')]", "tab");
+    await this.click("//a[contains(text(),'Completed')]", "Completed tab", "Tab");
+    await this.type("//input[@id='exp-searchenr-search-field']", "ILT/VC Course", course);
+    await this.wait("mediumWait");
+    await this.validateElementVisibility(`//h5[text()='${course}']`, "Course");
+    await this.click(`//h5[text()='${course}']`, "Course", "Text");
+    await this.validateElementVisibility(`//span[text()='${status}']`, "Status" );
+
+
+
+  }
+
   //To register the course from learnWithin30Mins section
   async learnWithin30Mins() {
     await this.validateElementVisibility(

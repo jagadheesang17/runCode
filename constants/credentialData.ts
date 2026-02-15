@@ -27,6 +27,10 @@ switch (environmentSetup) {
             username: "autoins",
             password: "Welcome1@"
         },
+        INSTRUCTOR2: {
+            username: "robert ins",
+            password: "Welcome1@"
+        },
         MANAGERNAME: {
             username: "automnr",
             password: "Welcome1@"
@@ -122,7 +126,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       INSTRUCTOR2: {
-        username: "divya",
+        username: "robert ins",
         password: "Welcome1@",
       },
       MANAGERNAME: {
@@ -220,7 +224,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       INSTRUCTOR2: {
-        username: "divya",
+        username: "robert ins",
         password: "Welcome1@",
       },
       MANAGERNAME: {
@@ -300,6 +304,103 @@ switch (environmentSetup) {
     };
     break;
 
+  case "branded":
+    credentials = {
+      CUSTOMERADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      CUSTOMERADMIN1: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      LEARNERADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      INSTRUCTORNAME: {
+        username: "autoins",
+        password: "Welcome1@",
+      },
+      INSTRUCTOR2: {
+        username: "robert ins",
+        password: "Welcome1@",
+      },
+      MANAGERNAME: {
+        username: "automnr",
+        password: "Welcome1@",
+      },
+      LEARNERUSERNAME: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      COMMERCEADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      SUPERADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      PEOPLEADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      LEARNERPORTAL_User: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      LEARNERPORTAL_2User: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      COMMONUSER: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      ENROLLADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      NEWCUSTOMERADMIN: {
+        username: "dbs@nomail.com",
+        password: "Welcome1@",
+      },
+      INTERNALUSER: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      EXTERNALUSER: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      TEAMUSER1: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      TEAMUSER2: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      SSOUSER: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      SSOUSEREMAIL: {
+        username1: "JagadishLearner",
+        password1: "Welcome1@",
+      },
+      LearnerGroup1user: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+      LearnerGroup2user: {
+        username: "JagadishLearner",
+        password: "Welcome1@",
+      },
+    };
+    break;
+
   case "dev":
     credentials = {
       CUSTOMERADMIN: {
@@ -319,7 +420,7 @@ switch (environmentSetup) {
         password: "Welcome1@",
       },
       INSTRUCTOR2: {
-        username: "divya",
+        username: "robert ins",
         password: "Welcome1@",
       },
       MANAGERNAME: {

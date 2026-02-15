@@ -245,13 +245,16 @@ test.describe(`CRS_002: Verify Course Completion for Past ILT and VC Classes`, (
         await createCourse.wait("mediumWait");
         console.log(`✅ Opened course for editing`);
         
-        // Scroll to the instance title and click it to open instance edit view
-        const instanceTitleLocator = `//div[@title='${vcCourseName}']`;
-        await createCourse.page.locator(instanceTitleLocator).scrollIntoViewIfNeeded();
-        await createCourse.wait("minWait");
-        await createCourse.page.locator(instanceTitleLocator).click();
-        console.log(`📝 Clicked on instance to open instance edit view`);
+        // // Scroll to the instance title and click it to open instance edit view
+        // const instanceTitleLocator = `//div[@title='${vcCourseName}']`;
+        // await createCourse.page.locator(instanceTitleLocator).scrollIntoViewIfNeeded();
+        // await createCourse.wait("minWait");
+        // await createCourse.page.locator(instanceTitleLocator).click();
+        // console.log(`📝 Clicked on instance to open instance edit view`);
 
+        // await createCourse.wait("mediumWait");
+        // await createCourse.spinnerDisappear();
+        await createCourse.clickEditInstance();
         await createCourse.wait("mediumWait");
         await createCourse.spinnerDisappear();
 
