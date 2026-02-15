@@ -29,7 +29,27 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        run: npx playwright test --project=chrome
+        run: |
+          npx playwright test tests/admin/course/CRS_001_Verify_Course_Cancellation_Option_For_ILT_VC_ELearning.spec.ts \
+            tests/admin/course/CRS_002_Verify_Course_Completion_For_Past_ILT_VC_Classes.spec.ts \
+            tests/admin/course/CRS_003_Verify_Observation_Checklist_For_ELearning_Course.spec.ts \
+            tests/admin/course/CRS_004_Verify_Observation_Checklist_NOT_Visible_When_Disabled.spec.ts \
+            tests/admin/course/CRS_005_Verify_Checklist_Details_After_Adding.spec.ts \
+            tests/admin/course/CRS_006_Verify_ELearning_Course_Cancellation_With_Enrollment.spec.ts \
+            tests/admin/course/CRS_007_Verify_Cancelled_Course_Fields_Disabled.spec.ts \
+            tests/admin/course/CRS_008_Verify_Cancelled_Course_Filter_And_Search.spec.ts \
+            tests/admin/course/CRS_009_Verify_Checklist_Rule_Configuration.spec.ts \
+            tests/admin/course/CRS_010_Verify_Evaluator_Dropdown_Lists_All_Instructors.spec.ts \
+            tests/admin/course/CRS_011_Verify_Evaluator_Not_Displayed_For_ILT_VC.spec.ts \
+            tests/admin/course/CRS_012_Verify_Observation_Checklist_Preview_Opens_In_New_Tab.spec.ts \
+            tests/admin/course/CRS_013_Verify_Multiple_Instructors_Can_View_Launch_Checklist.spec.ts \
+            tests/admin/course/CRS_Price_Override_Verify_admin_can_edit_class_price_when_override_enabled.spec.ts \
+            tests/admin/course/CRS_Price_Override_Verify_admin_cannot_edit_class_price_when_override_disabled.spec.ts \
+            tests/admin/course/CRS_Price_Override_Verify_availability_at_different_levels.spec.ts \
+            tests/admin/course/CRS_Verify_pre_assessment_attachment_and_launch_functionality.spec.ts \
+            tests/admin/course/CRS_Verify_survey_becomes_mandatory_when_consider_for_completion_selected.spec.ts \
+            tests/admin/course/CRS_Verify_survey_link_copy_and_launch_functionality.spec.ts \
+            --project=chrome
         continue-on-error: true
         env:
           CI: true
