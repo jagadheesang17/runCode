@@ -94,12 +94,12 @@ export default defineConfig({
     {
       name: 'chrome',
       use: {
-        browserName: 'chromium', ...devices['Desktop Chromium'], channel: 'chrome', headless: false,
+        browserName: 'chromium', ...devices['Desktop Chromium'], channel: 'chrome', headless: process.env.CI === 'true',
         viewport: null,
         launchOptions: {
           slowMo: 50,
         
-          args: ["--start-maximized", "--disable-web-security", "--incognito"]
+          args: ["--start-maximized", "--disable-web-security", "--incognito", "--no-sandbox", "--disable-setuid-sandbox"]
         }
       }
     },
@@ -128,12 +128,12 @@ export default defineConfig({
         testDir: './zCronVerification',
         use: {
 
-          headless: false,
+          headless: process.env.CI === 'true',
           ...devices['Desktop Chromium'],
           viewport: null,
           launchOptions: {
             slowMo: 50,
-            args: ["--start-maximized"]
+            args: ["--start-maximized", "--no-sandbox", "--disable-setuid-sandbox"]
           }
         }
       },] : []
@@ -143,12 +143,12 @@ export default defineConfig({
         testDir: './api',
 
         use: {
-          headless: false,
+          headless: process.env.CI === 'true',
           ...devices['Desktop Chromium'],
           viewport: null,
           launchOptions: {
             slowMo: 50,
-            args: ["--start-maximized"]
+            args: ["--start-maximized", "--no-sandbox", "--disable-setuid-sandbox"]
           }
 
         }
