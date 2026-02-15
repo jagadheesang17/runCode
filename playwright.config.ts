@@ -5,7 +5,7 @@ const timestamp = Date.now();
 const reportDir = `./reporter/playwright-reports-${timestamp}`;
 
 //If false qa will run,if its true automation environment will run
-export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction"  = 'qaProduction';
+export let environmentSetup: "qa" | "dev" | "automation" | "qaProduction" | "branded" = 'branded';
 export default defineConfig({
  timeout: 700000,  
   expect: { timeout: 10000 }, // 10 sec for assertions
@@ -13,13 +13,13 @@ export default defineConfig({
   
 
   testDir: './tests',
-  globalSetup: require.resolve('./global-setup.ts'),
+  // globalSetup: require.resolve('./global-setup.ts'), // Commented out - causing auth issues
 
 
 
   fullyParallel: false,
   retries: 0,
-  workers: 2,
+  workers: 1,
   repeatEach: 0,
 
   reporter: [['html', { outputFolder: reportDir, open: 'always' }], ['line'], ["allure-playwright"]],
@@ -27,7 +27,7 @@ export default defineConfig({
   use: {
     actionTimeout: 100000, // or set to 30000 if you prefer the original value
     trace: 'on',
-    headless: false,
+    headless: process.env.CI === 'true' ? true : false,
     screenshot: "on",
     video: 'on',
     ignoreHTTPSErrors: true,

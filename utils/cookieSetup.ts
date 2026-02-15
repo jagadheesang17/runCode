@@ -21,9 +21,11 @@ export const setupCourseCreation = async () => {
         try {
             console.log(`🔑 Starting cookie setup... (Attempt ${attempt}/${MAX_RETRIES})`);
             
+            // Use headless mode in CI environment (GitHub Actions)
+            const isCI = process.env.CI === 'true';
             browser = await chromium.launch({ 
-                headless: false,
-                args: ['--start-maximized']
+                headless: isCI,
+                args: ['--start-maximized', '--no-sandbox', '--disable-setuid-sandbox']
             });
             context = await browser.newContext({ viewport: null });
             const page = await context.newPage();
